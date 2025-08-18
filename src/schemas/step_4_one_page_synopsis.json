@@ -1,0 +1,204 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Step 4: One Page Synopsis Schema",
+  "description": "Schema for Snowflake Step 4 - One Page Synopsis (Five Paragraphs)",
+  "type": "object",
+  "required": [
+    "synopsis",
+    "paragraphs",
+    "word_count",
+    "disaster_mapping",
+    "causality_check",
+    "metadata"
+  ],
+  "properties": {
+    "synopsis": {
+      "type": "string",
+      "description": "Complete one-page synopsis text",
+      "minLength": 2000,
+      "maxLength": 5000
+    },
+    "paragraphs": {
+      "type": "object",
+      "description": "Individual paragraphs mapped to Step 2 sentences",
+      "required": ["para_1_setup", "para_2_disaster_1", "para_3_disaster_2", "para_4_disaster_3", "para_5_resolution"],
+      "properties": {
+        "para_1_setup": {
+          "type": "string",
+          "description": "Paragraph 1: Expanded from Step 2 setup sentence",
+          "minLength": 300,
+          "maxLength": 800
+        },
+        "para_2_disaster_1": {
+          "type": "string",
+          "description": "Paragraph 2: Expanded from Step 2 Disaster 1",
+          "minLength": 300,
+          "maxLength": 800
+        },
+        "para_3_disaster_2": {
+          "type": "string",
+          "description": "Paragraph 3: Expanded from Step 2 Disaster 2 with moral pivot",
+          "minLength": 300,
+          "maxLength": 800
+        },
+        "para_4_disaster_3": {
+          "type": "string",
+          "description": "Paragraph 4: Expanded from Step 2 Disaster 3",
+          "minLength": 300,
+          "maxLength": 800
+        },
+        "para_5_resolution": {
+          "type": "string",
+          "description": "Paragraph 5: Expanded from Step 2 resolution",
+          "minLength": 300,
+          "maxLength": 800
+        }
+      }
+    },
+    "word_count": {
+      "type": "integer",
+      "description": "Total word count of synopsis",
+      "minimum": 500,
+      "maximum": 700
+    },
+    "paragraph_count": {
+      "type": "integer",
+      "description": "Number of paragraphs",
+      "const": 5
+    },
+    "disaster_mapping": {
+      "type": "object",
+      "description": "Verification that disasters are properly expanded",
+      "required": ["d1_forcing", "d2_pivot", "d3_bottleneck"],
+      "properties": {
+        "d1_forcing": {
+          "type": "object",
+          "properties": {
+            "present": {
+              "type": "boolean",
+              "description": "D1 forcing function is present"
+            },
+            "retreat_impossible": {
+              "type": "string",
+              "description": "Why retreat is now impossible"
+            }
+          }
+        },
+        "d2_pivot": {
+          "type": "object",
+          "properties": {
+            "present": {
+              "type": "boolean",
+              "description": "D2 moral pivot is present"
+            },
+            "old_tactic": {
+              "type": "string",
+              "description": "The old approach that failed"
+            },
+            "new_tactic": {
+              "type": "string",
+              "description": "The new approach after pivot"
+            }
+          }
+        },
+        "d3_bottleneck": {
+          "type": "object",
+          "properties": {
+            "present": {
+              "type": "boolean",
+              "description": "D3 bottleneck is present"
+            },
+            "final_path": {
+              "type": "string",
+              "description": "The only remaining path"
+            }
+          }
+        }
+      }
+    },
+    "causality_check": {
+      "type": "object",
+      "description": "Verification of cause-effect chain",
+      "properties": {
+        "para_1_to_2": {
+          "type": "boolean",
+          "description": "Causal connection from P1 to P2"
+        },
+        "para_2_to_3": {
+          "type": "boolean",
+          "description": "Causal connection from P2 to P3"
+        },
+        "para_3_to_4": {
+          "type": "boolean",
+          "description": "Causal connection from P3 to P4"
+        },
+        "para_4_to_5": {
+          "type": "boolean",
+          "description": "Causal connection from P4 to P5"
+        },
+        "has_coincidence": {
+          "type": "boolean",
+          "description": "Whether any coincidences exist"
+        }
+      }
+    },
+    "expansion_quality": {
+      "type": "object",
+      "description": "Quality metrics for expansion",
+      "properties": {
+        "maintains_spine": {
+          "type": "boolean",
+          "description": "Stays true to Step 2 spine"
+        },
+        "adds_specificity": {
+          "type": "boolean",
+          "description": "Adds concrete details"
+        },
+        "observable_outcomes": {
+          "type": "boolean",
+          "description": "Outcomes are observable, not thematic"
+        }
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "required": ["project_id", "step", "version", "created_at", "hash_upstream"],
+      "properties": {
+        "project_id": {
+          "type": "string"
+        },
+        "step": {
+          "type": "integer",
+          "const": 4
+        },
+        "version": {
+          "type": "string",
+          "pattern": "^\\d+\\.\\d+\\.\\d+$"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "model_name": {
+          "type": "string"
+        },
+        "temperature": {
+          "type": "number"
+        },
+        "seed": {
+          "type": ["number", "null"]
+        },
+        "prompt_hash": {
+          "type": "string"
+        },
+        "validator_version": {
+          "type": "string"
+        },
+        "hash_upstream": {
+          "type": "string",
+          "description": "SHA256 hash of Step 2 artifact (primary dependency)"
+        }
+      }
+    }
+  }
+}

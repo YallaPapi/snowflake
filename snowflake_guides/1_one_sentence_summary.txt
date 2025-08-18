@@ -1,0 +1,63 @@
+Snowflake Step 1 — ONE-SENTENCE SUMMARY (Logline)
+=================================================
+    PURPOSE
+    -------
+    Create a single sentence (IDEAL ≤ 25 WORDS) naming ONE or TWO leads and their EXTERNAL STORY GOAL, with an implied opposing force.
+    This is a curiosity hook and spine compass. DO NOT reveal the ending.
+
+    REQUIRED INPUTS
+    ---------------
+    - Lead (name and functional role): e.g., "Ava, an internal-affairs analyst" / "Ravi, a disgraced surgeon".
+    - External story goal (visible outcome): win/stop/find/escape/prove/steal/save/restore.
+    - Central opposition: person/system/weather/mission constraints.
+
+    OUTPUT ARTIFACT
+    ---------------
+    LOG: "<≤25 words, ≤2 named leads, explicit external goal, no ending>"
+
+    DO EXACTLY THIS
+    ---------------
+    1) Write a 35–40 word draft in the pattern: "[Name], a <role>, must <external goal> despite <opposition>."
+    2) Compress clauses into precise nouns: "international criminals" → "the Brava cartel"; "legal trouble" → "an indictment".
+    3) Remove adjectives that do not alter the scenario.
+    4) Replace backstory with role labels ("recently divorced" → "single mother") ONLY if it directly raises stakes.
+    5) Cut prepositional trails and side facts until ≤ 25 words.
+    6) Confirm you did NOT state the outcome. End on tension.
+    7) Reread. Is the goal concrete? If not, rewrite it as an external action with a testable finish line.
+
+    MINI EXAMPLES (FORMAT ONLY; ADAPT TO YOUR PROJECT)
+    --------------------------------------------------
+    - "A rookie analyst must expose a mole inside her task force before a sting operation turns deadly."
+    - "A small-town chef must win a national bake-off to save her late mother's diner."
+
+    ACCEPTANCE CHECKS
+    -----------------
+    - Word count ≤ 25.
+    - No more than 2 named leads.
+    - External goal is concrete and testable.
+    - Outcome is not revealed.
+
+    FAILURE MODES → FIXES
+    ---------------------
+    - Mood goal ("find herself"): convert to an external proxy ("finish the marathon", "win the custody hearing").
+    - No opposition: add an entity or constraint that actively blocks.
+    - Name soup: keep roles for everyone except the protagonist (and maybe the antagonist if iconic).
+
+    WARNINGS — DO NOT DEVIATE
+- Follow the Snowflake order. If a better idea appears later, revise the upstream artifact FIRST, then regenerate downstream artifacts.
+- Use plain, literal language in planning artifacts. No flowery prose, no metaphors. Save flourish for Step 10 drafting.
+- Fill every required field. If unknown, write BEST-GUESS and mark TODO. Do not leave blanks.
+- Never skip the MORAL PREMISE (Step 2) or the CONFLICT requirement (Steps 8–9). These are non-negotiable.
+
+
+    STANDARD REGENERATION PROTOCOL (ALWAYS THE SAME)
+1) Identify smallest upstream artifact that is insufficient or contradictory.
+2) Regenerate ONLY that artifact. Snapshot the prior version with a timestamped filename.
+3) Re-run the validator for that artifact. Fix until it passes.
+4) Propagate forward: regenerate all directly dependent artifacts in order.
+5) Record a one-sentence change log, e.g., "Moved D2 from train crash to courtroom ambush; adjusted POV in chs 19–22."
+
+
+    DONE WHEN
+    ---------
+    The single sentence passes all checks and is stored verbatim as the project logline.

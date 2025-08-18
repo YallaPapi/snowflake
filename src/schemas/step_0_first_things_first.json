@@ -1,0 +1,48 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Step 0: First Things First",
+  "description": "Story Market Position - Category, Kind, and Audience Delight",
+  "type": "object",
+  "required": ["category", "story_kind", "audience_delight", "metadata"],
+  "additionalProperties": false,
+  "properties": {
+    "category": {
+      "type": "string",
+      "description": "A bookstore shelf label readers recognize",
+      "minLength": 3,
+      "maxLength": 50,
+      "examples": ["Romantic Suspense", "Epic Fantasy", "Domestic Thriller", "Cozy Mystery", "Contemporary Women's Fiction"]
+    },
+    "story_kind": {
+      "type": "string",
+      "description": "One sentence stating the central promise in trope language",
+      "minLength": 10,
+      "maxLength": 150,
+      "pattern": "^[^.!?]+[.!?]?$",
+      "examples": ["Enemies-to-lovers with espionage backdrop.", "Closed-room whodunit aboard a sleeper train."]
+    },
+    "audience_delight": {
+      "type": "string",
+      "description": "One sentence listing 3-5 concrete satisfiers",
+      "minLength": 20,
+      "maxLength": 200,
+      "examples": ["Undercover reveals, forced proximity, betrayal twist, heroic sacrifice ending."]
+    },
+    "metadata": {
+      "type": "object",
+      "required": ["project_id", "step", "version", "created_at", "model_name", "prompt_hash", "validator_version"],
+      "properties": {
+        "project_id": {"type": "string", "format": "uuid"},
+        "step": {"type": "number", "const": 0},
+        "version": {"type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$"},
+        "created_at": {"type": "string", "format": "date-time"},
+        "model_name": {"type": "string"},
+        "prompt_hash": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "validator_version": {"type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$"},
+        "temperature": {"type": "number", "minimum": 0, "maximum": 2},
+        "seed": {"type": "integer"},
+        "todo_markers": {"type": "array", "items": {"type": "string"}}
+      }
+    }
+  }
+}

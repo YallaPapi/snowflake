@@ -1,0 +1,66 @@
+Snowflake Step 8 — LIST OF ALL SCENES (Spreadsheet)
+===================================================
+    PURPOSE
+    -------
+    Break the long synopsis into discrete, filmable scenes. Each row is one scene at a specific time/place with specific people and MANDATORY CONFLICT.
+
+    OUTPUT ARTIFACT
+    ---------------
+    scenes.csv and scenes.json with these columns (minimum):
+    index, chapter_hint, pov, type(Proactive|Reactive), summary, time, location, word_target, status, inbound_hook, outbound_hook, disaster_anchor(optional)
+
+    DO EXACTLY THIS
+    ---------------
+    1) Traverse the long synopsis. Every beat that changes the situation becomes a scene candidate.
+    2) For each row, fill:
+       - POV: character with most to gain/lose in this moment.
+       - Type: Proactive if pursuing a goal; Reactive if processing a blow and choosing.
+       - Summary: 2–3 sentences. MUST show conflict (opposition) or a dilemma.
+       - Time & Location: literal.
+       - Word target: short (600–1000), medium (1200–1800), long (2000+). Use a mix.
+       - Hooks: how this scene starts and ends to pull readers forward.
+    3) Tag the three Disaster anchors (D1/D2/D3) to explicit scene indices.
+    4) Read down the sheet. Ensure escalation, POV variety, and location freshness.
+    5) Merge or split scenes to keep one PURPOSE per scene.
+
+    NON-NEGOTIABLE: CONFLICT
+    ------------------------
+    - If the summary lacks an active opposition (for Proactive) or a credible dilemma (for Reactive), the scene is filler. Fix or cut.
+
+    QUALITY HINTS
+    -------------
+    - Avoid head-hopping: each scene has one POV.
+    - Long runs in one POV are fine if tension climbs.
+    - Move locations to create freshness without gimmicks.
+
+    ACCEPTANCE CHECKS
+    -----------------
+    - Every row has POV and a conflict-bearing summary.
+    - D1/D2/D3 clearly labeled.
+    - Word targets sum to project length ±5%.
+    - No duplicate rows that repeat a beat without change.
+
+    FAILURE MODES → FIXES
+    ---------------------
+    - “Atmosphere” rows: fold atmosphere into a conflict-bearing scene.
+    - Repetitive location: relocate or compress.
+    - Flat middle: insert a pressure sequence that forces D2.
+
+    WARNINGS — DO NOT DEVIATE
+- Follow the Snowflake order. If a better idea appears later, revise the upstream artifact FIRST, then regenerate downstream artifacts.
+- Use plain, literal language in planning artifacts. No flowery prose, no metaphors. Save flourish for Step 10 drafting.
+- Fill every required field. If unknown, write BEST-GUESS and mark TODO. Do not leave blanks.
+- Never skip the MORAL PREMISE (Step 2) or the CONFLICT requirement (Steps 8–9). These are non-negotiable.
+
+
+    STANDARD REGENERATION PROTOCOL (ALWAYS THE SAME)
+1) Identify smallest upstream artifact that is insufficient or contradictory.
+2) Regenerate ONLY that artifact. Snapshot the prior version with a timestamped filename.
+3) Re-run the validator for that artifact. Fix until it passes.
+4) Propagate forward: regenerate all directly dependent artifacts in order.
+5) Record a one-sentence change log, e.g., "Moved D2 from train crash to courtroom ambush; adjusted POV in chs 19–22."
+
+
+    DONE WHEN
+    ---------
+    The spreadsheet reads like an escalating story skeleton with no filler.

@@ -1,0 +1,191 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Step 8: Scene List Schema",
+  "description": "Schema for Snowflake Step 8 - List of All Scenes",
+  "type": "object",
+  "required": [
+    "scenes",
+    "scene_count",
+    "total_word_target",
+    "disaster_anchors",
+    "pov_distribution",
+    "metadata"
+  ],
+  "properties": {
+    "scenes": {
+      "type": "array",
+      "description": "List of all scenes",
+      "minItems": 20,
+      "items": {
+        "$ref": "#/definitions/scene"
+      }
+    },
+    "scene_count": {
+      "type": "integer",
+      "description": "Total number of scenes",
+      "minimum": 20
+    },
+    "total_word_target": {
+      "type": "integer",
+      "description": "Total word count target for all scenes",
+      "minimum": 50000
+    },
+    "disaster_anchors": {
+      "type": "object",
+      "description": "Scene indices where disasters occur",
+      "required": ["d1_scene", "d2_scene", "d3_scene"],
+      "properties": {
+        "d1_scene": {
+          "type": "integer",
+          "description": "Scene index for Disaster 1"
+        },
+        "d2_scene": {
+          "type": "integer",
+          "description": "Scene index for Disaster 2"
+        },
+        "d3_scene": {
+          "type": "integer",
+          "description": "Scene index for Disaster 3"
+        }
+      }
+    },
+    "pov_distribution": {
+      "type": "object",
+      "description": "Distribution of POV across scenes",
+      "additionalProperties": {
+        "type": "integer"
+      }
+    },
+    "conflict_validation": {
+      "type": "object",
+      "description": "Validation that every scene has conflict",
+      "properties": {
+        "all_have_conflict": {
+          "type": "boolean"
+        },
+        "scenes_without_conflict": {
+          "type": "array",
+          "items": {"type": "integer"}
+        }
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "required": ["project_id", "step", "version", "created_at", "hash_upstream"],
+      "properties": {
+        "project_id": {
+          "type": "string"
+        },
+        "step": {
+          "type": "integer",
+          "const": 8
+        },
+        "version": {
+          "type": "string",
+          "pattern": "^\\d+\\.\\d+\\.\\d+$"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "hash_upstream": {
+          "type": "string",
+          "description": "SHA256 hash of Step 6 artifact"
+        }
+      }
+    }
+  },
+  "definitions": {
+    "scene": {
+      "type": "object",
+      "required": [
+        "index",
+        "chapter_hint",
+        "pov",
+        "type",
+        "summary",
+        "time",
+        "location",
+        "word_target",
+        "status",
+        "inbound_hook",
+        "outbound_hook"
+      ],
+      "properties": {
+        "index": {
+          "type": "integer",
+          "description": "Scene number",
+          "minimum": 1
+        },
+        "chapter_hint": {
+          "type": "string",
+          "description": "Suggested chapter placement"
+        },
+        "pov": {
+          "type": "string",
+          "description": "POV character name",
+          "minLength": 2
+        },
+        "type": {
+          "type": "string",
+          "description": "Scene type",
+          "enum": ["Proactive", "Reactive"]
+        },
+        "summary": {
+          "type": "string",
+          "description": "2-3 sentence summary showing conflict",
+          "minLength": 50,
+          "maxLength": 500
+        },
+        "time": {
+          "type": "string",
+          "description": "When the scene occurs"
+        },
+        "location": {
+          "type": "string",
+          "description": "Where the scene occurs"
+        },
+        "word_target": {
+          "type": "integer",
+          "description": "Target word count for scene",
+          "minimum": 600,
+          "maximum": 3000
+        },
+        "status": {
+          "type": "string",
+          "description": "Scene draft status",
+          "enum": ["planned", "drafted", "revised", "final"]
+        },
+        "inbound_hook": {
+          "type": "string",
+          "description": "How scene starts to pull reader in"
+        },
+        "outbound_hook": {
+          "type": "string",
+          "description": "How scene ends to pull reader forward"
+        },
+        "disaster_anchor": {
+          "type": "string",
+          "description": "If this scene anchors D1/D2/D3",
+          "enum": ["D1", "D2", "D3", null]
+        },
+        "conflict": {
+          "type": "object",
+          "description": "Conflict details",
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": ["opposition", "dilemma", "internal", "environmental"]
+            },
+            "description": {
+              "type": "string"
+            },
+            "stakes": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  }
+}

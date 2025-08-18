@@ -1,0 +1,59 @@
+Snowflake Step 4 — ONE-PAGE SYNOPSIS (~500–700 words)
+=====================================================
+    PURPOSE
+    -------
+    Expand Step 2’s five sentences into FIVE PARAGRAPHS — exactly one paragraph per sentence — to create a clear causal plan.
+    This is internal. Clarity over style.
+
+    OUTPUT ARTIFACT
+    ---------------
+    one_page_synopsis.md — five paragraphs, ~500–700 words total.
+
+    DO EXACTLY THIS
+    ---------------
+    1) Para 1 from Sentence 1: open on the situation and why the goal matters now. Identify the first visible step toward the goal.
+    2) Para 2 from Sentence 2 (D1): dramatize the event that FORCES commitment. Explicitly state why retreat is now impossible.
+    3) Para 3 from Sentence 3 (D2): show the values/identity hit and the pivot to a NEW tactic (tie to the moral premise).
+    4) Para 4 from Sentence 4 (D3): stack pressures so retreat options collapse. Name the bottleneck to the endgame.
+    5) Para 5 from Sentence 5: stage the showdown beats, the immediate outcome, and the emotional landing.
+    6) Ensure cause→effect across paragraphs. Replace coincidences with set-ups.
+    7) Keep minor names to a minimum; use role labels.
+
+    MINI EXAMPLE OUTLINE (FORMAT ONLY)
+    ----------------------------------
+    - P1: A chef’s diner faces foreclosure; the grant application opens in 10 days.
+    - P2 (D1): Rival sabotages her tasting; she commits to competing anyway — there is no other funding path.
+    - P3 (D2): She loses her sous-chef; realizes her control belief is false; recruits help and changes tactics.
+    - P4 (D3): Health inspector shuts her down on semifinals day; only one path remains — win finals with a pop-up kitchen.
+    - P5: She wins, saves the diner, and chooses partnership over solo control.
+
+    ACCEPTANCE CHECKS
+    -----------------
+    - Exactly FIVE paragraphs mapping 1:1 to Step 2 sentences.
+    - D1/D2/D3 paragraphs contain a clear FORCING FUNCTION.
+    - The moral pivot is visible in paragraph 3.
+
+    FAILURE MODES → FIXES
+    ---------------------
+    - New subplot steals the spine: move it to Step 6 or revise Step 2 first.
+    - D-paragraphs read like notes: add the “no way back because …” line.
+    - Vague ending: make the outcome observable, not thematic.
+
+    WARNINGS — DO NOT DEVIATE
+- Follow the Snowflake order. If a better idea appears later, revise the upstream artifact FIRST, then regenerate downstream artifacts.
+- Use plain, literal language in planning artifacts. No flowery prose, no metaphors. Save flourish for Step 10 drafting.
+- Fill every required field. If unknown, write BEST-GUESS and mark TODO. Do not leave blanks.
+- Never skip the MORAL PREMISE (Step 2) or the CONFLICT requirement (Steps 8–9). These are non-negotiable.
+
+
+    STANDARD REGENERATION PROTOCOL (ALWAYS THE SAME)
+1) Identify smallest upstream artifact that is insufficient or contradictory.
+2) Regenerate ONLY that artifact. Snapshot the prior version with a timestamped filename.
+3) Re-run the validator for that artifact. Fix until it passes.
+4) Propagate forward: regenerate all directly dependent artifacts in order.
+5) Record a one-sentence change log, e.g., "Moved D2 from train crash to courtroom ambush; adjusted POV in chs 19–22."
+
+
+    DONE WHEN
+    ---------
+    Five causal paragraphs exist and match Step 2 sentence-for-paragraph mapping.

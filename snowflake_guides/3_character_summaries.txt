@@ -1,0 +1,86 @@
+Snowflake Step 3 — CHARACTER SUMMARY SHEETS (per major character)
+=================================================================
+    PURPOSE
+    -------
+    Create one compact, comparable sheet per major character. Encode goal/values/conflict/epiphany and a micro-arc so POV and scene decisions are grounded.
+
+    REQUIRED FIELDS (USE THESE HEADINGS VERBATIM)
+    ---------------------------------------------
+    - Role
+    - Name
+    - Goal (concrete, story-bound)
+    - Ambition (abstract life-aim)
+    - Values (3× "Nothing is more important than …" sentences)
+    - Conflict (who/what opposes the goal)
+    - Epiphany (what they learn/change; villains may have "NONE")
+    - One-sentence summary (this character’s story in one line)
+    - One-paragraph summary (this character’s 3-Act personal arc)
+
+    OUTPUT ARTIFACT
+    ---------------
+    character_summaries.json — array of character objects with the above fields.
+
+    DO EXACTLY THIS
+    ---------------
+    1) List principals: protagonist, antagonist, primary allies, love interest, key foils.
+    2) Write GOAL as a testable outcome tied to the main plot ("win the grant"; "prove the fraud").
+    3) Write AMBITION as the life-aim driving their choices ("security", "recognition", "freedom").
+    4) Write three VALUES statements starting with "Nothing is more important than …" Use concrete nouns ("my sister", "keeping promises", "telling the truth").
+    5) Write CONFLICT naming the strongest opposing force (person/system/nature) and briefly how it blocks them.
+    6) Write EPIPHANY as a single clause. For villains, "none" is acceptable, but explain why.
+    7) Write the one-line and one-paragraph personal arc mapping to D1/D2/D3 when relevant.
+    8) Cross-check protagonist GOAL collides with antagonist CONFLICT by mid-Act II.
+
+    LITERAL TEMPLATE (COPY/PASTE AND FILL)
+    --------------------------------------
+    ```
+    Role: <e.g., Protagonist>
+    Name: <e.g., Ava M.>
+    Goal: <external, testable>
+    Ambition: <abstract life-aim>
+    Values:
+      - Nothing is more important than <X>.
+      - Nothing is more important than <Y>.
+      - Nothing is more important than <Z>.
+    Conflict: <who/what blocks and how>
+    Epiphany: <lesson / change> (Villain: "none" if appropriate)
+    One-sentence summary: <their arc in one line>
+    One-paragraph summary: <their 3-Act arc with D1/D2/D3 touchpoints>
+    ```
+
+    EXAMPLE NOTES (PARAPHRASED FROM THE BOOK)
+    -----------------------------------------
+    - The protagonist values competence/control; her epiphany is learning to accept help to win the larger fight.
+    - The antagonist is never a cardboard cutout; give them interior logic and a reason you could argue in their favor.
+
+    ACCEPTANCE CHECKS
+    -----------------
+    - Every principal has every field.
+    - Goals are concrete. Ambitions are abstract. Values are literal sentences.
+    - Antagonist has interiority; if epiphany is "none", the reason is stated.
+    - Personal arcs align with the Step 2 disasters.
+
+    FAILURE MODES → FIXES
+    ---------------------
+    - Generic values: rewrite as testable sentences.
+    - Vague conflict: name a specific person/system/nature force that blocks.
+    - Flat antagonist: add motive history that makes their actions inevitable.
+
+    WARNINGS — DO NOT DEVIATE
+- Follow the Snowflake order. If a better idea appears later, revise the upstream artifact FIRST, then regenerate downstream artifacts.
+- Use plain, literal language in planning artifacts. No flowery prose, no metaphors. Save flourish for Step 10 drafting.
+- Fill every required field. If unknown, write BEST-GUESS and mark TODO. Do not leave blanks.
+- Never skip the MORAL PREMISE (Step 2) or the CONFLICT requirement (Steps 8–9). These are non-negotiable.
+
+
+    STANDARD REGENERATION PROTOCOL (ALWAYS THE SAME)
+1) Identify smallest upstream artifact that is insufficient or contradictory.
+2) Regenerate ONLY that artifact. Snapshot the prior version with a timestamped filename.
+3) Re-run the validator for that artifact. Fix until it passes.
+4) Propagate forward: regenerate all directly dependent artifacts in order.
+5) Record a one-sentence change log, e.g., "Moved D2 from train crash to courtroom ambush; adjusted POV in chs 19–22."
+
+
+    DONE WHEN
+    ---------
+    You have a JSON array of complete character sheets. No blank fields.

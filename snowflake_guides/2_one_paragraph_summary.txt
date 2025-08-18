@@ -1,0 +1,72 @@
+Snowflake Step 2 — ONE-PARAGRAPH SUMMARY (Five Sentences)
+=========================================================
+    PURPOSE
+    -------
+    Expand the logline into EXACTLY FIVE SENTENCES to establish a robust three-act structure with THREE DISASTERS and a clear MORAL PREMISE pivot.
+    This paragraph is the backbone. Everything later must trace back to one of these sentences.
+
+    REQUIRED SENTENCE MAP (DO NOT CHANGE)
+    -------------------------------------
+    1) Setup: time/place + lead(s) + why the goal matters RIGHT NOW.
+    2) DISASTER #1 (end of Act I): an event that FORCES commitment; walking away becomes impossible.
+    3) DISASTER #2 (end of Act IIa): a blow that drives the FALSE → TRUE belief shift (moral premise); the lead changes tactics.
+    4) DISASTER #3 (end of Act IIb): a blow that FORCES both lead (and villain) to commit to ENDING the story.
+    5) Act III: showdown + immediate outcome (happy/sad/bittersweet).
+
+    MORAL PREMISE (WRITE IT LITERALLY)
+    ----------------------------------
+    - Template: "People succeed when they [TRUE BELIEF], and they fail when they [FALSE BELIEF]."
+    - Sentence 3 must SHOW the pivot from false to true.
+
+    OUTPUT ARTIFACTS
+    ----------------
+    - S2_PARAGRAPH: "<five sentences, exactly>"
+    - MORAL_PREMISE: "<one sentence>"
+
+    DO EXACTLY THIS
+    ---------------
+    1) Copy the logline’s lead(s) and goal into Sentence 1. Add a concrete setting cue and a time pressure cue.
+    2) Brainstorm 6–10 possible big hits. Choose the THREE that best escalate cost and compress options. Assign them to D1, D2, D3.
+    3) Write Sentence 2 so D1 removes retreat options. Use "forces" language.
+    4) Write Sentence 3 so D2 strikes the character’s values/identity and triggers a new strategy (the moral pivot). Make this explicit.
+    5) Write Sentence 4 so D3 narrows the path to ONE endgame. No subplots hijack the throughline.
+    6) Write Sentence 5 with the showdown type and immediate emotional landing (no epilogue fluff).
+    7) Read the paragraph end-to-end. Convert any coincidence into causality or delete it.
+
+    PRACTICAL HINTS (IN THE BOOK’S SPIRIT, PARAPHRASED)
+    ---------------------------------------------------
+    - D1 = “burn the ships”: after it, backing out would be cowardly, impossible, or catastrophic.
+    - D2 = worldview collision: the old way fails; a new belief must drive a new tactic.
+    - D3 = point of no return to the endgame: the final confrontation is inevitable.
+
+    ACCEPTANCE CHECKS
+    -----------------
+    - Exactly five sentences (not four, not six).
+    - D1/D2/D3 are named or clearly embedded and are forcing functions.
+    - Sentence 3 shows the moral pivot explicitly.
+    - Sentence 5 states the ending type cleanly.
+
+    FAILURE MODES → FIXES
+    ---------------------
+    - Missing middle disaster: add a cost that forces a BEHAVIOR change (new approach).
+    - Spectacle disaster: ensure it CHANGES THE SITUATION and removes options.
+    - Mushy ending: say “wins the case”, “loses the race”, or “chooses to walk away” — be concrete.
+
+    WARNINGS — DO NOT DEVIATE
+- Follow the Snowflake order. If a better idea appears later, revise the upstream artifact FIRST, then regenerate downstream artifacts.
+- Use plain, literal language in planning artifacts. No flowery prose, no metaphors. Save flourish for Step 10 drafting.
+- Fill every required field. If unknown, write BEST-GUESS and mark TODO. Do not leave blanks.
+- Never skip the MORAL PREMISE (Step 2) or the CONFLICT requirement (Steps 8–9). These are non-negotiable.
+
+
+    STANDARD REGENERATION PROTOCOL (ALWAYS THE SAME)
+1) Identify smallest upstream artifact that is insufficient or contradictory.
+2) Regenerate ONLY that artifact. Snapshot the prior version with a timestamped filename.
+3) Re-run the validator for that artifact. Fix until it passes.
+4) Propagate forward: regenerate all directly dependent artifacts in order.
+5) Record a one-sentence change log, e.g., "Moved D2 from train crash to courtroom ambush; adjusted POV in chs 19–22."
+
+
+    DONE WHEN
+    ---------
+    You have a crisp five-sentence paragraph plus one moral premise line, both stored as text and referenced by ID.

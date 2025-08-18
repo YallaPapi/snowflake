@@ -1,0 +1,141 @@
+{
+  "master": {
+    "tasks": [
+      {
+        "id": 31,
+        "title": "Core Project Structure and Environment Setup",
+        "description": "Initialize project structure, set up environment variables, and implement basic configuration management",
+        "details": "1. Create project directory structure\n2. Implement environment variable loading for API keys and URLs\n3. Set up configuration management for model parameters\n4. Initialize git repository with .gitignore\n5. Create Makefile with commands: setup, test:smoke, run:tiny, run:novel, export:csv/docx/epub\n6. Implement secure storage for artifacts with encryption at rest",
+        "testStrategy": "1. Verify environment variable loading\n2. Test configuration validation\n3. Verify make commands execute successfully\n4. Validate encryption implementation\n5. Run smoke tests for basic setup",
+        "priority": "high",
+        "dependencies": [],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 32,
+        "title": "JSON Schema Definition and Validation",
+        "description": "Create JSON schemas for all artifacts and implement validation system",
+        "details": "1. Define JSON schemas for:\n- project.json\n- character.summary.json\n- character.bible.json\n- synopsis files\n- scene.row.json\n- scene.brief.json variants\n- manuscript.json\n2. Implement schema validation functions\n3. Create artifact versioning system with hash tracking",
+        "testStrategy": "1. Validate schema definitions against JSON Schema spec\n2. Test validation functions with valid/invalid data\n3. Verify version/hash tracking system\n4. Test artifact preservation on regeneration",
+        "priority": "high",
+        "dependencies": [
+          31
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 33,
+        "title": "TaskMaster Integration Implementation",
+        "description": "Implement TaskMaster CLI interface and research functionality",
+        "details": "1. Create TaskMaster CLI with commands:\n- init\n- parse-prd\n- list\n- next\n- show\n- set-status\n- research\n2. Implement research functionality with error tracking\n3. Add cycle counter management\n4. Create logging system for fix attempts",
+        "testStrategy": "1. Test each CLI command\n2. Verify research functionality\n3. Test cycle counter mechanics\n4. Validate logging system\n5. Test error handling",
+        "priority": "high",
+        "dependencies": [
+          31
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 34,
+        "title": "Context7 Integration Setup",
+        "description": "Implement Context7 integration for retrieving technical documentation and specifications",
+        "details": "1. Set up Context7 connection methods:\n- HTTP transport\n- SSE transport\n- Local npx implementation\n2. Implement retrieval functions for:\n- Claude Code MCP parameters\n- File format specs\n- JSON Schema snippets\n- Vector store functions",
+        "testStrategy": "1. Test all connection methods\n2. Verify document retrieval\n3. Validate MCP parameter handling\n4. Test local vs remote functionality",
+        "priority": "medium",
+        "dependencies": [
+          31
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 35,
+        "title": "Snowflake Step Pipeline Implementation",
+        "description": "Create the core pipeline system for executing Snowflake steps 0-10 in sequence",
+        "details": "1. Implement step execution framework\n2. Create step gate validation system\n3. Add artifact generation and storage\n4. Implement upstream dependency checking\n5. Add step-specific prompt management\n6. Create progress tracking system",
+        "testStrategy": "1. Test step sequence execution\n2. Validate gate checks\n3. Verify artifact generation\n4. Test dependency validation\n5. Verify prompt handling",
+        "priority": "high",
+        "dependencies": [
+          32
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 36,
+        "title": "Scene Management System",
+        "description": "Implement scene handling system including CSV management and brief generation",
+        "details": "1. Create scene CSV handler with required columns\n2. Implement scene brief generators for Proactive/Reactive\n3. Add triad validation (Goal/Conflict/Setback & Reaction/Dilemma/Decision)\n4. Implement scene linking and disaster anchoring\n5. Add POV tracking and validation",
+        "testStrategy": "1. Test CSV parsing/generation\n2. Validate brief generation\n3. Test triad validation\n4. Verify scene linking\n5. Test POV tracking",
+        "priority": "high",
+        "dependencies": [
+          35
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 37,
+        "title": "Character Engine Implementation",
+        "description": "Create character management system for steps 3, 5, and 7",
+        "details": "1. Implement character summary generation\n2. Create character synopsis system\n3. Implement character bible generation\n4. Add validation for required fields\n5. Implement character role and conflict tracking",
+        "testStrategy": "1. Test character generation\n2. Validate field requirements\n3. Test role conflict detection\n4. Verify character arc tracking\n5. Test antagonist handling",
+        "priority": "medium",
+        "dependencies": [
+          35
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 38,
+        "title": "Draft Generation System",
+        "description": "Implement the draft generation system for Step 10",
+        "details": "1. Create draft writer using frozen scene list\n2. Implement scene-by-scene generation\n3. Add chapter assembly system\n4. Implement word count tracking\n5. Add draft validation system",
+        "testStrategy": "1. Test draft generation\n2. Verify scene ordering\n3. Test chapter assembly\n4. Validate word count tracking\n5. Test draft validation",
+        "priority": "medium",
+        "dependencies": [
+          36,
+          37
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 39,
+        "title": "Export System Implementation",
+        "description": "Create export system for DOCX, EPUB, and CSV formats",
+        "details": "1. Implement DOCX export with formatting\n2. Create EPUB generation system\n3. Implement CSV export for scene lists\n4. Add validation for export formats\n5. Implement front matter handling",
+        "testStrategy": "1. Test all export formats\n2. Validate document structure\n3. Test front matter handling\n4. Verify format compliance\n5. Test with external validators",
+        "priority": "medium",
+        "dependencies": [
+          38
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 40,
+        "title": "Error Recovery and Monitoring System",
+        "description": "Implement error handling, recovery, and monitoring system",
+        "details": "1. Create error detection system\n2. Implement fix cycle management\n3. Add escalation system\n4. Create monitoring dashboard\n5. Implement error logging and reporting",
+        "testStrategy": "1. Test error detection\n2. Validate fix cycle handling\n3. Test escalation triggers\n4. Verify monitoring system\n5. Test logging functionality",
+        "priority": "medium",
+        "dependencies": [
+          33,
+          34
+        ],
+        "status": "pending",
+        "subtasks": []
+      }
+    ],
+    "metadata": {
+      "created": "2024-08-18",
+      "updated": "2025-08-18T14:45:19.824Z",
+      "description": "Tasks for master context"
+    }
+  }
+}

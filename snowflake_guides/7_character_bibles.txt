@@ -1,0 +1,55 @@
+Snowflake Step 7 — CHARACTER BIBLES (Deep Dossiers)
+===================================================
+    PURPOSE
+    -------
+    Build a reliable, searchable reference to keep character portrayal consistent and to speed up drafting. Prevent continuity errors.
+
+    OUTPUT ARTIFACT
+    ---------------
+    character_bibles.json — one object per principal with the four groups below.
+
+    FILL THESE FOUR GROUPS (≥ 80% FOR PRINCIPALS)
+    ---------------------------------------------
+    1) PHYSICAL: name, age, birthdate, height, weight, heritage, hair/eyes, description, clothing style.
+    2) PERSONALITY: humor, personality type, religion, political party, hobbies, favorites (music/books/movies/color), wallet/purse contents.
+    3) ENVIRONMENTAL: home description, education, work experience, family, best friend, male friends, female friends, enemies.
+    4) PSYCHOLOGICAL: best/worst childhood memories, one-line characterization, strongest/weakest traits, paradox, greatest hope, greatest fear, philosophy of life, self-view vs others’ view.
+
+    DO EXACTLY THIS
+    ---------------
+    1) Populate PHYSICAL with literal facts you will actually use in prose.
+    2) Populate PERSONALITY with specifics that will manifest in dialogue/behavior.
+    3) Populate ENVIRONMENTAL with context that creates future obstacles/resources.
+    4) Populate PSYCHOLOGICAL with drivers that explain decisions at D1/D2/D3.
+    5) Attach 3–5 VOICE NOTES and a vocabulary quirk.
+
+    ACCEPTANCE CHECKS
+    -----------------
+    - Four groups present; ≥ 80% completion for principals.
+    - Psychological drivers reference at least one Disaster.
+    - Consistency with Step 3 and Step 5; contradictions fixed upstream.
+
+    FAILURE MODES → FIXES
+    ---------------------
+    - Laundry list feel: move unused facts to appendix.
+    - Vague psychology: tie to visible behaviors and decisions.
+    - Inconsistent facts: revise Steps 3/5 and sync here.
+
+    WARNINGS — DO NOT DEVIATE
+- Follow the Snowflake order. If a better idea appears later, revise the upstream artifact FIRST, then regenerate downstream artifacts.
+- Use plain, literal language in planning artifacts. No flowery prose, no metaphors. Save flourish for Step 10 drafting.
+- Fill every required field. If unknown, write BEST-GUESS and mark TODO. Do not leave blanks.
+- Never skip the MORAL PREMISE (Step 2) or the CONFLICT requirement (Steps 8–9). These are non-negotiable.
+
+
+    STANDARD REGENERATION PROTOCOL (ALWAYS THE SAME)
+1) Identify smallest upstream artifact that is insufficient or contradictory.
+2) Regenerate ONLY that artifact. Snapshot the prior version with a timestamped filename.
+3) Re-run the validator for that artifact. Fix until it passes.
+4) Propagate forward: regenerate all directly dependent artifacts in order.
+5) Record a one-sentence change log, e.g., "Moved D2 from train crash to courtroom ambush; adjusted POV in chs 19–22."
+
+
+    DONE WHEN
+    ---------
+    You can draft any POV scene without re-inventing details or checking external notes.

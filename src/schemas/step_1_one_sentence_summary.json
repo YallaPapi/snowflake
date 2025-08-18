@@ -1,0 +1,58 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Step 1: One Sentence Summary (Logline)",
+  "description": "Single sentence naming 1-2 leads and their external story goal",
+  "type": "object",
+  "required": ["logline", "metadata"],
+  "additionalProperties": false,
+  "properties": {
+    "logline": {
+      "type": "string",
+      "description": "Complete logline sentence (max 25 words)",
+      "minLength": 10,
+      "maxLength": 200,
+      "pattern": "^[^.!?]*[.!?]$"
+    },
+    "word_count": {
+      "type": "integer",
+      "description": "Actual word count of the logline",
+      "maximum": 25
+    },
+    "lead_count": {
+      "type": "integer",
+      "description": "Number of named leads in the logline",
+      "minimum": 1,
+      "maximum": 2
+    },
+    "components": {
+      "type": "object",
+      "description": "Parsed components for validation",
+      "properties": {
+        "lead_name": {"type": "string"},
+        "lead_role": {"type": "string"},
+        "external_goal": {"type": "string"},
+        "opposition": {"type": "string"},
+        "second_lead_name": {"type": "string"},
+        "second_lead_role": {"type": "string"}
+      },
+      "required": ["lead_name", "lead_role", "external_goal", "opposition"]
+    },
+    "metadata": {
+      "type": "object",
+      "required": ["project_id", "step", "version", "created_at", "model_name", "prompt_hash", "validator_version", "hash_upstream"],
+      "properties": {
+        "project_id": {"type": "string", "format": "uuid"},
+        "step": {"type": "number", "const": 1},
+        "version": {"type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$"},
+        "created_at": {"type": "string", "format": "date-time"},
+        "model_name": {"type": "string"},
+        "prompt_hash": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "validator_version": {"type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$"},
+        "hash_upstream": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "temperature": {"type": "number", "minimum": 0, "maximum": 2},
+        "seed": {"type": "integer"},
+        "todo_markers": {"type": "array", "items": {"type": "string"}}
+      }
+    }
+  }
+}

@@ -1,0 +1,219 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Step 3: Character Summaries Schema",
+  "description": "Schema for Snowflake Step 3 - Character Summary Sheets",
+  "type": "object",
+  "required": [
+    "characters",
+    "character_count",
+    "metadata"
+  ],
+  "properties": {
+    "characters": {
+      "type": "array",
+      "description": "Array of character summary sheets",
+      "minItems": 2,
+      "items": {
+        "$ref": "#/definitions/character"
+      }
+    },
+    "character_count": {
+      "type": "integer",
+      "description": "Total number of characters",
+      "minimum": 2
+    },
+    "protagonist_antagonist_collision": {
+      "type": "object",
+      "description": "Validation that protagonist goal collides with antagonist conflict",
+      "properties": {
+        "collision_point": {
+          "type": "string",
+          "description": "Where/when protagonist goal meets antagonist conflict"
+        },
+        "collision_verified": {
+          "type": "boolean",
+          "description": "Whether collision is properly established"
+        }
+      }
+    },
+    "disaster_alignment": {
+      "type": "object",
+      "description": "How character arcs align with Step 2 disasters",
+      "properties": {
+        "d1_characters": {
+          "type": "array",
+          "items": {"type": "string"},
+          "description": "Characters affected by Disaster 1"
+        },
+        "d2_characters": {
+          "type": "array",
+          "items": {"type": "string"},
+          "description": "Characters affected by Disaster 2"
+        },
+        "d3_characters": {
+          "type": "array",
+          "items": {"type": "string"},
+          "description": "Characters affected by Disaster 3"
+        }
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "required": ["project_id", "step", "version", "created_at", "hash_upstream"],
+      "properties": {
+        "project_id": {
+          "type": "string"
+        },
+        "step": {
+          "type": "integer",
+          "const": 3
+        },
+        "version": {
+          "type": "string",
+          "pattern": "^\\d+\\.\\d+\\.\\d+$"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "model_name": {
+          "type": "string"
+        },
+        "temperature": {
+          "type": "number"
+        },
+        "seed": {
+          "type": ["number", "null"]
+        },
+        "prompt_hash": {
+          "type": "string"
+        },
+        "validator_version": {
+          "type": "string"
+        },
+        "hash_upstream": {
+          "type": "string",
+          "description": "SHA256 hash of Step 2 artifact"
+        }
+      }
+    }
+  },
+  "definitions": {
+    "character": {
+      "type": "object",
+      "required": [
+        "role",
+        "name",
+        "goal",
+        "ambition",
+        "values",
+        "conflict",
+        "epiphany",
+        "one_sentence_summary",
+        "one_paragraph_summary"
+      ],
+      "properties": {
+        "role": {
+          "type": "string",
+          "description": "Character's role in the story",
+          "enum": ["Protagonist", "Antagonist", "Love Interest", "Ally", "Mentor", "Foil", "Supporting"]
+        },
+        "name": {
+          "type": "string",
+          "description": "Character's name",
+          "minLength": 2,
+          "maxLength": 50
+        },
+        "goal": {
+          "type": "string",
+          "description": "Concrete, testable, story-bound goal",
+          "minLength": 10,
+          "maxLength": 200
+        },
+        "ambition": {
+          "type": "string",
+          "description": "Abstract life-aim driving choices",
+          "minLength": 5,
+          "maxLength": 100
+        },
+        "values": {
+          "type": "array",
+          "description": "Three 'Nothing is more important than...' statements",
+          "minItems": 3,
+          "maxItems": 3,
+          "items": {
+            "type": "string",
+            "pattern": "^Nothing is more important than .+\\.$",
+            "minLength": 30,
+            "maxLength": 150
+          }
+        },
+        "conflict": {
+          "type": "string",
+          "description": "Who/what opposes the goal and how",
+          "minLength": 20,
+          "maxLength": 300
+        },
+        "epiphany": {
+          "type": "string",
+          "description": "What they learn/change (or 'NONE' for villains)",
+          "minLength": 5,
+          "maxLength": 200
+        },
+        "epiphany_justification": {
+          "type": "string",
+          "description": "If epiphany is NONE, explain why",
+          "maxLength": 200
+        },
+        "one_sentence_summary": {
+          "type": "string",
+          "description": "Character's arc in one line",
+          "minLength": 20,
+          "maxLength": 200
+        },
+        "one_paragraph_summary": {
+          "type": "string",
+          "description": "Character's 3-Act arc with D1/D2/D3 touchpoints",
+          "minLength": 100,
+          "maxLength": 800
+        },
+        "disaster_touchpoints": {
+          "type": "object",
+          "description": "How character relates to each disaster",
+          "properties": {
+            "d1": {
+              "type": "string",
+              "description": "Character's involvement in Disaster 1"
+            },
+            "d2": {
+              "type": "string",
+              "description": "Character's involvement in Disaster 2"
+            },
+            "d3": {
+              "type": "string",
+              "description": "Character's involvement in Disaster 3"
+            }
+          }
+        },
+        "interiority": {
+          "type": "object",
+          "description": "Character's inner life (especially for antagonist)",
+          "properties": {
+            "motive_history": {
+              "type": "string",
+              "description": "What made them this way"
+            },
+            "justification": {
+              "type": "string",
+              "description": "How they justify their actions"
+            },
+            "vulnerability": {
+              "type": "string",
+              "description": "Their weakness or blind spot"
+            }
+          }
+        }
+      }
+    }
+  }
+}

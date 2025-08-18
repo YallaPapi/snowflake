@@ -1,0 +1,70 @@
+Snowflake Step 9 — SCENE BRIEFS (Proactive vs Reactive)
+=======================================================
+    PURPOSE
+    -------
+    Give each scene a precise brief using the correct triad so drafting has ZERO ambiguity about purpose, turn, and carry-over energy.
+
+    OUTPUT ARTIFACT
+    ---------------
+    scene_briefs.jsonl — one JSON object per scene with fields depending on type.
+
+    CHOOSE TYPE, THEN FILL THE EXACT TRIAD
+    --------------------------------------
+    - PROACTIVE (POV pursues a goal): 
+      goal, conflict, setback, stakes, links{ character_goal_id, disaster_anchor? }
+    - REACTIVE (POV reels and must choose): 
+      reaction, dilemma, decision, stakes, links{ character_goal_id, disaster_anchor? }
+
+    DO EXACTLY THIS
+    ---------------
+    1) Read the scene row. Decide type:
+       - Initiating action toward a measurable aim → PROACTIVE.
+       - Processing a blow and choosing next aim → REACTIVE.
+    2) If PROACTIVE, write:
+       - GOAL: literal, time-bound ("steal the ledger before midnight").
+       - CONFLICT: strongest on-page opposition ("guard dogs + power outage").
+       - SETBACK: change of situation that worsens risk or narrows options.
+       - STAKES: what worsens if they fail right now.
+    3) If REACTIVE, write:
+       - REACTION: honest physical/emotional surge in POV.
+       - DILEMMA: two bad options with real cost. No strawmen.
+       - DECISION: a choice that LAUNCHES the next proactive goal.
+       - STAKES: what the wrong choice would cost.
+    4) Link the brief to Step 3 GOAL and to any Disaster anchor.
+    5) Check adjacency: the Decision should often become the next scene’s Goal.
+
+    MINI EXAMPLES (FORMAT ONLY)
+    ---------------------------
+    - PROACTIVE: Goal "pitch editor with proof"; Conflict "rival hijacks slot"; Setback "meeting moved earlier; prep lost"; Stakes "funding dies if meeting fails".
+    - REACTIVE: Reaction "panic in stairwell"; Dilemma "confess and lose trust OR lie and lose evidence"; Decision "confess and pivot"; Stakes "relationship risk vs. mission collapse".
+
+    ACCEPTANCE CHECKS
+    -----------------
+    - Correct type chosen; correct triad filled; no empties.
+    - Stakes stated plainly.
+    - Decision frequently seeds the next Goal (visible causal chain).
+
+    FAILURE MODES → FIXES
+    ---------------------
+    - Vague goals: verb + object + deadline.
+    - Fake dilemmas: ensure BOTH options hurt; if one is clearly better, raise its cost.
+    - Setbacks that don’t change state: upgrade to door-closing consequences.
+
+    WARNINGS — DO NOT DEVIATE
+- Follow the Snowflake order. If a better idea appears later, revise the upstream artifact FIRST, then regenerate downstream artifacts.
+- Use plain, literal language in planning artifacts. No flowery prose, no metaphors. Save flourish for Step 10 drafting.
+- Fill every required field. If unknown, write BEST-GUESS and mark TODO. Do not leave blanks.
+- Never skip the MORAL PREMISE (Step 2) or the CONFLICT requirement (Steps 8–9). These are non-negotiable.
+
+
+    STANDARD REGENERATION PROTOCOL (ALWAYS THE SAME)
+1) Identify smallest upstream artifact that is insufficient or contradictory.
+2) Regenerate ONLY that artifact. Snapshot the prior version with a timestamped filename.
+3) Re-run the validator for that artifact. Fix until it passes.
+4) Propagate forward: regenerate all directly dependent artifacts in order.
+5) Record a one-sentence change log, e.g., "Moved D2 from train crash to courtroom ambush; adjusted POV in chs 19–22."
+
+
+    DONE WHEN
+    ---------
+    One valid triad per scene, linked to character goals and (when relevant) a Disaster anchor.

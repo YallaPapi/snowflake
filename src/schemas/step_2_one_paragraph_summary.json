@@ -1,0 +1,163 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Step 2: One Paragraph Summary Schema",
+  "description": "Schema for Snowflake Step 2 - One Paragraph Summary (Five Sentences) with Moral Premise",
+  "type": "object",
+  "required": [
+    "paragraph",
+    "sentences",
+    "moral_premise",
+    "disasters",
+    "metadata"
+  ],
+  "properties": {
+    "paragraph": {
+      "type": "string",
+      "description": "The complete five-sentence paragraph",
+      "minLength": 50,
+      "maxLength": 1000
+    },
+    "sentences": {
+      "type": "object",
+      "description": "Individual sentences mapped to structure",
+      "required": ["setup", "disaster_1", "disaster_2", "disaster_3", "resolution"],
+      "properties": {
+        "setup": {
+          "type": "string",
+          "description": "Sentence 1: Time/place + lead(s) + why goal matters NOW"
+        },
+        "disaster_1": {
+          "type": "string",
+          "description": "Sentence 2: End of Act I - event that FORCES commitment"
+        },
+        "disaster_2": {
+          "type": "string",
+          "description": "Sentence 3: End of Act IIa - drives FALSE to TRUE belief shift"
+        },
+        "disaster_3": {
+          "type": "string",
+          "description": "Sentence 4: End of Act IIb - FORCES commitment to ending"
+        },
+        "resolution": {
+          "type": "string",
+          "description": "Sentence 5: Act III showdown + immediate outcome"
+        }
+      }
+    },
+    "moral_premise": {
+      "type": "string",
+      "description": "People succeed when they [TRUE BELIEF], and they fail when they [FALSE BELIEF]",
+      "minLength": 20,
+      "maxLength": 200
+    },
+    "disasters": {
+      "type": "object",
+      "description": "Parsed disaster markers",
+      "required": ["d1_present", "d2_present", "d3_present"],
+      "properties": {
+        "d1_present": {
+          "type": "boolean",
+          "description": "Disaster 1 is clearly marked"
+        },
+        "d2_present": {
+          "type": "boolean",
+          "description": "Disaster 2 is clearly marked"
+        },
+        "d3_present": {
+          "type": "boolean",
+          "description": "Disaster 3 is clearly marked"
+        },
+        "d1_type": {
+          "type": "string",
+          "description": "Type of Disaster 1"
+        },
+        "d2_type": {
+          "type": "string",
+          "description": "Type of Disaster 2"
+        },
+        "d3_type": {
+          "type": "string",
+          "description": "Type of Disaster 3"
+        }
+      }
+    },
+    "sentence_count": {
+      "type": "integer",
+      "description": "Number of sentences in paragraph",
+      "minimum": 5,
+      "maximum": 5
+    },
+    "moral_pivot": {
+      "type": "object",
+      "description": "Moral premise pivot analysis",
+      "properties": {
+        "false_belief": {
+          "type": "string",
+          "description": "The false belief before D2"
+        },
+        "true_belief": {
+          "type": "string",
+          "description": "The true belief after D2"
+        },
+        "pivot_shown": {
+          "type": "boolean",
+          "description": "Whether the pivot is explicitly shown in sentence 3"
+        }
+      }
+    },
+    "causality_check": {
+      "type": "object",
+      "description": "Causality validation",
+      "properties": {
+        "has_coincidence": {
+          "type": "boolean",
+          "description": "Whether any coincidences exist"
+        },
+        "causal_chain": {
+          "type": "boolean",
+          "description": "Whether events form a causal chain"
+        }
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "required": ["project_id", "step", "version", "created_at", "hash_upstream"],
+      "properties": {
+        "project_id": {
+          "type": "string"
+        },
+        "step": {
+          "type": "integer",
+          "const": 2
+        },
+        "version": {
+          "type": "string",
+          "pattern": "^\\d+\\.\\d+\\.\\d+$"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "model_name": {
+          "type": "string"
+        },
+        "temperature": {
+          "type": "number"
+        },
+        "seed": {
+          "type": ["number", "null"]
+        },
+        "prompt_hash": {
+          "type": "string"
+        },
+        "validator_version": {
+          "type": "string"
+        },
+        "hash_upstream": {
+          "type": "string",
+          "description": "SHA256 hash of Step 1 artifact"
+        }
+      }
+    }
+  }
+}

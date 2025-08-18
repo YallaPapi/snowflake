@@ -1,0 +1,64 @@
+Snowflake Step 0 — FIRST THINGS FIRST (Pre-Step)
+================================================
+    PURPOSE
+    -------
+    Lock the STORY MARKET POSITION before any plotting. Name the Category/Genre, the Kind of Story, and the Audience-Delight reason.
+    This prevents later drift and sets the tone, tropes, and length expectations you must satisfy.
+
+    INPUTS YOU MUST COLLECT (LITERAL FIELDS)
+    ----------------------------------------
+    - Category/Genre: a bookstore shelf label readers recognize. Examples: "Romantic Suspense", "Epic Fantasy", "Domestic Thriller", "Cozy Mystery".
+    - Kind of Story: one sentence stating the central promise in trope language. Examples: "Enemies-to-lovers with espionage backdrop." / "Closed-room whodunit aboard a sleeper train."
+    - Audience Delight: one sentence listing 3–5 satisfiers (tropes, tones, endings) that this audience craves and this story will deliver.
+
+    OUTPUT ARTIFACT (STORE EXACTLY THESE FIELDS AS JSON OR YAML)
+    ------------------------------------------------------------
+    {
+      "category": "<market label>",
+      "story_kind": "<one sentence promise with trope signal>",
+      "audience_delight": "<one sentence naming concrete satisfiers>"
+    }
+
+    DO EXACTLY THIS (STEP-BY-STEP)
+    ------------------------------
+    1) Write Category as a market label people can find on a retailer. DO NOT invent a hybrid here.
+    2) Write Kind of Story in one sentence. Include at least one trope noun (e.g., "enemies-to-lovers", "mentor betrayal", "heist that goes wrong").
+    3) Write Audience Delight in one sentence. Use concrete satisfiers, not vibes. Example components: "slow-burn tension", "competence porn", "twist ending", "grumpy/sunshine dynamic", "closed-room puzzle".
+    4) Read all three aloud. Convert adjectives to nouns where possible. Keep the promise compact.
+    5) Freeze the artifact. If future steps collide with this, RETURN here, update, then regenerate downstream.
+
+    EXAMPLES (PARAPHRASED IN THE STYLE OF THE BOOK)
+    -----------------------------------------------
+    EX1 — Upmarket WF: Category: "Contemporary Women's Fiction" / Kind: "A perfectionist must finish the book that terrifies her." / Delight: "Relatable creative struggle, complicated friendships, cathartic career win."
+    EX2 — Thriller-Romance: Category: "Romantic Suspense" / Kind: "Enemies-to-lovers against an espionage conspiracy." / Delight: "Undercover reveals, forced proximity, betrayal twist, heroic sacrifice ending."
+
+    ACCEPTANCE CHECKLIST (ALL MUST PASS)
+    ------------------------------------
+    - Category is a REAL shelf label.
+    - Kind of Story is ONE sentence with a trope noun.
+    - Audience Delight lists CONCRETE satisfiers (3–5 items).
+
+    FAILURE MODES → FIXES
+    ---------------------
+    - Vague category ("Literary"): add a sales qualifier ("Upmarket Family Drama").
+    - Kind-of-story sneaks in clauses: split, keep only the promise clause.
+    - Audience-delight uses mood words only: replace with named payoffs (twist, reveal, puzzle, slow-burn, redemption arc).
+
+    WARNINGS — DO NOT DEVIATE
+- Follow the Snowflake order. If a better idea appears later, revise the upstream artifact FIRST, then regenerate downstream artifacts.
+- Use plain, literal language in planning artifacts. No flowery prose, no metaphors. Save flourish for Step 10 drafting.
+- Fill every required field. If unknown, write BEST-GUESS and mark TODO. Do not leave blanks.
+- Never skip the MORAL PREMISE (Step 2) or the CONFLICT requirement (Steps 8–9). These are non-negotiable.
+
+
+    STANDARD REGENERATION PROTOCOL (ALWAYS THE SAME)
+1) Identify smallest upstream artifact that is insufficient or contradictory.
+2) Regenerate ONLY that artifact. Snapshot the prior version with a timestamped filename.
+3) Re-run the validator for that artifact. Fix until it passes.
+4) Propagate forward: regenerate all directly dependent artifacts in order.
+5) Record a one-sentence change log, e.g., "Moved D2 from train crash to courtroom ambush; adjusted POV in chs 19–22."
+
+
+    DEFINITION OF DONE
+    ------------------
+    You have a 3-field artifact. No field is blank. It reads like a product promise, not a poem.

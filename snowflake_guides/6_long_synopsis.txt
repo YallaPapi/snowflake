@@ -1,0 +1,51 @@
+Snowflake Step 6 — LONG SYNOPSIS (~4–5 pages)
+=============================================
+    PURPOSE
+    -------
+    Expand each paragraph of the one-page synopsis into about a page while maintaining strict causality.
+    This becomes feedstock for the scene list.
+
+    OUTPUT ARTIFACT
+    ---------------
+    long_synopsis.md — five sections that mirror Step 4 paragraphs.
+
+    DO EXACTLY THIS
+    ---------------
+    1) Section 1 from Paragraph 1: opening sequence beats, inciting incident, and first concrete step toward the goal.
+    2) Section 2 from Paragraph 2: rising complications to a D1 that truly removes retreat (explicit “why no way back”).
+    3) Section 3 from Paragraph 3: pressures that culminate in D2; SHOW the belief pivot and a new tactic.
+    4) Section 4 from Paragraph 4: compress options until D3, the funnel to endgame.
+    5) Section 5 from Paragraph 5: showdown escalations, visible outcome, immediate aftermath.
+    6) Replace “and then” with “therefore/but” causality between beats.
+    7) Mark any new beat that contradicts earlier steps → pause and revise upstream before continuing.
+
+    ACCEPTANCE CHECKS
+    -----------------
+    - Five sections map 1:1 to Step 4.
+    - Each section is a CAUSAL chain, not vignettes.
+    - D1/D2/D3 are bigger, clearer, and are forcing functions.
+
+    FAILURE MODES → FIXES
+    ---------------------
+    - Coincidence solves a problem: replace with a character decision or antagonist competence.
+    - Late twist breaks D2 logic: foreshadow in sections 1–2 or move to sequel.
+    - Cast bloat: combine minor roles; keep POVs limited.
+
+    WARNINGS — DO NOT DEVIATE
+- Follow the Snowflake order. If a better idea appears later, revise the upstream artifact FIRST, then regenerate downstream artifacts.
+- Use plain, literal language in planning artifacts. No flowery prose, no metaphors. Save flourish for Step 10 drafting.
+- Fill every required field. If unknown, write BEST-GUESS and mark TODO. Do not leave blanks.
+- Never skip the MORAL PREMISE (Step 2) or the CONFLICT requirement (Steps 8–9). These are non-negotiable.
+
+
+    STANDARD REGENERATION PROTOCOL (ALWAYS THE SAME)
+1) Identify smallest upstream artifact that is insufficient or contradictory.
+2) Regenerate ONLY that artifact. Snapshot the prior version with a timestamped filename.
+3) Re-run the validator for that artifact. Fix until it passes.
+4) Propagate forward: regenerate all directly dependent artifacts in order.
+5) Record a one-sentence change log, e.g., "Moved D2 from train crash to courtroom ambush; adjusted POV in chs 19–22."
+
+
+    DONE WHEN
+    ---------
+    You have ~4–5 pages of inevitable escalation ready to slice into scenes.

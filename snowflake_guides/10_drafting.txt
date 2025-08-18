@@ -1,0 +1,59 @@
+Snowflake Step 10 — DRAFT THE NOVEL (Scene-by-Scene)
+====================================================
+    PURPOSE
+    -------
+    Write the manuscript in order using ONLY the frozen scene list and scene briefs. If a better idea appears, PAUSE and revise upstream artifacts, then return.
+
+    OUTPUT ARTIFACTS
+    ----------------
+    - manuscript.md (master)
+    - manuscript.docx / manuscript.epub (exports)
+
+    DO EXACTLY THIS (DRAFTING RULES)
+    --------------------------------
+    1) Open the next scene row and its brief.
+    2) Draft to the word target ±20% unless pacing demands otherwise.
+    3) Keep strict POV discipline. Filter all description through the POV’s perceptions and vocabulary.
+    4) Put the triad on the page: Goal/Conflict/Setback OR Reaction/Dilemma/Decision.
+    5) End with the outbound hook from the brief (question, reversal, revelation).
+    6) Move to the next scene. Do not line-edit until the act is complete unless contradictions break the plan.
+    7) After each act, confirm the three-disaster spine is intact and the moral pivot after D2 is visible in choices.
+
+    STYLE CONSTRAINTS
+    -----------------
+    - Concrete verbs, specific nouns. Tie sensory detail to POV.
+    - Bury exposition inside action; no disembodied info-dumps.
+    - Let antagonists act on-page; avoid off-screen convenience.
+
+    ACCEPTANCE CHECKS
+    -----------------
+    - Every planned scene is drafted; no orphan gaps.
+    - Triads are dramatized (not summarized).
+    - The disaster spine is intact and visible.
+    - The moral premise evolution is evident post-D2.
+    - Word count within project target ±5%.
+
+    FAILURE MODES → FIXES
+    ---------------------
+    - Mushy scene: make the Goal explicit by paragraph 1–2.
+    - Manufactured conflict: raise antagonist competence or pull pressure from prior setup.
+    - Invisible moral shift: add a visible choice where the new belief costs something.
+
+    WARNINGS — DO NOT DEVIATE
+- Follow the Snowflake order. If a better idea appears later, revise the upstream artifact FIRST, then regenerate downstream artifacts.
+- Use plain, literal language in planning artifacts. No flowery prose, no metaphors. Save flourish for Step 10 drafting.
+- Fill every required field. If unknown, write BEST-GUESS and mark TODO. Do not leave blanks.
+- Never skip the MORAL PREMISE (Step 2) or the CONFLICT requirement (Steps 8–9). These are non-negotiable.
+
+
+    STANDARD REGENERATION PROTOCOL (ALWAYS THE SAME)
+1) Identify smallest upstream artifact that is insufficient or contradictory.
+2) Regenerate ONLY that artifact. Snapshot the prior version with a timestamped filename.
+3) Re-run the validator for that artifact. Fix until it passes.
+4) Propagate forward: regenerate all directly dependent artifacts in order.
+5) Record a one-sentence change log, e.g., "Moved D2 from train crash to courtroom ambush; adjusted POV in chs 19–22."
+
+
+    DONE WHEN
+    ---------
+    A complete, coherent draft exists, assembled in order from the scene plan, and ready for the editing pass.

@@ -1,0 +1,65 @@
+Snowflake Step 5 — CHARACTER SYNOPSES (½–1 page each)
+=====================================================
+    PURPOSE
+    -------
+    Write ½–1 page per principal covering backstory, role in plot, and psychology so their choices feel inevitable and readable from inside their POV.
+    Emphasize the antagonist’s interiority.
+
+    OUTPUT ARTIFACT
+    ---------------
+    character_synopses.json — list of objects with: id, backstory, plot_role, psychology, disaster_links[], voice_notes[]
+
+    DO EXACTLY THIS
+    ---------------
+    1) BACKSTORY: write only the causal history that drives present behavior (wounds, pride, crucial relationships).
+    2) PLOT ROLE: explain how this character intersects the protagonist’s goal and the three disasters (shove/pull moments).
+    3) PSYCHOLOGY: state current belief, fear, desire; predict their default reaction under stress.
+    4) VILLAIN (special): write empathetically, as if they are the hero of their own story with a valid logic chain.
+    5) VOICE NOTES: capture diction (formal/casual), rhythm (clipped/rambling), and a habitual body-language tell.
+    6) LINK explicitly to the scene pressure that points at D1/D2/D3.
+
+    LITERAL TEMPLATE
+    ----------------
+    ```
+    id: <char_id>
+    backstory: <½ page>
+    plot_role: <½ page>
+    psychology:
+      belief_false: <...>
+      belief_true: <...>
+      fear: <...>
+      desire: <...>
+    disaster_links: [ "pushes D1 via <event>", "complicates D2 by <event>", "forces D3 by <event>" ]
+    voice_notes: [ "clipped sentences", "never swears", "stares at the floor when lying" ]
+    ```
+
+    ACCEPTANCE CHECKS
+    -----------------
+    - Each principal has all sections filled.
+    - Antagonist has coherent worldview; not “evil for evil’s sake.”
+    - At least one explicit disaster link per principal.
+
+    FAILURE MODES → FIXES
+    ---------------------
+    - Backstory dump: cut everything that doesn’t alter present choices.
+    - Vague psych: translate into behavior the reader will see.
+    - No disaster link: add a concrete shove/pull beat.
+
+    WARNINGS — DO NOT DEVIATE
+- Follow the Snowflake order. If a better idea appears later, revise the upstream artifact FIRST, then regenerate downstream artifacts.
+- Use plain, literal language in planning artifacts. No flowery prose, no metaphors. Save flourish for Step 10 drafting.
+- Fill every required field. If unknown, write BEST-GUESS and mark TODO. Do not leave blanks.
+- Never skip the MORAL PREMISE (Step 2) or the CONFLICT requirement (Steps 8–9). These are non-negotiable.
+
+
+    STANDARD REGENERATION PROTOCOL (ALWAYS THE SAME)
+1) Identify smallest upstream artifact that is insufficient or contradictory.
+2) Regenerate ONLY that artifact. Snapshot the prior version with a timestamped filename.
+3) Re-run the validator for that artifact. Fix until it passes.
+4) Propagate forward: regenerate all directly dependent artifacts in order.
+5) Record a one-sentence change log, e.g., "Moved D2 from train crash to courtroom ambush; adjusted POV in chs 19–22."
+
+
+    DONE WHEN
+    ---------
+    Every principal has a ½–1 page synopsis with explicit links to the spine and usable voice notes.
