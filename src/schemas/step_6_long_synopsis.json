@@ -1,0 +1,26 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Step 6: Long Synopsis",
+  "type": "object",
+  "required": ["long_synopsis", "metadata"],
+  "additionalProperties": false,
+  "properties": {
+    "long_synopsis": {"type": "string", "minLength": 1000},
+    "metadata": {
+      "type": "object",
+      "required": ["project_id", "step", "version", "created_at", "hash_upstream"],
+      "properties": {
+        "project_id": {"type": "string"},
+        "step": {"type": "integer", "const": 6},
+        "version": {"type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$"},
+        "created_at": {"type": "string", "format": "date-time"},
+        "model_name": {"type": "string"},
+        "temperature": {"type": "number"},
+        "seed": {"type": ["number", "null"]},
+        "prompt_hash": {"type": "string"},
+        "validator_version": {"type": "string"},
+        "hash_upstream": {"type": "string", "description": "SHA256 hash of Step 4 artifact"}
+      }
+    }
+  }
+}

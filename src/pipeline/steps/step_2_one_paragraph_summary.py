@@ -11,6 +11,7 @@ from typing import Dict, Any, Optional, Tuple, List
 
 from src.pipeline.validators.step_2_validator import Step2Validator
 from src.pipeline.prompts.step_2_prompt import Step2Prompt
+from src.ai.generator import AIGenerator
 
 class Step2OneParagraphSummary:
     """
@@ -30,6 +31,7 @@ class Step2OneParagraphSummary:
         
         self.validator = Step2Validator()
         self.prompt_generator = Step2Prompt()
+        self.generator = AIGenerator()
         
     def execute(self,
                 step_0_artifact: Dict[str, Any],
@@ -38,72 +40,36 @@ class Step2OneParagraphSummary:
                 model_config: Optional[Dict[str, Any]] = None) -> Tuple[bool, Dict[str, Any], str]:
         """
         Execute Step 2: Generate One Paragraph Summary
-        
-        Args:
-            step_0_artifact: Validated Step 0 artifact (First Things First)
-            step_1_artifact: Validated Step 1 artifact (Logline)
-            project_id: Project UUID
-            model_config: AI model configuration
-            
-        Returns:
-            Tuple of (success, artifact, message)
         """
-        # Default model config
         if not model_config:
             model_config = {
                 "model_name": "claude-3-5-sonnet-20241022",
-                "temperature": 0.3,  # Slightly higher for creative disasters
+                "temperature": 0.3,
                 "seed": 42
             }
         
-        # Calculate upstream hash (combines Step 0 and Step 1)
-        upstream_content = json.dumps({
-            "step_0": step_0_artifact,
-            "step_1": step_1_artifact
-        }, sort_keys=True)
+        # Upstream hash
+        upstream_content = json.dumps({"step_0": step_0_artifact, "step_1": step_1_artifact}, sort_keys=True)
         upstream_hash = hashlib.sha256(upstream_content.encode()).hexdigest()
         
-        # First brainstorm disasters
-        brainstorm_prompt = self.prompt_generator.generate_disaster_brainstorm(
-            step_0_artifact, step_1_artifact
-        )
+        # Brainstorm prompt (unused directly for now)
+        _ = self.prompt_generator.generate_disaster_brainstorm(step_0_artifact, step_1_artifact)
         
-        # Here we would call AI for brainstorming
-        # disaster_options = self.call_ai_model(brainstorm_prompt, model_config)
-        
-        # Generate main prompt
+        # Main prompt
         prompt_data = self.prompt_generator.generate_prompt(step_0_artifact, step_1_artifact)
         
-        # Here we would call the AI model - for now, return template
-        # response = self.call_ai_model(prompt_data, model_config)
+        # Generate artifact using AI with validation loop
+        try:
+            content = self.generator.generate_with_validation(prompt_data, self.validator, model_config)
+        except Exception as e:
+            return False, {}, f"AI generation failed: {e}"
         
-        # For demonstration, create sample paragraph and moral premise
-        sample_paragraph = (
-            "In modern-day Seattle, Sarah, a detective, must prove her suspect's innocence "
-            "before the mob silences him permanently. "
-            "When her own partner is revealed as the mole, she is forced to go rogue or "
-            "watch an innocent man die. "
-            "After discovering the conspiracy reaches the mayor's office, she realizes that "
-            "playing by the rules will fail and must embrace deception to expose the truth. "
-            "When the mob kidnaps her daughter as leverage, both Sarah and the crime boss "
-            "must commit to a final confrontation that will destroy one of them. "
-            "In the ultimate showdown at the docks, Sarah sacrifices her career but saves "
-            "both her daughter and the innocent suspect."
-        )
-        
-        sample_moral = (
-            "People succeed when they sacrifice personal gain for truth, "
-            "and they fail when they protect themselves at the cost of justice."
-        )
-        
-        # Create artifact
+        # Ensure required fields
         artifact = {
-            "paragraph": sample_paragraph,
-            "moral_premise": sample_moral,
-            "sentence_count": 5  # Will be updated by validator
+            "paragraph": content.get("paragraph", ""),
+            "moral_premise": content.get("moral_premise", "")
         }
         
-        # Add metadata
         artifact = self.add_metadata(
             artifact,
             project_id,
@@ -112,29 +78,18 @@ class Step2OneParagraphSummary:
             upstream_hash
         )
         
-        # Validate artifact
+        # Validate
         is_valid, errors = self.validator.validate(artifact)
-        
         if not is_valid:
-            # Try to fix with revision
-            artifact = self.attempt_fixes(
-                artifact, errors, step_0_artifact, step_1_artifact, model_config
-            )
-            
-            # Re-validate after fixes
+            # Attempt revisions via prompt
+            artifact = self.attempt_fixes(artifact, errors, step_0_artifact, step_1_artifact, model_config)
             is_valid, errors = self.validator.validate(artifact)
-            
             if not is_valid:
-                # Get fix suggestions
                 suggestions = self.validator.fix_suggestions(errors)
-                error_message = "VALIDATION FAILED:\n"
-                for error, suggestion in zip(errors, suggestions):
-                    error_message += f"  ERROR: {error}\n  FIX: {suggestion}\n"
+                error_message = "VALIDATION FAILED:\n" + "\n".join(f"  ERROR: {e}\n  FIX: {s}" for e, s in zip(errors, suggestions))
                 return False, artifact, error_message
         
-        # Save artifacts (both paragraph and moral premise)
         save_path = self.save_artifact(artifact, project_id)
-        
         return True, artifact, f"Step 2 artifacts saved to {save_path}"
     
     def attempt_fixes(self,

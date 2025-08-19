@@ -1,0 +1,17 @@
+{
+  "here_is_the_step_0_market_position_with_exactly_3-5_concrete_satisfiers": "",
+  "category": "Romantic Suspense",
+  "story_kind": "Forbidden-romance whodunit where investigator falls for prime suspect",
+  "audience_delight": "Readers will enjoy the slow-burn attraction, mounting evidence twists, forced-proximity tension, redemption arc, and final vindication reveal",
+  "metadata": {
+    "project_id": "smoketestnovel_20250819_002131",
+    "step": 0,
+    "version": "1.0.0",
+    "created_at": "2025-08-19T00:21:39.437024",
+    "model_name": "claude-3-5-sonnet-20241022",
+    "temperature": 0.3,
+    "seed": 42,
+    "prompt_hash": "20bb82118fd1605b73f085d7a5c0dd6f3821ed180e99328920002cb332d7cf52",
+    "validator_version": "1.0.0"
+  }
+}

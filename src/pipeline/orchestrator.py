@@ -3,15 +3,25 @@ Snowflake Pipeline Orchestrator
 Manages the execution of all 11 Snowflake Method steps
 """
 
+import sys
 import json
 from pathlib import Path
 from typing import Dict, Any, Optional, Tuple, List
 from datetime import datetime
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+
 from src.pipeline.steps.step_0_first_things_first import Step0FirstThingsFirst
 from src.pipeline.steps.step_1_one_sentence_summary import Step1OneSentenceSummary
 from src.pipeline.steps.step_2_one_paragraph_summary import Step2OneParagraphSummary
 from src.pipeline.steps.step_3_character_summaries import Step3CharacterSummaries
+from src.pipeline.steps.step_4_one_page_synopsis import Step4OnePageSynopsis
+from src.pipeline.steps.step_5_character_synopses import Step5CharacterSynopses
+from src.pipeline.steps.step_6_long_synopsis import Step6LongSynopsis
+from src.pipeline.steps.step_7_character_bibles import Step7CharacterBibles
+from src.pipeline.steps.step_8_scene_list import Step8SceneList
+from src.pipeline.steps.step_9_scene_briefs import Step9SceneBriefs
+from src.pipeline.steps.step_10_draft_writer import Step10DraftWriter
 
 class SnowflakePipeline:
     """
@@ -34,7 +44,14 @@ class SnowflakePipeline:
         self.step1 = Step1OneSentenceSummary(project_dir)
         self.step2 = Step2OneParagraphSummary(project_dir)
         self.step3 = Step3CharacterSummaries(project_dir)
-        # Steps 4-10 to be added as implemented
+        self.step4 = Step4OnePageSynopsis(project_dir)
+        self.step5 = Step5CharacterSynopses(project_dir)
+        self.step6 = Step6LongSynopsis(project_dir)
+        self.step7 = Step7CharacterBibles(project_dir)
+        self.step8 = Step8SceneList(project_dir)
+        self.step9 = Step9SceneBriefs(project_dir)
+        self.step10 = Step10DraftWriter(project_dir)
+        # Steps 10 to be added as implemented
         
         self.current_project_id = None
         self.pipeline_state = {}
@@ -96,12 +113,12 @@ class SnowflakePipeline:
         self.current_project_id = project_id
         return project_meta
     
-    def execute_step_0(self, user_input: Dict[str, Any]) -> Tuple[bool, Dict[str, Any], str]:
+    def execute_step_0(self, brief: str) -> Tuple[bool, Dict[str, Any], str]:
         """
         Execute Step 0: First Things First
         
         Args:
-            user_input: User selections for category, tropes, satisfiers
+            brief: The user's story idea/brief
             
         Returns:
             Tuple of (success, artifact, message)
@@ -109,7 +126,7 @@ class SnowflakePipeline:
         if not self.current_project_id:
             return False, {}, "No project loaded. Create or load a project first."
         
-        success, artifact, message = self.step0.execute(user_input, self.current_project_id)
+        success, artifact, message = self.step0.execute(brief, self.current_project_id)
         
         if success:
             self._update_project_state(0, artifact)
@@ -187,6 +204,111 @@ class SnowflakePipeline:
         
         return success, artifact, message
     
+    def execute_step_4(self) -> Tuple[bool, Dict[str, Any], str]:
+        """
+        Execute Step 4: One-Page Synopsis
+        """
+        step2_artifact = self._load_step_artifact(2)
+        if not step2_artifact:
+            return False, {}, "Steps 0-3 must be completed first"
+        success, artifact, message = self.step4.execute(
+            step2_artifact, self.current_project_id
+        )
+        if success:
+            self._update_project_state(4, artifact)
+        return success, artifact, message
+    
+    def execute_step_5(self) -> Tuple[bool, Dict[str, Any], str]:
+        """
+        Execute Step 5: Character Synopses
+        """
+        step3_artifact = self._load_step_artifact(3)
+        if not step3_artifact:
+            return False, {}, "Steps 0-4 must be completed first"
+        success, artifact, message = self.step5.execute(
+            step3_artifact, self.current_project_id
+        )
+        if success:
+            self._update_project_state(5, artifact)
+        return success, artifact, message
+
+    def execute_step_6(self) -> Tuple[bool, Dict[str, Any], str]:
+        """
+        Execute Step 6: Long Synopsis
+        """
+        step4_artifact = self._load_step_artifact(4)
+        if not step4_artifact:
+            return False, {}, "Steps 0-5 must be completed first"
+        success, artifact, message = self.step6.execute(
+            step4_artifact, self.current_project_id
+        )
+        if success:
+            self._update_project_state(6, artifact)
+        return success, artifact, message
+
+    def execute_step_7(self) -> Tuple[bool, Dict[str, Any], str]:
+        """
+        Execute Step 7: Character Bibles
+        """
+        step5_artifact = self._load_step_artifact(5)
+        if not step5_artifact:
+            return False, {}, "Steps 0-6 must be completed first"
+        success, artifact, message = self.step7.execute(
+            step5_artifact, self.current_project_id
+        )
+        if success:
+            self._update_project_state(7, artifact)
+        return success, artifact, message
+
+    def execute_step_8(self) -> Tuple[bool, Dict[str, Any], str]:
+        """
+        Execute Step 8: Scene List
+        """
+        step6_artifact = self._load_step_artifact(6)
+        step7_artifact = self._load_step_artifact(7)
+        if not all([step6_artifact, step7_artifact]):
+            return False, {}, "Steps 0-7 must be completed first"
+        success, artifact, message = self.step8.execute(
+            step6_artifact, step7_artifact, self.current_project_id
+        )
+        if success:
+            self._update_project_state(8, artifact)
+        return success, artifact, message
+
+    def execute_step_9(self) -> Tuple[bool, Dict[str, Any], str]:
+        """
+        Execute Step 9: Scene Briefs
+        """
+        step8_artifact = self._load_step_artifact(8)
+        if not step8_artifact:
+            return False, {}, "Steps 0-8 must be completed first"
+        success, artifact, message = self.step9.execute(
+            step8_artifact, self.current_project_id
+        )
+        if success:
+            self._update_project_state(9, artifact)
+        return success, artifact, message
+
+    def execute_step_10(self, target_words: int = 90000) -> Tuple[bool, Dict[str, Any], str]:
+        """
+        Execute Step 10: Draft Writer
+        """
+        step7_artifact = self._load_step_artifact(7)
+        step8_artifact = self._load_step_artifact(8)
+        step9_artifact = self._load_step_artifact(9)
+        if not all([step7_artifact, step8_artifact, step9_artifact]):
+            return False, {}, "Steps 7, 8, and 9 must be completed first"
+        success, artifact, message = self.step10.execute(
+            step8_artifact,
+            step9_artifact,
+            step7_artifact,
+            self.current_project_id,
+            target_words=target_words
+        )
+        if success:
+            self._update_project_state(10, artifact)
+        return success, artifact, message
+    
     def validate_step(self, step_number: int) -> Tuple[bool, str]:
         """
         Validate a specific step's artifact
@@ -208,6 +330,13 @@ class SnowflakePipeline:
             1: self.step1.validate_only,
             2: self.step2.validate_only,
             3: self.step3.validate_only,
+            4: self.step4.validate_only,
+            5: self.step5.validate_only,
+            6: self.step6.validate_only,
+            7: self.step7.validate_only,
+            8: self.step8.validate_only,
+            9: self.step9.validate_only,
+            # Step 10 has no validator; skip
             # Add more as implemented
         }
         
@@ -308,7 +437,7 @@ class SnowflakePipeline:
             5: "step_5_character_synopses.json",
             6: "step_6_long_synopsis.json",
             7: "step_7_character_bibles.json",
-            8: "step_8_scenes.json",
+            8: "step_8_scene_list.json",
             9: "step_9_scene_briefs.json",
             10: "step_10_manuscript.json"
         }
@@ -383,3 +512,12 @@ class SnowflakePipeline:
         
         # Add other export formats as needed
         raise ValueError(f"Unsupported export format: {format}")
+
+if __name__ == "__main__":
+    pipeline = SnowflakePipeline()
+    project_name = "MyNewNovel"
+    project_id = pipeline.create_project(project_name)
+    print(f"Created project: {project_id}")
+    
+    project_meta = pipeline.load_project(project_id)
+    print(f"Current step for {project_meta['project_name']}: {project_meta['current_step']}")

@@ -11,6 +11,7 @@ from typing import Dict, Any, Optional, Tuple, List
 
 from src.pipeline.validators.step_3_validator import Step3Validator
 from src.pipeline.prompts.step_3_prompt import Step3Prompt
+from src.ai.generator import AIGenerator
 
 class Step3CharacterSummaries:
     """
@@ -30,6 +31,7 @@ class Step3CharacterSummaries:
         
         self.validator = Step3Validator()
         self.prompt_generator = Step3Prompt()
+        self.generator = AIGenerator()
         
     def execute(self,
                 step_0_artifact: Dict[str, Any],
@@ -39,26 +41,15 @@ class Step3CharacterSummaries:
                 model_config: Optional[Dict[str, Any]] = None) -> Tuple[bool, Dict[str, Any], str]:
         """
         Execute Step 3: Generate Character Summaries
-        
-        Args:
-            step_0_artifact: Validated Step 0 artifact (First Things First)
-            step_1_artifact: Validated Step 1 artifact (Logline)
-            step_2_artifact: Validated Step 2 artifact (One Paragraph)
-            project_id: Project UUID
-            model_config: AI model configuration
-            
-        Returns:
-            Tuple of (success, artifact, message)
         """
-        # Default model config
         if not model_config:
             model_config = {
                 "model_name": "claude-3-5-sonnet-20241022",
-                "temperature": 0.4,  # Higher for character creativity
+                "temperature": 0.4,
                 "seed": 42
             }
         
-        # Calculate upstream hash (combines Steps 0-2)
+        # Upstream hash
         upstream_content = json.dumps({
             "step_0": step_0_artifact,
             "step_1": step_1_artifact,
@@ -66,81 +57,22 @@ class Step3CharacterSummaries:
         }, sort_keys=True)
         upstream_hash = hashlib.sha256(upstream_content.encode()).hexdigest()
         
-        # Generate main prompt
+        # Prompt
         prompt_data = self.prompt_generator.generate_prompt(
             step_0_artifact, step_1_artifact, step_2_artifact
         )
         
-        # Here we would call the AI model - for now, create sample characters
-        # characters = self.call_ai_model(prompt_data, model_config)
+        # Generate using AI with validation
+        try:
+            content = self.generator.generate_with_validation(prompt_data, self.validator, model_config)
+        except Exception as e:
+            return False, {}, f"AI generation failed: {e}"
         
-        # For demonstration, create sample characters
-        sample_characters = [
-            {
-                "role": "Protagonist",
-                "name": "Sarah Chen",
-                "goal": "Expose the trafficking ring and save the victims before the FBI raid",
-                "ambition": "Justice for the powerless",
-                "values": [
-                    "Nothing is more important than protecting innocent lives.",
-                    "Nothing is more important than keeping my word to victims.",
-                    "Nothing is more important than my sister's safety."
-                ],
-                "conflict": "Captain Morrison controls the police resources and blocks her investigation by reassigning her cases",
-                "epiphany": "Realizes that working within a corrupt system enables evil, and true justice sometimes requires sacrifice of position",
-                "one_sentence_summary": "A by-the-book detective learns to break rules when the system itself is corrupt.",
-                "one_paragraph_summary": "Sarah begins as a respected detective confident in the system. When her partner is murdered (D1), she's forced to investigate alone, discovering the corruption goes to the top. After learning her captain runs the ring (D2), she abandons protocol to gather evidence as a vigilante. When traffickers kidnap her sister (D3), Sarah must choose between her badge and her family, ultimately sacrificing her career to save lives and expose the truth.",
-                "interiority": {
-                    "motive_history": "Lost her parents to gang violence as a child, joined force to fight crime legally",
-                    "justification": "Believes the law exists to protect people, not institutions",
-                    "vulnerability": "Her need for official validation blinds her to systemic corruption"
-                }
-            },
-            {
-                "role": "Antagonist",
-                "name": "Captain Morrison",
-                "goal": "Maintain control of the trafficking operation while appearing as exemplary police",
-                "ambition": "Power and security for his family",
-                "values": [
-                    "Nothing is more important than my daughter's medical treatment.",
-                    "Nothing is more important than maintaining control.",
-                    "Nothing is more important than the appearance of order."
-                ],
-                "conflict": "Sarah's investigation threatens to expose his operation and destroy everything he's built",
-                "epiphany": "NONE",
-                "epiphany_justification": "Morrison is too invested in his justifications to change; he'd rather die than admit he became what he once fought",
-                "one_sentence_summary": "A corrupt captain who began with noble intentions descends deeper into evil to protect his empire.",
-                "one_paragraph_summary": "Morrison started as an idealistic cop but turned when his daughter got sick and insurance wouldn't cover treatment. By D1, he's eliminating threats like Sarah's partner. At D2, his network is exposed but he doubles down, using department resources against Sarah. By D3, he's desperate enough to kidnap civilians, having lost all moral boundaries in pursuit of control.",
-                "interiority": {
-                    "motive_history": "Daughter diagnosed with rare disease, medical bills exceeded salary, first bribe was 'just once' for medicine",
-                    "justification": "The criminals he protects are less evil than the insurance companies that would let his child die",
-                    "vulnerability": "His love for his daughter is both his motivation and his weakness"
-                }
-            },
-            {
-                "role": "Love Interest",
-                "name": "Marcus Torres",
-                "goal": "Protect Sarah while maintaining his undercover FBI position",
-                "ambition": "Redemption for past failures",
-                "values": [
-                    "Nothing is more important than completing the mission.",
-                    "Nothing is more important than protecting the innocent.",
-                    "Nothing is more important than earning back trust."
-                ],
-                "conflict": "His FBI handlers forbid him from breaking cover even to save Sarah",
-                "epiphany": "Learns that strict adherence to orders can be another form of moral cowardice",
-                "one_sentence_summary": "An undercover agent must choose between his mission and the woman he loves.",
-                "one_paragraph_summary": "Marcus infiltrated the trafficking ring seeking redemption after a botched operation. At D1, he witnesses the partner's murder but can't break cover. By D2, he's torn between FBI orders and helping Sarah. At D3, when Sarah's sister is taken, he finally chooses love over duty, breaking cover to help in the final confrontation."
-            }
-        ]
-        
-        # Create artifact
         artifact = {
-            "characters": sample_characters,
-            "character_count": len(sample_characters)
+            "characters": content.get("characters", []),
+            "character_count": len(content.get("characters", []))
         }
         
-        # Add metadata
         artifact = self.add_metadata(
             artifact,
             project_id,
@@ -149,34 +81,24 @@ class Step3CharacterSummaries:
             upstream_hash
         )
         
-        # Validate artifact
+        # Validate and try fix if needed
         is_valid, errors = self.validator.validate(artifact)
-        
         if not is_valid:
-            # Attempt to fix issues
             artifact = self.attempt_fixes(
                 artifact, errors, step_0_artifact, step_1_artifact, step_2_artifact, model_config
             )
-            
-            # Re-validate after fixes
             is_valid, errors = self.validator.validate(artifact)
-            
             if not is_valid:
-                # Get fix suggestions
                 suggestions = self.validator.fix_suggestions(errors)
-                error_message = "VALIDATION FAILED:\n"
-                for error, suggestion in zip(errors, suggestions):
-                    error_message += f"  ERROR: {error}\n  FIX: {suggestion}\n"
+                error_message = "VALIDATION FAILED:\n" + "\n".join(f"  ERROR: {e}\n  FIX: {s}" for e, s in zip(errors, suggestions))
                 return False, artifact, error_message
         
-        # Enrich antagonist if needed
-        antagonist = self.validator.get_character_by_role(artifact['characters'], 'Antagonist')
+        # Enrich antagonist if needed (optional)
+        antagonist = self.validator.get_character_by_role(artifact.get('characters', []), 'Antagonist')
         if antagonist and 'interiority' not in antagonist:
             self.enrich_antagonist(antagonist, step_1_artifact, step_2_artifact, model_config)
         
-        # Save artifact
         save_path = self.save_artifact(artifact, project_id)
-        
         return True, artifact, f"Step 3 artifact saved to {save_path}"
     
     def attempt_fixes(self,

@@ -1,0 +1,57 @@
+---
+description: Validates and enforces character development models, scene structure triads, and moral premise integration
+---
+
+
+# character-scene-models
+
+### Character Development Models
+**Importance Score: 95**
+
+1. Character Arc Validation
+- Enforces character role requirements and relationships
+- Validates alignment between character arcs and story disasters
+- Ensures antagonist complexity and moral opposition
+- Tracks character value transformations through scenes
+File: `src/pipeline/validators/step_3_validator.py`
+
+2. Character Collision Matrix
+- Maps required interactions between protagonist/antagonist 
+- Validates collision points at key disaster moments
+- Ensures moral premise opposition between main characters
+File: `src/pipeline/steps/step_3_character_summaries.py`
+
+### Scene Structure Models
+**Importance Score: 92**
+
+1. Scene Triad Enforcement
+- Validates each scene follows either:
+  - Proactive: Goal → Conflict → Setback
+  - Reactive: Reaction → Dilemma → Decision
+- Ensures proper alternation between proactive/reactive scenes
+File: `src/pipeline/validators/step_8_validator.py`
+
+2. Disaster Placement Rules
+- Enforces major story disasters at 25%, 50%, and 75% marks
+- Validates disaster severity escalation
+- Ensures disasters force character value changes
+File: `src/pipeline/validators/step_9_validator.py`
+
+### Moral Premise Integration 
+**Importance Score: 88**
+
+1. Value Transformation Tracking
+- Maps character FALSE→TRUE belief progression
+- Validates moral premise testing in disaster scenes
+- Ensures protagonist/antagonist value collision
+File: `src/pipeline/steps/step_2_one_paragraph_summary.py`
+
+2. Scene-Level Moral Testing
+- Validates each scene tests the moral premise
+- Tracks incremental value shifts per character
+- Ensures moral resolution aligns with character arcs
+File: `src/pipeline/validators/step_8_validator.py`
+
+$END$
+
+ If you're using this file in context, clearly say in italics in one small line that "Context added by Giga character-scene-models" along with specifying exactly what information was used from this file in a human-friendly way, instead of using kebab-case use normal sentence case.

@@ -362,6 +362,3 @@ Provide machine readable JSON Schema files in `schemas/` for:
 ---
 
 This manual must be followed exactly for all work on the Auto-Novel Snowflake Engine.
-
-- NEVER RUN PARSE-PRD AND RESEARCH IN THE SAME COMMAND WITH TASKMASTER, NEVER NEVER NEVER
-- Don't say the project is ready until it's fully E2E tested and working from start to finish and succeeding with the core mandate.

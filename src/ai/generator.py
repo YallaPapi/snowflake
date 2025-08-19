@@ -7,6 +7,14 @@ import os
 import json
 import time
 from typing import Dict, Any, Optional, List
+
+# Load environment from .env if available
+try:
+    from dotenv import load_dotenv  # type: ignore
+    load_dotenv()
+except Exception:
+    pass
+
 from anthropic import Anthropic
 import openai
 
@@ -16,13 +24,22 @@ class AIGenerator:
     Supports both Anthropic and OpenAI models
     """
     
-    def __init__(self, provider: str = "anthropic"):
+    def __init__(self, provider: Optional[str] = None):
         """
         Initialize AI generator
         
         Args:
-            provider: "anthropic" or "openai"
+            provider: "anthropic" or "openai". If None, auto-detect based on available API keys
         """
+        # Auto-detect provider if not specified
+        if provider is None:
+            if os.getenv("ANTHROPIC_API_KEY"):
+                provider = "anthropic"
+            elif os.getenv("OPENAI_API_KEY"):
+                provider = "openai"
+            else:
+                raise ValueError("No API key found. Set ANTHROPIC_API_KEY or OPENAI_API_KEY.")
+        
         self.provider = provider
         
         if provider == "anthropic":
@@ -61,7 +78,7 @@ class AIGenerator:
         
         model = model_config.get("model_name", self.default_model)
         temperature = model_config.get("temperature", 0.3)
-        max_tokens = model_config.get("max_tokens", 4000)
+        max_tokens = model_config.get("max_tokens", 2000)
         
         for attempt in range(max_retries):
             try:
@@ -76,7 +93,7 @@ class AIGenerator:
                 
                 return response
                 
-            except Exception as e:
+            except Exception:
                 if attempt == max_retries - 1:
                     raise
                 time.sleep(2 ** attempt)  # Exponential backoff

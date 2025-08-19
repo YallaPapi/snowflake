@@ -12,6 +12,7 @@ from typing import Dict, Any, Optional, Tuple
 
 from src.pipeline.validators.step_0_validator import Step0Validator
 from src.pipeline.prompts.step_0_prompt import Step0Prompt
+from src.ai.generator import AIGenerator
 
 class Step0FirstThingsFirst:
     """
@@ -31,6 +32,7 @@ class Step0FirstThingsFirst:
         
         self.validator = Step0Validator()
         self.prompt_generator = Step0Prompt()
+        self.generator = AIGenerator()
         
     def execute(self, 
                 brief: str,
@@ -38,14 +40,6 @@ class Step0FirstThingsFirst:
                 model_config: Optional[Dict[str, Any]] = None) -> Tuple[bool, Dict[str, Any], str]:
         """
         Execute Step 0: Generate First Things First artifact
-        
-        Args:
-            brief: The user's story idea/brief
-            project_id: Optional project UUID (will generate if not provided)
-            model_config: AI model configuration (name, temperature, seed)
-            
-        Returns:
-            Tuple of (success, artifact, message)
         """
         # Generate project ID if not provided
         if not project_id:
@@ -62,16 +56,11 @@ class Step0FirstThingsFirst:
         # Generate prompt
         prompt_data = self.prompt_generator.generate_prompt(brief)
         
-        # Here we would call the AI model - for now, return template
-        # In production, this would be:
-        # artifact_content = self.call_ai_model(prompt_data, model_config)
-        
-        # For demonstration, create a sample artifact
-        artifact_content = {
-            "category": "TODO: Generate via AI",
-            "story_kind": "TODO: Generate via AI",
-            "audience_delight": "TODO: Generate via AI"
-        }
+        # Call AI generator with validation
+        try:
+            artifact_content = self.generator.generate_with_validation(prompt_data, self.validator, model_config)
+        except Exception as e:
+            return False, {}, f"AI generation failed: {e}"
         
         # Add metadata
         artifact = self.add_metadata(
@@ -81,7 +70,7 @@ class Step0FirstThingsFirst:
             model_config
         )
         
-        # Validate artifact
+        # Validate artifact (final pass)
         is_valid, errors = self.validator.validate(artifact)
         
         if not is_valid:

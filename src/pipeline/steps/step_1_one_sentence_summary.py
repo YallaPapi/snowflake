@@ -11,6 +11,7 @@ from typing import Dict, Any, Optional, Tuple, List
 
 from src.pipeline.validators.step_1_validator import Step1Validator
 from src.pipeline.prompts.step_1_prompt import Step1Prompt
+from src.ai.generator import AIGenerator
 
 class Step1OneSentenceSummary:
     """
@@ -30,6 +31,7 @@ class Step1OneSentenceSummary:
         
         self.validator = Step1Validator()
         self.prompt_generator = Step1Prompt()
+        self.generator = AIGenerator()
         
     def execute(self,
                 step_0_artifact: Dict[str, Any],
@@ -38,15 +40,6 @@ class Step1OneSentenceSummary:
                 model_config: Optional[Dict[str, Any]] = None) -> Tuple[bool, Dict[str, Any], str]:
         """
         Execute Step 1: Generate One Sentence Summary (Logline)
-        
-        Args:
-            step_0_artifact: Validated Step 0 artifact (First Things First)
-            story_brief: The user's story brief
-            project_id: Project UUID
-            model_config: AI model configuration
-            
-        Returns:
-            Tuple of (success, artifact, message)
         """
         # Default model config
         if not model_config:
@@ -63,17 +56,17 @@ class Step1OneSentenceSummary:
         # Generate prompt
         prompt_data = self.prompt_generator.generate_prompt(step_0_artifact, story_brief)
         
-        # Here we would call the AI model - for now, return template
-        # In production: logline = self.call_ai_model(prompt_data, model_config)
+        # Call AI generator to produce a raw logline (text)
+        try:
+            raw_output = self.generator.generate(prompt_data, model_config)
+        except Exception as e:
+            return False, {}, f"AI generation failed: {e}"
         
-        # For demonstration, create a sample logline
-        logline = "TODO: Generate via AI based on Step 0 and story brief."
-        
-        # Create artifact
+        # Create artifact from raw output
+        logline = raw_output.strip().strip('"')
         artifact = {
             "logline": logline,
-            "word_count": len(logline.split()),
-            "lead_count": 0  # Will be updated by validator
+            "word_count": len(logline.split())
         }
         
         # Add metadata
@@ -94,17 +87,16 @@ class Step1OneSentenceSummary:
                 compressed = self.compress_logline(logline, step_0_artifact, model_config)
                 artifact['logline'] = compressed
                 artifact['word_count'] = len(compressed.split())
-                
                 # Re-validate
                 is_valid, errors = self.validator.validate(artifact)
-            
-            if not is_valid:
-                # Get fix suggestions
-                suggestions = self.validator.fix_suggestions(errors)
-                error_message = "VALIDATION FAILED:\n"
-                for error, suggestion in zip(errors, suggestions):
-                    error_message += f"  ERROR: {error}\n  FIX: {suggestion}\n"
-                return False, artifact, error_message
+        
+        if not is_valid:
+            # Get fix suggestions
+            suggestions = self.validator.fix_suggestions(errors)
+            error_message = "VALIDATION FAILED:\n"
+            for error, suggestion in zip(errors, suggestions):
+                error_message += f"  ERROR: {error}\n  FIX: {suggestion}\n"
+            return False, artifact, error_message
         
         # Save artifact
         save_path = self.save_artifact(artifact, project_id)

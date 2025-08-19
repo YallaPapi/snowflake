@@ -1,0 +1,22 @@
+[
+  {
+    "fileName": "main-overview.mdc",
+    "description": "Complete system overview focusing on the Snowflake Method implementation, pipeline architecture, and core components interaction"
+  },
+  {
+    "fileName": "novel-generation-pipeline.mdc",
+    "description": "Detailed documentation of the 11-step novel generation pipeline, including step dependencies, validation rules, and artifact generation flow"
+  },
+  {
+    "fileName": "story-validation-models.mdc",
+    "description": "Comprehensive documentation of validation rules, constraints, and business logic for each story element (categories, tropes, character arcs, scenes, etc.)"
+  },
+  {
+    "fileName": "data-flow-and-dependencies.mdc",
+    "description": "Documentation of how story artifacts flow through the pipeline, including upstream/downstream relationships, hash tracking, and version control"
+  },
+  {
+    "fileName": "character-scene-models.mdc",
+    "description": "Detailed models for character development, scene structure (triads), disaster tracking, and moral premise implementation"
+  }
+]

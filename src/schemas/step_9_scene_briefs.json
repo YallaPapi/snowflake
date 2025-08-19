@@ -1,0 +1,56 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Step 9: Scene Briefs",
+  "type": "object",
+  "required": ["scene_briefs", "brief_count", "type_distribution", "triad_validation", "causal_chain", "disaster_links", "metadata"],
+  "additionalProperties": false,
+  "properties": {
+    "scene_briefs": {
+      "type": "array",
+      "minItems": 20,
+      "items": {
+        "type": "object",
+        "required": ["type", "stakes", "links"],
+        "properties": {
+          "type": {"type": "string", "enum": ["Proactive", "Reactive"]},
+          "goal": {"type": "string"},
+          "conflict": {"type": "string"},
+          "setback": {"type": "string"},
+          "reaction": {"type": "string"},
+          "dilemma": {"type": "string"},
+          "decision": {"type": "string"},
+          "stakes": {"type": "string"},
+          "links": {
+            "type": "object",
+            "required": ["character_goal_id"],
+            "properties": {
+              "character_goal_id": {"type": "string"},
+              "disaster_anchor": {"type": ["string", "null"], "enum": ["D1", "D2", "D3", null]}
+            }
+          }
+        }
+      }
+    },
+    "brief_count": {"type": "integer", "minimum": 20},
+    "type_distribution": {"type": "object", "properties": {"proactive": {"type": "integer"}, "reactive": {"type": "integer"}}},
+    "triad_validation": {"type": "object", "properties": {"complete": {"type": "array", "items": {"type": "integer"}}, "incomplete": {"type": "array", "items": {"type": "integer"}}, "completion_rate": {"type": "number"}}},
+    "causal_chain": {"type": "object", "properties": {"decision_goal_links": {"type": "array"}, "chain_strength": {"type": "number"}}},
+    "disaster_links": {"type": "object", "properties": {"d1_linked": {"type": "boolean"}, "d2_linked": {"type": "boolean"}, "d3_linked": {"type": "boolean"}}},
+    "metadata": {
+      "type": "object",
+      "required": ["project_id", "step", "version", "created_at", "hash_upstream"],
+      "properties": {
+        "project_id": {"type": "string"},
+        "step": {"type": "integer", "const": 9},
+        "version": {"type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$"},
+        "created_at": {"type": "string", "format": "date-time"},
+        "model_name": {"type": "string"},
+        "temperature": {"type": "number"},
+        "seed": {"type": ["number", "null"]},
+        "prompt_hash": {"type": "string"},
+        "validator_version": {"type": "string"},
+        "hash_upstream": {"type": "string", "description": "SHA256 hash of Step 8 artifact"}
+      }
+    }
+  }
+}
