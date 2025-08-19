@@ -78,7 +78,7 @@ class AIGenerator:
         
         model = model_config.get("model_name", self.default_model)
         temperature = model_config.get("temperature", 0.3)
-        max_tokens = model_config.get("max_tokens", 2000)
+        max_tokens = model_config.get("max_tokens", 4000)  # Increased default for longer content
         
         for attempt in range(max_retries):
             try:
@@ -159,12 +159,59 @@ class AIGenerator:
             # Parse response (assuming JSON or structured format)
             try:
                 if raw_output.strip().startswith("{"):
-                    artifact = json.loads(raw_output)
+                    # Try to fix common JSON issues with newlines in strings
+                    # First attempt: direct parse
+                    try:
+                        artifact = json.loads(raw_output)
+                    except json.JSONDecodeError:
+                        # Second attempt: escape newlines in string values
+                        import re
+                        # Find string values and escape newlines in them
+                        fixed_output = raw_output
+                        # Match JSON string values and escape newlines
+                        pattern = r'"([^"\\]*(\\.[^"\\]*)*)"'
+                        def escape_newlines(match):
+                            content = match.group(1)
+                            # Replace actual newlines with \n
+                            content = content.replace('\n', '\\n').replace('\r', '\\r')
+                            return f'"{content}"'
+                        
+                        # This is a simplified fix - just try to parse the content differently
+                        # Extract the long_synopsis or similar content manually
+                        if '"long_synopsis"' in raw_output or '"synopsis"' in raw_output:
+                            # Try to extract the content between quotes after the key
+                            import re
+                            match = re.search(r'"(?:long_)?synopsis":\s*"(.*?)"(?:\s*[,}])', raw_output, re.DOTALL)
+                            if match:
+                                content = match.group(1).replace('\\n', '\n').replace('\\"', '"')
+                                artifact = {"long_synopsis": content}
+                            else:
+                                # Fall back to content
+                                artifact = {"content": raw_output}
+                        else:
+                            artifact = {"content": raw_output}
                 else:
                     # Handle text responses
                     artifact = self._parse_text_response(raw_output)
-            except json.JSONDecodeError:
+            except Exception:
+                # If all parsing fails, just use the raw output
                 artifact = {"content": raw_output}
+            
+            # Ensure artifact is a dict for validation
+            if not isinstance(artifact, dict):
+                # If it's a list, wrap it appropriately based on context
+                if isinstance(artifact, list):
+                    # Try to determine the correct key based on the validator
+                    if hasattr(validator, '__class__') and 'Step9' in validator.__class__.__name__:
+                        artifact = {"scene_briefs": artifact}
+                    elif hasattr(validator, '__class__') and 'Step7' in validator.__class__.__name__:
+                        artifact = {"bibles": artifact}
+                    elif hasattr(validator, '__class__') and 'Step5' in validator.__class__.__name__:
+                        artifact = {"characters": artifact}
+                    else:
+                        artifact = {"content": artifact}
+                else:
+                    artifact = {"content": str(artifact)}
             
             # Validate
             is_valid, errors = validator.validate(artifact)
@@ -225,6 +272,97 @@ REVISED RESPONSE:"""
         
         prompt_data["user"] = revision_prompt
         return prompt_data
+    
+    def generate_scene_prose(self,
+                             scene_context: Dict[str, Any],
+                             character_bible: Dict[str, Any],
+                             word_target: int,
+                             model_config: Optional[Dict[str, Any]] = None) -> str:
+        """
+        Generate prose for a single scene
+        
+        Args:
+            scene_context: Scene data including triad and details
+            character_bible: POV character's complete bible
+            word_target: Target word count for scene
+            model_config: Model configuration
+            
+        Returns:
+            Scene prose
+        """
+        if not model_config:
+            model_config = {
+                "temperature": 0.8,  # Higher for creative prose
+                "max_tokens": min(word_target * 2, 4000)  # Allow room for prose
+            }
+        
+        # Build the prompt
+        scene_type = scene_context.get('type', 'Proactive')
+        
+        if scene_type == 'Proactive':
+            triad_elements = f"""
+- GOAL: {scene_context.get('goal', 'Unknown goal')}
+- CONFLICT: {scene_context.get('conflict', 'Unknown conflict')}
+- SETBACK: {scene_context.get('setback', 'Unknown setback')}
+"""
+        else:
+            triad_elements = f"""
+- REACTION: {scene_context.get('reaction', 'Unknown reaction')}
+- DILEMMA: {scene_context.get('dilemma', 'Unknown dilemma')}
+- DECISION: {scene_context.get('decision', 'Unknown decision')}
+"""
+        
+        system_prompt = f"""
+You are drafting a scene for a novel using the Snowflake Method.
+Maintain strict POV discipline - only show what the POV character can perceive.
+Dramatize the scene triad on the page through action, dialogue, and internal thought.
+Show, don't tell. Use vivid, sensory details.
+Maintain the character's unique voice and personality throughout.
+"""
+        
+        user_prompt = f"""
+Write a {word_target}-word scene with these requirements:
+
+SCENE TYPE: {scene_type}
+
+TRIAD ELEMENTS TO DRAMATIZE:
+{triad_elements}
+
+POV CHARACTER: {scene_context.get('pov', 'Unknown')}
+
+CHARACTER VOICE NOTES:
+{character_bible.get('voice_notes', ['Natural voice'])}
+
+PERSONALITY TRAITS:
+{json.dumps(character_bible.get('personality', {}), indent=2)}
+
+SCENE DETAILS:
+- Summary: {scene_context.get('summary', 'Scene summary')}
+- Location: {scene_context.get('location', 'Unknown location')}
+- Time: {scene_context.get('time', 'Unknown time')}
+- Inbound Hook: {scene_context.get('inbound_hook', 'Continue from previous')}
+- Outbound Hook: {scene_context.get('outbound_hook', 'Lead to next')}
+
+REQUIREMENTS:
+1. Open with immediate engagement (no throat-clearing)
+2. Dramatize all three triad elements clearly
+3. Maintain strict POV discipline throughout
+4. Use the character's unique voice consistently
+5. End with the outbound hook
+6. Aim for exactly {word_target} words
+
+Write the scene now:
+"""
+        
+        prompt_data = {
+            "system": system_prompt,
+            "user": user_prompt
+        }
+        
+        # Generate the prose
+        prose = self.generate(prompt_data, model_config)
+        
+        return prose
     
     def generate_step_0(self, user_input: Dict[str, Any]) -> Dict[str, Any]:
         """Generate Step 0: First Things First"""
@@ -302,40 +440,71 @@ REVISED RESPONSE:"""
         pov_character = scene_brief.get("pov", "Unknown")
         
         if scene_type == "Proactive":
-            system_prompt = f"""You are a novelist writing a {word_target}-word scene.
-POV: {pov_character}
+            system_prompt = f"""You are a bestselling novelist. Write a complete {word_target}-word scene.
+
+CRITICAL: This must be AT LEAST {word_target} words of actual prose, not a summary.
+
+POV: {pov_character} (deep third person)
 Type: Proactive (Goal → Conflict → Setback)
 
-Write in deep third person POV. Show don't tell. Use concrete sensory details.
-The scene MUST dramatize:
-1. GOAL: {scene_brief.get('goal', '')}
-2. CONFLICT: {scene_brief.get('conflict', '')}
-3. SETBACK: {scene_brief.get('setback', '')}
+The scene MUST fully dramatize IN SEQUENCE:
+1. GOAL (opening): {scene_brief.get('goal', 'achieve objective')}
+   - Show {pov_character} actively pursuing this
+   - Use action and dialogue
+   
+2. CONFLICT (middle): {scene_brief.get('conflict', 'face opposition')}
+   - Show escalating obstacles
+   - Build tension through try/fail cycles
+   
+3. SETBACK (ending): {scene_brief.get('setback', 'situation worsens')}
+   - End with disaster or failure
+   - Leave character worse off
 
-Stakes: {scene_brief.get('stakes', '')}"""
+Stakes: {scene_brief.get('stakes', 'high stakes')}
+
+Write with vivid sensory details, punchy dialogue, internal thoughts.
+DO NOT SUMMARIZE - write the full scene."""
         else:
-            system_prompt = f"""You are a novelist writing a {word_target}-word scene.
-POV: {pov_character}
+            system_prompt = f"""You are a bestselling novelist. Write a complete {word_target}-word scene.
+
+CRITICAL: This must be AT LEAST {word_target} words of actual prose, not a summary.
+
+POV: {pov_character} (deep third person)
 Type: Reactive (Reaction → Dilemma → Decision)
 
-Write in deep third person POV. Show don't tell. Use concrete sensory details.
-The scene MUST dramatize:
-1. REACTION: {scene_brief.get('reaction', '')}
-2. DILEMMA: {scene_brief.get('dilemma', '')}
-3. DECISION: {scene_brief.get('decision', '')}
+The scene MUST fully dramatize IN SEQUENCE:
+1. REACTION (opening): {scene_brief.get('reaction', 'emotional response')}
+   - Show visceral, physical response
+   - Let character feel the emotion
+   
+2. DILEMMA (middle): {scene_brief.get('dilemma', 'impossible choice')}
+   - Show wrestling with bad options
+   - Use internal dialogue
+   
+3. DECISION (ending): {scene_brief.get('decision', 'commit to action')}
+   - Show moment of choice
+   - Set up next goal
 
-Stakes: {scene_brief.get('stakes', '')}"""
+Stakes: {scene_brief.get('stakes', 'high stakes')}
+
+Write with deep emotional interiority, physical sensations.
+DO NOT SUMMARIZE - write the full scene."""
         
-        user_prompt = f"""Scene Context:
+        user_prompt = f"""Scene Details:
 Time: {scene_brief.get('time', 'unspecified')}
 Location: {scene_brief.get('location', 'unspecified')}
-Inbound Hook: {scene_brief.get('inbound_hook', '')}
-Outbound Hook: {scene_brief.get('outbound_hook', '')}
+Summary: {scene_brief.get('summary', '')}
+Inbound: {scene_brief.get('inbound_hook', '')}
+Outbound: {scene_brief.get('outbound_hook', '')}
 
-Character Voice Notes:
-{character_bible.get('voice_notes', [])}
+REQUIREMENTS:
+1. Write AT LEAST {word_target} words
+2. Start immediately - no setup paragraphs
+3. Include dialogue and action
+4. Show internal thoughts
+5. End with hook to next scene
 
-Write the scene now. Target: {word_target} words."""
+BEGIN THE SCENE NOW:"""
         
         prompt_data = {
             "system": system_prompt,
@@ -344,8 +513,8 @@ Write the scene now. Target: {word_target} words."""
         
         # Use higher temperature for creative writing
         model_config = {
-            "temperature": 0.7,
-            "max_tokens": word_target * 2  # Allow some buffer
+            "temperature": 0.8,
+            "max_tokens": min(word_target * 3, 8000)  # Much more buffer for full scenes
         }
         
         return self.generate(prompt_data, model_config)

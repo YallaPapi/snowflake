@@ -1,0 +1,16 @@
+STEP 1: ONE SENTENCE SUMMARY (LOGLINE)
+==================================================
+
+LOGLINE: Mira, an internal affairs detective, must solve a police shooting despite falling for the prime suspect, Detective Hayes.
+
+Word Count: 18/25
+Named Leads: 2/2
+
+PARSED COMPONENTS:
+  lead_name: Mira
+  lead_role: internal affairs detective
+  external_goal: solve a police shooting
+  opposition: falling for the prime suspect, Detective Hayes
+
+Generated: 2025-08-19T15:36:31.894889
+Version: 1.0.0

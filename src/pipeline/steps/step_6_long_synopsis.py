@@ -24,14 +24,40 @@ class Step6LongSynopsis:
                 project_id: str,
                 model_config: Optional[Dict[str, Any]] = None) -> Tuple[bool, Dict[str, Any], str]:
         if not model_config:
-            model_config = {"temperature": 0.3}
+            model_config = {
+                "temperature": 0.4,
+                "max_tokens": 4000  # Need more tokens for long synopsis
+            }
         upstream_hash = hashlib.sha256(json.dumps(step4_artifact, sort_keys=True).encode()).hexdigest()
         prompt = self.prompt_generator.generate_prompt(step4_artifact)
         try:
             content = self.generator.generate_with_validation(prompt, self.validator, model_config)
         except Exception as e:
             return False, {}, f"AI generation failed: {e}"
-        artifact = {"long_synopsis": content.get("long_synopsis", "")}
+        
+        # Extract long synopsis from various possible formats
+        if isinstance(content, str):
+            long_synopsis = content
+        elif "long_synopsis" in content:
+            long_synopsis = content["long_synopsis"]
+        elif "synopsis" in content:
+            long_synopsis = content["synopsis"]
+        elif "content" in content:
+            long_synopsis = content["content"]
+        elif "text" in content:
+            long_synopsis = content["text"]
+        elif "output" in content:
+            long_synopsis = content["output"]
+        else:
+            # Try to get any string value from the dict
+            for key, value in content.items():
+                if isinstance(value, str) and len(value) > 100:
+                    long_synopsis = value
+                    break
+            else:
+                long_synopsis = str(content)
+        
+        artifact = {"long_synopsis": long_synopsis}
         artifact = self.add_metadata(artifact, project_id, prompt["prompt_hash"], model_config, upstream_hash)
         ok, errs = self.validator.validate(artifact)
         if not ok:

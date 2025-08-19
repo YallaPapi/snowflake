@@ -1,0 +1,16 @@
+STEP 1: ONE SENTENCE SUMMARY (LOGLINE)
+==================================================
+
+LOGLINE: Mira, an internal affairs detective, must solve a judge's murder despite falling for the prime suspect, his grieving daughter.
+
+Word Count: 19/25
+Named Leads: 1/2
+
+PARSED COMPONENTS:
+  lead_name: Mira
+  lead_role: internal affairs detective
+  external_goal: solve a judge's murder
+  opposition: falling for the prime suspect, his grieving daughter
+
+Generated: 2025-08-19T13:39:27.752284
+Version: 1.0.0

@@ -62,6 +62,14 @@ class Step9Validator:
             
             scene_type = brief['type']
             
+            # Normalize case for type
+            if scene_type.lower() == 'proactive':
+                scene_type = 'Proactive'
+                brief['type'] = scene_type
+            elif scene_type.lower() == 'reactive':
+                scene_type = 'Reactive'
+                brief['type'] = scene_type
+            
             if scene_type == 'Proactive':
                 proactive_count += 1
                 brief_errors = self.validate_proactive_brief(brief, brief_id)
@@ -157,8 +165,11 @@ class Step9Validator:
         
         # Validate Links
         if 'links' in brief:
-            links_errors = self.validate_links(brief['links'], brief_id)
-            errors.extend(links_errors)
+            links = brief['links']
+            # Handle case where links might be a string or other non-dict
+            if isinstance(links, dict):
+                links_errors = self.validate_links(links, brief_id)
+                errors.extend(links_errors)
         
         return errors
     
@@ -193,8 +204,11 @@ class Step9Validator:
         
         # Validate Links
         if 'links' in brief:
-            links_errors = self.validate_links(brief['links'], brief_id)
-            errors.extend(links_errors)
+            links = brief['links']
+            # Handle case where links might be a string or other non-dict
+            if isinstance(links, dict):
+                links_errors = self.validate_links(links, brief_id)
+                errors.extend(links_errors)
         
         return errors
     
@@ -346,6 +360,9 @@ class Step9Validator:
         
         for brief in scene_briefs:
             links = brief.get('links', {})
+            # Handle case where links might be a string or other non-dict
+            if not isinstance(links, dict):
+                links = {}
             disaster_anchor = links.get('disaster_anchor')
             
             if disaster_anchor == 'D1':

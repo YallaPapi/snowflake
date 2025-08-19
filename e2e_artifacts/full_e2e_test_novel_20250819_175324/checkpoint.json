@@ -1,0 +1,74 @@
+{
+  "project_id": "full_e2e_test_novel_20250819_175324",
+  "created_at": "2025-08-19T17:53:37.206365",
+  "steps": {
+    "step_0": {
+      "status": "failed",
+      "timestamp": "2025-08-19T17:53:37.206365",
+      "artifact_saved": false,
+      "error": null
+    },
+    "step_1": {
+      "status": "failed",
+      "timestamp": "2025-08-19T17:53:37.218366",
+      "artifact_saved": false,
+      "error": null
+    },
+    "step_2": {
+      "status": "failed",
+      "timestamp": "2025-08-19T17:53:37.230367",
+      "artifact_saved": false,
+      "error": null
+    },
+    "step_3": {
+      "status": "failed",
+      "timestamp": "2025-08-19T17:53:37.243369",
+      "artifact_saved": false,
+      "error": null
+    },
+    "step_4": {
+      "status": "failed",
+      "timestamp": "2025-08-19T17:53:37.257371",
+      "artifact_saved": false,
+      "error": null
+    },
+    "step_5": {
+      "status": "failed",
+      "timestamp": "2025-08-19T17:53:37.272372",
+      "artifact_saved": false,
+      "error": null
+    },
+    "step_6": {
+      "status": "failed",
+      "timestamp": "2025-08-19T17:53:37.288373",
+      "artifact_saved": false,
+      "error": null
+    },
+    "step_7": {
+      "status": "failed",
+      "timestamp": "2025-08-19T17:53:37.301373",
+      "artifact_saved": false,
+      "error": null
+    },
+    "step_8": {
+      "status": "failed",
+      "timestamp": "2025-08-19T17:53:37.317371",
+      "artifact_saved": false,
+      "error": null
+    },
+    "step_9": {
+      "status": "failed",
+      "timestamp": "2025-08-19T17:53:37.330373",
+      "artifact_saved": false,
+      "error": null
+    },
+    "step_10": {
+      "status": "failed",
+      "timestamp": "2025-08-19T17:53:37.343377",
+      "artifact_saved": false,
+      "error": null
+    }
+  },
+  "last_updated": "2025-08-19T17:53:37.343377",
+  "current_step": 10
+}

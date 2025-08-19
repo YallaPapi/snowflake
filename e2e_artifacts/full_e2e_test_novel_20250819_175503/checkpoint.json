@@ -1,0 +1,26 @@
+{
+  "project_id": "full_e2e_test_novel_20250819_175503",
+  "created_at": "2025-08-19T17:55:16.081581",
+  "steps": {
+    "step_0": {
+      "status": "completed",
+      "timestamp": "2025-08-19T17:55:16.081581",
+      "artifact_saved": false,
+      "error": null
+    },
+    "step_1": {
+      "status": "completed",
+      "timestamp": "2025-08-19T17:55:18.765046",
+      "artifact_saved": false,
+      "error": null
+    },
+    "step_2": {
+      "status": "completed",
+      "timestamp": "2025-08-19T17:56:22.614934",
+      "artifact_saved": false,
+      "error": null
+    }
+  },
+  "last_updated": "2025-08-19T17:56:22.614934",
+  "current_step": 2
+}

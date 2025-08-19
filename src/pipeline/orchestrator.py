@@ -20,8 +20,10 @@ from src.pipeline.steps.step_5_character_synopses import Step5CharacterSynopses
 from src.pipeline.steps.step_6_long_synopsis import Step6LongSynopsis
 from src.pipeline.steps.step_7_character_bibles import Step7CharacterBibles
 from src.pipeline.steps.step_8_scene_list import Step8SceneList
-from src.pipeline.steps.step_9_scene_briefs import Step9SceneBriefs
-from src.pipeline.steps.step_10_draft_writer import Step10DraftWriter
+from src.pipeline.steps.step_9_scene_briefs_v2 import Step9SceneBriefsV2 as Step9SceneBriefs
+from src.pipeline.steps.step_10_first_draft import Step10FirstDraft
+from src.observability.events import emit_event
+from src.pipeline.progress_tracker import ProgressTracker
 
 class SnowflakePipeline:
     """
@@ -50,8 +52,10 @@ class SnowflakePipeline:
         self.step7 = Step7CharacterBibles(project_dir)
         self.step8 = Step8SceneList(project_dir)
         self.step9 = Step9SceneBriefs(project_dir)
-        self.step10 = Step10DraftWriter(project_dir)
-        # Steps 10 to be added as implemented
+        self.step10 = Step10FirstDraft(project_dir)
+        
+        # Progress tracking
+        self.progress_tracker = ProgressTracker(project_dir)
         
         self.current_project_id = None
         self.pipeline_state = {}
@@ -90,6 +94,7 @@ class SnowflakePipeline:
             json.dump(project_meta, f, indent=2)
         
         self.current_project_id = project_id
+        emit_event(project_id, "project_created", {"project_name": project_name, "current_step": 0})
         return project_id
     
     def load_project(self, project_id: str) -> Dict[str, Any]:
@@ -111,6 +116,7 @@ class SnowflakePipeline:
             project_meta = json.load(f)
         
         self.current_project_id = project_id
+        emit_event(project_id, "project_loaded", {"project_name": project_meta.get('project_name'), "current_step": project_meta.get('current_step')})
         return project_meta
     
     def execute_step_0(self, brief: str) -> Tuple[bool, Dict[str, Any], str]:
@@ -126,10 +132,14 @@ class SnowflakePipeline:
         if not self.current_project_id:
             return False, {}, "No project loaded. Create or load a project first."
         
+        emit_event(self.current_project_id, "step_start", {"step": 0, "step_key": "step_0"})
         success, artifact, message = self.step0.execute(brief, self.current_project_id)
         
         if success:
             self._update_project_state(0, artifact)
+            emit_event(self.current_project_id, "step_complete", {"step": 0, "step_key": "step_0", "valid": True})
+        else:
+            emit_event(self.current_project_id, "step_failed", {"step": 0, "step_key": "step_0", "message": message})
         
         return success, artifact, message
     
@@ -148,12 +158,16 @@ class SnowflakePipeline:
         if not step0_artifact:
             return False, {}, "Step 0 must be completed first"
         
+        emit_event(self.current_project_id, "step_start", {"step": 1, "step_key": "step_1"})
         success, artifact, message = self.step1.execute(
             step0_artifact, story_brief, self.current_project_id
         )
         
         if success:
             self._update_project_state(1, artifact)
+            emit_event(self.current_project_id, "step_complete", {"step": 1, "step_key": "step_1", "valid": True})
+        else:
+            emit_event(self.current_project_id, "step_failed", {"step": 1, "step_key": "step_1", "message": message})
         
         return success, artifact, message
     
@@ -171,12 +185,16 @@ class SnowflakePipeline:
         if not all([step0_artifact, step1_artifact]):
             return False, {}, "Steps 0 and 1 must be completed first"
         
+        emit_event(self.current_project_id, "step_start", {"step": 2, "step_key": "step_2"})
         success, artifact, message = self.step2.execute(
             step0_artifact, step1_artifact, self.current_project_id
         )
         
         if success:
             self._update_project_state(2, artifact)
+            emit_event(self.current_project_id, "step_complete", {"step": 2, "step_key": "step_2", "valid": True})
+        else:
+            emit_event(self.current_project_id, "step_failed", {"step": 2, "step_key": "step_2", "message": message})
         
         return success, artifact, message
     
@@ -195,12 +213,16 @@ class SnowflakePipeline:
         if not all([step0_artifact, step1_artifact, step2_artifact]):
             return False, {}, "Steps 0, 1, and 2 must be completed first"
         
+        emit_event(self.current_project_id, "step_start", {"step": 3, "step_key": "step_3"})
         success, artifact, message = self.step3.execute(
             step0_artifact, step1_artifact, step2_artifact, self.current_project_id
         )
         
         if success:
             self._update_project_state(3, artifact)
+            emit_event(self.current_project_id, "step_complete", {"step": 3, "step_key": "step_3", "valid": True})
+        else:
+            emit_event(self.current_project_id, "step_failed", {"step": 3, "step_key": "step_3", "message": message})
         
         return success, artifact, message
     
@@ -211,11 +233,15 @@ class SnowflakePipeline:
         step2_artifact = self._load_step_artifact(2)
         if not step2_artifact:
             return False, {}, "Steps 0-3 must be completed first"
+        emit_event(self.current_project_id, "step_start", {"step": 4, "step_key": "step_4"})
         success, artifact, message = self.step4.execute(
             step2_artifact, self.current_project_id
         )
         if success:
             self._update_project_state(4, artifact)
+            emit_event(self.current_project_id, "step_complete", {"step": 4, "step_key": "step_4", "valid": True})
+        else:
+            emit_event(self.current_project_id, "step_failed", {"step": 4, "step_key": "step_4", "message": message})
         return success, artifact, message
     
     def execute_step_5(self) -> Tuple[bool, Dict[str, Any], str]:
@@ -225,11 +251,15 @@ class SnowflakePipeline:
         step3_artifact = self._load_step_artifact(3)
         if not step3_artifact:
             return False, {}, "Steps 0-4 must be completed first"
+        emit_event(self.current_project_id, "step_start", {"step": 5, "step_key": "step_5"})
         success, artifact, message = self.step5.execute(
             step3_artifact, self.current_project_id
         )
         if success:
             self._update_project_state(5, artifact)
+            emit_event(self.current_project_id, "step_complete", {"step": 5, "step_key": "step_5", "valid": True})
+        else:
+            emit_event(self.current_project_id, "step_failed", {"step": 5, "step_key": "step_5", "message": message})
         return success, artifact, message
 
     def execute_step_6(self) -> Tuple[bool, Dict[str, Any], str]:
@@ -239,11 +269,15 @@ class SnowflakePipeline:
         step4_artifact = self._load_step_artifact(4)
         if not step4_artifact:
             return False, {}, "Steps 0-5 must be completed first"
+        emit_event(self.current_project_id, "step_start", {"step": 6, "step_key": "step_6"})
         success, artifact, message = self.step6.execute(
             step4_artifact, self.current_project_id
         )
         if success:
             self._update_project_state(6, artifact)
+            emit_event(self.current_project_id, "step_complete", {"step": 6, "step_key": "step_6", "valid": True})
+        else:
+            emit_event(self.current_project_id, "step_failed", {"step": 6, "step_key": "step_6", "message": message})
         return success, artifact, message
 
     def execute_step_7(self) -> Tuple[bool, Dict[str, Any], str]:
@@ -253,11 +287,15 @@ class SnowflakePipeline:
         step5_artifact = self._load_step_artifact(5)
         if not step5_artifact:
             return False, {}, "Steps 0-6 must be completed first"
+        emit_event(self.current_project_id, "step_start", {"step": 7, "step_key": "step_7"})
         success, artifact, message = self.step7.execute(
             step5_artifact, self.current_project_id
         )
         if success:
             self._update_project_state(7, artifact)
+            emit_event(self.current_project_id, "step_complete", {"step": 7, "step_key": "step_7", "valid": True})
+        else:
+            emit_event(self.current_project_id, "step_failed", {"step": 7, "step_key": "step_7", "message": message})
         return success, artifact, message
 
     def execute_step_8(self) -> Tuple[bool, Dict[str, Any], str]:
@@ -268,11 +306,15 @@ class SnowflakePipeline:
         step7_artifact = self._load_step_artifact(7)
         if not all([step6_artifact, step7_artifact]):
             return False, {}, "Steps 0-7 must be completed first"
+        emit_event(self.current_project_id, "step_start", {"step": 8, "step_key": "step_8"})
         success, artifact, message = self.step8.execute(
             step6_artifact, step7_artifact, self.current_project_id
         )
         if success:
             self._update_project_state(8, artifact)
+            emit_event(self.current_project_id, "step_complete", {"step": 8, "step_key": "step_8", "valid": True})
+        else:
+            emit_event(self.current_project_id, "step_failed", {"step": 8, "step_key": "step_8", "message": message})
         return success, artifact, message
 
     def execute_step_9(self) -> Tuple[bool, Dict[str, Any], str]:
@@ -282,11 +324,15 @@ class SnowflakePipeline:
         step8_artifact = self._load_step_artifact(8)
         if not step8_artifact:
             return False, {}, "Steps 0-8 must be completed first"
+        emit_event(self.current_project_id, "step_start", {"step": 9, "step_key": "step_9"})
         success, artifact, message = self.step9.execute(
             step8_artifact, self.current_project_id
         )
         if success:
             self._update_project_state(9, artifact)
+            emit_event(self.current_project_id, "step_complete", {"step": 9, "step_key": "step_9", "valid": True})
+        else:
+            emit_event(self.current_project_id, "step_failed", {"step": 9, "step_key": "step_9", "message": message})
         return success, artifact, message
 
     def execute_step_10(self, target_words: int = 90000) -> Tuple[bool, Dict[str, Any], str]:
@@ -298,15 +344,18 @@ class SnowflakePipeline:
         step9_artifact = self._load_step_artifact(9)
         if not all([step7_artifact, step8_artifact, step9_artifact]):
             return False, {}, "Steps 7, 8, and 9 must be completed first"
+        emit_event(self.current_project_id, "step_start", {"step": 10, "step_key": "step_10"})
         success, artifact, message = self.step10.execute(
-            step8_artifact,
             step9_artifact,
             step7_artifact,
-            self.current_project_id,
-            target_words=target_words
+            step8_artifact,
+            self.current_project_id
         )
         if success:
             self._update_project_state(10, artifact)
+            emit_event(self.current_project_id, "step_complete", {"step": 10, "step_key": "step_10", "valid": True})
+        else:
+            emit_event(self.current_project_id, "step_failed", {"step": 10, "step_key": "step_10", "message": message})
         return success, artifact, message
     
     def validate_step(self, step_number: int) -> Tuple[bool, str]:
@@ -462,6 +511,7 @@ class SnowflakePipeline:
         
         # Update metadata
         project_meta['current_step'] = max(project_meta.get('current_step', 0), step_number)
+        emit_event(self.current_project_id, "state_updated", {"current_step": project_meta['current_step'], "step_key": f"step_{step_number}"})
         
         steps_completed = project_meta.get('steps_completed', [])
         if step_number not in steps_completed:

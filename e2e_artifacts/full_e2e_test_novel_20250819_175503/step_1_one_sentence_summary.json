@@ -1,0 +1,23 @@
+{
+  "logline": "Sarah Chen, an internal affairs detective, must expose a corrupt police captain despite threats to her career and life.",
+  "word_count": 19,
+  "metadata": {
+    "project_id": "full_e2e_test_novel_20250819_175503",
+    "step": 1,
+    "version": "1.0.0",
+    "created_at": "2025-08-19T17:55:18.700044",
+    "model_name": "claude-3-5-sonnet-20241022",
+    "temperature": 0.2,
+    "seed": 42,
+    "prompt_hash": "3bbc00722b716fbd3378370316d20e49824cacc475cda02978cc6c776039ab84",
+    "validator_version": "1.0.0",
+    "hash_upstream": "b1b3763fbdfaf0f7b6740522a83d5310823caf6ca9679f9a65b594ed1196e65e"
+  },
+  "lead_count": 1,
+  "components": {
+    "lead_name": "Sarah Chen",
+    "lead_role": "internal affairs detective",
+    "external_goal": "expose a corrupt police captain",
+    "opposition": "threats to her career and life"
+  }
+}

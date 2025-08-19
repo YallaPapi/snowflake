@@ -1,0 +1,9 @@
+STEP 0: FIRST THINGS FIRST
+==================================================
+
+Category: Romantic Suspense
+Story Kind: A forbidden-romance whodunit where an investigator falls for the prime suspect.
+Audience Delight: Readers will enjoy the slow-burn attraction, mounting evidence twists, forced-proximity tension, and the final vindication reveal.
+
+Generated: 2025-08-19T14:15:26.414785
+Version: 1.0.0

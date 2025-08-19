@@ -44,8 +44,25 @@ class Step4OnePageSynopsis:
 			content = self.generator.generate_with_validation(prompt_data, self.validator, model_config)
 		except Exception as e:
 			return False, {}, f"AI generation failed: {e}"
-		# Ensure structure
-		artifact = {"synopsis_paragraphs": content.get("synopsis_paragraphs", {})}
+		
+		# The AI might return the paragraphs directly or nested
+		if "synopsis_paragraphs" in content:
+			synopsis_paragraphs = content["synopsis_paragraphs"]
+		elif all(f"paragraph_{i}" in content for i in range(1, 6)):
+			# Paragraphs are at top level
+			synopsis_paragraphs = {
+				f"paragraph_{i}": content[f"paragraph_{i}"]
+				for i in range(1, 6)
+			}
+		else:
+			# Try to extract from content
+			synopsis_paragraphs = {}
+			for i in range(1, 6):
+				key = f"paragraph_{i}"
+				if key in content:
+					synopsis_paragraphs[key] = content[key]
+		
+		artifact = {"synopsis_paragraphs": synopsis_paragraphs}
 		artifact = self.add_metadata(artifact, project_id, prompt_data["prompt_hash"], model_config, upstream_hash)
 		# Validate final
 		is_valid, errors = self.validator.validate(artifact)

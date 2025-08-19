@@ -1,0 +1,48 @@
+{
+  "paragraph": "Now, in the city, Mira, a internal affairs detective, must solve a police shooting before a deadline. When falling for the prime suspect, Officer Hayes forces Mira to commit, there is no turning back. After a brutal setback, Mira realizes the old belief was false and must now change tactics in line with the moral premise. Pressure escalates until only one final path remains, leaving no choice but to drive toward the endgame. In a final confrontation, Mira faces the opposition and wins, achieving the goal.",
+  "moral_premise": "People succeed when they act with courage, and they fail when they protect themselves at the cost of justice.",
+  "metadata": {
+    "project_id": "smoketestnovel_20250819_134340",
+    "step": 2,
+    "version": "1.0.0",
+    "created_at": "2025-08-19T13:44:34.911238",
+    "model_name": "claude-3-5-sonnet-20241022",
+    "temperature": 0.3,
+    "seed": 42,
+    "prompt_hash": "f936e510fe3de99e6bd0f6d1dbb5f81de0f2c9104551857041548cacb766113d",
+    "validator_version": "1.0.0",
+    "hash_upstream": "9249feb4b69b8e7bcf2dc32cc21fc61c00f04b7005e269495d541c9221fa1058"
+  },
+  "sentences": {
+    "all": [
+      "Now, in the city, Mira, a internal affairs detective, must solve a police shooting before a deadline.",
+      "When falling for the prime suspect, Officer Hayes forces Mira to commit, there is no turning back.",
+      "After a brutal setback, Mira realizes the old belief was false and must now change tactics in line with the moral premise.",
+      "Pressure escalates until only one final path remains, leaving no choice but to drive toward the endgame.",
+      "In a final confrontation, Mira faces the opposition and wins, achieving the goal."
+    ],
+    "setup": "Now, in the city, Mira, a internal affairs detective, must solve a police shooting before a deadline.",
+    "disaster_1": "When falling for the prime suspect, Officer Hayes forces Mira to commit, there is no turning back.",
+    "disaster_2": "After a brutal setback, Mira realizes the old belief was false and must now change tactics in line with the moral premise.",
+    "disaster_3": "Pressure escalates until only one final path remains, leaving no choice but to drive toward the endgame.",
+    "resolution": "In a final confrontation, Mira faces the opposition and wins, achieving the goal."
+  },
+  "sentence_count": 5,
+  "moral_pivot": {
+    "pivot_shown": true,
+    "false_belief": "protect themselves at the cost of justice",
+    "true_belief": "act with courage"
+  },
+  "causality_check": {
+    "has_coincidence": false,
+    "causal_chain": true
+  },
+  "disasters": {
+    "d1_present": true,
+    "d2_present": true,
+    "d3_present": true,
+    "d1_type": "event",
+    "d2_type": "event",
+    "d3_type": "event"
+  }
+}

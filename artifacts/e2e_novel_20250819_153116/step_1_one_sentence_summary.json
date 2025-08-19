@@ -1,0 +1,23 @@
+{
+  "logline": "Maya, a homicide detective, must solve a corporate murder despite falling for her prime suspect, tech CEO James Chen.",
+  "word_count": 19,
+  "metadata": {
+    "project_id": "e2e_novel_20250819_153116",
+    "step": 1,
+    "version": "1.0.0",
+    "created_at": "2025-08-19T15:31:29.297020",
+    "model_name": "claude-3-5-sonnet-20241022",
+    "temperature": 0.2,
+    "seed": 42,
+    "prompt_hash": "cbc0bbc130f68aa4142f948fe243b3f444e4f5f076dba05666e9a92dbd832770",
+    "validator_version": "1.0.0",
+    "hash_upstream": "215ad71aa74ee2cdc0e23702c317838405e87087b6f6bee09c8dbeeca6f4e8ef"
+  },
+  "lead_count": 2,
+  "components": {
+    "lead_name": "Maya",
+    "lead_role": "homicide detective",
+    "external_goal": "solve a corporate murder",
+    "opposition": "falling for her prime suspect, tech CEO James Chen"
+  }
+}

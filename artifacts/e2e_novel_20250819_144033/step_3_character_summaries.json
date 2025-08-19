@@ -1,0 +1,70 @@
+{
+  "characters": [
+    {
+      "role": "Protagonist",
+      "name": "Mira",
+      "goal": "expose falling for the prime suspect's forbidden alibi",
+      "ambition": "justice",
+      "values": [
+        "Nothing is more important than protecting the innocent.",
+        "Nothing is more important than telling the truth.",
+        "Nothing is more important than keeping my word."
+      ],
+      "conflict": "falling for the prime suspect's forbidden alibi blocks Mira by controlling key evidence and allies.",
+      "epiphany": "Realizes that working strictly by the book empowers corruption and learns to act with courageous flexibility.",
+      "one_sentence_summary": "Mira, a internal affairs detective, must expose falling for the prime suspect's forbidden alibi despite falling for the prime suspect's forbidden alibi.",
+      "one_paragraph_summary": "Beginning: Mira commits to expose falling for the prime suspect's forbidden alibi (D1). Middle: after a devastating reversal, Mira realizes the old belief was false and must change tactics (D2). End: pressure narrows to one path and forces the final confrontation (D3)."
+    },
+    {
+      "role": "Antagonist",
+      "name": "Morrison",
+      "goal": "protect the operation and stop the investigation",
+      "ambition": "power",
+      "values": [
+        "Nothing is more important than maintaining control.",
+        "Nothing is more important than security.",
+        "Nothing is more important than my family's future."
+      ],
+      "conflict": "Opposes Mira by withholding resources and deploying corrupt leverage to stop the goal.",
+      "epiphany": "NONE",
+      "epiphany_justification": "Believes the ends justify the means; admits no change because control is the only way to survive.",
+      "one_sentence_summary": "A powerful rival blocks the investigation to keep his empire intact.",
+      "one_paragraph_summary": "Act I: sets traps that commit the hero (D1). Act II: escalates pressure and reveals the hero's false belief (D2). Act III: forces a single endgame that creates the showdown (D3).",
+      "interiority": {
+        "motive_history": "Early failures and threats to his family taught him that control protects those he loves.",
+        "justification": "He frames corruption as necessary to provide security and stability."
+      }
+    }
+  ],
+  "character_count": 2,
+  "metadata": {
+    "project_id": "e2e_novel_20250819_144033",
+    "step": 3,
+    "version": "1.0.0",
+    "created_at": "2025-08-19T14:43:21.376465",
+    "model_name": "claude-3-5-sonnet-20241022",
+    "temperature": 0.4,
+    "seed": 42,
+    "prompt_hash": "5130a18c8c5ea6a2200929955bfa9a2be093b410fa2eac18c8eabd1bab68acbe",
+    "validator_version": "1.0.0",
+    "hash_upstream": "124d7a5d0a5f878868d434821cf0a9e25a9765ff66bb533bbef5a43198ce14fe"
+  },
+  "protagonist_antagonist_collision": {
+    "collision_verified": true,
+    "collision_point": "Direct opposition of goals"
+  },
+  "disaster_alignment": {
+    "d1_characters": [
+      "Mira",
+      "Morrison"
+    ],
+    "d2_characters": [
+      "Mira",
+      "Morrison"
+    ],
+    "d3_characters": [
+      "Mira",
+      "Morrison"
+    ]
+  }
+}

@@ -1,0 +1,16 @@
+STEP 1: ONE SENTENCE SUMMARY (LOGLINE)
+==================================================
+
+LOGLINE: Maya, a homicide detective, must solve a corporate murder despite falling for her prime suspect, tech CEO James Chen.
+
+Word Count: 19/25
+Named Leads: 2/2
+
+PARSED COMPONENTS:
+  lead_name: Maya
+  lead_role: homicide detective
+  external_goal: solve a corporate murder
+  opposition: falling for her prime suspect, tech CEO James Chen
+
+Generated: 2025-08-19T15:31:29.297020
+Version: 1.0.0

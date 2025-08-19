@@ -1,0 +1,27 @@
+{
+  "project_id": "smoketestnovel_20250819_141512",
+  "current_step": 3,
+  "steps": {
+    "step_0": {
+      "step": 0,
+      "current_step": 0,
+      "valid": true
+    },
+    "step_1": {
+      "step": 1,
+      "current_step": 1,
+      "valid": true
+    },
+    "step_2": {
+      "step": 2,
+      "current_step": 2,
+      "valid": true
+    },
+    "step_3": {
+      "step": 3,
+      "current_step": 3,
+      "valid": true
+    }
+  },
+  "last_updated": "2025-08-19T14:19:35.281807"
+}

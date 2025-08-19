@@ -1,0 +1,23 @@
+{
+  "logline": "Mira, an internal affairs detective, must solve a police shooting despite falling for the prime suspect, her target's brother.",
+  "word_count": 19,
+  "metadata": {
+    "project_id": "smoketestnovel_20250819_140919",
+    "step": 1,
+    "version": "1.0.0",
+    "created_at": "2025-08-19T14:09:31.444447",
+    "model_name": "claude-3-5-sonnet-20241022",
+    "temperature": 0.2,
+    "seed": 42,
+    "prompt_hash": "c9f4b4ee262ab27d4af84fa942aa0c0f00a74cd4c0ec9026350bf9fc1a924cb5",
+    "validator_version": "1.0.0",
+    "hash_upstream": "91d34c3d68571e30bfc5c7843cf8fb3393be45eb0e46de2beeb9619f89154aef"
+  },
+  "lead_count": 1,
+  "components": {
+    "lead_name": "Mira",
+    "lead_role": "internal affairs detective",
+    "external_goal": "solve a police shooting",
+    "opposition": "falling for the prime suspect, her target's brother"
+  }
+}

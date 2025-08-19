@@ -1,0 +1,16 @@
+{
+  "category": "Police Procedural",
+  "story_kind": "A mentor-betrayal story where a rookie officer must expose their corrupt superior",
+  "audience_delight": "Readers will experience puzzle-solving through evidence trails, slow-burn suspense, shocking betrayal reveals, and a justice-served payoff",
+  "metadata": {
+    "project_id": "full_e2e_test_novel_20250819_175503",
+    "step": 0,
+    "version": "1.0.0",
+    "created_at": "2025-08-19T17:55:16.036596",
+    "model_name": "claude-3-5-sonnet-20241022",
+    "temperature": 0.3,
+    "seed": 42,
+    "prompt_hash": "faa09707d8d06ed0977f70d02de2e6f9534eb2921e2ddf4434f0720342cc307a",
+    "validator_version": "1.0.0"
+  }
+}

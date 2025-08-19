@@ -1,0 +1,9 @@
+STEP 0: FIRST THINGS FIRST
+==================================================
+
+Category: Police Procedural
+Story Kind: A mentor-betrayal story where a rookie officer must expose their corrupt superior
+Audience Delight: Readers will experience puzzle-solving through evidence trails, slow-burn suspense, shocking betrayal reveals, and a justice-served payoff
+
+Generated: 2025-08-19T17:55:16.036596
+Version: 1.0.0

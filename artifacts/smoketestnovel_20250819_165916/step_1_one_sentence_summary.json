@@ -1,0 +1,23 @@
+{
+  "logline": "Mira, an internal affairs detective, must solve a judge's murder despite falling for the prime suspect, his grieving daughter.",
+  "word_count": 19,
+  "metadata": {
+    "project_id": "smoketestnovel_20250819_165916",
+    "step": 1,
+    "version": "1.0.0",
+    "created_at": "2025-08-19T16:59:30.897781",
+    "model_name": "claude-3-5-sonnet-20241022",
+    "temperature": 0.2,
+    "seed": 42,
+    "prompt_hash": "627aa5b4e462bf3a987cea38a1d7b88ece81e8447dee9d19a00aba1ec6a84bae",
+    "validator_version": "1.0.0",
+    "hash_upstream": "b039213d0090cc98f88762b2c188aed4c331e6786345ddbd473d87cc71af5868"
+  },
+  "lead_count": 1,
+  "components": {
+    "lead_name": "Mira",
+    "lead_role": "internal affairs detective",
+    "external_goal": "solve a judge's murder",
+    "opposition": "falling for the prime suspect, his grieving daughter"
+  }
+}

@@ -12,28 +12,57 @@ class Step6Prompt:
     VERSION = "1.0.0"
 
     SYSTEM_PROMPT = """You are the Snowflake Method Step 6 Planner.
-Write a 4–5 page long synopsis expanding the Step 4 one-page synopsis.
+Write a DETAILED 4-5 page long synopsis (2000-3000 words MINIMUM) expanding the Step 4 one-page synopsis.
+Each of the 5 paragraphs from Step 4 must expand to 400-600 words.
 Keep plain, literal language; ensure strict cause→effect; no coincidences.
+CRITICAL: The synopsis must be AT LEAST 2000 words long.
 """
 
-    USER_PROMPT_TEMPLATE = """Generate a long synopsis from Step 4.
+    USER_PROMPT_TEMPLATE = """Generate a LONG synopsis from Step 4. This must be 2000-3000 words total.
 
-STEP 4 (Five Paragraphs):
-P1: {p1}
-P2: {p2}
-P3: {p3}
-P4: {p4}
-P5: {p5}
+STEP 4 (Five Paragraphs to Expand):
+P1 (Setup): {p1}
+P2 (Disaster 1): {p2}
+P3 (Disaster 2): {p3}
+P4 (Disaster 3): {p4}
+P5 (Ending): {p5}
 
-REQUIREMENTS:
-- Expand each paragraph into several causal beats spanning Acts I–III
-- Make forcing function (D1), moral pivot (D2), and bottleneck (D3) explicit
-- Maintain POV neutrality; minimize proper names beyond principals
-- Keep outcomes observable, not thematic
+EXPANSION REQUIREMENTS:
+1. PARAGRAPH 1 → ACT I (400-600 words):
+   - Expand setup with specific scenes and character introductions
+   - Build to the forcing function that ends Act I
+   - Must explicitly state "forces" or "no way back" for the commitment point
+
+2. PARAGRAPH 2 → ACT IIa (400-600 words):
+   - Detail the escalating conflicts after Disaster 1
+   - Show protagonist trying original tactics that fail
+   - Must explicitly mention the "pivot" or "new tactic" at midpoint
+
+3. PARAGRAPH 3 → ACT IIb (400-600 words):
+   - Show the moral premise shift after Disaster 2
+   - Detail new approach based on changed values
+   - Must explicitly state the moral/identity transformation
+
+4. PARAGRAPH 4 → ACT III Setup (400-600 words):
+   - Collapse all retreat options after Disaster 3
+   - Must explicitly name the "bottleneck" or state "only path"
+   - Build maximum pressure before climax
+
+5. PARAGRAPH 5 → CLIMAX & RESOLUTION (400-600 words):
+   - Detail the final confrontation
+   - Show how the moral shift enables victory
+   - Provide specific resolution for all threads
+
+CRITICAL REQUIREMENTS:
+- Total length: 2000-3000 words (NOT optional)
+- Include ALL disaster markers explicitly
+- Use terms: "forces", "pivot", "bottleneck" at appropriate points
+- Every event must causally link to the next
+- Be specific with scenes, not general summaries
 
 OUTPUT FORMAT (JSON):
 {{
-  "long_synopsis": "<multi-paragraph text>"
+  "long_synopsis": "<2000-3000 word detailed synopsis with clear paragraph breaks>"
 }}
 """
 

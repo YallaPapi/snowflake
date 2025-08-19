@@ -1,0 +1,19 @@
+{
+  "project_id": "smoketestnovel_20250819_153616",
+  "project_name": "SmokeTestNovel",
+  "created_at": "2025-08-19T15:36:16.006422",
+  "current_step": 8,
+  "steps_completed": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8
+  ],
+  "pipeline_version": "1.0.0",
+  "last_updated": "2025-08-19T16:25:11.364550"
+}

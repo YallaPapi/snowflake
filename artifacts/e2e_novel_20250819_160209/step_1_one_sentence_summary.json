@@ -1,0 +1,23 @@
+{
+  "logline": "Maya, an internal affairs detective, must solve a corporate murder despite falling for the charismatic prime suspect.",
+  "word_count": 17,
+  "metadata": {
+    "project_id": "e2e_novel_20250819_160209",
+    "step": 1,
+    "version": "1.0.0",
+    "created_at": "2025-08-19T16:02:20.331745",
+    "model_name": "claude-3-5-sonnet-20241022",
+    "temperature": 0.2,
+    "seed": 42,
+    "prompt_hash": "9f14ef87025f77c30f47eb010c8d950a51abd140afb4377e5383c65d56dced95",
+    "validator_version": "1.0.0",
+    "hash_upstream": "eda5b24adfd144ae0c8db61ee00e9fd7d56b4a774abc8c63ac7e9f4cc7421d1a"
+  },
+  "lead_count": 1,
+  "components": {
+    "lead_name": "Maya",
+    "lead_role": "internal affairs detective",
+    "external_goal": "solve a corporate murder",
+    "opposition": "falling for the charismatic prime suspect"
+  }
+}

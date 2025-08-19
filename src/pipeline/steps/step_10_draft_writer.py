@@ -10,6 +10,7 @@ from typing import Dict, Any, Optional, Tuple, List
 import hashlib
 
 from src.ai.generator import AIGenerator
+from src.export.manuscript_exporter import ManuscriptExporter
 
 class Step10DraftWriter:
     """
@@ -29,6 +30,9 @@ class Step10DraftWriter:
         
         # Initialize AI generator
         self.ai_generator = AIGenerator()
+        
+        # Initialize exporter
+        self.exporter = ManuscriptExporter(project_dir)
         
         self.current_word_count = 0
         self.scenes_drafted = []
@@ -165,11 +169,15 @@ class Step10DraftWriter:
         # Save manuscript
         save_paths = self.save_manuscript(manuscript, project_id)
         
+        # Export to all formats
+        export_paths = self.exporter.export_all_formats(manuscript, project_id)
+        
         success_message = f"""
 Step 10 Complete!
 - Chapters: {manuscript['chapter_count']}
 - Scenes: {manuscript['scene_count']}
 - Words: {manuscript['total_word_count']:,} (Target: {target_words:,})
+- Formats exported: {', '.join(export_paths.keys())}
 - Saved to: {save_paths['markdown']}
 """
         

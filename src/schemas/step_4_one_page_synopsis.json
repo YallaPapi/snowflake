@@ -1,0 +1,130 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Step 4: One Page Synopsis",
+  "description": "Expands each Step 2 sentence to a full paragraph, maintaining disaster spine",
+  "type": "object",
+  "required": [
+    "paragraphs",
+    "disaster_mapping",
+    "metadata"
+  ],
+  "properties": {
+    "paragraphs": {
+      "type": "array",
+      "description": "Five paragraphs expanding the one-paragraph summary",
+      "minItems": 5,
+      "maxItems": 5,
+      "items": {
+        "type": "object",
+        "required": ["paragraph_num", "content", "source_sentence", "word_count", "disaster_anchor"],
+        "properties": {
+          "paragraph_num": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 5,
+            "description": "Paragraph number (1-5)"
+          },
+          "content": {
+            "type": "string",
+            "minLength": 100,
+            "maxLength": 500,
+            "description": "The paragraph content (100-500 words)"
+          },
+          "source_sentence": {
+            "type": "string",
+            "description": "The original Step 2 sentence this expands"
+          },
+          "word_count": {
+            "type": "integer",
+            "minimum": 100,
+            "maximum": 500,
+            "description": "Word count of the paragraph"
+          },
+          "disaster_anchor": {
+            "type": ["string", "null"],
+            "enum": ["D1", "D2", "D3", null],
+            "description": "Which disaster this paragraph contains (if any)"
+          }
+        }
+      }
+    },
+    "disaster_mapping": {
+      "type": "object",
+      "description": "Maps disasters to their paragraph positions",
+      "required": ["d1_paragraph", "d2_paragraph", "d3_paragraph"],
+      "properties": {
+        "d1_paragraph": {
+          "type": "integer",
+          "enum": [2],
+          "description": "Paragraph containing Disaster 1 (should be paragraph 2)"
+        },
+        "d2_paragraph": {
+          "type": "integer",
+          "enum": [3],
+          "description": "Paragraph containing Disaster 2 (should be paragraph 3)"
+        },
+        "d3_paragraph": {
+          "type": "integer",
+          "enum": [4],
+          "description": "Paragraph containing Disaster 3 (should be paragraph 4)"
+        }
+      }
+    },
+    "total_word_count": {
+      "type": "integer",
+      "minimum": 500,
+      "maximum": 2500,
+      "description": "Total word count for the one-page synopsis"
+    },
+    "metadata": {
+      "type": "object",
+      "required": ["project_id", "step", "version", "created_at", "hash_upstream"],
+      "properties": {
+        "project_id": {
+          "type": "string",
+          "description": "Project UUID"
+        },
+        "step": {
+          "type": "integer",
+          "const": 4,
+          "description": "Step number (always 4)"
+        },
+        "version": {
+          "type": "string",
+          "pattern": "^\\d+\\.\\d+\\.\\d+$",
+          "description": "Semantic version"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO 8601 timestamp"
+        },
+        "model_name": {
+          "type": "string",
+          "description": "AI model used for generation"
+        },
+        "temperature": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 2,
+          "description": "Model temperature setting"
+        },
+        "prompt_hash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$",
+          "description": "SHA256 hash of the prompt"
+        },
+        "validator_version": {
+          "type": "string",
+          "pattern": "^\\d+\\.\\d+\\.\\d+$",
+          "description": "Validator version"
+        },
+        "hash_upstream": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$",
+          "description": "SHA256 hash of Step 2 artifact"
+        }
+      }
+    }
+  }
+}

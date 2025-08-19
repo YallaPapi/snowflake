@@ -1,0 +1,15 @@
+{
+  "moral_premise": "People succeed when they act with courage, and they fail when they protect themselves at the cost of justice.",
+  "metadata": {
+    "project_id": "smoketestnovel_20250819_140919",
+    "step": 2,
+    "version": "1.0.0",
+    "created_at": "2025-08-19T14:10:08.417396",
+    "model_name": "claude-3-5-sonnet-20241022",
+    "temperature": 0.3,
+    "seed": 42,
+    "prompt_hash": "ea72e0775fc0d9ed16ad906ccb3685c91a54390cc95a6ef654d6d03712229cae",
+    "validator_version": "1.0.0",
+    "hash_upstream": "2890bc6828d270375cb0ca310686fcb098a90ce4bb8f7b8bc850b52be3bb9422"
+  }
+}

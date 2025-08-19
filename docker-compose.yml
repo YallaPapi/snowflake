@@ -1,0 +1,87 @@
+version: '3.8'
+
+services:
+  # Main API service
+  api:
+    build: .
+    container_name: snowflake-api
+    ports:
+      - "8000:8000"
+    environment:
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - ARTIFACTS_DIR=/app/artifacts
+    volumes:
+      - ./artifacts:/app/artifacts
+      - ./logs:/app/logs
+    command: python -m uvicorn src.api.main:app --host 0.0.0.0 --port 8000 --reload
+    restart: unless-stopped
+    networks:
+      - snowflake-network
+
+  # Observability dashboard
+  dashboard:
+    build: .
+    container_name: snowflake-dashboard
+    ports:
+      - "5000:5000"
+    environment:
+      - ARTIFACTS_DIR=/app/artifacts
+    volumes:
+      - ./artifacts:/app/artifacts:ro
+    command: python -m src.observability.server
+    restart: unless-stopped
+    networks:
+      - snowflake-network
+
+  # Background worker for long-running tasks
+  worker:
+    build: .
+    container_name: snowflake-worker
+    environment:
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - ARTIFACTS_DIR=/app/artifacts
+    volumes:
+      - ./artifacts:/app/artifacts
+      - ./logs:/app/logs
+    command: python -m src.worker.main
+    restart: unless-stopped
+    networks:
+      - snowflake-network
+
+  # Redis for task queue (optional)
+  redis:
+    image: redis:7-alpine
+    container_name: snowflake-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    restart: unless-stopped
+    networks:
+      - snowflake-network
+
+  # Nginx reverse proxy (optional for production)
+  nginx:
+    image: nginx:alpine
+    container_name: snowflake-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./ssl:/etc/nginx/ssl:ro
+    depends_on:
+      - api
+      - dashboard
+    restart: unless-stopped
+    networks:
+      - snowflake-network
+
+networks:
+  snowflake-network:
+    driver: bridge
+
+volumes:
+  redis-data:

@@ -1,0 +1,59 @@
+STEP 3: CHARACTER SUMMARY SHEETS
+============================================================
+
+CHARACTER 1: Maya (Protagonist)
+----------------------------------------
+Goal: expose falling for her prime suspect, tech CEO James Chen
+Ambition: justice
+
+Values:
+  • Nothing is more important than protecting the innocent.
+  • Nothing is more important than telling the truth.
+  • Nothing is more important than keeping my word.
+
+Conflict: falling for her prime suspect, tech CEO James Chen blocks Maya by controlling key evidence and allies.
+Epiphany: Realizes that working strictly by the book empowers corruption and learns to act with courageous flexibility.
+
+One-Sentence Arc: Maya, a homicide detective, must expose falling for her prime suspect, tech CEO James Chen despite falling for her prime suspect, tech CEO James Chen.
+
+One-Paragraph Arc:
+Beginning: Maya commits to expose falling for her prime suspect, tech CEO James Chen (D1). Middle: after a devastating reversal, Maya realizes the old belief was false and must change tactics (D2). End: pressure narrows to one path and forces the final confrontation (D3).
+
+CHARACTER 2: Morrison (Antagonist)
+----------------------------------------
+Goal: protect the operation and stop the investigation
+Ambition: power
+
+Values:
+  • Nothing is more important than maintaining control.
+  • Nothing is more important than security.
+  • Nothing is more important than my family's future.
+
+Conflict: Opposes Maya by withholding resources and deploying corrupt leverage to stop the goal.
+Epiphany: NONE
+  Justification: Believes the ends justify the means; admits no change because control is the only way to survive.
+
+One-Sentence Arc: A powerful rival blocks the investigation to keep his empire intact.
+
+One-Paragraph Arc:
+Act I: sets traps that commit the hero (D1). Act II: escalates pressure and reveals the hero's false belief (D2). Act III: forces a single endgame that creates the showdown (D3).
+
+Interiority:
+  Motive: Early failures and threats to his family taught him that control protects those he loves.
+  Justification: He frames corruption as necessary to provide security and stability.
+  Vulnerability: MISSING
+
+PROTAGONIST-ANTAGONIST COLLISION:
+----------------------------------------
+Verified: Yes
+Collision Point: Direct opposition of goals
+
+DISASTER ALIGNMENT:
+----------------------------------------
+D1 Characters: Maya, Morrison
+D2 Characters: Maya, Morrison
+D3 Characters: Maya, Morrison
+
+Total Characters: 2
+Generated: 2025-08-19T15:34:12.451785
+Version: 1.0.0

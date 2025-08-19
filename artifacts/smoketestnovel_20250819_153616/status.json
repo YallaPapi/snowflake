@@ -1,0 +1,58 @@
+{
+  "project_id": "smoketestnovel_20250819_153616",
+  "current_step": 8,
+  "steps": {
+    "step_0": {
+      "step": 0,
+      "current_step": 0,
+      "valid": true
+    },
+    "step_1": {
+      "step": 1,
+      "current_step": 1,
+      "valid": true
+    },
+    "step_2": {
+      "step": 2,
+      "current_step": 2,
+      "valid": true
+    },
+    "step_3": {
+      "step": 3,
+      "current_step": 3,
+      "valid": true
+    },
+    "step_4": {
+      "step": 4,
+      "message": "VALIDATION FAILED:\nERROR: MISSING: synopsis_paragraphs object | FIX: Output object must include 'synopsis_paragraphs' with 5 strings",
+      "current_step": 4,
+      "valid": true
+    },
+    "step_5": {
+      "step": 5,
+      "current_step": 5,
+      "valid": true
+    },
+    "step_6": {
+      "step": 6,
+      "message": "VALIDATION FAILED:\nERROR: TOO SHORT: long_synopsis should be several pages (>=1000 chars for MVP) | FIX: Expand each act with causal beats and observable outcomes\nERROR: MISSING MORAL PIVOT cue (mention 'pivot' or 'new tactic') | FIX: Show values/identity hit and pivot to new tactic in Act IIa\nERROR: MISSING BOTTLENECK cue (mention 'bottleneck' or 'only path') | FIX: Collapse options in Act IIb and name the bottleneck to endgame\nERROR: MISSING FORCING FUNCTION cue (mention 'forces' or 'no way back') | FIX: Name the forcing function at end of Act I that makes retreat impossible",
+      "current_step": 6,
+      "valid": true
+    },
+    "step_7": {
+      "step": 7,
+      "current_step": 7,
+      "valid": true
+    },
+    "step_8": {
+      "step": 8,
+      "current_step": 8,
+      "valid": true
+    },
+    "step_9": {
+      "step": 9,
+      "message": "VALIDATION FAILED:\nERROR: TOO FEW BRIEFS: Need at least 20, found 3 | FIX: Review Step 9 requirements in guide\nERROR: Brief 1 GOAL NOT CONCRETE: Use action verb + object | FIX: Use format: verb + object (steal the ledger)\nERROR: Brief 1 CONFLICT NOT CONCRETE: Name specific obstacles | FIX: Name specific obstacles: guards, alarms, rival\nERROR: Brief 1 SETBACK NO CHANGE: Must worsen situation | FIX: Show how situation worsens or options narrow\nERROR: Brief 1 STAKES NOT CONCRETE: State specific consequences | FIX: State what dies/fails/ends if they fail\nERROR: Brief 1 NO CHARACTER LINK: Must link to character goal | FIX: Link to character's goal from Step 3\nERROR: Brief 2 DILEMMA NO CHOICE: Must present two options | FIX: Present two clear options with 'either...or'\nERROR: Brief 2 DILEMMA NO COST: Both options must hurt | FIX: Make both options painful with real losses\nERROR: Brief 2 STAKES NOT CONCRETE: State specific consequences | FIX: State what dies/fails/ends if they fail\nERROR: Brief 2 NO CHARACTER LINK: Must link to character goal | FIX: Link to character's goal from Step 3\nERROR: Brief 3 GOAL NOT CONCRETE: Use action verb + object | FIX: Use format: verb + object (steal the ledger)\nERROR: Brief 3 CONFLICT NOT CONCRETE: Name specific obstacles | FIX: Name specific obstacles: guards, alarms, rival\nERROR: Brief 3 SETBACK NO CHANGE: Must worsen situation | FIX: Show how situation worsens or options narrow\nERROR: Brief 3 STAKES NOT CONCRETE: State specific consequences | FIX: State what dies/fails/ends if they fail\nERROR: Brief 3 NO CHARACTER LINK: Must link to character goal | FIX: Link to character's goal from Step 3\nERROR: D1 NOT LINKED: No brief links to Disaster 1 | FIX: Link disaster scenes to disaster anchors\nERROR: D2 NOT LINKED: No brief links to Disaster 2 | FIX: Link disaster scenes to disaster anchors\nERROR: D3 NOT LINKED: No brief links to Disaster 3 | FIX: Link disaster scenes to disaster anchors"
+    }
+  },
+  "last_updated": "2025-08-19T16:45:14.721784"
+}

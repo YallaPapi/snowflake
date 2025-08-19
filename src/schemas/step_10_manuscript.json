@@ -1,0 +1,207 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Step 10: Manuscript",
+  "description": "Complete novel manuscript with all scenes drafted",
+  "type": "object",
+  "required": [
+    "title",
+    "chapters",
+    "scenes",
+    "total_word_count",
+    "metadata"
+  ],
+  "properties": {
+    "title": {
+      "type": "string",
+      "description": "Novel title"
+    },
+    "chapters": {
+      "type": "array",
+      "description": "All chapters in the novel",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["number", "scenes", "word_count"],
+        "properties": {
+          "number": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Chapter number"
+          },
+          "title": {
+            "type": "string",
+            "description": "Optional chapter title"
+          },
+          "scenes": {
+            "type": "array",
+            "description": "Scenes in this chapter",
+            "minItems": 1,
+            "items": {
+              "$ref": "#/definitions/scene"
+            }
+          },
+          "word_count": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Total word count for chapter"
+          }
+        }
+      }
+    },
+    "scenes": {
+      "type": "array",
+      "description": "All scenes in the novel (flat list)",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/definitions/scene"
+      }
+    },
+    "total_word_count": {
+      "type": "integer",
+      "minimum": 1000,
+      "description": "Total word count for entire manuscript"
+    },
+    "chapter_count": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Total number of chapters"
+    },
+    "scene_count": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Total number of scenes"
+    },
+    "disaster_spine": {
+      "type": "object",
+      "description": "Tracks the three disasters",
+      "required": ["d1_scene", "d2_scene", "d3_scene"],
+      "properties": {
+        "d1_scene": {
+          "type": "integer",
+          "description": "Scene number containing Disaster 1"
+        },
+        "d2_scene": {
+          "type": "integer",
+          "description": "Scene number containing Disaster 2"
+        },
+        "d3_scene": {
+          "type": "integer",
+          "description": "Scene number containing Disaster 3"
+        }
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "required": ["project_id", "step", "version", "created_at", "hash_upstream"],
+      "properties": {
+        "project_id": {
+          "type": "string",
+          "description": "Project UUID"
+        },
+        "step": {
+          "type": "integer",
+          "const": 10,
+          "description": "Step number (always 10)"
+        },
+        "version": {
+          "type": "string",
+          "pattern": "^\\d+\\.\\d+\\.\\d+$",
+          "description": "Semantic version"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO 8601 timestamp"
+        },
+        "model_name": {
+          "type": "string",
+          "description": "AI model used for generation"
+        },
+        "temperature": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 2,
+          "description": "Model temperature setting"
+        },
+        "hash_upstream": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$",
+          "description": "SHA256 hash of Steps 8 & 9 artifacts"
+        },
+        "generator": {
+          "type": "string",
+          "description": "Generator system name and version"
+        }
+      }
+    }
+  },
+  "definitions": {
+    "scene": {
+      "type": "object",
+      "required": ["scene_num", "pov", "type", "word_count", "prose"],
+      "properties": {
+        "scene_num": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Scene number in sequence"
+        },
+        "chapter": {
+          "type": "string",
+          "description": "Chapter this scene belongs to"
+        },
+        "pov": {
+          "type": "string",
+          "description": "POV character name"
+        },
+        "type": {
+          "type": "string",
+          "enum": ["Proactive", "Reactive"],
+          "description": "Scene type (Proactive or Reactive)"
+        },
+        "word_count": {
+          "type": "integer",
+          "minimum": 100,
+          "description": "Word count for this scene"
+        },
+        "prose": {
+          "type": "string",
+          "minLength": 100,
+          "description": "The actual scene prose"
+        },
+        "disaster_anchor": {
+          "type": ["string", "null"],
+          "enum": ["D1", "D2", "D3", null],
+          "description": "If this scene contains a disaster"
+        },
+        "act": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 3,
+          "description": "Act number (1, 2, or 3)"
+        },
+        "triad": {
+          "type": "object",
+          "description": "The scene's triad elements",
+          "oneOf": [
+            {
+              "required": ["goal", "conflict", "setback"],
+              "properties": {
+                "goal": {"type": "string"},
+                "conflict": {"type": "string"},
+                "setback": {"type": "string"}
+              }
+            },
+            {
+              "required": ["reaction", "dilemma", "decision"],
+              "properties": {
+                "reaction": {"type": "string"},
+                "dilemma": {"type": "string"},
+                "decision": {"type": "string"}
+              }
+            }
+          ]
+        }
+      }
+    }
+  }
+}

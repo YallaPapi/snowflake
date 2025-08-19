@@ -1,0 +1,67 @@
+{
+  "bibles": [
+    {
+      "name": "Example Character",
+      "physical": {
+        "age": "30",
+        "height": "5'10\"",
+        "build": "Athletic",
+        "distinguishing_features": "Scar above left eye",
+        "appearance": "Business casual, well-groomed"
+      },
+      "personality": {
+        "traits": [
+          "Determined",
+          "Analytical",
+          "Reserved"
+        ],
+        "strengths": [
+          "Problem-solving",
+          "Loyalty"
+        ],
+        "flaws": [
+          "Overthinking",
+          "Trust issues"
+        ]
+      },
+      "environment": {
+        "home": "Modern apartment in city",
+        "work": "Corporate office",
+        "social_circle": "Small but close-knit"
+      },
+      "psychology": {
+        "wound": "Childhood abandonment",
+        "lie": "Success equals worth",
+        "need": "To learn self-acceptance",
+        "want": "Professional achievement"
+      },
+      "voice_notes": [
+        "Speaks precisely, choosing words carefully",
+        "Rarely uses contractions",
+        "Professional tone dominates"
+      ],
+      "contradictions": [
+        "Craves connection but pushes people away",
+        "Projects confidence while deeply insecure"
+      ],
+      "plot_beats": [
+        "Inciting incident: Promotion opportunity",
+        "Midpoint: Forced to work with rival",
+        "Climax: Must choose between career and relationships"
+      ],
+      "moral_premise_alignment": "Character arc demonstrates that pursuing success at all costs leads to isolation, while authentic connections lead to fulfillment"
+    }
+  ],
+  "metadata": {
+    "project_id": "smoketestnovel_20250819_153616",
+    "step": 7,
+    "version": "1.0.0",
+    "created_at": "2025-08-19T16:23:11.610341",
+    "model_name": "claude-3-5-sonnet-20241022",
+    "temperature": 0.3,
+    "seed": null,
+    "prompt_hash": "94847ee949aee9fbb9be0bd0b57207afc52b3d031f43b553c0ed4c0473670381",
+    "validator_version": "1.0.0",
+    "hash_upstream": "6d39fa11902470c249bafdf7bb5a9f70e51faad5c978865ebf4bb96ac55bb253"
+  }
+}

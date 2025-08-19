@@ -1,0 +1,21 @@
+{
+  "synopsis_paragraphs": {
+    "paragraph_1": "Internal Affairs Detective Mira Chen receives a career-defining case: investigating a police shooting that left an unarmed teenager dead in a gentrifying neighborhood. With community tensions rising and the police union demanding a quick resolution, Mira has just five days to determine if Officer Hayes acted in legitimate self-defense or committed murder. Her initial review of bodycam footage reveals concerning inconsistencies, prompting her to dig deeper despite pressure from her supervisor to wrap up the case quickly.",
+    "paragraph_2": "As Mira investigates Hayes, she discovers his exemplary record of de-escalating conflicts in troubled neighborhoods and his genuine commitment to community policing. Their interviews reveal a complex person wrestling with the same systemic issues she faces as a minority officer. When Hayes provides evidence suggesting the shooting was orchestrated by corrupt officers, Mira must choose between pursuing this larger conspiracy or accepting the simple narrative pushed by her department. Her growing personal connection to Hayes forces her hand when he's targeted by the same officers, making her his only ally and eliminating any possibility of remaining neutral.",
+    "paragraph_3": "Mira's investigation suffers a devastating setback when key evidence disappears and her star witness is found dead - officially ruled a suicide. Her identity as a 'good cop' who plays by the rules shatters when she realizes her own careful compliance has made her complicit in a corrupt system. Rejecting her long-held belief that working within the system brings change, she embraces the moral truth that real justice requires personal sacrifice. She pivots to building a covert case using unauthorized surveillance and working with community activists she previously mistrusted, knowing it could end her career but finally aligning her actions with her values.",
+    "paragraph_4": "The corrupt officers, led by a veteran lieutenant, escalate their intimidation while Mira's supervisor demands she close the case within 24 hours. Her only remaining allies are a rookie officer and a community activist who've been tracking similar incidents. When the lieutenant threatens her family and frames Hayes for another shooting, all retreat options vanish. The only path forward requires Mira to risk everything on a dangerous sting operation to expose the entire conspiracy before Hayes is silenced permanently.",
+    "paragraph_5": "In the climactic confrontation, Mira orchestrates a public meeting where she presents her evidence, forcing the corrupt officers to reveal their true nature when they attempt to silence her with violence. The ensuing chaos validates her investigation as body cameras capture their crimes in real-time. In the aftermath, Hayes is cleared, the conspiracy is exposed, and Mira emerges as a catalyst for departmental reform. Though her career path is forever altered, she finds peace in choosing justice over security."
+  },
+  "metadata": {
+    "project_id": "smoketestnovel_20250819_153616",
+    "step": 4,
+    "version": "1.0.0",
+    "created_at": "2025-08-19T15:54:29.969988",
+    "model_name": "claude-3-5-sonnet-20241022",
+    "temperature": 0.3,
+    "seed": null,
+    "prompt_hash": "5b79ec3a18448f8d81a77a9f1f0b2b2e9b025fc5ccd8b16b3e60746bc60bde67",
+    "validator_version": "1.0.0",
+    "hash_upstream": "86ae370f0006d3634efe9b9885f3341c4a8f68f4294a0d417e1cda1c4c771f1e"
+  }
+}

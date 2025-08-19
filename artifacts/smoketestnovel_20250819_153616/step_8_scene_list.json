@@ -1,0 +1,414 @@
+{
+  "scenes": [
+    {
+      "index": 1,
+      "chapter_hint": "Ch1",
+      "pov": "Mira Chen",
+      "type": "Reactive",
+      "summary": "Mira reviews Hayes' bodycam footage at 3 AM, struggling to reconcile the official report with inconsistencies in the video. Her supervisor's pressure to close the case quickly conflicts with her growing suspicions.",
+      "time": "3 AM",
+      "location": "Internal Affairs Office",
+      "word_target": 2500,
+      "status": "planned",
+      "inbound_hook": "Opening scene establishes core mystery",
+      "outbound_hook": "Discovery of video inconsistencies",
+      "disaster_anchor": null,
+      "conflict": {
+        "type": "internal",
+        "description": "Professional duty vs. gut instinct",
+        "stakes": "Career reputation and justice"
+      }
+    },
+    {
+      "index": 2,
+      "chapter_hint": "Ch1",
+      "pov": "Mira Chen",
+      "type": "Proactive",
+      "summary": "Mira confronts her supervisor about rushing the investigation closure, leading to heated argument about department priorities.",
+      "time": "Morning",
+      "location": "Supervisor's Office",
+      "word_target": 2500,
+      "status": "planned",
+      "inbound_hook": "Video inconsistencies",
+      "outbound_hook": "Professional tension escalates",
+      "disaster_anchor": null,
+      "conflict": {
+        "type": "interpersonal",
+        "description": "Authority vs integrity",
+        "stakes": "Investigation independence"
+      }
+    },
+    {
+      "index": 3,
+      "chapter_hint": "Ch1",
+      "pov": "Mira Chen",
+      "type": "Proactive",
+      "summary": "At the shooting scene, Mira encounters hostile stares from patrol officers while examining physical evidence that contradicts the official narrative.",
+      "time": "Afternoon",
+      "location": "Riverside District",
+      "word_target": 2500,
+      "status": "planned",
+      "inbound_hook": "Investigation continues despite pressure",
+      "outbound_hook": "Physical evidence raises questions",
+      "disaster_anchor": null,
+      "conflict": {
+        "type": "external",
+        "description": "Evidence gathering vs intimidation",
+        "stakes": "Investigation integrity"
+      }
+    },
+    {
+      "index": 4,
+      "chapter_hint": "Ch2",
+      "pov": "Mira Chen",
+      "type": "Reactive",
+      "summary": "An elderly witness provides testimony about Marcus Williams that contradicts police statements, while community members gather at impromptu memorial.",
+      "time": "Evening",
+      "location": "Witness Home",
+      "word_target": 2500,
+      "status": "planned",
+      "inbound_hook": "Following evidence leads",
+      "outbound_hook": "Witness perspective changes narrative",
+      "disaster_anchor": null,
+      "conflict": {
+        "type": "investigative",
+        "description": "Truth vs official narrative",
+        "stakes": "Case credibility"
+      }
+    },
+    {
+      "index": 5,
+      "chapter_hint": "Ch2",
+      "pov": "James Hayes",
+      "type": "Proactive",
+      "summary": "Hayes' first interview reveals hints of department corruption while he struggles with fear of retaliation.",
+      "time": "Morning",
+      "location": "Interview Room",
+      "word_target": 2500,
+      "status": "planned",
+      "inbound_hook": "New evidence context",
+      "outbound_hook": "Corruption hints emerge",
+      "disaster_anchor": null,
+      "conflict": {
+        "type": "moral",
+        "description": "Safety vs truth",
+        "stakes": "Personal security"
+      }
+    },
+    {
+      "index": 6,
+      "chapter_hint": "Ch2",
+      "pov": "James Hayes",
+      "type": "Reactive",
+      "summary": "Hayes is attacked outside his home by assailants wearing police boots, barely escaping with his life.",
+      "time": "Night",
+      "location": "Hayes' Home",
+      "word_target": 2500,
+      "status": "planned",
+      "inbound_hook": "Corruption revelation consequences",
+      "outbound_hook": "Attack escalates stakes",
+      "disaster_anchor": "D1",
+      "conflict": {
+        "type": "physical",
+        "description": "Survival vs identification",
+        "stakes": "Life and evidence"
+      }
+    },
+    {
+      "index": 7,
+      "chapter_hint": "Ch3",
+      "pov": "Mira Chen",
+      "type": "Proactive",
+      "summary": "Mira sets up unofficial protection for Hayes while investigating the attack, hiding her actions from supervision.",
+      "time": "Morning",
+      "location": "Safe House",
+      "word_target": 2500,
+      "status": "planned",
+      "inbound_hook": "Attack aftermath",
+      "outbound_hook": "Protection established",
+      "disaster_anchor": null,
+      "conflict": {
+        "type": "logistical",
+        "description": "Security vs secrecy",
+        "stakes": "Witness safety"
+      }
+    },
+    {
+      "index": 8,
+      "chapter_hint": "Ch3",
+      "pov": "Sarah Martinez",
+      "type": "Proactive",
+      "summary": "Sarah investigates similar incidents in Riverside while dodging police surveillance.",
+      "time": "Day",
+      "location": "Riverside Streets",
+      "word_target": 2500,
+      "status": "planned",
+      "inbound_hook": "Pattern investigation",
+      "outbound_hook": "Additional cases discovered",
+      "disaster_anchor": null,
+      "conflict": {
+        "type": "stealth",
+        "description": "Investigation vs detection",
+        "stakes": "Evidence gathering"
+      }
+    },
+    {
+      "index": 9,
+      "chapter_hint": "Ch3",
+      "pov": "Mira Chen",
+      "type": "Reactive",
+      "summary": "Surveillance footage of Hayes' attack disappears and the business owner is found dead.",
+      "time": "Evening",
+      "location": "Crime Scene",
+      "word_target": 2500,
+      "status": "planned",
+      "inbound_hook": "Evidence trail",
+      "outbound_hook": "Cover-up confirmed",
+      "disaster_anchor": null,
+      "conflict": {
+        "type": "investigative",
+        "description": "Evidence preservation vs interference",
+        "stakes": "Case integrity"
+      }
+    },
+    {
+      "index": 10,
+      "chapter_hint": "Ch4",
+      "pov": "Jessica Torres",
+      "type": "Proactive",
+      "summary": "Rookie officer Jessica secretly copies dispatch records showing pattern of staged calls.",
+      "time": "Night",
+      "location": "Dispatch Center",
+      "word_target": 2500,
+      "status": "planned",
+      "inbound_hook": "Pattern investigation",
+      "outbound_hook": "New evidence secured",
+      "disaster_anchor": null,
+      "conflict": {
+        "type": "stealth",
+        "description": "Evidence gathering vs detection",
+        "stakes": "Career risk"
+      }
+    },
+    {
+      "index": 11,
+      "chapter_hint": "Ch4",
+      "pov": "Mira Chen",
+      "type": "Reactive",
+      "summary": "Mira's office is ransacked and files stolen, forcing relocation of evidence and witnesses.",
+      "time": "Morning",
+      "location": "IA Office",
+      "word_target": 2500,
+      "status": "planned",
+      "inbound_hook": "Evidence compilation",
+      "outbound_hook": "Security breach",
+      "disaster_anchor": "D2",
+      "conflict": {
+        "type": "logistical",
+        "description": "Evidence protection vs time pressure",
+        "stakes": "Case preservation"
+      }
+    },
+    {
+      "index": 12,
+      "chapter_hint": "Ch4",
+      "pov": "Sarah Martinez",
+      "type": "Proactive",
+      "summary": "Sarah connects with more witnesses while avoiding increasing police intimidation.",
+      "time": "Afternoon",
+      "location": "Community Center",
+      "word_target": 2500,
+      "status": "planned",
+      "inbound_hook": "Evidence relocation",
+      "outbound_hook": "Witness network expands",
+      "disaster_anchor": null,
+      "conflict": {
+        "type": "social",
+        "description": "Trust building vs fear",
+        "stakes": "Testimony collection"
+      }
+    },
+    {
+      "index": 13,
+      "chapter_hint": "Ch5",
+      "pov": "Mira Chen",
+      "type": "Reactive",
+      "summary": "Lt. Reeves threatens Mira's parents' restaurant in the parking garage.",
+      "time": "Night",
+      "location": "Parking Garage",
+      "word_target": 2500,
+      "status": "planned",
+      "inbound_hook": "Investigation progress",
+      "outbound_hook": "Personal stakes escalate",
+      "disaster_anchor": null,
+      "conflict": {
+        "type": "personal",
+        "description": "Family safety vs justice",
+        "stakes": "Personal and professional"
+      }
+    },
+    {
+      "index": 14,
+      "chapter_hint": "Ch5",
+      "pov": "James Hayes",
+      "type": "Reactive",
+      "summary": "Hayes is framed for shooting a security guard, forcing immediate action.",
+      "time": "Late Night",
+      "location": "City Streets",
+      "word_target": 2500,
+      "status": "planned",
+      "inbound_hook": "Escalating pressure",
+      "outbound_hook": "Time pressure maximal",
+      "disaster_anchor": "D3",
+      "conflict": {
+        "type": "legal",
+        "description": "Justice vs frame-up",
+        "stakes": "Freedom and life"
+      }
+    },
+    {
+      "index": 15,
+      "chapter_hint": "Ch5",
+      "pov": "Mira Chen",
+      "type": "Proactive",
+      "summary": "Mira races to gather final evidence before Hayes' arrest warrant is executed.",
+      "time": "Dawn",
+      "location": "Various",
+      "word_target": 2500,
+      "status": "planned",
+      "inbound_hook": "Frame-up response",
+      "outbound_hook": "Evidence compiled",
+      "disaster_anchor": null,
+      "conflict": {
+        "type": "time",
+        "description": "Speed vs thoroughness",
+        "stakes": "Case completion"
+      }
+    },
+    {
+      "index": 16,
+      "chapter_hint": "Ch6",
+      "pov": "Sarah Martinez",
+      "type": "Proactive",
+      "summary": "Sarah organizes community support for public forum while avoiding police interference.",
+      "time": "Morning",
+      "location": "Community Sites",
+      "word_target": 2500,
+      "status": "planned",
+      "inbound_hook": "Forum preparation",
+      "outbound_hook": "Community mobilized",
+      "disaster_anchor": null,
+      "conflict": {
+        "type": "organizational",
+        "description": "Coordination vs obstruction",
+        "stakes": "Public support"
+      }
+    },
+    {
+      "index": 17,
+      "chapter_hint": "Ch6",
+      "pov": "Jessica Torres",
+      "type": "Proactive",
+      "summary": "Jessica works to secure technical setup for streaming forum while evading department surveillance.",
+      "time": "Afternoon",
+      "location": "Community Center",
+      "word_target": 2500,
+      "status": "planned",
+      "inbound_hook": "Forum preparation",
+      "outbound_hook": "Technical readiness",
+      "disaster_anchor": null,
+      "conflict": {
+        "type": "technical",
+        "description": "Setup vs interference",
+        "stakes": "Operation success"
+      }
+    },
+    {
+      "index": 18,
+      "chapter_hint": "Ch6",
+      "pov": "Mira Chen",
+      "type": "Proactive",
+      "summary": "Mira coordinates final positions and backup plans for the forum sting operation.",
+      "time": "Evening",
+      "location": "Command Center",
+      "word_target": 2500,
+      "status": "planned",
+      "inbound_hook": "Final preparation",
+      "outbound_hook": "Operation begins",
+      "disaster_anchor": null,
+      "conflict": {
+        "type": "tactical",
+        "description": "Planning vs uncertainty",
+        "stakes": "Operation success"
+      }
+    },
+    {
+      "index": 19,
+      "chapter_hint": "Ch7",
+      "pov": "Multiple",
+      "type": "Reactive",
+      "summary": "The forum sting operation unfolds from multiple perspectives as Reeves attempts intervention.",
+      "time": "Night",
+      "location": "Community Center",
+      "word_target": 2500,
+      "status": "planned",
+      "inbound_hook": "Operation active",
+      "outbound_hook": "Climax builds",
+      "disaster_anchor": null,
+      "conflict": {
+        "type": "action",
+        "description": "Control vs chaos",
+        "stakes": "Operation outcome"
+      }
+    },
+    {
+      "index": 20,
+      "chapter_hint": "Ch7",
+      "pov": "Mira Chen",
+      "type": "Reactive",
+      "summary": "Final confrontation with Reeves as evidence goes public and backup arrives.",
+      "time": "Late Night",
+      "location": "Community Center",
+      "word_target": 2500,
+      "status": "planned",
+      "inbound_hook": "Climactic buildup",
+      "outbound_hook": "Resolution",
+      "disaster_anchor": null,
+      "conflict": {
+        "type": "physical",
+        "description": "Justice vs violence",
+        "stakes": "Final outcome"
+      }
+    }
+  ],
+  "scene_count": 20,
+  "pov_distribution": {
+    "Mira Chen": 11,
+    "James Hayes": 3,
+    "Sarah Martinez": 3,
+    "Jessica Torres": 2,
+    "Multiple": 1
+  },
+  "total_word_target": 50000,
+  "conflict_validation": {
+    "all_have_conflict": true,
+    "scenes_without_conflict": []
+  },
+  "disaster_anchors": {
+    "d1_scene": 6,
+    "d2_scene": 11,
+    "d3_scene": 14
+  },
+  "metadata": {
+    "project_id": "smoketestnovel_20250819_153616",
+    "step": 8,
+    "version": "1.0.0",
+    "created_at": "2025-08-19T16:25:11.329544",
+    "model_name": "claude-3-5-sonnet-20241022",
+    "temperature": 0.3,
+    "seed": null,
+    "prompt_hash": "89c6b0e4a796e64f49e705e32774d7b2bc257ebbd15ebb4e3a52a01a4f9c03ec",
+    "validator_version": "1.0.0",
+    "hash_upstream": "b15282f1adca2d3a6cf29f2fb563f54d2bc54dc7b682cf27a053604d2d2e5885"
+  }
+}

@@ -32,8 +32,19 @@ class Step8SceneList:
             content = self.generator.generate_with_validation(prompt, self.validator, model_config)
         except Exception as e:
             return False, {}, f"AI generation failed: {e}"
+        
+        # Extract scenes from various possible formats
+        if "scenes" in content:
+            scenes = content["scenes"]
+        elif "scene_list" in content:
+            scenes = content["scene_list"]
+        elif isinstance(content, list):
+            scenes = content
+        else:
+            scenes = []
+        
         artifact = {
-            "scenes": content.get("scenes", [])
+            "scenes": scenes
         }
         # Validator will compute derived fields; ensure save after validation
         is_valid, errors = self.validator.validate(artifact)

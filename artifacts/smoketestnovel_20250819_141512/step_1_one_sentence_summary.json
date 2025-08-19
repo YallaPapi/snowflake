@@ -1,0 +1,23 @@
+{
+  "logline": "Mira, an internal affairs detective, must solve a police shooting despite falling for the officer she's investigating.",
+  "word_count": 17,
+  "metadata": {
+    "project_id": "smoketestnovel_20250819_141512",
+    "step": 1,
+    "version": "1.0.0",
+    "created_at": "2025-08-19T14:15:29.973310",
+    "model_name": "claude-3-5-sonnet-20241022",
+    "temperature": 0.2,
+    "seed": 42,
+    "prompt_hash": "bf43048d20519d2bab6aebadfb2f6f426a749bbdcbede61a234c18b624187638",
+    "validator_version": "1.0.0",
+    "hash_upstream": "5d0d3e28270c7c31c4c5beff4f9cf1b1635a7c3887ffea1500aa68b8b664d7e6"
+  },
+  "lead_count": 1,
+  "components": {
+    "lead_name": "Mira",
+    "lead_role": "internal affairs detective",
+    "external_goal": "solve a police shooting",
+    "opposition": "falling for the officer she's investigating"
+  }
+}

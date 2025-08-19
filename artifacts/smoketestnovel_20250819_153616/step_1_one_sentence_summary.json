@@ -1,0 +1,23 @@
+{
+  "logline": "Mira, an internal affairs detective, must solve a police shooting despite falling for the prime suspect, Detective Hayes.",
+  "word_count": 18,
+  "metadata": {
+    "project_id": "smoketestnovel_20250819_153616",
+    "step": 1,
+    "version": "1.0.0",
+    "created_at": "2025-08-19T15:36:31.894889",
+    "model_name": "claude-3-5-sonnet-20241022",
+    "temperature": 0.2,
+    "seed": 42,
+    "prompt_hash": "a47869072ed1c75a0fead85f77c50591f541e66407ab5ea30ec49488ad28d041",
+    "validator_version": "1.0.0",
+    "hash_upstream": "5b81961edcd15b4a70da13fa5680e61cef5ddb1bc37d1ca139de485e28bce562"
+  },
+  "lead_count": 2,
+  "components": {
+    "lead_name": "Mira",
+    "lead_role": "internal affairs detective",
+    "external_goal": "solve a police shooting",
+    "opposition": "falling for the prime suspect, Detective Hayes"
+  }
+}

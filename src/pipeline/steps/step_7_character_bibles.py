@@ -31,7 +31,20 @@ class Step7CharacterBibles:
             content = self.generator.generate_with_validation(prompt, self.validator, model_config)
         except Exception as e:
             return False, {}, f"AI generation failed: {e}"
-        artifact = {"bibles": content.get("bibles", [])}
+        
+        # Extract bibles from various possible formats
+        if "bibles" in content:
+            bibles = content["bibles"]
+        elif "character_bibles" in content:
+            bibles = content["character_bibles"]
+        elif "characters" in content:
+            bibles = content["characters"]
+        elif isinstance(content, list):
+            bibles = content
+        else:
+            bibles = []
+        
+        artifact = {"bibles": bibles}
         artifact = self.add_metadata(artifact, project_id, prompt["prompt_hash"], model_config, upstream_hash)
         ok, errs = self.validator.validate(artifact)
         if not ok:
