@@ -103,8 +103,19 @@ The engine implements all 11 steps of Randy Ingermanson's Snowflake Method:
 6. **Long Synopsis**: Expand to 4-5 pages
 7. **Character Bibles**: Complete character dossiers with 80+ attributes
 8. **Scene List**: Create scene-by-scene outline with POV and conflict
-9. **Scene Briefs**: Write Proactive/Reactive triads for each scene
-10. **First Draft**: Generate the complete manuscript
+9. **Scene Briefs**: 🆕 **Scene Engine** - Write Proactive/Reactive triads for each scene
+10. **First Draft**: 🆕 **Scene Engine** - Generate the complete manuscript with scene-by-scene prose
+
+### 🆕 Scene Engine (Steps 8-10)
+
+The **Scene Engine** implements Randy Ingermanson's scene methodology with perfect fidelity:
+
+- **⚡ Proactive Scenes**: Goal-Conflict-Setback (G-C-S) structure
+- **🔄 Reactive Scenes**: Reaction-Dilemma-Decision (R-D-D) structure  
+- **🔗 Scene Chaining**: Decision→Goal and Setback→Reactive patterns
+- **✅ 5-Point Goal Validation**: Time-bounded, possible, difficult, character-aligned, concrete
+- **📊 Scene Triage**: YES/NO/MAYBE quality assessment with automatic redesign
+- **📝 Prose Generation**: Template-based conversion from scene cards to narrative text
 
 ## 🛡️ Bulletproof Reliability System
 
@@ -155,6 +166,12 @@ Access at: http://localhost:5000
 - `POST /execute/step/{0-10}` - Execute specific step
 - `POST /generate/full` - Generate complete novel (async)
 
+### 🆕 Scene Engine API
+- `POST /scene/plan` - Plan scene with Goal-Conflict-Setback validation
+- `POST /scene/draft` - Generate prose from scene cards  
+- `POST /scene/triage` - Quality assessment (YES/NO/MAYBE)
+- `GET /scene/{id}` - Retrieve scene with chain links
+
 ### Export
 - `POST /export` - Export to DOCX/EPUB/Markdown
 - `GET /download/{id}/{format}` - Download manuscript
@@ -170,23 +187,44 @@ src/
 │   ├── steps/        # Step 0-10 implementations
 │   ├── prompts/      # AI prompt templates
 │   └── validators/   # Validation logic
+├── scene_engine/      # 🆕 Scene Engine (Steps 8-10)
+│   ├── planning/     # Scene planning service
+│   ├── drafting/     # Prose generation engine
+│   ├── triage/       # Scene quality assessment
+│   ├── examples/     # Randy Ingermanson reference scenes
+│   └── models/       # Scene card data structures
 ├── ai/               # AI model integration
 ├── export/           # DOCX/EPUB exporters
 ├── observability/    # Monitoring and events
-├── api/              # REST API server
+├── api/              # REST API server (includes Scene Engine endpoints)
 └── schemas/          # JSON schemas for validation
 ```
 
 ## 🧪 Testing
 
-Run the test suite:
+### Complete Test Suite
 ```bash
 pytest tests/ -v
 ```
 
-Run integration tests:
+### Scene Engine Integration Tests
 ```bash
-pytest tests/integration/ -v
+python tests/integration/test_scene_engine_complete.py
+```
+
+### Scene Engine Examples Validation
+```bash
+python src/scene_engine/examples/validate_examples.py
+```
+
+### Standalone Scene Chaining Tests
+```bash
+python test_chaining_standalone.py
+```
+
+### Run All Tests With Coverage
+```bash
+pytest tests/ -v --cov=src --cov-report=html
 ```
 
 ## 🚢 Production Deployment

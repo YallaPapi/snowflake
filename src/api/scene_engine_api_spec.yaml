@@ -1,0 +1,508 @@
+openapi: 3.0.3
+info:
+  title: Scene Engine API
+  description: REST API for Randy Ingermanson's Snowflake Method Scene Engine
+  version: 1.0.0
+  contact:
+    name: Scene Engine API Support
+    url: https://github.com/snowflake/scene-engine
+
+servers:
+  - url: http://localhost:8000
+    description: Local development server
+
+paths:
+  /scene/plan:
+    post:
+      summary: Generate a scene plan
+      description: Create a detailed scene plan using the Scene Planning Service
+      operationId: plan_scene
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ScenePlanRequest'
+      responses:
+        '200':
+          description: Scene plan generated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScenePlanResponse'
+        '400':
+          description: Invalid request parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Scene planning validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /scene/draft:
+    post:
+      summary: Generate scene prose
+      description: Convert a Scene Card to prose using the Scene Drafting Service
+      operationId: draft_scene
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SceneDraftRequest'
+      responses:
+        '200':
+          description: Scene prose generated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SceneDraftResponse'
+        '400':
+          description: Invalid request parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Scene drafting validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /scene/triage:
+    post:
+      summary: Perform scene triage
+      description: Evaluate and potentially redesign a scene using the Scene Triage Service
+      operationId: triage_scene
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SceneTriageRequest'
+      responses:
+        '200':
+          description: Scene triage completed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SceneTriageResponse'
+        '400':
+          description: Invalid request parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Scene triage validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /scene/{scene_id}:
+    get:
+      summary: Retrieve scene by ID
+      description: Get a scene card and associated data by scene ID
+      operationId: get_scene
+      parameters:
+        - name: scene_id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Unique identifier for the scene
+        - name: include_prose
+          in: query
+          required: false
+          schema:
+            type: boolean
+            default: false
+          description: Whether to include generated prose content
+      responses:
+        '200':
+          description: Scene retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SceneResponse'
+        '404':
+          description: Scene not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  schemas:
+    ScenePlanRequest:
+      type: object
+      required:
+        - scene_type
+        - scene_crucible
+        - pov_character
+      properties:
+        scene_type:
+          type: string
+          enum: [proactive, reactive]
+          description: Type of scene to generate
+        scene_crucible:
+          type: string
+          description: The critical situation or tension of the scene
+        pov_character:
+          type: string
+          description: Name of the point-of-view character
+        pov:
+          type: string
+          enum: [first_person, third_limited, third_omniscient]
+          default: third_limited
+          description: Point of view style
+        tense:
+          type: string
+          enum: [past, present, future]
+          default: past
+          description: Narrative tense
+        setting:
+          type: string
+          description: Location or setting description
+        context:
+          type: object
+          description: Additional context for scene planning
+          properties:
+            preceding_scene_outcome:
+              type: string
+              description: How the previous scene ended
+            character_goals:
+              type: array
+              items:
+                type: string
+              description: Character objectives relevant to this scene
+
+    ScenePlanResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          description: Whether the scene plan was generated successfully
+        scene_card:
+          $ref: '#/components/schemas/SceneCard'
+        planning_details:
+          type: object
+          description: Additional planning information
+          properties:
+            goal_validation:
+              type: object
+              description: Validation results for 5-point goal criteria
+            structure_adherence:
+              type: number
+              format: float
+              description: Score for adherence to scene structure (0-1)
+            recommendations:
+              type: array
+              items:
+                type: string
+              description: Suggestions for scene improvement
+
+    SceneDraftRequest:
+      type: object
+      required:
+        - scene_card
+      properties:
+        scene_card:
+          $ref: '#/components/schemas/SceneCard'
+        style_preferences:
+          type: object
+          description: Style and formatting preferences
+          properties:
+            dialogue_percentage:
+              type: number
+              format: float
+              minimum: 0
+              maximum: 1
+              description: Desired proportion of dialogue (0-1)
+            exposition_budget:
+              type: object
+              description: Exposition budget constraints
+              properties:
+                max_backstory_words:
+                  type: integer
+                  minimum: 0
+                max_description_words:
+                  type: integer
+                  minimum: 0
+        target_word_count:
+          type: integer
+          minimum: 100
+          maximum: 5000
+          default: 1000
+          description: Target word count for the scene
+
+    SceneDraftResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          description: Whether the scene was drafted successfully
+        scene_card:
+          $ref: '#/components/schemas/SceneCard'
+        prose_content:
+          type: string
+          description: Generated prose content
+        quality_metrics:
+          type: object
+          description: Quality assessment metrics
+          properties:
+            structure_adherence_score:
+              type: number
+              format: float
+              description: How well the prose follows scene structure (0-1)
+            pov_consistency_score:
+              type: number
+              format: float
+              description: Point of view consistency score (0-1)
+            exposition_budget_usage:
+              type: object
+              description: Exposition budget usage statistics
+            word_count:
+              type: integer
+              description: Actual word count of generated prose
+
+    SceneTriageRequest:
+      type: object
+      required:
+        - scene_card
+      properties:
+        scene_card:
+          $ref: '#/components/schemas/SceneCard'
+        prose_content:
+          type: string
+          description: Optional prose content to triage
+        triage_options:
+          type: object
+          description: Triage configuration options
+          properties:
+            auto_redesign_maybe:
+              type: boolean
+              default: true
+              description: Whether to automatically redesign MAYBE scenes
+            max_redesign_attempts:
+              type: integer
+              minimum: 1
+              maximum: 5
+              default: 3
+              description: Maximum redesign attempts for MAYBE scenes
+            classification_criteria:
+              type: object
+              description: Custom classification criteria
+              properties:
+                yes_quality_threshold:
+                  type: number
+                  format: float
+                  minimum: 0
+                  maximum: 1
+                  default: 0.8
+                no_quality_threshold:
+                  type: number
+                  format: float
+                  minimum: 0
+                  maximum: 1
+                  default: 0.5
+
+    SceneTriageResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          description: Whether the triage was completed successfully
+        decision:
+          type: string
+          enum: [YES, NO, MAYBE]
+          description: Triage classification decision
+        classification_score:
+          type: number
+          format: float
+          description: Quality score that led to classification (0-1)
+        final_scene_card:
+          $ref: '#/components/schemas/SceneCard'
+        final_prose_content:
+          type: string
+          description: Final prose content after any redesign
+        redesign_applied:
+          type: boolean
+          description: Whether redesign was applied
+        redesign_summary:
+          type: object
+          description: Summary of redesign process if applied
+          properties:
+            attempts:
+              type: integer
+              description: Number of redesign attempts made
+            corrections_applied:
+              type: array
+              items:
+                type: string
+              description: Types of corrections applied
+            quality_improvement:
+              type: number
+              format: float
+              description: Quality improvement achieved (0-1)
+        recommendations:
+          type: array
+          items:
+            type: string
+          description: Recommendations for scene improvement
+
+    SceneResponse:
+      type: object
+      properties:
+        scene_id:
+          type: string
+          description: Unique scene identifier
+        scene_card:
+          $ref: '#/components/schemas/SceneCard'
+        prose_content:
+          type: string
+          description: Generated prose content (if requested)
+        metadata:
+          type: object
+          description: Scene metadata
+          properties:
+            created_at:
+              type: string
+              format: date-time
+              description: When the scene was created
+            last_modified:
+              type: string
+              format: date-time
+              description: When the scene was last modified
+            version:
+              type: integer
+              description: Scene version number
+            triage_status:
+              type: string
+              enum: [YES, NO, MAYBE, NOT_TRIAGED]
+              description: Latest triage status
+
+    SceneCard:
+      type: object
+      required:
+        - scene_id
+        - scene_type
+        - scene_crucible
+        - pov_character
+      properties:
+        scene_id:
+          type: string
+          description: Unique identifier for the scene
+        scene_type:
+          type: string
+          enum: [proactive, reactive]
+          description: Type of scene (proactive or reactive)
+        scene_crucible:
+          type: string
+          description: The critical situation or tension of the scene
+        pov_character:
+          type: string
+          description: Point of view character name
+        pov:
+          type: string
+          enum: [first_person, third_limited, third_omniscient]
+          description: Point of view style
+        tense:
+          type: string
+          enum: [past, present, future]
+          description: Narrative tense
+        setting:
+          type: string
+          description: Scene setting or location
+        proactive:
+          type: object
+          description: Proactive scene structure (G-C-S)
+          properties:
+            goal:
+              type: string
+              description: Character goal for the scene
+            conflict:
+              type: string
+              description: Obstacle preventing goal achievement
+            setback:
+              type: string
+              description: How the goal fails or partially fails
+        reactive:
+          type: object
+          description: Reactive scene structure (R-D-D)
+          properties:
+            reaction:
+              type: string
+              description: Emotional reaction to previous events
+            dilemma:
+              type: string
+              description: Difficult choice the character faces
+            decision:
+              type: string
+              description: Decision the character makes
+
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Error message
+        detail:
+          type: string
+          description: Detailed error information
+        code:
+          type: string
+          description: Error code for programmatic handling
+        timestamp:
+          type: string
+          format: date-time
+          description: When the error occurred
+
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+
+security:
+  - ApiKeyAuth: []
+
+tags:
+  - name: Scene Planning
+    description: Operations for generating scene plans
+  - name: Scene Drafting
+    description: Operations for converting scene cards to prose
+  - name: Scene Triage
+    description: Operations for evaluating and improving scenes
+  - name: Scene Retrieval
+    description: Operations for retrieving scene data
