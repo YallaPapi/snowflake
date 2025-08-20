@@ -10,6 +10,7 @@ from typing import Dict, Any, Optional, Tuple, List
 from src.pipeline.validators.step_9_validator import Step9Validator
 from src.pipeline.prompts.step_9_prompt import Step9Prompt
 from src.ai.generator import AIGenerator
+from src.ai.model_selector import ModelSelector
 
 class Step9SceneBriefs:
     def __init__(self, project_dir: str = "artifacts"):
@@ -24,7 +25,9 @@ class Step9SceneBriefs:
                 project_id: str,
                 model_config: Optional[Dict[str, Any]] = None) -> Tuple[bool, Dict[str, Any], str]:
         if not model_config:
-            model_config = {"temperature": 0.3}
+            # Use optimal model for this step
+            from src.ai.model_selector import ModelSelector
+            model_config = ModelSelector.get_model_config(step=9)
         upstream_hash = hashlib.sha256(json.dumps(step8_artifact, sort_keys=True).encode()).hexdigest()
         
         # Generate scene briefs in batches to avoid token limits

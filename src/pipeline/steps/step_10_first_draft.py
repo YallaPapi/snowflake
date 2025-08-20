@@ -10,6 +10,10 @@ from typing import Dict, Any, Optional, Tuple, List
 
 from src.pipeline.validators.step_10_validator import Step10Validator
 from src.ai.generator import AIGenerator
+from src.ai.model_selector import ModelSelector
+from src.ai.prose_generator import ProseGenerator
+from src.ai.bulletproof_generator import get_bulletproof_generator
+from src.ai.bulletproof_prose_generator import get_bulletproof_prose_generator
 
 class Step10FirstDraft:
     def __init__(self, project_dir: str = "artifacts"):
@@ -17,6 +21,9 @@ class Step10FirstDraft:
         self.project_dir.mkdir(parents=True, exist_ok=True)
         self.validator = Step10Validator()
         self.generator = AIGenerator()
+        self.bulletproof_generator = get_bulletproof_generator()
+        self.prose_generator = ProseGenerator(self.generator)
+        self.bulletproof_prose_generator = get_bulletproof_prose_generator()
     
     def execute(self,
                 step9_artifact: Dict[str, Any],
@@ -65,6 +72,13 @@ class Step10FirstDraft:
         
         print(f"Generating prose for {len(scenes)} scenes...")
         
+        # Import progress tracker
+        try:
+            from src.ui.progress_tracker import get_global_tracker
+            tracker = get_global_tracker()
+        except ImportError:
+            tracker = None
+        
         for i, (scene, brief) in enumerate(zip(scenes, briefs)):
             scene_num = i + 1
             
@@ -84,19 +98,30 @@ class Step10FirstDraft:
             pov_name = scene.get("pov", "Unknown")
             pov_bible = self._get_character_bible(pov_name, character_bibles)
             
-            # Generate scene prose
-            print(f"  Generating scene {scene_num}/{len(scenes)} ({pov_name} POV)...")
+            # Generate scene prose with guaranteed length
+            word_target = scene.get("word_target", 2500)
+            scene_summary = scene.get("summary", "Scene description")[:40]
             
-            try:
-                prose = self.generator.generate_scene_prose(
-                    {**scene, **brief},  # Combine scene and brief data
-                    pov_bible,
-                    scene.get("word_target", 2500),
-                    model_config
-                )
-            except Exception as e:
-                # Use placeholder if generation fails
-                prose = f"[Scene {scene_num}: {scene.get('summary', 'Scene description')}]\n\n[Generation failed: {e}]"
+            # Update progress
+            if tracker:
+                tracker.update_step_progress(i, len(scenes), f"Ch{len(chapters)+1} Scene {scene_num}: {scene_summary}... ({word_target}w)")
+            else:
+                print(f"  Generating scene {scene_num}/{len(scenes)} ({pov_name} POV, target: {word_target} words)...")
+            
+            # Combine scene and brief data
+            scene_context = {**scene, **brief}
+            
+            # Use bulletproof prose generator - NEVER fails
+            prose = self.bulletproof_prose_generator.generate_guaranteed_scene(
+                scene_context,
+                pov_bible,
+                word_target,
+                min_words=max(word_target // 2, 500)  # At least 500 words minimum
+            )
+            
+            actual_words = len(prose.split())
+            if not tracker:
+                print(f"    Generated {actual_words} words")
             
             scene_data = {
                 "scene_number": scene_num,
@@ -112,6 +137,11 @@ class Step10FirstDraft:
         # Add final chapter
         if current_chapter["scenes"]:
             chapters.append(current_chapter)
+        
+        # Final progress update
+        if tracker:
+            total_words = sum(scene["word_count"] for ch in chapters for scene in ch["scenes"])
+            tracker.update_step_progress(len(scenes), len(scenes), f"Complete! {len(chapters)} chapters, {total_words:,} words")
         
         # Create manuscript artifact
         artifact = {

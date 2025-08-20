@@ -10,6 +10,7 @@ from typing import Dict, Any, Optional, Tuple, List
 import hashlib
 
 from src.ai.generator import AIGenerator
+from src.ai.model_selector import ModelSelector
 from src.export.manuscript_exporter import ManuscriptExporter
 
 class Step10DraftWriter:

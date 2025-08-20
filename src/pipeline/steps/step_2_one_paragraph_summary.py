@@ -12,6 +12,7 @@ from typing import Dict, Any, Optional, Tuple, List
 from src.pipeline.validators.step_2_validator import Step2Validator
 from src.pipeline.prompts.step_2_prompt import Step2Prompt
 from src.ai.generator import AIGenerator
+from src.ai.model_selector import ModelSelector
 
 class Step2OneParagraphSummary:
     """

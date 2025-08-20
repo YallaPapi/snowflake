@@ -13,6 +13,7 @@ from typing import Dict, Any, Optional, Tuple
 from src.pipeline.validators.step_0_validator import Step0Validator
 from src.pipeline.prompts.step_0_prompt import Step0Prompt
 from src.ai.generator import AIGenerator
+from src.ai.model_selector import ModelSelector
 
 class Step0FirstThingsFirst:
     """

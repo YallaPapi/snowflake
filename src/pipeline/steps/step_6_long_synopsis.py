@@ -10,6 +10,7 @@ from typing import Dict, Any, Optional, Tuple
 from src.pipeline.validators.step_6_validator import Step6Validator
 from src.pipeline.prompts.step_6_prompt import Step6Prompt
 from src.ai.generator import AIGenerator
+from src.ai.model_selector import ModelSelector
 
 class Step6LongSynopsis:
     def __init__(self, project_dir: str = "artifacts"):

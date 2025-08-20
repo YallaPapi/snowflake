@@ -23,7 +23,7 @@ from src.pipeline.steps.step_8_scene_list import Step8SceneList
 from src.pipeline.steps.step_9_scene_briefs_v2 import Step9SceneBriefsV2 as Step9SceneBriefs
 from src.pipeline.steps.step_10_first_draft import Step10FirstDraft
 from src.observability.events import emit_event
-from src.pipeline.progress_tracker import ProgressTracker
+from src.ui.progress_tracker import ProgressTracker, StepProgressContext, get_global_tracker
 
 class SnowflakePipeline:
     """
@@ -55,7 +55,7 @@ class SnowflakePipeline:
         self.step10 = Step10FirstDraft(project_dir)
         
         # Progress tracking
-        self.progress_tracker = ProgressTracker(project_dir)
+        self.progress_tracker = get_global_tracker()
         
         self.current_project_id = None
         self.pipeline_state = {}
@@ -357,6 +357,80 @@ class SnowflakePipeline:
         else:
             emit_event(self.current_project_id, "step_failed", {"step": 10, "step_key": "step_10", "message": message})
         return success, artifact, message
+    
+    def execute_all_steps(self, initial_brief: str, story_brief: str, target_words: int = 90000) -> bool:
+        """
+        Execute the complete Snowflake pipeline with progress tracking
+        
+        Args:
+            initial_brief: The user's story idea/brief for Step 0
+            story_brief: User's story concept for Step 1
+            target_words: Target word count for the novel
+            
+        Returns:
+            True if all steps completed successfully
+        """
+        self.progress_tracker.start_pipeline(11)
+        
+        step_configs = [
+            (0, "First Things First", "Identifying core story elements"),
+            (1, "One Sentence Summary", "Creating logline"),
+            (2, "One Paragraph Summary", "Expanding to paragraph with disasters"),
+            (3, "Character Summaries", "Developing main characters"),
+            (4, "One Page Synopsis", "Expanding paragraph to page"),
+            (5, "Character Synopses", "Detailed character development"),
+            (6, "Long Synopsis", "Full story synopsis"),
+            (7, "Character Bibles", "Complete character profiles"),
+            (8, "Scene List", "Breaking story into scenes"),
+            (9, "Scene Briefs", "Detailed scene planning"),
+            (10, "First Draft", f"Writing complete {target_words}-word novel")
+        ]
+        
+        all_success = True
+        
+        for step_num, step_name, description in step_configs:
+            with StepProgressContext(self.progress_tracker, step_num, step_name, description) as step_ctx:
+                try:
+                    if step_num == 0:
+                        success, artifact, message = self.execute_step_0(initial_brief)
+                    elif step_num == 1:
+                        success, artifact, message = self.execute_step_1(story_brief)
+                    elif step_num == 2:
+                        success, artifact, message = self.execute_step_2()
+                    elif step_num == 3:
+                        success, artifact, message = self.execute_step_3()
+                    elif step_num == 4:
+                        success, artifact, message = self.execute_step_4()
+                    elif step_num == 5:
+                        success, artifact, message = self.execute_step_5()
+                    elif step_num == 6:
+                        success, artifact, message = self.execute_step_6()
+                    elif step_num == 7:
+                        success, artifact, message = self.execute_step_7()
+                    elif step_num == 8:
+                        success, artifact, message = self.execute_step_8()
+                    elif step_num == 9:
+                        success, artifact, message = self.execute_step_9()
+                    elif step_num == 10:
+                        success, artifact, message = self.execute_step_10(target_words)
+                    
+                    if success:
+                        step_ctx.log_info(f"Completed successfully", "success")
+                        step_ctx.set_result(True, message)
+                    else:
+                        step_ctx.log_info(f"Failed: {message}", "error")
+                        step_ctx.set_result(False, message)
+                        all_success = False
+                        break
+                        
+                except Exception as e:
+                    step_ctx.log_info(f"Exception: {str(e)}", "error")
+                    step_ctx.set_result(False, f"Exception: {str(e)}")
+                    all_success = False
+                    break
+        
+        self.progress_tracker.finish_pipeline(all_success)
+        return all_success
     
     def validate_step(self, step_number: int) -> Tuple[bool, str]:
         """
