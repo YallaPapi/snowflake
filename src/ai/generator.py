@@ -16,7 +16,7 @@ except Exception:
     pass
 
 from anthropic import Anthropic
-import openai
+from openai import OpenAI
 
 class AIGenerator:
     """
@@ -31,12 +31,12 @@ class AIGenerator:
         Args:
             provider: "anthropic" or "openai". If None, auto-detect based on available API keys
         """
-        # Auto-detect provider if not specified
+        # Auto-detect provider if not specified (prefer OpenAI for GPT-5)
         if provider is None:
-            if os.getenv("ANTHROPIC_API_KEY"):
-                provider = "anthropic"
-            elif os.getenv("OPENAI_API_KEY"):
+            if os.getenv("OPENAI_API_KEY"):
                 provider = "openai"
+            elif os.getenv("ANTHROPIC_API_KEY"):
+                provider = "anthropic"
             else:
                 raise ValueError("No API key found. Set ANTHROPIC_API_KEY or OPENAI_API_KEY.")
         
@@ -52,9 +52,8 @@ class AIGenerator:
             api_key = os.getenv("OPENAI_API_KEY")
             if not api_key:
                 raise ValueError("OPENAI_API_KEY not found in environment")
-            openai.api_key = api_key
-            self.client = openai
-            self.default_model = "gpt-4-turbo-preview"
+            self.client = OpenAI(api_key=api_key)
+            self.default_model = "gpt-5"
         else:
             raise ValueError(f"Unsupported provider: {provider}")
     
@@ -77,7 +76,11 @@ class AIGenerator:
             model_config = {}
         
         model = model_config.get("model_name", self.default_model)
-        temperature = model_config.get("temperature", 0.3)
+        # Use temperature=1.0 for GPT-5, otherwise use config or default
+        if model == "gpt-5":
+            temperature = 1.0  # GPT-5 only supports temperature=1.0
+        else:
+            temperature = model_config.get("temperature", 0.3)
         max_tokens = model_config.get("max_tokens", 4000)  # Increased default for longer content
         
         for attempt in range(max_retries):
@@ -127,12 +130,20 @@ class AIGenerator:
             messages.append({"role": "system", "content": prompt_data["system"]})
         messages.append({"role": "user", "content": prompt_data.get("user", "")})
         
-        response = self.client.chat.completions.create(
-            model=model,
-            messages=messages,
-            temperature=temperature,
-            max_tokens=max_tokens
-        )
+        # Use correct parameter name based on model
+        # GPT-5 and o1 models use max_completion_tokens, others use max_tokens
+        kwargs = {
+            "model": model,
+            "messages": messages,
+            "temperature": temperature,
+        }
+        
+        if model in ["gpt-5", "o1-preview", "o1-mini"]:
+            kwargs["max_completion_tokens"] = max_tokens
+        else:
+            kwargs["max_tokens"] = max_tokens
+        
+        response = self.client.chat.completions.create(**kwargs)
         return response.choices[0].message.content
     
     def generate_with_validation(self,

@@ -45,8 +45,8 @@ class Step1OneSentenceSummary:
         # Default model config
         if not model_config:
             model_config = {
-                "model_name": "claude-3-5-sonnet-20241022",
-                "temperature": 0.2,  # Lower for more focused output
+                "model_name": "gpt-5",
+                "temperature": 1.0,  # GPT-5 only supports temperature=1.0
                 "seed": 42
             }
         

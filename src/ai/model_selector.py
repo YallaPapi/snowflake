@@ -14,19 +14,19 @@ class ModelSelector:
     # Model tiers by capability and cost
     FAST_MODELS = {
         "anthropic": "claude-3-haiku-20240307",      # Fast, cheap
-        "openai": "gpt-3.5-turbo",                   # Fast, cheap
+        "openai": "gpt-5",                           # GPT-5 for fast tasks
         "openrouter": "meta-llama/llama-3.2-3b-instruct"  # Very fast, very cheap
     }
     
     BALANCED_MODELS = {
         "anthropic": "claude-3-5-haiku-20241022",    # Good balance
-        "openai": "gpt-4o-mini",                     # Good balance
+        "openai": "gpt-5",                           # GPT-5 for balanced tasks
         "openrouter": "meta-llama/llama-3.1-8b-instruct"  # Good balance
     }
     
     QUALITY_MODELS = {
         "anthropic": "claude-3-5-sonnet-20241022",   # High quality
-        "openai": "gpt-4-turbo-preview",             # High quality
+        "openai": "gpt-5",                           # GPT-5 for quality tasks
         "openrouter": "anthropic/claude-3.5-sonnet-20241022"  # Best quality
     }
     
@@ -70,15 +70,15 @@ class ModelSelector:
         if tier == "fast":
             model = cls.FAST_MODELS.get(provider, cls.FAST_MODELS["anthropic"])
             max_tokens = 2000
-            temperature = 0.3
+            temperature = 1.0 if model == "gpt-5" else 0.3  # GPT-5 requires temperature=1.0
         elif tier == "balanced":
             model = cls.BALANCED_MODELS.get(provider, cls.BALANCED_MODELS["anthropic"])
             max_tokens = 3000
-            temperature = 0.4
+            temperature = 1.0 if model == "gpt-5" else 0.4  # GPT-5 requires temperature=1.0
         else:  # quality
             model = cls.QUALITY_MODELS.get(provider, cls.QUALITY_MODELS["anthropic"])
             max_tokens = 4000
-            temperature = 0.5
+            temperature = 1.0 if model == "gpt-5" else 0.5  # GPT-5 requires temperature=1.0
         
         return {
             "model_name": model,

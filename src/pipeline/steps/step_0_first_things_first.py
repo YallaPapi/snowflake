@@ -49,8 +49,8 @@ class Step0FirstThingsFirst:
         # Default model config
         if not model_config:
             model_config = {
-                "model_name": "claude-3-5-sonnet-20241022",
-                "temperature": 0.3,
+                "model_name": "gpt-5",
+                "temperature": 1.0,  # GPT-5 only supports temperature=1.0
                 "seed": 42
             }
             
@@ -133,7 +133,7 @@ class Step0FirstThingsFirst:
             artifact_content,
             project_id,
             prompt_data["prompt_hash"],
-            model_config or {"model_name": "claude-3-5-sonnet-20241022", "temperature": 0.3}
+            model_config or {"model_name": "gpt-5", "temperature": 1.0}
         )
         artifact["metadata"]["version"] = new_version
         artifact["metadata"]["revision_reason"] = revision_reason
