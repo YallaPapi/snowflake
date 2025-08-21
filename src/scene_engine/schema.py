@@ -65,9 +65,9 @@ def get_scene_card_example() -> Dict[str, Any]:
                 "concrete_objective": True
             },
             "conflict_obstacles": [
-                {"try": 1, "obstacle": "Anti-aircraft fire"},
-                {"try": 2, "obstacle": "German fighter plane"},
-                {"try": 3, "obstacle": "Engine catches fire, forced jump"}
+                {"try_number": 1, "obstacle": "Anti-aircraft fire"},
+                {"try_number": 2, "obstacle": "German fighter plane"},
+                {"try_number": 3, "obstacle": "Engine catches fire, forced jump"}
             ],
             "outcome": {
                 "type": "setback",

@@ -1,0 +1,11 @@
+{
+  "project_id": "the_immortality_tax_20250820_024807",
+  "current_step": 0,
+  "steps": {
+    "step_0": {
+      "step": 0,
+      "message": "AI generation failed: Error code: 404 - {'error': {'message': 'The model `claude-3-5-sonnet-20241022` does not exist or you do not have access to it.', 'type': 'invalid_request_error', 'param': None, 'code': 'model_not_found'}}"
+    }
+  },
+  "last_updated": "2025-08-20T02:48:10.647998"
+}

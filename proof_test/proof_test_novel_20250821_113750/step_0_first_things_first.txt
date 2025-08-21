@@ -1,0 +1,9 @@
+STEP 0: FIRST THINGS FIRST
+==================================================
+
+Category: Techno-Thriller
+Story Kind: Heist conspiracy with a whistleblower racing against time to expose a corporate cover-up.
+Audience Delight: betrayal-twist, digital-forensics-puzzle, cat-and-mouse-chase, inside-man-reveal, ticking-clock-stakes.
+
+Generated: 2025-08-21T11:38:35.812327
+Version: 1.0.0

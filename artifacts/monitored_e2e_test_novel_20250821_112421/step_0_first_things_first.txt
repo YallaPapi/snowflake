@@ -1,0 +1,9 @@
+STEP 0: FIRST THINGS FIRST
+==================================================
+
+Category: Hard-Boiled Mystery
+Story Kind: Hard-boiled whodunit about a whistleblower detective versus a department cover-up.
+Audience Delight: Betrayal-twist, planted-evidence puzzle, internal-affairs forced-proximity, slow-burn pressure, redemption-arc.
+
+Generated: 2025-08-21T11:26:47.675404
+Version: 1.0.0

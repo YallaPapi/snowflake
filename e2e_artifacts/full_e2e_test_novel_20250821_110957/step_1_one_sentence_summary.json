@@ -1,0 +1,23 @@
+{
+  "logline": "Mara, an internal-affairs records auditor, must steal the banned-history archive despite the regime's surveillance dragnet and a double agent inside her unit.",
+  "word_count": 22,
+  "metadata": {
+    "project_id": "full_e2e_test_novel_20250821_110957",
+    "step": 1,
+    "version": "1.0.0",
+    "created_at": "2025-08-21T11:17:41.650846",
+    "model_name": "gpt-5",
+    "temperature": 1.0,
+    "seed": 42,
+    "prompt_hash": "a004e226717969d852c6571275d5582247e4b62be929853a7bf340b11f320c38",
+    "validator_version": "1.0.0",
+    "hash_upstream": "19ac4a4ee4f8e13bbb31d9e271c5a2cc8c5851f7e2c7f0e442d8c8c021e8cbb9"
+  },
+  "lead_count": 1,
+  "components": {
+    "lead_name": "Mara",
+    "lead_role": "internal-affairs records auditor",
+    "external_goal": "steal the banned-history archive",
+    "opposition": "the regime's surveillance dragnet and a double agent inside her unit"
+  }
+}

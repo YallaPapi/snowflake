@@ -10,7 +10,7 @@ This implements subtask 41.1: Define Python data structures for Scene Card
 from datetime import datetime
 from enum import Enum
 from typing import List, Optional, Dict, Any, Union
-from pydantic import BaseModel, Field, validator, root_validator
+from pydantic import BaseModel, Field, field_validator, model_validator, ConfigDict
 
 
 class SceneType(str, Enum):
@@ -59,7 +59,8 @@ class GoalCriteria(BaseModel):
     fits_pov: bool = Field(..., description="Goal fits the POV character")
     concrete_objective: bool = Field(..., description="Goal is concrete and measurable")
 
-    @validator('text')
+    @field_validator('text')
+    @classmethod
     def goal_text_not_empty(cls, v):
         if not v or not v.strip():
             raise ValueError('Goal text cannot be empty')
@@ -68,10 +69,11 @@ class GoalCriteria(BaseModel):
 
 class ConflictObstacle(BaseModel):
     """Conflict obstacle in proactive scenes"""
-    try_number: int = Field(..., alias='try', ge=1, description="Attempt number")
+    try_number: int = Field(..., ge=1, description="Attempt number")
     obstacle: str = Field(..., description="The obstacle encountered")
 
-    @validator('obstacle')
+    @field_validator('obstacle')
+    @classmethod
     def obstacle_not_empty(cls, v):
         if not v or not v.strip():
             raise ValueError('Obstacle description cannot be empty')
@@ -83,7 +85,8 @@ class Outcome(BaseModel):
     type: OutcomeType = Field(..., description="Type of outcome")
     rationale: str = Field(..., description="Reason for the outcome")
 
-    @validator('rationale')
+    @field_validator('rationale')
+    @classmethod
     def rationale_not_empty(cls, v):
         if not v or not v.strip():
             raise ValueError('Outcome rationale cannot be empty')
@@ -95,7 +98,8 @@ class DilemmaOption(BaseModel):
     option: str = Field(..., description="The possible option")
     why_bad: str = Field(..., description="Why this option is bad")
 
-    @validator('option', 'why_bad')
+    @field_validator('option', 'why_bad')
+    @classmethod
     def fields_not_empty(cls, v):
         if not v or not v.strip():
             raise ValueError('Field cannot be empty')
@@ -107,12 +111,13 @@ class ProactiveScene(BaseModel):
     goal: GoalCriteria = Field(..., description="Scene goal with 5-point validation")
     conflict_obstacles: List[ConflictObstacle] = Field(
         ..., 
-        min_items=1,
+        min_length=1,
         description="Escalating obstacles the character faces"
     )
     outcome: Outcome = Field(..., description="Final outcome of the scene")
 
-    @validator('conflict_obstacles')
+    @field_validator('conflict_obstacles')
+    @classmethod
     def obstacles_escalate(cls, v):
         """Ensure obstacles are in escalating order"""
         if len(v) < 2:
@@ -123,10 +128,10 @@ class ProactiveScene(BaseModel):
                 raise ValueError('Obstacles must be in escalating order (increasing try numbers)')
         return v
 
-    @root_validator
-    def validate_goal_criteria(cls, values):
+    @model_validator(mode='after')
+    def validate_goal_criteria(self):
         """Ensure all 5 goal criteria are met"""
-        goal = values.get('goal')
+        goal = self.goal
         if goal:
             criteria = [
                 goal.fits_time,
@@ -144,7 +149,7 @@ class ProactiveScene(BaseModel):
                     ('concrete_objective', goal.concrete_objective)
                 ] if not value]
                 raise ValueError(f'Goal must pass all 5 criteria. Failed: {failed}')
-        return values
+        return self
 
 
 class ReactiveScene(BaseModel):
@@ -152,7 +157,7 @@ class ReactiveScene(BaseModel):
     reaction: str = Field(..., description="Emotional reaction to previous setback")
     dilemma_options: List[DilemmaOption] = Field(
         ...,
-        min_items=2,
+        min_length=2,
         description="Multiple bad options to choose from"
     )
     decision: str = Field(..., description="Final decision made")
@@ -162,13 +167,15 @@ class ReactiveScene(BaseModel):
         description="How much of this scene to show"
     )
 
-    @validator('reaction', 'decision', 'next_goal_stub')
+    @field_validator('reaction', 'decision', 'next_goal_stub')
+    @classmethod
     def fields_not_empty(cls, v):
         if not v or not v.strip():
             raise ValueError('Field cannot be empty')
         return v.strip()
 
-    @validator('dilemma_options')
+    @field_validator('dilemma_options')
+    @classmethod
     def all_options_bad(cls, v):
         """Ensure all dilemma options are genuinely bad"""
         if len(v) < 2:
@@ -179,6 +186,13 @@ class ReactiveScene(BaseModel):
             if not option.why_bad:
                 raise ValueError(f'Option "{option.option}" must explain why it\'s bad')
         return v
+
+    @property
+    def dilemma(self) -> str:
+        """Backwards compatibility property for dilemma text"""
+        if not self.dilemma_options:
+            return ""
+        return "; ".join([f"{opt.option} (but {opt.why_bad})" for opt in self.dilemma_options])
 
 
 class SceneCard(BaseModel):
@@ -215,13 +229,15 @@ class SceneCard(BaseModel):
     updated_at: Optional[datetime] = Field(None, description="Last update timestamp")
     version: Optional[int] = Field(1, description="Scene version number")
 
-    @validator('pov', 'place', 'time')
+    @field_validator('pov', 'place', 'time')
+    @classmethod
     def required_fields_not_empty(cls, v):
         if not v or not v.strip():
             raise ValueError('Required field cannot be empty')
         return v.strip()
 
-    @validator('scene_crucible')
+    @field_validator('scene_crucible')
+    @classmethod
     def validate_scene_crucible(cls, v):
         """Validate the Scene Crucible follows PRD requirements"""
         if not v or not v.strip():
@@ -244,12 +260,12 @@ class SceneCard(BaseModel):
             
         return v
 
-    @root_validator
-    def validate_scene_type_data(cls, values):
+    @model_validator(mode='after')
+    def validate_scene_type_data(self):
         """Ensure scene has appropriate data for its type"""
-        scene_type = values.get('scene_type')
-        proactive = values.get('proactive')
-        reactive = values.get('reactive')
+        scene_type = self.scene_type
+        proactive = self.proactive
+        reactive = self.reactive
 
         if scene_type == SceneType.PROACTIVE:
             if not proactive:
@@ -263,18 +279,18 @@ class SceneCard(BaseModel):
             if proactive:
                 raise ValueError('Reactive scenes cannot have proactive data')
 
-        return values
+        return self
 
-    @root_validator  
-    def validate_chain_link_logic(cls, values):
+    @model_validator(mode='after')  
+    def validate_chain_link_logic(self):
         """Validate chain link follows PRD rules"""
-        scene_type = values.get('scene_type')
-        chain_link = values.get('chain_link', '')
-        proactive = values.get('proactive')
-        reactive = values.get('reactive')
+        scene_type = self.scene_type
+        chain_link = self.chain_link or ''
+        proactive = self.proactive
+        reactive = self.reactive
 
         if not chain_link:
-            return values  # Chain link is optional
+            return self  # Chain link is optional
 
         if scene_type == SceneType.PROACTIVE and proactive:
             # Proactive scenes should chain based on outcome
@@ -288,12 +304,13 @@ class SceneCard(BaseModel):
             if 'goal' not in chain_link.lower() and 'proactive' not in chain_link.lower():
                 pass  # Could warn but allow flexibility
 
-        return values
+        return self
 
-    class Config:
-        use_enum_values = True
-        validate_assignment = True
-        extra = 'forbid'  # Prevent extra fields
+    model_config = ConfigDict(
+        use_enum_values=True,
+        validate_assignment=True,
+        extra='forbid'  # Prevent extra fields
+    )
 
 
 class ValidationError(BaseModel):

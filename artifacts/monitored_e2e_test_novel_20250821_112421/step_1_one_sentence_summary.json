@@ -1,0 +1,23 @@
+{
+  "logline": "Maya, an internal-affairs detective, must prove the officer-involved shooting was staged despite her department's cover-up and planted evidence.",
+  "word_count": 18,
+  "metadata": {
+    "project_id": "monitored_e2e_test_novel_20250821_112421",
+    "step": 1,
+    "version": "1.0.0",
+    "created_at": "2025-08-21T11:27:15.892593",
+    "model_name": "gpt-5",
+    "temperature": 1.0,
+    "seed": 42,
+    "prompt_hash": "73e2db146e0cf12d890a3a4b996102ea59bc9ccb623e3bc23a4183b5b1db250c",
+    "validator_version": "1.0.0",
+    "hash_upstream": "b9ca279324b381ae202373a3e9715f16ab5a26e22662063177b2c4ba10812b7d"
+  },
+  "lead_count": 1,
+  "components": {
+    "lead_name": "Maya",
+    "lead_role": "internal-affairs detective",
+    "external_goal": "prove the officer-involved shooting was staged",
+    "opposition": "her department's cover-up and planted evidence"
+  }
+}

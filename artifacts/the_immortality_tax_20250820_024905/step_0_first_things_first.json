@@ -1,0 +1,16 @@
+{
+  "category": "Techno-Thriller",
+  "story_kind": "A heist with mentor-betrayal inside a corporate conspiracy.",
+  "audience_delight": "betrayal-twist, slow-burn, forced-proximity, puzzle, redemption-arc.",
+  "metadata": {
+    "project_id": "the_immortality_tax_20250820_024905",
+    "step": 0,
+    "version": "1.0.0",
+    "created_at": "2025-08-20T02:49:32.804726",
+    "model_name": "gpt-5",
+    "temperature": 1.0,
+    "seed": 42,
+    "prompt_hash": "2ecffc01bedd977a0facf1c097899cc6c2df46a8efa0cdb8afd7a8daccc1f727",
+    "validator_version": "1.0.0"
+  }
+}

@@ -23,8 +23,8 @@ class TransitionRule:
     """Rule for generating specific types of transitions"""
     name: str
     applies_to_scene_type: SceneType
-    applies_to_outcome: Optional[OutcomeType] = None
     target_chain_type: ChainLinkType
+    applies_to_outcome: Optional[OutcomeType] = None
     priority: int = 50  # Higher = more important
     condition_check: Optional[Callable[[SceneCard], bool]] = None
     

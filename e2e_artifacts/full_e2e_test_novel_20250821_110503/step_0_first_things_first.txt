@@ -1,0 +1,9 @@
+STEP 0: FIRST THINGS FIRST
+==================================================
+
+Category: Police Procedural
+Story Kind: Whodunit with conspiracy cover-up and mentor-betrayal.
+Audience Delight: betrayal-twist, planted-evidence reveal, puzzle, slow-burn, redemption-arc.
+
+Generated: 2025-08-21T11:05:47.611776
+Version: 1.0.0

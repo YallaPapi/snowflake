@@ -1,0 +1,13 @@
+{
+  "project_id": "test_monitoring_123",
+  "current_step": 0,
+  "steps": {},
+  "last_updated": "2025-08-21T11:16:22.950559",
+  "total_events": 4,
+  "pipeline_health": "healthy",
+  "performance_summary": {
+    "cpu_percent": 0.0,
+    "memory_mb": 36198,
+    "last_updated": 1755774982.929742
+  }
+}

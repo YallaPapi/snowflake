@@ -1,0 +1,13 @@
+{
+  "project_id": "monitored_e2e_20250821_071538",
+  "current_step": 0,
+  "steps": {},
+  "last_updated": "2025-08-21T11:15:40.760817",
+  "total_events": 2,
+  "pipeline_health": "healthy",
+  "performance_summary": {
+    "cpu_percent": 0.0,
+    "memory_mb": 36377,
+    "last_updated": 1755774940.7469897
+  }
+}

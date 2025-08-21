@@ -1,0 +1,47 @@
+{
+  "project_id": "monitored_e2e_test_novel_20250821_112421",
+  "current_step": 1,
+  "steps": {
+    "step_0": {
+      "step_number": 0,
+      "step_name": "First Things First",
+      "status": "completed",
+      "start_time": 1755775461.823483,
+      "step": 0,
+      "current_step": 0,
+      "valid": true,
+      "duration_seconds": 145.86185383796692,
+      "success": true,
+      "artifact_size": 585,
+      "message": "Step 0 artifact saved to artifacts\\monitored_e2e_test_novel_20250821_112421\\step_0_first_things_first.json"
+    },
+    "step_1": {
+      "step_number": 1,
+      "step_name": "One Sentence Summary",
+      "status": "completed",
+      "start_time": 1755775608.1938531,
+      "step": 1,
+      "current_step": 1,
+      "valid": true,
+      "duration_seconds": 27.71329689025879,
+      "success": true,
+      "artifact_size": 805,
+      "message": "Step 1 artifact saved to artifacts\\monitored_e2e_test_novel_20250821_112421\\step_1_one_sentence_summary.json"
+    },
+    "step_2": {
+      "step_number": 2,
+      "step_name": "One Paragraph Summary",
+      "status": "started",
+      "start_time": 1755775636.4239101,
+      "step": 2
+    }
+  },
+  "last_updated": "2025-08-21T11:27:16.430537",
+  "total_events": 13,
+  "pipeline_health": "healthy",
+  "performance_summary": {
+    "cpu_percent": 2.9,
+    "memory_mb": 36128,
+    "last_updated": 1755775632.2036068
+  }
+}

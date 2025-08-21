@@ -1,0 +1,637 @@
+{
+  "timestamp": "2025-08-21T11:27:15.913375",
+  "metrics_history": [
+    {
+      "timestamp": 1755775461.8025815,
+      "cpu_percent": 0.0,
+      "memory_mb": 36213.2265625,
+      "disk_usage_mb": 1526297.4375,
+      "step_duration": null,
+      "tokens_processed": null,
+      "api_calls": null,
+      "error_count": 0
+    },
+    {
+      "timestamp": 1755775466.8142703,
+      "cpu_percent": 3.2,
+      "memory_mb": 36225.4609375,
+      "disk_usage_mb": 1526297.3671875,
+      "step_duration": null,
+      "tokens_processed": null,
+      "api_calls": null,
+      "error_count": 0
+    },
+    {
+      "timestamp": 1755775471.820365,
+      "cpu_percent": 2.4,
+      "memory_mb": 36231.4921875,
+      "disk_usage_mb": 1526296.95703125,
+      "step_duration": null,
+      "tokens_processed": null,
+      "api_calls": null,
+      "error_count": 0
+    },
+    {
+      "timestamp": 1755775476.8316789,
+      "cpu_percent": 2.9,
+      "memory_mb": 36226.79296875,
+      "disk_usage_mb": 1526296.9765625,
+      "step_duration": null,
+      "tokens_processed": null,
+      "api_calls": null,
+      "error_count": 0
+    },
+    {
+      "timestamp": 1755775481.8415859,
+      "cpu_percent": 1.8,
+      "memory_mb": 36201.37109375,
+      "disk_usage_mb": 1526296.98046875,
+      "step_duration": null,
+      "tokens_processed": null,
+      "api_calls": null,
+      "error_count": 0
+    },
+    {
+      "timestamp": 1755775486.8528948,
+      "cpu_percent": 3.9,
+      "memory_mb": 36277.35546875,
+      "disk_usage_mb": 1526292.25390625,
+      "step_duration": null,
+      "tokens_processed": null,
+      "api_calls": null,
+      "error_count": 0
+    },
+    {
+      "timestamp": 1755775491.8630724,
+      "cpu_percent": 4.4,
+      "memory_mb": 36292.4453125,
+      "disk_usage_mb": 1526292.7890625,
+      "step_duration": null,
+      "tokens_processed": null,
+      "api_calls": null,
+      "error_count": 0
+    },
+    {
+      "timestamp": 1755775496.8729029,
+      "cpu_percent": 3.2,
+      "memory_mb": 36301.61328125,
+      "disk_usage_mb": 1526293.21484375,
+      "step_duration": null,
+      "tokens_processed": null,
+      "api_calls": null,
+      "error_count": 0
+    },
+    {
+      "timestamp": 1755775501.8849242,
+      "cpu_percent": 3.4,
+      "memory_mb": 36320.0703125,
+      "disk_usage_mb": 1526293.4375,
+      "step_duration": null,
+      "tokens_processed": null,
+      "api_calls": null,
+      "error_count": 0
+    },
+    {
+      "timestamp": 1755775506.8953335,
+      "cpu_percent": 3.6,
+      "memory_mb": 36341.1796875,
+      "disk_usage_mb": 1526294.21875,
+      "step_duration": null,
+      "tokens_processed": null,
+      "api_calls": null,
+      "error_count": 0
+    },
+    {
+      "timestamp": 1755775511.9061139,
+      "cpu_percent": 2.6,
+      "memory_mb": 36240.29296875,
+      "disk_usage_mb": 1526294.23828125,
+      "step_duration": null,
+      "tokens_processed": null,
+      "api_calls": null,
+      "error_count": 0
+    },
+    {
+      "timestamp": 1755775516.9177449,
+      "cpu_percent": 3.1,
+      "memory_mb": 36266.4453125,
+      "disk_usage_mb": 1526294.25390625,
+      "step_duration": null,
+      "tokens_processed": null,
+      "api_calls": null,
+      "error_count": 0
+    },
+    {
+      "timestamp": 1755775521.930721,
+      "cpu_percent": 3.1,
+      "memory_mb": 36267.13671875,
+      "disk_usage_mb": 1526295.2109375,
+      "step_duration": null,
+      "tokens_processed": null,
+      "api_calls": null,
+      "error_count": 0
+    },
+    {
+      "timestamp": 1755775526.9406707,
+      "cpu_percent": 3.0,
+      "memory_mb": 36266.49609375,
+      "disk_usage_mb": 1526295.24609375,
+      "step_duration": null,
+      "tokens_processed": null,
+      "api_calls": null,
+      "error_count": 0
+    },
+    {
+      "timestamp": 1755775531.9502203,
+      "cpu_percent": 3.4,
+      "memory_mb": 36273.484375,
+      "disk_usage_mb": 1526295.2578125,
+      "step_duration": null,
+      "tokens_processed": null,
+      "api_calls": null,
+      "error_count": 0
+    },
+    {
+      "timestamp": 1755775536.964835,
+      "cpu_percent": 1.7,
+      "memory_mb": 36263.76953125,
+      "disk_usage_mb": 1526295.078125,
+      "step_duration": null,
+      "tokens_processed": null,
+      "api_calls": null,
+      "error_count": 0
+    },
+    {
+      "timestamp": 1755775541.9761853,
+      "cpu_percent": 2.7,
+      "memory_mb": 36242.40625,
+      "disk_usage_mb": 1526295.10546875,
+      "step_duration": null,
+      "tokens_processed": null,
+      "api_calls": null,
+      "error_count": 0
+    },
+    {
+      "timestamp": 1755775546.9861689,
+      "cpu_percent": 2.7,
+      "memory_mb": 36322.5859375,
+      "disk_usage_mb": 1526295.25390625,
+      "step_duration": null,
+      "tokens_processed": null,
+      "api_calls": null,
+      "error_count": 0
+    },
+    {
+      "timestamp": 1755775551.9979174,
+      "cpu_percent": 2.6,
+      "memory_mb": 36308.90625,
+      "disk_usage_mb": 1526295.2421875,
+      "step_duration": null,
+      "tokens_processed": null,
+      "api_calls": null,
+      "error_count": 0
+    },
+    {
+      "timestamp": 1755775557.0089755,
+      "cpu_percent": 2.8,
+      "memory_mb": 36311.15234375,
+      "disk_usage_mb": 1526295.26953125,
+      "step_duration": null,
+      "tokens_processed": null,
+      "api_calls": null,
+      "error_count": 0
+    },
+    {
+      "timestamp": 1755775562.020615,
+      "cpu_percent": 1.4,
+      "memory_mb": 36313.1875,
+      "disk_usage_mb": 1526296.78125,
+      "step_duration": null,
+      "tokens_processed": null,
+      "api_calls": null,
+      "error_count": 0
+    },
+    {
+      "timestamp": 1755775567.0317464,
+      "cpu_percent": 1.6,
+      "memory_mb": 36310.19140625,
+      "disk_usage_mb": 1526296.796875,
+      "step_duration": null,
+      "tokens_processed": null,
+      "api_calls": null,
+      "error_count": 0
+    },
+    {
+      "timestamp": 1755775572.0436873,
+      "cpu_percent": 2.6,
+      "memory_mb": 36254.32421875,
+      "disk_usage_mb": 1526296.80859375,
+      "step_duration": null,
+      "tokens_processed": null,
+      "api_calls": null,
+      "error_count": 0
+    },
+    {
+      "timestamp": 1755775577.0611897,
+      "cpu_percent": 3.4,
+      "memory_mb": 36228.296875,
+      "disk_usage_mb": 1526296.83203125,
+      "step_duration": null,
+      "tokens_processed": null,
+      "api_calls": null,
+      "error_count": 0
+    },
+    {
+      "timestamp": 1755775582.0733435,
+      "cpu_percent": 4.8,
+      "memory_mb": 36185.84375,
+      "disk_usage_mb": 1526288.92578125,
+      "step_duration": null,
+      "tokens_processed": null,
+      "api_calls": null,
+      "error_count": 0
+    },
+    {
+      "timestamp": 1755775587.0852375,
+      "cpu_percent": 3.9,
+      "memory_mb": 36131.78125,
+      "disk_usage_mb": 1526289.4609375,
+      "step_duration": null,
+      "tokens_processed": null,
+      "api_calls": null,
+      "error_count": 0
+    },
+    {
+      "timestamp": 1755775592.0971665,
+      "cpu_percent": 5.4,
+      "memory_mb": 36140.13671875,
+      "disk_usage_mb": 1526289.484375,
+      "step_duration": null,
+      "tokens_processed": null,
+      "api_calls": null,
+      "error_count": 0
+    },
+    {
+      "timestamp": 1755775597.1227095,
+      "cpu_percent": 5.7,
+      "memory_mb": 36155.61328125,
+      "disk_usage_mb": 1526289.515625,
+      "step_duration": null,
+      "tokens_processed": null,
+      "api_calls": null,
+      "error_count": 0
+    },
+    {
+      "timestamp": 1755775602.134182,
+      "cpu_percent": 6.3,
+      "memory_mb": 36129.4765625,
+      "disk_usage_mb": 1526289.3359375,
+      "step_duration": null,
+      "tokens_processed": null,
+      "api_calls": null,
+      "error_count": 0
+    },
+    {
+      "timestamp": 1755775607.1474617,
+      "cpu_percent": 4.8,
+      "memory_mb": 36161.7890625,
+      "disk_usage_mb": 1526289.46875,
+      "step_duration": null,
+      "tokens_processed": null,
+      "api_calls": null,
+      "error_count": 0
+    },
+    {
+      "timestamp": 1755775612.1594205,
+      "cpu_percent": 7.0,
+      "memory_mb": 36311.65625,
+      "disk_usage_mb": 1526291.70703125,
+      "step_duration": null,
+      "tokens_processed": null,
+      "api_calls": null,
+      "error_count": 0
+    },
+    {
+      "timestamp": 1755775617.1716123,
+      "cpu_percent": 3.5,
+      "memory_mb": 36180.92578125,
+      "disk_usage_mb": 1526291.734375,
+      "step_duration": null,
+      "tokens_processed": null,
+      "api_calls": null,
+      "error_count": 0
+    },
+    {
+      "timestamp": 1755775622.1838043,
+      "cpu_percent": 1.9,
+      "memory_mb": 36197.12109375,
+      "disk_usage_mb": 1526291.75390625,
+      "step_duration": null,
+      "tokens_processed": null,
+      "api_calls": null,
+      "error_count": 0
+    },
+    {
+      "timestamp": 1755775627.1934097,
+      "cpu_percent": 2.0,
+      "memory_mb": 36203.5546875,
+      "disk_usage_mb": 1526291.77734375,
+      "step_duration": null,
+      "tokens_processed": null,
+      "api_calls": null,
+      "error_count": 0
+    },
+    {
+      "timestamp": 1755775632.2036068,
+      "cpu_percent": 2.9,
+      "memory_mb": 36128.4609375,
+      "disk_usage_mb": 1526291.8046875,
+      "step_duration": null,
+      "tokens_processed": null,
+      "api_calls": null,
+      "error_count": 0
+    }
+  ],
+  "health_history": [
+    {
+      "timestamp": 1755775461.8096578,
+      "ai_provider_healthy": true,
+      "disk_space_healthy": true,
+      "memory_healthy": true,
+      "pipeline_active": true,
+      "last_error": null
+    },
+    {
+      "timestamp": 1755775466.8166375,
+      "ai_provider_healthy": true,
+      "disk_space_healthy": true,
+      "memory_healthy": true,
+      "pipeline_active": true,
+      "last_error": null
+    },
+    {
+      "timestamp": 1755775471.8254006,
+      "ai_provider_healthy": true,
+      "disk_space_healthy": true,
+      "memory_healthy": true,
+      "pipeline_active": true,
+      "last_error": null
+    },
+    {
+      "timestamp": 1755775476.835933,
+      "ai_provider_healthy": true,
+      "disk_space_healthy": true,
+      "memory_healthy": true,
+      "pipeline_active": true,
+      "last_error": null
+    },
+    {
+      "timestamp": 1755775481.8473573,
+      "ai_provider_healthy": true,
+      "disk_space_healthy": true,
+      "memory_healthy": true,
+      "pipeline_active": true,
+      "last_error": null
+    },
+    {
+      "timestamp": 1755775486.8561435,
+      "ai_provider_healthy": true,
+      "disk_space_healthy": true,
+      "memory_healthy": true,
+      "pipeline_active": true,
+      "last_error": null
+    },
+    {
+      "timestamp": 1755775491.8681676,
+      "ai_provider_healthy": true,
+      "disk_space_healthy": true,
+      "memory_healthy": true,
+      "pipeline_active": true,
+      "last_error": null
+    },
+    {
+      "timestamp": 1755775496.8781152,
+      "ai_provider_healthy": true,
+      "disk_space_healthy": true,
+      "memory_healthy": true,
+      "pipeline_active": true,
+      "last_error": null
+    },
+    {
+      "timestamp": 1755775501.89095,
+      "ai_provider_healthy": true,
+      "disk_space_healthy": true,
+      "memory_healthy": true,
+      "pipeline_active": true,
+      "last_error": null
+    },
+    {
+      "timestamp": 1755775506.8989475,
+      "ai_provider_healthy": true,
+      "disk_space_healthy": true,
+      "memory_healthy": true,
+      "pipeline_active": true,
+      "last_error": null
+    },
+    {
+      "timestamp": 1755775511.9061139,
+      "ai_provider_healthy": true,
+      "disk_space_healthy": true,
+      "memory_healthy": true,
+      "pipeline_active": true,
+      "last_error": null
+    },
+    {
+      "timestamp": 1755775516.9227939,
+      "ai_provider_healthy": true,
+      "disk_space_healthy": true,
+      "memory_healthy": true,
+      "pipeline_active": true,
+      "last_error": null
+    },
+    {
+      "timestamp": 1755775521.9369385,
+      "ai_provider_healthy": true,
+      "disk_space_healthy": true,
+      "memory_healthy": true,
+      "pipeline_active": true,
+      "last_error": null
+    },
+    {
+      "timestamp": 1755775526.9406707,
+      "ai_provider_healthy": true,
+      "disk_space_healthy": true,
+      "memory_healthy": true,
+      "pipeline_active": true,
+      "last_error": null
+    },
+    {
+      "timestamp": 1755775531.9576616,
+      "ai_provider_healthy": true,
+      "disk_space_healthy": true,
+      "memory_healthy": true,
+      "pipeline_active": true,
+      "last_error": null
+    },
+    {
+      "timestamp": 1755775536.9712422,
+      "ai_provider_healthy": true,
+      "disk_space_healthy": true,
+      "memory_healthy": true,
+      "pipeline_active": true,
+      "last_error": null
+    },
+    {
+      "timestamp": 1755775541.9777315,
+      "ai_provider_healthy": true,
+      "disk_space_healthy": true,
+      "memory_healthy": true,
+      "pipeline_active": true,
+      "last_error": null
+    },
+    {
+      "timestamp": 1755775546.9917445,
+      "ai_provider_healthy": true,
+      "disk_space_healthy": true,
+      "memory_healthy": true,
+      "pipeline_active": true,
+      "last_error": null
+    },
+    {
+      "timestamp": 1755775552.0041904,
+      "ai_provider_healthy": true,
+      "disk_space_healthy": true,
+      "memory_healthy": true,
+      "pipeline_active": true,
+      "last_error": null
+    },
+    {
+      "timestamp": 1755775557.010549,
+      "ai_provider_healthy": true,
+      "disk_space_healthy": true,
+      "memory_healthy": true,
+      "pipeline_active": true,
+      "last_error": null
+    },
+    {
+      "timestamp": 1755775562.020615,
+      "ai_provider_healthy": true,
+      "disk_space_healthy": true,
+      "memory_healthy": true,
+      "pipeline_active": true,
+      "last_error": null
+    },
+    {
+      "timestamp": 1755775567.038065,
+      "ai_provider_healthy": true,
+      "disk_space_healthy": true,
+      "memory_healthy": true,
+      "pipeline_active": true,
+      "last_error": null
+    },
+    {
+      "timestamp": 1755775572.0436873,
+      "ai_provider_healthy": true,
+      "disk_space_healthy": true,
+      "memory_healthy": true,
+      "pipeline_active": true,
+      "last_error": null
+    },
+    {
+      "timestamp": 1755775577.0611897,
+      "ai_provider_healthy": true,
+      "disk_space_healthy": true,
+      "memory_healthy": true,
+      "pipeline_active": true,
+      "last_error": null
+    },
+    {
+      "timestamp": 1755775582.0766003,
+      "ai_provider_healthy": true,
+      "disk_space_healthy": true,
+      "memory_healthy": true,
+      "pipeline_active": true,
+      "last_error": null
+    },
+    {
+      "timestamp": 1755775587.0914056,
+      "ai_provider_healthy": true,
+      "disk_space_healthy": true,
+      "memory_healthy": true,
+      "pipeline_active": true,
+      "last_error": null
+    },
+    {
+      "timestamp": 1755775592.117926,
+      "ai_provider_healthy": true,
+      "disk_space_healthy": true,
+      "memory_healthy": true,
+      "pipeline_active": true,
+      "last_error": null
+    },
+    {
+      "timestamp": 1755775597.1277585,
+      "ai_provider_healthy": true,
+      "disk_space_healthy": true,
+      "memory_healthy": true,
+      "pipeline_active": true,
+      "last_error": null
+    },
+    {
+      "timestamp": 1755775602.1396196,
+      "ai_provider_healthy": true,
+      "disk_space_healthy": true,
+      "memory_healthy": true,
+      "pipeline_active": true,
+      "last_error": null
+    },
+    {
+      "timestamp": 1755775607.1532242,
+      "ai_provider_healthy": true,
+      "disk_space_healthy": true,
+      "memory_healthy": true,
+      "pipeline_active": true,
+      "last_error": null
+    },
+    {
+      "timestamp": 1755775612.163435,
+      "ai_provider_healthy": true,
+      "disk_space_healthy": true,
+      "memory_healthy": true,
+      "pipeline_active": true,
+      "last_error": null
+    },
+    {
+      "timestamp": 1755775617.1779647,
+      "ai_provider_healthy": true,
+      "disk_space_healthy": true,
+      "memory_healthy": true,
+      "pipeline_active": true,
+      "last_error": null
+    },
+    {
+      "timestamp": 1755775622.1878564,
+      "ai_provider_healthy": true,
+      "disk_space_healthy": true,
+      "memory_healthy": true,
+      "pipeline_active": true,
+      "last_error": null
+    },
+    {
+      "timestamp": 1755775627.1977227,
+      "ai_provider_healthy": true,
+      "disk_space_healthy": true,
+      "memory_healthy": true,
+      "pipeline_active": true,
+      "last_error": null
+    },
+    {
+      "timestamp": 1755775632.2096157,
+      "ai_provider_healthy": true,
+      "disk_space_healthy": true,
+      "memory_healthy": true,
+      "pipeline_active": true,
+      "last_error": null
+    }
+  ]
+}

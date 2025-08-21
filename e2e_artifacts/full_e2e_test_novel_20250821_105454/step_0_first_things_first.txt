@@ -1,0 +1,9 @@
+STEP 0: FIRST THINGS FIRST
+==================================================
+
+Category: Police Procedural
+Story Kind: Internal-affairs whodunit with mentor-betrayal and conspiracy takedown.
+Audience Delight: Layered-corruption reveals, loyalty-vs-duty choice, cat-and-mouse pursuit, leadership cover-up exposure, justice-against-odds ending.
+
+Generated: 2025-08-21T10:55:19.906020
+Version: 1.0.0

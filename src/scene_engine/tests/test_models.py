@@ -361,13 +361,26 @@ class TestSceneValidation:
         # Create a scene with validation issues
         scene = SceneCard(
             scene_type=SceneType.PROACTIVE,
-            pov="",  # Invalid - empty POV
+            pov="Valid POV", 
             viewpoint=ViewpointType.THIRD,
             tense=TenseType.PAST,
-            scene_crucible="No immediate danger mentioned",  # Invalid - no 'now' language
+            scene_crucible="This is background information about the character's history and context.",  # Invalid - contains story dump
             place="Test place",
-            time="Test time"
-            # Missing proactive data for proactive scene
+            time="Test time",
+            proactive=ProactiveScene(
+                goal=GoalCriteria(
+                    text="Valid goal for creation",
+                    fits_time=True,  # Valid criteria to pass model validation
+                    possible=True,
+                    difficult=True,
+                    fits_pov=True,
+                    concrete_objective=True
+                ),
+                conflict_obstacles=[
+                    ConflictObstacle(try_number=1, obstacle="Test obstacle")
+                ],
+                outcome=Outcome(type=OutcomeType.SETBACK, rationale="Test rationale")
+            )
         )
         
         result = validate_scene_card(scene)

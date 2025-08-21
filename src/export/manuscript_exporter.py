@@ -393,7 +393,8 @@ class ManuscriptExporter:
             
             # Chapters and scenes
             for chapter in ms_data.get('chapters', []):
-                f.write(f"## {chapter.get('title', f'Chapter {chapter.get('number', '?')}')}\n\n")
+                chapter_title = chapter.get('title', f"Chapter {chapter.get('number', '?')}")
+                f.write(f"## {chapter_title}\n\n")
                 
                 for scene in chapter.get('scenes', []):
                     f.write(f"### Scene {scene.get('scene_number', '?')}\n\n")

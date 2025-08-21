@@ -1,0 +1,9 @@
+STEP 0: FIRST THINGS FIRST
+==================================================
+
+Category: Techno-Thriller
+Story Kind: A heist with mentor-betrayal inside a corporate conspiracy.
+Audience Delight: betrayal-twist, slow-burn, forced-proximity, puzzle, redemption-arc.
+
+Generated: 2025-08-20T02:49:32.804726
+Version: 1.0.0

@@ -1,0 +1,18 @@
+{
+  "project_id": "proof_test_novel_20250821_113750",
+  "current_step": 0,
+  "steps": {
+    "step_0": {
+      "step": 0,
+      "current_step": 0,
+      "valid": true
+    },
+    "step_1": {
+      "step": 1
+    }
+  },
+  "last_updated": "2025-08-21T11:38:35.830558",
+  "total_events": 5,
+  "pipeline_health": "unknown",
+  "performance_summary": {}
+}

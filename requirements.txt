@@ -7,3 +7,8 @@ httpx>=0.27.0,<0.28.0  # Pin to prevent proxies argument conflict
 python-dotenv>=1.0.0
 pydantic>=2.0.0
 tqdm>=4.60.0
+
+# Observability dependencies
+psutil>=5.9.0
+flask>=2.3.0
+flask-cors>=4.0.0

@@ -8,7 +8,7 @@ Snowflake Method patterns with genre-specific and situation-specific templates.
 
 import json
 import yaml
-from typing import List, Dict, Any, Optional, Tuple
+from typing import List, Dict, Any, Optional, Tuple, Union
 from dataclasses import dataclass, asdict
 from enum import Enum
 from pathlib import Path

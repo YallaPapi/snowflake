@@ -1,0 +1,16 @@
+{
+  "category": "Techno-Thriller",
+  "story_kind": "Heist conspiracy with a whistleblower racing against time to expose a corporate cover-up.",
+  "audience_delight": "betrayal-twist, digital-forensics-puzzle, cat-and-mouse-chase, inside-man-reveal, ticking-clock-stakes.",
+  "metadata": {
+    "project_id": "proof_test_novel_20250821_113750",
+    "step": 0,
+    "version": "1.0.0",
+    "created_at": "2025-08-21T11:38:35.812327",
+    "model_name": "gpt-5",
+    "temperature": 1.0,
+    "seed": 42,
+    "prompt_hash": "83fc1b19cb90ab9b7064f1029edabac322fcbeb23002fb4e330f14c76dfe76a1",
+    "validator_version": "1.0.0"
+  }
+}
