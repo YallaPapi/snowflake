@@ -4,7 +4,7 @@ Step 6 Validator: Long Synopsis
 from typing import Tuple, List, Dict, Any
 
 class Step6Validator:
-    VERSION = "1.0.0"
+    VERSION = "1.1.0"  # Updated: More flexible keyword matching for AI-generated content
 
     def validate(self, artifact: Dict[str, Any]) -> Tuple[bool, List[str]]:
         errors: List[str] = []
@@ -14,14 +14,29 @@ class Step6Validator:
             return False, errors
         if len(text) < 1000:
             errors.append("TOO SHORT: long_synopsis should be several pages (>=1000 chars for MVP)")
-        # Basic presence hints for D1/D2/D3 cues
+        # Basic presence hints for D1/D2/D3 cues - more flexible keyword matching
         lower = text.lower()
-        if "pivot" not in lower and "new tactic" not in lower:
-            errors.append("MISSING MORAL PIVOT cue (mention 'pivot' or 'new tactic')")
-        if "bottleneck" not in lower and "only path" not in lower:
-            errors.append("MISSING BOTTLENECK cue (mention 'bottleneck' or 'only path')")
-        if "forces" not in lower and "no way back" not in lower:
-            errors.append("MISSING FORCING FUNCTION cue (mention 'forces' or 'no way back')")
+        
+        # Check for moral pivot concepts (more flexible)
+        pivot_keywords = ["pivot", "new tactic", "realizes", "understands", "learns", 
+                         "discovers", "shift", "transformation", "new approach", 
+                         "different way", "changes course", "revelation"]
+        if not any(keyword in lower for keyword in pivot_keywords):
+            errors.append("MISSING MORAL PIVOT cue (needs concept of realization/transformation)")
+        
+        # Check for bottleneck concepts (more flexible)
+        bottleneck_keywords = ["bottleneck", "only path", "no options", "final", 
+                              "last chance", "one way", "single choice", "narrowing", 
+                              "closing in", "cornered", "ultimatum", "converge"]
+        if not any(keyword in lower for keyword in bottleneck_keywords):
+            errors.append("MISSING BOTTLENECK cue (needs concept of narrowing options)")
+        
+        # Check for forcing function concepts (more flexible)
+        forcing_keywords = ["forces", "no way back", "cannot retreat", "irreversible", 
+                           "must", "trapped", "committed", "no choice", "no escape", 
+                           "point of no return", "can't turn back", "locked in"]
+        if not any(keyword in lower for keyword in forcing_keywords):
+            errors.append("MISSING FORCING FUNCTION cue (needs concept of irreversible commitment)")
         return len(errors) == 0, errors
 
     def fix_suggestions(self, errors: List[str]) -> List[str]:

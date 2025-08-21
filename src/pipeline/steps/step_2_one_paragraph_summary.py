@@ -44,8 +44,8 @@ class Step2OneParagraphSummary:
         """
         if not model_config:
             model_config = {
-                "model_name": "gpt-5",
-                "temperature": 1.0,  # GPT-5 only supports temperature=1.0
+                "model_name": "gpt-4o-mini",
+                "temperature": 0.3,  # Lower temperature for consistency
                 "seed": 42
             }
         

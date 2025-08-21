@@ -1,0 +1,59 @@
+{
+  "project_id": "code_of_deception_20250821_212841",
+  "current_step": 10,
+  "steps": {
+    "step_0": {
+      "step": 0,
+      "current_step": 6,
+      "valid": true
+    },
+    "step_1": {
+      "step": 1,
+      "current_step": 6,
+      "valid": true
+    },
+    "step_2": {
+      "step": 2,
+      "current_step": 6,
+      "valid": true
+    },
+    "step_3": {
+      "step": 3,
+      "current_step": 6,
+      "valid": true
+    },
+    "step_4": {
+      "step": 4,
+      "current_step": 6,
+      "valid": true
+    },
+    "step_5": {
+      "step": 5,
+      "current_step": 6,
+      "valid": true
+    },
+    "step_6": {
+      "step": 6,
+      "current_step": 6,
+      "valid": true
+    },
+    "step_7": {
+      "completed": true
+    },
+    "step_8": {
+      "completed": true
+    },
+    "step_9": {
+      "completed": true
+    },
+    "step_10": {
+      "completed": true,
+      "word_count": 8289
+    }
+  },
+  "last_updated": "2025-08-21T21:34:24.108144",
+  "total_events": 71,
+  "pipeline_health": "unknown",
+  "performance_summary": {},
+  "pipeline_complete": true
+}

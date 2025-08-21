@@ -1,11 +1,12 @@
 """
 Step 8 Implementation: Scene List
 """
+import csv
 import json
 import hashlib
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, Any, Optional, Tuple
+from typing import Dict, Any, Optional, Tuple, List
 
 from src.pipeline.validators.step_8_validator import Step8Validator
 from src.pipeline.prompts.step_8_prompt import Step8Prompt
@@ -82,10 +83,52 @@ class Step8SceneList:
     def save_artifact(self, artifact: Dict[str, Any], project_id: str) -> Path:
         project_path = self.project_dir / project_id
         project_path.mkdir(exist_ok=True)
-        p = project_path / "step_8_scene_list.json"
-        with open(p, "w", encoding="utf-8") as f:
+        
+        # Save JSON version
+        json_path = project_path / "step_8_scene_list.json"
+        with open(json_path, "w", encoding="utf-8") as f:
             json.dump(artifact, f, indent=2, ensure_ascii=False)
-        return p
+        
+        # Save CSV version
+        csv_path = project_path / "step_8_scenes.csv"
+        self.save_csv(artifact.get("scenes", []), csv_path)
+        
+        return json_path
+    
+    def save_csv(self, scenes: List[Dict[str, Any]], csv_path: Path) -> None:
+        """Save scenes as CSV with all required columns"""
+        if not scenes:
+            return
+        
+        # Define CSV columns in order
+        columns = [
+            "index", "chapter_hint", "type", "pov", "summary",
+            "time", "location", "word_target", "status",
+            "inbound_hook", "outbound_hook", "disaster_anchor",
+            "conflict_type", "conflict_description", "stakes"
+        ]
+        
+        with open(csv_path, "w", newline="", encoding="utf-8") as f:
+            writer = csv.DictWriter(f, fieldnames=columns)
+            writer.writeheader()
+            
+            for scene in scenes:
+                # Flatten conflict nested dict
+                row = scene.copy()
+                conflict = row.pop("conflict", {})
+                row["conflict_type"] = conflict.get("type", "")
+                row["conflict_description"] = conflict.get("description", "")
+                row["stakes"] = conflict.get("stakes", "")
+                
+                # Ensure all columns exist
+                for col in columns:
+                    if col not in row:
+                        row[col] = ""
+                    # Convert None to empty string
+                    if row[col] is None:
+                        row[col] = ""
+                
+                writer.writerow({k: row[k] for k in columns})
 
     def validate_only(self, artifact: Dict[str, Any]) -> Tuple[bool, str]:
         ok, errs = self.validator.validate(artifact)

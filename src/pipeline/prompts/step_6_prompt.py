@@ -12,57 +12,90 @@ class Step6Prompt:
     VERSION = "1.0.0"
 
     SYSTEM_PROMPT = """You are the Snowflake Method Step 6 Planner.
-Write a DETAILED 4-5 page long synopsis (2000-3000 words MINIMUM) expanding the Step 4 one-page synopsis.
-Each of the 5 paragraphs from Step 4 must expand to 400-600 words.
-Keep plain, literal language; ensure strict cause→effect; no coincidences.
-CRITICAL: The synopsis must be AT LEAST 2000 words long.
+Write a DETAILED 4-5 page long synopsis expanding the Step 4 one-page synopsis.
+
+CRITICAL LENGTH REQUIREMENTS:
+- Total synopsis: 2500-3000 words (NOT OPTIONAL)
+- Each section must be 500-600 words (5 sections = 2500-3000 total)
+- This is a HARD requirement - the synopsis MUST be this length
+
+STYLE REQUIREMENTS:
+- Plain, literal language
+- Strict cause-and-effect progression
+- No coincidences - everything must be set up
+- Specific scenes and concrete details, not summaries
 """
 
-    USER_PROMPT_TEMPLATE = """Generate a LONG synopsis from Step 4. This must be 2000-3000 words total.
+    USER_PROMPT_TEMPLATE = """Generate a LONG synopsis from Step 4.
 
-STEP 4 (Five Paragraphs to Expand):
-P1 (Setup): {p1}
-P2 (Disaster 1): {p2}
-P3 (Disaster 2): {p3}
-P4 (Disaster 3): {p4}
-P5 (Ending): {p5}
+ABSOLUTE REQUIREMENT: Write EXACTLY 2500-3000 words. This is MANDATORY.
 
-EXPANSION REQUIREMENTS:
-1. PARAGRAPH 1 → ACT I (400-600 words):
-   - Expand setup with specific scenes and character introductions
-   - Build to the forcing function that ends Act I
-   - Must explicitly state "forces" or "no way back" for the commitment point
+STEP 4 CONTENT TO EXPAND:
+Paragraph 1 (Setup): {p1}
+Paragraph 2 (Disaster 1): {p2}
+Paragraph 3 (Disaster 2): {p3}
+Paragraph 4 (Disaster 3): {p4}
+Paragraph 5 (Ending): {p5}
 
-2. PARAGRAPH 2 → ACT IIa (400-600 words):
-   - Detail the escalating conflicts after Disaster 1
-   - Show protagonist trying original tactics that fail
-   - Must explicitly mention the "pivot" or "new tactic" at midpoint
+DETAILED EXPANSION INSTRUCTIONS:
 
-3. PARAGRAPH 3 → ACT IIb (400-600 words):
-   - Show the moral premise shift after Disaster 2
-   - Detail new approach based on changed values
-   - Must explicitly state the moral/identity transformation
+SECTION 1 - ACT I SETUP (500-600 words):
+Expand Paragraph 1 into detailed scenes showing:
+- The protagonist's ordinary world in specific detail
+- The inciting incident as a full scene with dialogue and action
+- Initial resistance and the call to adventure
+- Supporting characters and their introductions
+- The forcing function that makes retreat impossible
+- Use the exact phrase "forces" or "no way back" or "cannot retreat"
 
-4. PARAGRAPH 4 → ACT III Setup (400-600 words):
-   - Collapse all retreat options after Disaster 3
-   - Must explicitly name the "bottleneck" or state "only path"
-   - Build maximum pressure before climax
+SECTION 2 - DISASTER 1 CONSEQUENCES (500-600 words):
+Expand Paragraph 2 into detailed scenes showing:
+- The immediate aftermath of the first disaster
+- Protagonist's attempts to use old methods that fail
+- New obstacles and complications arising
+- Allies and enemies revealing themselves
+- The pressure mounting toward the midpoint
+- The pivot to new tactics - use the word "pivot" or "new tactic"
 
-5. PARAGRAPH 5 → CLIMAX & RESOLUTION (400-600 words):
-   - Detail the final confrontation
-   - Show how the moral shift enables victory
-   - Provide specific resolution for all threads
+SECTION 3 - DISASTER 2 AND TRANSFORMATION (500-600 words):
+Expand Paragraph 3 into detailed scenes showing:
+- The second disaster in visceral detail
+- The moral premise becoming clear to the protagonist
+- Internal struggle and identity crisis
+- The decision to change approach based on new values
+- Consequences of the transformation
+- Explicitly state the moral/values transformation
+
+SECTION 4 - DISASTER 3 AND BOTTLENECK (500-600 words):
+Expand Paragraph 4 into detailed scenes showing:
+- The third disaster eliminating all options
+- Systematic closing of escape routes
+- The bottleneck forming - use "bottleneck" or "only path"
+- Maximum pressure and stakes
+- The setup for the final confrontation
+- The protagonist's preparation for the climax
+
+SECTION 5 - CLIMAX AND RESOLUTION (500-600 words):
+Expand Paragraph 5 into detailed scenes showing:
+- The final confrontation in moment-by-moment detail
+- How the moral premise enables victory
+- The cost of victory and what is sacrificed
+- Resolution of all character arcs
+- The new equilibrium established
+- Thematic resonance and meaning
 
 CRITICAL REQUIREMENTS:
-- Total length: 2000-3000 words (NOT optional)
-- Include ALL disaster markers explicitly
-- Use terms: "forces", "pivot", "bottleneck" at appropriate points
-- Every event must causally link to the next
-- Be specific with scenes, not general summaries
+1. MUST be 2500-3000 words total (this is MANDATORY)
+2. Each section MUST be 500-600 words
+3. Include specific scenes with sensory details
+4. Show character emotions and internal states
+5. Use the required keywords: "forces", "pivot", "bottleneck"
+6. Maintain strict causality - no coincidences
+7. Write in present tense for immediacy
 
 OUTPUT FORMAT (JSON):
 {{
-  "long_synopsis": "<2000-3000 word detailed synopsis with clear paragraph breaks>"
+  "long_synopsis": "<Your 2500-3000 word synopsis with paragraph breaks between sections>"
 }}
 """
 

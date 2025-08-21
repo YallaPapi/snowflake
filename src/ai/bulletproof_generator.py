@@ -24,15 +24,15 @@ class BulletproofGenerator:
         # Multi-tier fallback models
         self.fallback_models = {
             "openai": [
-                "gpt-5",                      # GPT-5 primary
+                "gpt-4o",                     # GPT-4o primary
                 "gpt-4o",                     # GPT-4o fallback
                 "gpt-4o-mini",                # GPT-4o mini fallback
                 "gpt-3.5-turbo"               # GPT-3.5 final fallback
             ],
             "anthropic": [
-                "claude-3-haiku-20240307",    # Fast primary
-                "claude-3-sonnet-20241022",   # Quality fallback
-                "claude-3-opus-20240229"      # Premium fallback
+                "claude-3-5-haiku-20241022",    # Fast primary
+                "claude-3-5-sonnet-20241022",   # Quality fallback
+                "claude-3-opus-20240229"        # Premium fallback
             ],
             "openrouter": [
                 "meta-llama/llama-3.2-3b-instruct",   # Very fast
@@ -65,7 +65,7 @@ class BulletproofGenerator:
         if not config:
             config = {"temperature": 0.7, "max_tokens": 4000}
         
-        # Try all providers and models with retries (OpenAI/GPT-5 first)
+        # Try all providers and models with retries (OpenAI/GPT-4o first)
         for provider in ["openai", "anthropic", "openrouter"]:
             for model_name in self.fallback_models.get(provider, []):
                 

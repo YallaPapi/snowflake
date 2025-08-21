@@ -1,0 +1,23 @@
+{
+  "logline": "Emily, a cybersecurity expert, must expose a deadly conspiracy despite being targeted by her CEO and a mysterious government agent.",
+  "word_count": 20,
+  "metadata": {
+    "project_id": "code_of_deception_20250821_212841",
+    "step": 1,
+    "version": "1.0.0",
+    "created_at": "2025-08-21T21:32:35.471390",
+    "model_name": "gpt-4o-mini",
+    "temperature": 0.3,
+    "seed": 42,
+    "prompt_hash": "b2995ccbe706822280b328dec469f7d7eb2e363f681ee1df492d8fec147c8d3d",
+    "validator_version": "1.0.0",
+    "hash_upstream": "1bd707e6b27937f40fb2e51b7441015737fb6bf40f4d2a6dc00d5130908c9284"
+  },
+  "lead_count": 1,
+  "components": {
+    "lead_name": "Emily",
+    "lead_role": "cybersecurity expert",
+    "external_goal": "expose a deadly conspiracy",
+    "opposition": "being targeted by her CEO and a mysterious government agent"
+  }
+}

@@ -3,7 +3,7 @@
 
 import json
 from pathlib import Path
-from src.pipeline.steps.step_9_scene_briefs import Step9SceneBriefs
+from src.pipeline.steps.step_9_scene_briefs_v2 import Step9SceneBriefsV2 as Step9SceneBriefs
 
 def test_step_9():
     # Load existing Step 8 artifact

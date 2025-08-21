@@ -1,0 +1,15 @@
+{
+  "moral_premise": "People succeed when they act with courage, and they fail when they protect themselves at the cost of justice.",
+  "metadata": {
+    "project_id": "code_of_deception_20250821_212841",
+    "step": 2,
+    "version": "1.0.0",
+    "created_at": "2025-08-21T21:32:42.037585",
+    "model_name": "gpt-4o-mini",
+    "temperature": 0.3,
+    "seed": 42,
+    "prompt_hash": "ac5431d99e7212f16e91f5788794097cea1e7c3ca3ff7bd7ec00b7a6745d6b60",
+    "validator_version": "1.0.0",
+    "hash_upstream": "dee108496640634fd905dabfdd0b410b4b76b1ba5e1aa5655775675e2e3e5667"
+  }
+}

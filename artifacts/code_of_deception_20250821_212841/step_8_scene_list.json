@@ -1,0 +1,754 @@
+{
+  "scenes": [
+    {
+      "index": 1,
+      "chapter": 1,
+      "type": "proactive",
+      "pov": "Emily Torres",
+      "summary": "Emily monitors network traffic in her cluttered apartment, revealing her solitary life as a cybersecurity expert.",
+      "time": "Evening",
+      "location": "Emily's Apartment",
+      "word_target": 700
+    },
+    {
+      "index": 2,
+      "chapter": 1,
+      "type": "proactive",
+      "pov": "Emily Torres",
+      "summary": "Emily discovers an anomaly in the data packets while monitoring network traffic.",
+      "time": "Evening",
+      "location": "Emily's Apartment",
+      "word_target": 650
+    },
+    {
+      "index": 3,
+      "chapter": 1,
+      "type": "proactive",
+      "pov": "Emily Torres",
+      "summary": "Emily begins tracing the origin of the suspicious data packet.",
+      "time": "Night",
+      "location": "Emily's Apartment",
+      "word_target": 700
+    },
+    {
+      "index": 4,
+      "chapter": 1,
+      "type": "reactive",
+      "pov": "Emily Torres",
+      "summary": "Emily uncovers a backdoor in the city's infrastructure linked to a planned cyberattack.",
+      "time": "Late Night",
+      "location": "Emily's Apartment",
+      "word_target": 800
+    },
+    {
+      "index": 5,
+      "chapter": 1,
+      "type": "reactive",
+      "pov": "Emily Torres",
+      "summary": "Realizing the potential consequences of the cyberattack, Emily's heart races.",
+      "time": "Early Morning",
+      "location": "Emily's Apartment",
+      "word_target": 700
+    },
+    {
+      "index": 6,
+      "chapter": 1,
+      "type": "reactive",
+      "pov": "Emily Torres",
+      "summary": "Emily spends a sleepless night analyzing data and contemplating the implications.",
+      "time": "Morning",
+      "location": "Emily's Apartment",
+      "word_target": 800
+    },
+    {
+      "index": 7,
+      "chapter": 2,
+      "type": "proactive",
+      "pov": "Emily Torres",
+      "summary": "Conflicted about her next step, Emily starts to research the conspiracy further.",
+      "time": "Afternoon",
+      "location": "Emily's Apartment",
+      "word_target": 700
+    },
+    {
+      "index": 8,
+      "chapter": 2,
+      "type": "reactive",
+      "pov": "Emily Torres",
+      "summary": "Emily confides in her colleague Jake about the cyberattack and her fears.",
+      "time": "Afternoon",
+      "location": "Office Break Room",
+      "word_target": 650
+    },
+    {
+      "index": 9,
+      "chapter": 2,
+      "type": "reactive",
+      "pov": "Jake",
+      "summary": "Jake expresses concern and suggests contacting the authorities.",
+      "time": "Afternoon",
+      "location": "Office Break Room",
+      "word_target": 600
+    },
+    {
+      "index": 10,
+      "chapter": 2,
+      "type": "reactive",
+      "pov": "Emily Torres",
+      "summary": "Emily hesitates to contact the authorities, fearing exposure.",
+      "time": "Afternoon",
+      "location": "Office Break Room",
+      "word_target": 700
+    },
+    {
+      "index": 11,
+      "chapter": 2,
+      "type": "reactive",
+      "pov": "Emily Torres",
+      "summary": "Emily receives an encrypted message warning her to back off.",
+      "time": "Evening",
+      "location": "Emily's Apartment",
+      "word_target": 800
+    },
+    {
+      "index": 12,
+      "chapter": 2,
+      "type": "reactive",
+      "pov": "Emily Torres",
+      "summary": "The chilling message prompts Emily to take action.",
+      "time": "Evening",
+      "location": "Emily's Apartment",
+      "word_target": 700
+    },
+    {
+      "index": 13,
+      "chapter": 2,
+      "type": "proactive",
+      "pov": "Emily Torres",
+      "summary": "Determined, Emily begins to dig deeper into the conspiracy.",
+      "time": "Night",
+      "location": "Emily's Apartment",
+      "word_target": 650
+    },
+    {
+      "index": 14,
+      "chapter": 2,
+      "type": "reactive",
+      "pov": "Emily Torres",
+      "summary": "Emily confronts her CEO about the backdoor she discovered.",
+      "time": "Daytime",
+      "location": "CEO's Office",
+      "word_target": 800
+    },
+    {
+      "index": 15,
+      "chapter": 2,
+      "type": "reactive",
+      "pov": "Emily Torres",
+      "summary": "The CEO's cold response leaves Emily shaken and more determined.",
+      "time": "Daytime",
+      "location": "CEO's Office",
+      "word_target": 700
+    },
+    {
+      "index": 16,
+      "chapter": 3,
+      "type": "proactive",
+      "pov": "Emily Torres",
+      "summary": "Emily starts utilizing her technical skills to track the digital breadcrumbs.",
+      "time": "Night",
+      "location": "Emily's Apartment",
+      "word_target": 800
+    },
+    {
+      "index": 17,
+      "chapter": 3,
+      "type": "reactive",
+      "pov": "Emily Torres",
+      "summary": "Emily uncovers more evidence linking her company to the conspiracy.",
+      "time": "Late Night",
+      "location": "Emily's Apartment",
+      "word_target": 700
+    },
+    {
+      "index": 18,
+      "chapter": 3,
+      "type": "reactive",
+      "pov": "Emily Torres",
+      "summary": "Emily feels the weight of the conspiracy pressing down on her.",
+      "time": "Early Morning",
+      "location": "Emily's Apartment",
+      "word_target": 600
+    },
+    {
+      "index": 19,
+      "chapter": 3,
+      "type": "proactive",
+      "pov": "Emily Torres",
+      "summary": "Emily decides to gather a team to help her expose the conspiracy.",
+      "time": "Daytime",
+      "location": "Coffee Shop",
+      "word_target": 750
+    },
+    {
+      "index": 20,
+      "chapter": 3,
+      "type": "reactive",
+      "pov": "Jake",
+      "summary": "Jake agrees to help Emily, revealing his own concerns about the summit.",
+      "time": "Daytime",
+      "location": "Coffee Shop",
+      "word_target": 700
+    },
+    {
+      "index": 21,
+      "chapter": 4,
+      "type": "proactive",
+      "pov": "Emily Torres",
+      "summary": "Emily and Jake start gathering intel on the conspiracy.",
+      "time": "Evening",
+      "location": "Emily's Apartment",
+      "word_target": 800
+    },
+    {
+      "index": 22,
+      "chapter": 4,
+      "type": "reactive",
+      "pov": "Emily Torres",
+      "summary": "They discover a list of potential targets for the cyberattack.",
+      "time": "Night",
+      "location": "Emily's Apartment",
+      "word_target": 700
+    },
+    {
+      "index": 23,
+      "chapter": 4,
+      "type": "reactive",
+      "pov": "Jake",
+      "summary": "Jake expresses concern about the threat level and the risk to their safety.",
+      "time": "Night",
+      "location": "Emily's Apartment",
+      "word_target": 650
+    },
+    {
+      "index": 24,
+      "chapter": 4,
+      "type": "proactive",
+      "pov": "Emily Torres",
+      "summary": "Emily insists that they must warn the authorities despite the risks.",
+      "time": "Early Morning",
+      "location": "Emily's Apartment",
+      "word_target": 700
+    },
+    {
+      "index": 25,
+      "chapter": 4,
+      "type": "reactive",
+      "pov": "Emily Torres",
+      "summary": "Emily prepares a report detailing their findings to present to the authorities.",
+      "time": "Morning",
+      "location": "Emily's Apartment",
+      "word_target": 800
+    },
+    {
+      "index": 26,
+      "chapter": 4,
+      "type": "reactive",
+      "pov": "Jake",
+      "summary": "Jake helps Emily refine the report, emphasizing key points.",
+      "time": "Morning",
+      "location": "Emily's Apartment",
+      "word_target": 700
+    },
+    {
+      "index": 27,
+      "chapter": 5,
+      "type": "proactive",
+      "pov": "Emily Torres",
+      "summary": "Emily and Jake decide to meet with a trusted contact in law enforcement.",
+      "time": "Afternoon",
+      "location": "Local Police Station",
+      "word_target": 800
+    },
+    {
+      "index": 28,
+      "chapter": 5,
+      "type": "reactive",
+      "pov": "Emily Torres",
+      "summary": "Their contact listens, but is skeptical about the credibility of their findings.",
+      "time": "Afternoon",
+      "location": "Local Police Station",
+      "word_target": 700
+    },
+    {
+      "index": 29,
+      "chapter": 5,
+      "type": "reactive",
+      "pov": "Emily Torres",
+      "summary": "Emily feels frustrated as the officer downplays their concerns.",
+      "time": "Afternoon",
+      "location": "Local Police Station",
+      "word_target": 600
+    },
+    {
+      "index": 30,
+      "chapter": 5,
+      "type": "proactive",
+      "pov": "Jake",
+      "summary": "Jake suggests they gather more evidence to strengthen their case.",
+      "time": "Late Afternoon",
+      "location": "Local Police Station",
+      "word_target": 650
+    },
+    {
+      "index": 31,
+      "chapter": 5,
+      "type": "reactive",
+      "pov": "Emily Torres",
+      "summary": "Emily agrees, feeling the urgency of their mission.",
+      "time": "Late Afternoon",
+      "location": "Local Police Station",
+      "word_target": 700
+    },
+    {
+      "index": 32,
+      "chapter": 5,
+      "type": "proactive",
+      "pov": "Emily Torres",
+      "summary": "Emily sets a plan in motion to infiltrate her company\u2019s network for more evidence.",
+      "time": "Evening",
+      "location": "Emily's Apartment",
+      "word_target": 800
+    },
+    {
+      "index": 33,
+      "chapter": 6,
+      "type": "reactive",
+      "pov": "Emily Torres",
+      "summary": "Emily executes the plan, trying to avoid detection.",
+      "time": "Night",
+      "location": "Company Server Room",
+      "word_target": 700
+    },
+    {
+      "index": 34,
+      "chapter": 6,
+      "type": "reactive",
+      "pov": "Emily Torres",
+      "summary": "She finds encrypted files that could provide crucial evidence.",
+      "time": "Night",
+      "location": "Company Server Room",
+      "word_target": 800
+    },
+    {
+      "index": 35,
+      "chapter": 6,
+      "type": "reactive",
+      "pov": "Emily Torres",
+      "summary": "An alarm sounds, and Emily realizes she's been detected.",
+      "time": "Night",
+      "location": "Company Server Room",
+      "word_target": 700
+    },
+    {
+      "index": 36,
+      "chapter": 6,
+      "type": "proactive",
+      "pov": "Emily Torres",
+      "summary": "Emily quickly extracts the files and makes her escape.",
+      "time": "Night",
+      "location": "Company Server Room",
+      "word_target": 800
+    },
+    {
+      "index": 37,
+      "chapter": 6,
+      "type": "reactive",
+      "pov": "Emily Torres",
+      "summary": "Emily narrowly escapes the building as security teams search for her.",
+      "time": "Night",
+      "location": "Company Premises",
+      "word_target": 700
+    },
+    {
+      "index": 38,
+      "chapter": 7,
+      "type": "proactive",
+      "pov": "Emily Torres",
+      "summary": "Emily and Jake meet to analyze the files she managed to steal.",
+      "time": "Early Morning",
+      "location": "Emily's Apartment",
+      "word_target": 800
+    },
+    {
+      "index": 39,
+      "chapter": 7,
+      "type": "reactive",
+      "pov": "Jake",
+      "summary": "Jake is shocked to learn the extent of the conspiracy.",
+      "time": "Early Morning",
+      "location": "Emily's Apartment",
+      "word_target": 700
+    },
+    {
+      "index": 40,
+      "chapter": 7,
+      "type": "reactive",
+      "pov": "Emily Torres",
+      "summary": "Emily realizes they have a limited time to act before the summit.",
+      "time": "Morning",
+      "location": "Emily's Apartment",
+      "word_target": 600
+    },
+    {
+      "index": 41,
+      "chapter": 7,
+      "type": "proactive",
+      "pov": "Emily Torres",
+      "summary": "Emily and Jake strategize on how to get the evidence to the authorities.",
+      "time": "Morning",
+      "location": "Emily's Apartment",
+      "word_target": 700
+    },
+    {
+      "index": 42,
+      "chapter": 8,
+      "type": "proactive",
+      "pov": "Emily Torres",
+      "summary": "They decide to leak the information to the press if necessary.",
+      "time": "Afternoon",
+      "location": "Emily's Apartment",
+      "word_target": 800
+    },
+    {
+      "index": 43,
+      "chapter": 8,
+      "type": "reactive",
+      "pov": "Jake",
+      "summary": "Jake expresses concern about the repercussions of leaking information.",
+      "time": "Afternoon",
+      "location": "Emily's Apartment",
+      "word_target": 600
+    },
+    {
+      "index": 44,
+      "chapter": 8,
+      "type": "reactive",
+      "pov": "Emily Torres",
+      "summary": "Emily reassures Jake, emphasizing the urgency of the situation.",
+      "time": "Afternoon",
+      "location": "Emily's Apartment",
+      "word_target": 700
+    },
+    {
+      "index": 45,
+      "chapter": 8,
+      "type": "proactive",
+      "pov": "Emily Torres",
+      "summary": "Emily prepares to contact a journalist she trusts.",
+      "time": "Evening",
+      "location": "Emily's Apartment",
+      "word_target": 800
+    },
+    {
+      "index": 46,
+      "chapter": 8,
+      "type": "reactive",
+      "pov": "Jake",
+      "summary": "Jake helps Emily draft a secure message to the journalist.",
+      "time": "Evening",
+      "location": "Emily's Apartment",
+      "word_target": 700
+    },
+    {
+      "index": 47,
+      "chapter": 9,
+      "type": "proactive",
+      "pov": "Emily Torres",
+      "summary": "Emily sends the message to the journalist, setting the plan in motion.",
+      "time": "Night",
+      "location": "Emily's Apartment",
+      "word_target": 800
+    },
+    {
+      "index": 48,
+      "chapter": 9,
+      "type": "reactive",
+      "pov": "Emily Torres",
+      "summary": "Emily feels a mix of fear and relief after sending the message.",
+      "time": "Night",
+      "location": "Emily's Apartment",
+      "word_target": 700
+    },
+    {
+      "index": 49,
+      "chapter": 9,
+      "type": "reactive",
+      "pov": "Jake",
+      "summary": "Jake expresses concern about how the journalist will react.",
+      "time": "Night",
+      "location": "Emily's Apartment",
+      "word_target": 600
+    },
+    {
+      "index": 50,
+      "chapter": 9,
+      "type": "reactive",
+      "pov": "Emily Torres",
+      "summary": "Emily reassures Jake, believing they have done the right thing.",
+      "time": "Night",
+      "location": "Emily's Apartment",
+      "word_target": 700
+    },
+    {
+      "index": 51,
+      "chapter": 10,
+      "type": "proactive",
+      "pov": "Emily Torres",
+      "summary": "The next day, Emily anxiously awaits a response from the journalist.",
+      "time": "Morning",
+      "location": "Emily's Apartment",
+      "word_target": 800
+    },
+    {
+      "index": 52,
+      "chapter": 10,
+      "type": "reactive",
+      "pov": "Jake",
+      "summary": "Jake tries to distract Emily with conversation, but her mind is elsewhere.",
+      "time": "Morning",
+      "location": "Emily's Apartment",
+      "word_target": 700
+    },
+    {
+      "index": 53,
+      "chapter": 10,
+      "type": "reactive",
+      "pov": "Emily Torres",
+      "summary": "Emily receives a call from the journalist, and her heart races.",
+      "time": "Midday",
+      "location": "Emily's Apartment",
+      "word_target": 600
+    },
+    {
+      "index": 54,
+      "chapter": 10,
+      "type": "reactive",
+      "pov": "Emily Torres",
+      "summary": "The journalist expresses interest in their findings, asking for more details.",
+      "time": "Midday",
+      "location": "Emily's Apartment",
+      "word_target": 700
+    },
+    {
+      "index": 55,
+      "chapter": 11,
+      "type": "proactive",
+      "pov": "Emily Torres",
+      "summary": "Emily and Jake prepare to meet the journalist to provide more evidence.",
+      "time": "Afternoon",
+      "location": "Coffee Shop",
+      "word_target": 800
+    },
+    {
+      "index": 56,
+      "chapter": 11,
+      "type": "reactive",
+      "pov": "Emily Torres",
+      "summary": "They arrive at the coffee shop and spot the journalist waiting.",
+      "time": "Afternoon",
+      "location": "Coffee Shop",
+      "word_target": 700
+    },
+    {
+      "index": 57,
+      "chapter": 11,
+      "type": "reactive",
+      "pov": "Emily Torres",
+      "summary": "Emily feels a surge of anxiety as they sit down with the journalist.",
+      "time": "Afternoon",
+      "location": "Coffee Shop",
+      "word_target": 600
+    },
+    {
+      "index": 58,
+      "chapter": 11,
+      "type": "reactive",
+      "pov": "Journalist",
+      "summary": "The journalist asks probing questions about their findings.",
+      "time": "Afternoon",
+      "location": "Coffee Shop",
+      "word_target": 700
+    },
+    {
+      "index": 59,
+      "chapter": 11,
+      "type": "reactive",
+      "pov": "Emily Torres",
+      "summary": "Emily explains the evidence they gathered, stressing its urgency.",
+      "time": "Afternoon",
+      "location": "Coffee Shop",
+      "word_target": 800
+    },
+    {
+      "index": 60,
+      "chapter": 12,
+      "type": "proactive",
+      "pov": "Journalist",
+      "summary": "The journalist agrees to publish the story but warns them to be careful.",
+      "time": "Afternoon",
+      "location": "Coffee Shop",
+      "word_target": 700
+    },
+    {
+      "index": 61,
+      "chapter": 12,
+      "type": "reactive",
+      "pov": "Emily Torres",
+      "summary": "Emily feels a mix of relief and apprehension as they leave the meeting.",
+      "time": "Late Afternoon",
+      "location": "Coffee Shop",
+      "word_target": 600
+    },
+    {
+      "index": 62,
+      "chapter": 12,
+      "type": "reactive",
+      "pov": "Jake",
+      "summary": "Jake expresses concern about the potential backlash from their actions.",
+      "time": "Late Afternoon",
+      "location": "Street Outside Coffee Shop",
+      "word_target": 650
+    },
+    {
+      "index": 63,
+      "chapter": 12,
+      "type": "reactive",
+      "pov": "Emily Torres",
+      "summary": "Emily reassures Jake, believing they have done the right thing.",
+      "time": "Late Afternoon",
+      "location": "Street Outside Coffee Shop",
+      "word_target": 700
+    },
+    {
+      "index": 64,
+      "chapter": 12,
+      "type": "proactive",
+      "pov": "Emily Torres",
+      "summary": "Emily and Jake start to prepare for the fallout from the article.",
+      "time": "Evening",
+      "location": "Emily's Apartment",
+      "word_target": 800
+    },
+    {
+      "index": 65,
+      "chapter": 13,
+      "type": "reactive",
+      "pov": "Emily Torres",
+      "summary": "News of the article breaks, and Emily is flooded with messages.",
+      "time": "Morning",
+      "location": "Emily's Apartment",
+      "word_target": 700
+    },
+    {
+      "index": 66,
+      "chapter": 13,
+      "type": "reactive",
+      "pov": "Jake",
+      "summary": "Jake watches the news, realizing the extent of the public reaction.",
+      "time": "Morning",
+      "location": "Emily's Apartment",
+      "word_target": 600
+    },
+    {
+      "index": 67,
+      "chapter": 13,
+      "type": "reactive",
+      "pov": "Emily Torres",
+      "summary": "Emily feels both a sense of accomplishment and fear of repercussions.",
+      "time": "Morning",
+      "location": "Emily's Apartment",
+      "word_target": 700
+    },
+    {
+      "index": 68,
+      "chapter": 14,
+      "type": "proactive",
+      "pov": "Emily Torres",
+      "summary": "Emily and Jake prepare to go into hiding as threats begin to emerge.",
+      "time": "Afternoon",
+      "location": "Emily's Apartment",
+      "word_target": 800
+    },
+    {
+      "index": 69,
+      "chapter": 14,
+      "type": "reactive",
+      "pov": "Jake",
+      "summary": "Jake is anxious about leaving everything behind.",
+      "time": "Afternoon",
+      "location": "Emily's Apartment",
+      "word_target": 700
+    },
+    {
+      "index": 70,
+      "chapter": 14,
+      "type": "reactive",
+      "pov": "Emily Torres",
+      "summary": "Emily reassures Jake that it's the only way to stay safe.",
+      "time": "Afternoon",
+      "location": "Emily's Apartment",
+      "word_target": 600
+    },
+    {
+      "index": 71,
+      "chapter": 14,
+      "type": "proactive",
+      "pov": "Emily Torres",
+      "summary": "They finalize their escape plan, deciding to leave the city.",
+      "time": "Evening",
+      "location": "Emily's Apartment",
+      "word_target": 800
+    },
+    {
+      "index": 72,
+      "chapter": 15,
+      "type": "reactive",
+      "pov": "Emily Torres",
+      "summary": "As they leave, Emily reflects on the life they are leaving behind.",
+      "time": "Night",
+      "location": "Street Outside Emily's Apartment",
+      "word_target": 700
+    },
+    {
+      "index": 73,
+      "chapter": 15,
+      "type": "reactive",
+      "pov": "Jake",
+      "summary": "Jake expresses a mix of sadness and determination to see it through.",
+      "time": "Night",
+      "location": "Street Outside Emily's Apartment",
+      "word_target": 600
+    },
+    {
+      "index": 74,
+      "chapter": 15,
+      "type": "reactive",
+      "pov": "Emily Torres",
+      "summary": "Emily vows to return and fight against the conspiracy.",
+      "time": "Night",
+      "location": "Street Outside Emily's Apartment",
+      "word_target": 700
+    },
+    {
+      "index": 75,
+      "chapter": 15,
+      "type": "proactive",
+      "pov": "Emily Torres",
+      "summary": "Emily and Jake drive into the night, determined to find a way to expose the conspiracy.",
+      "time": "Night",
+      "location": "Highway",
+      "word_target": 800
+    }
+  ]
+}

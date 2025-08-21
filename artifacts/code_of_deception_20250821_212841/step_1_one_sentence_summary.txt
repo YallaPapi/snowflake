@@ -1,0 +1,16 @@
+STEP 1: ONE SENTENCE SUMMARY (LOGLINE)
+==================================================
+
+LOGLINE: Emily, a cybersecurity expert, must expose a deadly conspiracy despite being targeted by her CEO and a mysterious government agent.
+
+Word Count: 20/25
+Named Leads: 1/2
+
+PARSED COMPONENTS:
+  lead_name: Emily
+  lead_role: cybersecurity expert
+  external_goal: expose a deadly conspiracy
+  opposition: being targeted by her CEO and a mysterious government agent
+
+Generated: 2025-08-21T21:32:35.471390
+Version: 1.0.0

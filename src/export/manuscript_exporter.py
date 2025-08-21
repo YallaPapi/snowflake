@@ -429,16 +429,16 @@ class ManuscriptExporter:
         if DOCX_AVAILABLE:
             try:
                 exports['docx'] = self.export_docx(manuscript, project_id=project_id)
-                print(f"✓ Exported DOCX: {exports['docx']}")
+                print(f"[SUCCESS] Exported DOCX: {exports['docx']}")
             except Exception as e:
-                print(f"✗ DOCX export failed: {e}")
+                print(f"[FAIL] DOCX export failed: {e}")
         
         # Export EPUB if available
         if EPUB_AVAILABLE:
             try:
                 exports['epub'] = self.export_epub(manuscript, project_id=project_id)
-                print(f"✓ Exported EPUB: {exports['epub']}")
+                print(f"[SUCCESS] Exported EPUB: {exports['epub']}")
             except Exception as e:
-                print(f"✗ EPUB export failed: {e}")
+                print(f"[FAIL] EPUB export failed: {e}")
         
         return exports

@@ -125,7 +125,24 @@ class Step4OnePageSynopsis:
 	
 	def _parse_synopsis_content_bulletproof(self, content: str) -> Dict[str, Any]:
 		"""Parse synopsis content with bulletproof fallbacks - NEVER fails"""
-		# Try JSON parsing first
+		import re
+		
+		# Try to extract JSON from code blocks first
+		try:
+			code_pattern = r'```(?:json)?\s*({.*?})\s*```'
+			code_matches = re.findall(code_pattern, content, re.DOTALL)
+			if code_matches:
+				for match in code_matches:
+					try:
+						parsed = json.loads(match)
+						if self._validate_synopsis_structure(parsed):
+							return parsed
+					except:
+						continue
+		except:
+			pass
+		
+		# Try direct JSON parsing
 		try:
 			if content.strip().startswith("{") and content.strip().endswith("}"):
 				parsed = json.loads(content.strip())

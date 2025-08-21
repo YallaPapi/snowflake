@@ -13,41 +13,37 @@ class ModelSelector:
     
     # Model tiers by capability and cost
     FAST_MODELS = {
-        "anthropic": "claude-3-haiku-20240307",      # Fast, cheap
-        "openai": "gpt-5",                           # GPT-5 for fast tasks
+        "anthropic": "claude-3-haiku-20240229",      # Fast, cheap (older stable version)
+        "openai": "gpt-4o-mini",                     # GPT-4o-mini for fast tasks
         "openrouter": "meta-llama/llama-3.2-3b-instruct"  # Very fast, very cheap
     }
     
     BALANCED_MODELS = {
-        "anthropic": "claude-3-5-haiku-20241022",    # Good balance
-        "openai": "gpt-5",                           # GPT-5 for balanced tasks
+        "anthropic": "claude-3-haiku-20240229",    # Good balance (stable model)
+        "openai": "gpt-4o-mini",                   # GPT-4o-mini for balanced tasks
         "openrouter": "meta-llama/llama-3.1-8b-instruct"  # Good balance
     }
     
     QUALITY_MODELS = {
-        "anthropic": "claude-3-5-sonnet-20241022",   # High quality
-        "openai": "gpt-5",                           # GPT-5 for quality tasks
-        "openrouter": "anthropic/claude-3.5-sonnet-20241022"  # Best quality
+        "anthropic": "claude-3-5-sonnet-20240620",   # High quality (working model)
+        "openai": "gpt-4o",                          # GPT-4o for quality tasks
+        "openrouter": "anthropic/claude-3.5-sonnet"  # Best quality (simplified)
     }
     
-    # Step requirements mapping
+    # Step requirements mapping - using fast models for all steps for stability
     STEP_REQUIREMENTS = {
-        # Simple steps - use fast models
+        # All steps use fast models for stable generation
         0: "fast",    # First things first (structured input)
         1: "fast",    # One sentence (very simple)
         2: "fast",    # One paragraph (expand sentence)
-        
-        # Complex steps - use balanced models
-        3: "balanced",  # Characters (needs creativity but not too complex)
-        4: "balanced",  # One page synopsis (expand paragraph)
-        5: "balanced",  # Character synopses (expand characters)
-        
-        # Quality-critical steps - use quality models
-        6: "quality",   # Long synopsis (complex narrative)
-        7: "quality",   # Character bibles (deep psychology)
-        8: "balanced",  # Scene list (structured but important)
-        9: "quality",   # Scene briefs (critical for story structure)
-        10: "quality",  # Manuscript (final prose quality)
+        3: "fast",    # Characters (needs creativity but not too complex)
+        4: "fast",    # One page synopsis (expand paragraph)
+        5: "fast",    # Character synopses (expand characters)
+        6: "fast",    # Long synopsis (complex narrative)
+        7: "fast",    # Character bibles (deep psychology)
+        8: "fast",    # Scene list (structured but important)
+        9: "fast",    # Scene briefs (critical for story structure)
+        10: "fast",   # Manuscript (final prose quality)
     }
     
     @classmethod
@@ -70,15 +66,15 @@ class ModelSelector:
         if tier == "fast":
             model = cls.FAST_MODELS.get(provider, cls.FAST_MODELS["anthropic"])
             max_tokens = 2000
-            temperature = 1.0 if model == "gpt-5" else 0.3  # GPT-5 requires temperature=1.0
+            temperature = 0.3  # Use lower temperature for fast tasks
         elif tier == "balanced":
             model = cls.BALANCED_MODELS.get(provider, cls.BALANCED_MODELS["anthropic"])
             max_tokens = 3000
-            temperature = 1.0 if model == "gpt-5" else 0.4  # GPT-5 requires temperature=1.0
+            temperature = 0.4  # Use moderate temperature for balanced tasks
         else:  # quality
             model = cls.QUALITY_MODELS.get(provider, cls.QUALITY_MODELS["anthropic"])
             max_tokens = 4000
-            temperature = 1.0 if model == "gpt-5" else 0.5  # GPT-5 requires temperature=1.0
+            temperature = 0.5  # Use higher temperature for quality tasks
         
         return {
             "model_name": model,

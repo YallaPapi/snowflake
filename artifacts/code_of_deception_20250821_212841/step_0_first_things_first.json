@@ -1,0 +1,16 @@
+{
+  "category": "Romantic Suspense",
+  "story_kind": "Enemies-to-lovers with a cybersecurity conspiracy.",
+  "audience_delight": "High-stakes cyber espionage, slow-burn romance, shocking betrayal reveals, intense chase sequences, satisfying romantic resolution.",
+  "metadata": {
+    "project_id": "code_of_deception_20250821_212841",
+    "step": 0,
+    "version": "1.0.0",
+    "created_at": "2025-08-21T21:32:34.593641",
+    "model_name": "gpt-4o-mini",
+    "temperature": 0.3,
+    "seed": 42,
+    "prompt_hash": "f530cb0fd8e8aa7f5c7669de22e6e0929f583d5929d38b604bca51575595dca5",
+    "validator_version": "1.0.0"
+  }
+}

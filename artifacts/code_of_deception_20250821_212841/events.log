@@ -1,0 +1,71 @@
+{"ts": "2025-08-21T21:28:41.550301", "type": "project_created", "payload": {"project_name": "Code of Deception", "current_step": 0}, "system_metrics": null, "health_status": null}
+{"ts": "2025-08-21T21:28:41.552303", "type": "step_start", "payload": {"step": 0, "step_key": "step_0"}, "system_metrics": null, "health_status": null}
+{"ts": "2025-08-21T21:28:43.759526", "type": "state_updated", "payload": {"current_step": 0, "step_key": "step_0"}, "system_metrics": null, "health_status": null}
+{"ts": "2025-08-21T21:28:43.774528", "type": "step_complete", "payload": {"step": 0, "step_key": "step_0", "valid": true}, "system_metrics": null, "health_status": null}
+{"ts": "2025-08-21T21:28:43.798531", "type": "step_start", "payload": {"step": 1, "step_key": "step_1"}, "system_metrics": null, "health_status": null}
+{"ts": "2025-08-21T21:28:44.551350", "type": "state_updated", "payload": {"current_step": 1, "step_key": "step_1"}, "system_metrics": null, "health_status": null}
+{"ts": "2025-08-21T21:28:44.564352", "type": "step_complete", "payload": {"step": 1, "step_key": "step_1", "valid": true}, "system_metrics": null, "health_status": null}
+{"ts": "2025-08-21T21:28:44.588353", "type": "step_start", "payload": {"step": 2, "step_key": "step_2"}, "system_metrics": null, "health_status": null}
+{"ts": "2025-08-21T21:28:56.162186", "type": "state_updated", "payload": {"current_step": 2, "step_key": "step_2"}, "system_metrics": null, "health_status": null}
+{"ts": "2025-08-21T21:28:56.174185", "type": "step_complete", "payload": {"step": 2, "step_key": "step_2", "valid": true}, "system_metrics": null, "health_status": null}
+{"ts": "2025-08-21T21:28:56.202190", "type": "step_start", "payload": {"step": 3, "step_key": "step_3"}, "system_metrics": null, "health_status": null}
+{"ts": "2025-08-21T21:29:12.842221", "type": "state_updated", "payload": {"current_step": 3, "step_key": "step_3"}, "system_metrics": null, "health_status": null}
+{"ts": "2025-08-21T21:29:12.856223", "type": "step_complete", "payload": {"step": 3, "step_key": "step_3", "valid": true}, "system_metrics": null, "health_status": null}
+{"ts": "2025-08-21T21:29:12.868225", "type": "step_start", "payload": {"step": 4, "step_key": "step_4"}, "system_metrics": null, "health_status": null}
+{"ts": "2025-08-21T21:29:30.710639", "type": "state_updated", "payload": {"current_step": 4, "step_key": "step_4"}, "system_metrics": null, "health_status": null}
+{"ts": "2025-08-21T21:29:30.723639", "type": "step_complete", "payload": {"step": 4, "step_key": "step_4", "valid": true}, "system_metrics": null, "health_status": null}
+{"ts": "2025-08-21T21:29:30.748642", "type": "step_start", "payload": {"step": 5, "step_key": "step_5"}, "system_metrics": null, "health_status": null}
+{"ts": "2025-08-21T21:29:54.159675", "type": "state_updated", "payload": {"current_step": 5, "step_key": "step_5"}, "system_metrics": null, "health_status": null}
+{"ts": "2025-08-21T21:29:54.173675", "type": "step_complete", "payload": {"step": 5, "step_key": "step_5", "valid": true}, "system_metrics": null, "health_status": null}
+{"ts": "2025-08-21T21:29:54.198678", "type": "step_start", "payload": {"step": 6, "step_key": "step_6"}, "system_metrics": null, "health_status": null}
+{"ts": "2025-08-21T21:30:35.304063", "type": "state_updated", "payload": {"current_step": 6, "step_key": "step_6"}, "system_metrics": null, "health_status": null}
+{"ts": "2025-08-21T21:30:35.318065", "type": "step_complete", "payload": {"step": 6, "step_key": "step_6", "valid": true}, "system_metrics": null, "health_status": null}
+{"ts": "2025-08-21T21:30:35.344428", "type": "step_start", "payload": {"step": 7, "step_key": "step_7"}, "system_metrics": null, "health_status": null}
+{"ts": "2025-08-21T21:30:38.613979", "type": "step_failed", "payload": {"step": 7, "step_key": "step_7", "message": "AI generation failed: Error code: 404 - {'error': {'message': 'The model `claude-3-haiku-20240307` does not exist or you do not have access to it.', 'type': 'invalid_request_error', 'param': None, 'code': 'model_not_found'}}"}, "system_metrics": null, "health_status": null}
+{"ts": "2025-08-21T21:30:43.628324", "type": "step_start", "payload": {"step": 0, "step_key": "step_0"}, "system_metrics": null, "health_status": null}
+{"ts": "2025-08-21T21:30:44.937745", "type": "state_updated", "payload": {"current_step": 6, "step_key": "step_0"}, "system_metrics": null, "health_status": null}
+{"ts": "2025-08-21T21:30:44.954746", "type": "step_complete", "payload": {"step": 0, "step_key": "step_0", "valid": true}, "system_metrics": null, "health_status": null}
+{"ts": "2025-08-21T21:30:44.978746", "type": "step_start", "payload": {"step": 1, "step_key": "step_1"}, "system_metrics": null, "health_status": null}
+{"ts": "2025-08-21T21:30:45.796453", "type": "state_updated", "payload": {"current_step": 6, "step_key": "step_1"}, "system_metrics": null, "health_status": null}
+{"ts": "2025-08-21T21:30:45.811454", "type": "step_complete", "payload": {"step": 1, "step_key": "step_1", "valid": true}, "system_metrics": null, "health_status": null}
+{"ts": "2025-08-21T21:30:45.838456", "type": "step_start", "payload": {"step": 2, "step_key": "step_2"}, "system_metrics": null, "health_status": null}
+{"ts": "2025-08-21T21:31:00.866353", "type": "state_updated", "payload": {"current_step": 6, "step_key": "step_2"}, "system_metrics": null, "health_status": null}
+{"ts": "2025-08-21T21:31:00.884353", "type": "step_complete", "payload": {"step": 2, "step_key": "step_2", "valid": true}, "system_metrics": null, "health_status": null}
+{"ts": "2025-08-21T21:31:00.912357", "type": "step_start", "payload": {"step": 3, "step_key": "step_3"}, "system_metrics": null, "health_status": null}
+{"ts": "2025-08-21T21:31:22.201932", "type": "state_updated", "payload": {"current_step": 6, "step_key": "step_3"}, "system_metrics": null, "health_status": null}
+{"ts": "2025-08-21T21:31:22.217933", "type": "step_complete", "payload": {"step": 3, "step_key": "step_3", "valid": true}, "system_metrics": null, "health_status": null}
+{"ts": "2025-08-21T21:31:22.235935", "type": "step_start", "payload": {"step": 4, "step_key": "step_4"}, "system_metrics": null, "health_status": null}
+{"ts": "2025-08-21T21:31:39.774872", "type": "state_updated", "payload": {"current_step": 6, "step_key": "step_4"}, "system_metrics": null, "health_status": null}
+{"ts": "2025-08-21T21:31:39.789947", "type": "step_complete", "payload": {"step": 4, "step_key": "step_4", "valid": true}, "system_metrics": null, "health_status": null}
+{"ts": "2025-08-21T21:31:39.817948", "type": "step_start", "payload": {"step": 5, "step_key": "step_5"}, "system_metrics": null, "health_status": null}
+{"ts": "2025-08-21T21:31:58.585648", "type": "state_updated", "payload": {"current_step": 6, "step_key": "step_5"}, "system_metrics": null, "health_status": null}
+{"ts": "2025-08-21T21:31:58.601651", "type": "step_complete", "payload": {"step": 5, "step_key": "step_5", "valid": true}, "system_metrics": null, "health_status": null}
+{"ts": "2025-08-21T21:31:58.631660", "type": "step_start", "payload": {"step": 6, "step_key": "step_6"}, "system_metrics": null, "health_status": null}
+{"ts": "2025-08-21T21:32:24.797815", "type": "state_updated", "payload": {"current_step": 6, "step_key": "step_6"}, "system_metrics": null, "health_status": null}
+{"ts": "2025-08-21T21:32:24.811819", "type": "step_complete", "payload": {"step": 6, "step_key": "step_6", "valid": true}, "system_metrics": null, "health_status": null}
+{"ts": "2025-08-21T21:32:24.837819", "type": "step_start", "payload": {"step": 7, "step_key": "step_7"}, "system_metrics": null, "health_status": null}
+{"ts": "2025-08-21T21:32:28.154332", "type": "step_failed", "payload": {"step": 7, "step_key": "step_7", "message": "AI generation failed: Error code: 404 - {'error': {'message': 'The model `claude-3-haiku-20240307` does not exist or you do not have access to it.', 'type': 'invalid_request_error', 'param': None, 'code': 'model_not_found'}}"}, "system_metrics": null, "health_status": null}
+{"ts": "2025-08-21T21:32:33.169640", "type": "step_start", "payload": {"step": 0, "step_key": "step_0"}, "system_metrics": null, "health_status": null}
+{"ts": "2025-08-21T21:32:34.609640", "type": "state_updated", "payload": {"current_step": 6, "step_key": "step_0"}, "system_metrics": null, "health_status": null}
+{"ts": "2025-08-21T21:32:34.623643", "type": "step_complete", "payload": {"step": 0, "step_key": "step_0", "valid": true}, "system_metrics": null, "health_status": null}
+{"ts": "2025-08-21T21:32:34.648646", "type": "step_start", "payload": {"step": 1, "step_key": "step_1"}, "system_metrics": null, "health_status": null}
+{"ts": "2025-08-21T21:32:35.485391", "type": "state_updated", "payload": {"current_step": 6, "step_key": "step_1"}, "system_metrics": null, "health_status": null}
+{"ts": "2025-08-21T21:32:35.499942", "type": "step_complete", "payload": {"step": 1, "step_key": "step_1", "valid": true}, "system_metrics": null, "health_status": null}
+{"ts": "2025-08-21T21:32:35.523941", "type": "step_start", "payload": {"step": 2, "step_key": "step_2"}, "system_metrics": null, "health_status": null}
+{"ts": "2025-08-21T21:32:48.352017", "type": "state_updated", "payload": {"current_step": 6, "step_key": "step_2"}, "system_metrics": null, "health_status": null}
+{"ts": "2025-08-21T21:32:48.366094", "type": "step_complete", "payload": {"step": 2, "step_key": "step_2", "valid": true}, "system_metrics": null, "health_status": null}
+{"ts": "2025-08-21T21:32:48.392097", "type": "step_start", "payload": {"step": 3, "step_key": "step_3"}, "system_metrics": null, "health_status": null}
+{"ts": "2025-08-21T21:33:06.429754", "type": "state_updated", "payload": {"current_step": 6, "step_key": "step_3"}, "system_metrics": null, "health_status": null}
+{"ts": "2025-08-21T21:33:06.445756", "type": "step_complete", "payload": {"step": 3, "step_key": "step_3", "valid": true}, "system_metrics": null, "health_status": null}
+{"ts": "2025-08-21T21:33:06.464757", "type": "step_start", "payload": {"step": 4, "step_key": "step_4"}, "system_metrics": null, "health_status": null}
+{"ts": "2025-08-21T21:33:20.476453", "type": "state_updated", "payload": {"current_step": 6, "step_key": "step_4"}, "system_metrics": null, "health_status": null}
+{"ts": "2025-08-21T21:33:20.495454", "type": "step_complete", "payload": {"step": 4, "step_key": "step_4", "valid": true}, "system_metrics": null, "health_status": null}
+{"ts": "2025-08-21T21:33:20.522039", "type": "step_start", "payload": {"step": 5, "step_key": "step_5"}, "system_metrics": null, "health_status": null}
+{"ts": "2025-08-21T21:33:43.869823", "type": "state_updated", "payload": {"current_step": 6, "step_key": "step_5"}, "system_metrics": null, "health_status": null}
+{"ts": "2025-08-21T21:33:43.885826", "type": "step_complete", "payload": {"step": 5, "step_key": "step_5", "valid": true}, "system_metrics": null, "health_status": null}
+{"ts": "2025-08-21T21:33:43.911826", "type": "step_start", "payload": {"step": 6, "step_key": "step_6"}, "system_metrics": null, "health_status": null}
+{"ts": "2025-08-21T21:34:20.676758", "type": "state_updated", "payload": {"current_step": 6, "step_key": "step_6"}, "system_metrics": null, "health_status": null}
+{"ts": "2025-08-21T21:34:20.690789", "type": "step_complete", "payload": {"step": 6, "step_key": "step_6", "valid": true}, "system_metrics": null, "health_status": null}
+{"ts": "2025-08-21T21:34:20.716720", "type": "step_start", "payload": {"step": 7, "step_key": "step_7"}, "system_metrics": null, "health_status": null}
+{"ts": "2025-08-21T21:34:24.084142", "type": "step_failed", "payload": {"step": 7, "step_key": "step_7", "message": "AI generation failed: Error code: 404 - {'error': {'message': 'The model `claude-3-haiku-20240307` does not exist or you do not have access to it.', 'type': 'invalid_request_error', 'param': None, 'code': 'model_not_found'}}"}, "system_metrics": null, "health_status": null}
+{"ts": "2025-08-21T21:34:24.108144", "type": "project_loaded", "payload": {"project_name": "Code of Deception", "current_step": 6}, "system_metrics": null, "health_status": null}

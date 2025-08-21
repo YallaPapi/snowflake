@@ -31,7 +31,7 @@ class AIGenerator:
         Args:
             provider: "anthropic" or "openai". If None, auto-detect based on available API keys
         """
-        # Auto-detect provider if not specified (prefer OpenAI for GPT-5)
+        # Auto-detect provider if not specified (prefer OpenAI for GPT-4)
         if provider is None:
             if os.getenv("OPENAI_API_KEY"):
                 provider = "openai"
@@ -47,13 +47,13 @@ class AIGenerator:
             if not api_key:
                 raise ValueError("ANTHROPIC_API_KEY not found in environment")
             self.client = Anthropic(api_key=api_key)
-            self.default_model = "claude-3-5-sonnet-20241022"
+            self.default_model = "claude-3-5-haiku-20241022"
         elif provider == "openai":
             api_key = os.getenv("OPENAI_API_KEY")
             if not api_key:
                 raise ValueError("OPENAI_API_KEY not found in environment")
             self.client = OpenAI(api_key=api_key)
-            self.default_model = "gpt-5"
+            self.default_model = "gpt-4o-mini"
         else:
             raise ValueError(f"Unsupported provider: {provider}")
     
@@ -76,11 +76,8 @@ class AIGenerator:
             model_config = {}
         
         model = model_config.get("model_name", self.default_model)
-        # Use temperature=1.0 for GPT-5, otherwise use config or default
-        if model == "gpt-5":
-            temperature = 1.0  # GPT-5 only supports temperature=1.0
-        else:
-            temperature = model_config.get("temperature", 0.3)
+        # Use temperature from config or default
+        temperature = model_config.get("temperature", 0.3)
         max_tokens = model_config.get("max_tokens", 4000)  # Increased default for longer content
         
         for attempt in range(max_retries):
@@ -131,14 +128,14 @@ class AIGenerator:
         messages.append({"role": "user", "content": prompt_data.get("user", "")})
         
         # Use correct parameter name based on model
-        # GPT-5 and o1 models use max_completion_tokens, others use max_tokens
+        # o1 models use max_completion_tokens, others use max_tokens
         kwargs = {
             "model": model,
             "messages": messages,
             "temperature": temperature,
         }
         
-        if model in ["gpt-5", "o1-preview", "o1-mini"]:
+        if model in ["o1-preview", "o1-mini"]:
             kwargs["max_completion_tokens"] = max_tokens
         else:
             kwargs["max_tokens"] = max_tokens
@@ -150,7 +147,7 @@ class AIGenerator:
                                 prompt_data: Dict[str, str],
                                 validator,
                                 model_config: Optional[Dict[str, Any]] = None,
-                                max_attempts: int = 5) -> Dict[str, Any]:
+                                max_attempts: int = 2) -> Dict[str, Any]:  # Reduced for faster testing
         """
         Generate content and validate, retrying if needed
         
@@ -169,7 +166,13 @@ class AIGenerator:
             
             # Parse response (assuming JSON or structured format)
             try:
-                if raw_output.strip().startswith("{"):
+                # First check if JSON is wrapped in markdown code blocks
+                import re
+                json_match = re.search(r'```(?:json)?\s*({.*?})\s*```', raw_output, re.DOTALL)
+                if json_match:
+                    raw_output = json_match.group(1)
+                
+                if raw_output.strip().startswith("{") or raw_output.strip().startswith("["):
                     # Try to fix common JSON issues with newlines in strings
                     # First attempt: direct parse
                     try:
@@ -232,6 +235,8 @@ class AIGenerator:
             
             # If not valid, add errors to prompt for next attempt
             if attempt < max_attempts - 1:
+                print(f"Validation attempt {attempt + 1} failed with {len(errors)} errors, retrying...")
+                print(f"First 3 errors: {errors[:3]}")
                 prompt_data = self._add_revision_context(
                     prompt_data, artifact, errors, validator
                 )
@@ -451,81 +456,104 @@ Write the scene now:
         pov_character = scene_brief.get("pov", "Unknown")
         
         if scene_type == "Proactive":
-            system_prompt = f"""You are a bestselling novelist. Write a complete {word_target}-word scene.
+            system_prompt = f"""You are a bestselling novelist writing actual novel prose.
 
-CRITICAL: This must be AT LEAST {word_target} words of actual prose, not a summary.
+CRITICAL INSTRUCTION: Write a COMPLETE SCENE of {word_target} words.
+This must be ACTUAL PROSE with dialogue, action, and internal thoughts.
+DO NOT write a summary or outline. Write the scene as it would appear in a published novel.
 
-POV: {pov_character} (deep third person)
-Type: Proactive (Goal → Conflict → Setback)
+POV: {pov_character} (deep third person limited)
+Scene Type: PROACTIVE (Goal → Conflict → Setback structure)"""
+            
+            user_prompt = f"""Write this scene NOW with these specific elements:
 
-The scene MUST fully dramatize IN SEQUENCE:
-1. GOAL (opening): {scene_brief.get('goal', 'achieve objective')}
-   - Show {pov_character} actively pursuing this
-   - Use action and dialogue
-   
-2. CONFLICT (middle): {scene_brief.get('conflict', 'face opposition')}
-   - Show escalating obstacles
-   - Build tension through try/fail cycles
-   
-3. SETBACK (ending): {scene_brief.get('setback', 'situation worsens')}
-   - End with disaster or failure
-   - Leave character worse off
+GOAL TO DRAMATIZE: {scene_brief.get('goal', 'achieve critical objective')}
+- Open with {pov_character} actively pursuing this goal
+- Show through action, not explanation
 
-Stakes: {scene_brief.get('stakes', 'high stakes')}
+CONFLICT TO ESCALATE: {scene_brief.get('conflict', 'face determined opposition')}
+- Show obstacles blocking the goal
+- Build tension through try/fail cycles
+- Include dialogue with opposition
 
-Write with vivid sensory details, punchy dialogue, internal thoughts.
-DO NOT SUMMARIZE - write the full scene."""
+SETBACK TO HIT: {scene_brief.get('setback', 'situation becomes worse')}
+- End with failure or disaster
+- Leave {pov_character} worse off than before
+
+STAKES: {scene_brief.get('stakes', 'everything hangs in the balance')}
+
+Setting: {scene_brief.get('location', 'the location')} at {scene_brief.get('time', 'the time')}
+Lead-in: {scene_brief.get('inbound_hook', 'Continue from previous scene')}
+Lead-out: {scene_brief.get('outbound_hook', 'Set up next scene')}
+
+Write {word_target} words of vivid prose. Start with immediate action. No summaries.
+Begin the scene:"""
         else:
-            system_prompt = f"""You are a bestselling novelist. Write a complete {word_target}-word scene.
+            system_prompt = f"""You are a bestselling novelist writing actual novel prose.
 
-CRITICAL: This must be AT LEAST {word_target} words of actual prose, not a summary.
+CRITICAL INSTRUCTION: Write a COMPLETE SCENE of {word_target} words.
+This must be ACTUAL PROSE with internal monologue, physical reactions, and decision-making.
+DO NOT write a summary or outline. Write the scene as it would appear in a published novel.
 
-POV: {pov_character} (deep third person)
-Type: Reactive (Reaction → Dilemma → Decision)
+POV: {pov_character} (deep third person limited)
+Scene Type: REACTIVE (Reaction → Dilemma → Decision structure)"""
+            
+            user_prompt = f"""Write this scene NOW with these specific elements:
 
-The scene MUST fully dramatize IN SEQUENCE:
-1. REACTION (opening): {scene_brief.get('reaction', 'emotional response')}
-   - Show visceral, physical response
-   - Let character feel the emotion
-   
-2. DILEMMA (middle): {scene_brief.get('dilemma', 'impossible choice')}
-   - Show wrestling with bad options
-   - Use internal dialogue
-   
-3. DECISION (ending): {scene_brief.get('decision', 'commit to action')}
-   - Show moment of choice
-   - Set up next goal
+REACTION TO SHOW: {scene_brief.get('reaction', 'overwhelming emotional/physical response')}
+- Open with visceral, physical response
+- Show body language and sensations
 
-Stakes: {scene_brief.get('stakes', 'high stakes')}
+DILEMMA TO EXPLORE: {scene_brief.get('dilemma', 'choose between two terrible options')}
+- Show internal debate
+- Weigh consequences of each choice
+- No easy answers
 
-Write with deep emotional interiority, physical sensations.
-DO NOT SUMMARIZE - write the full scene."""
-        
-        user_prompt = f"""Scene Details:
-Time: {scene_brief.get('time', 'unspecified')}
-Location: {scene_brief.get('location', 'unspecified')}
-Summary: {scene_brief.get('summary', '')}
-Inbound: {scene_brief.get('inbound_hook', '')}
-Outbound: {scene_brief.get('outbound_hook', '')}
+DECISION TO MAKE: {scene_brief.get('decision', 'commit to next action')}
+- Show the moment of choice
+- Commit to specific action
+- Set up next goal
 
-REQUIREMENTS:
-1. Write AT LEAST {word_target} words
-2. Start immediately - no setup paragraphs
-3. Include dialogue and action
-4. Show internal thoughts
-5. End with hook to next scene
+STAKES: {scene_brief.get('stakes', 'severe consequences either way')}
 
-BEGIN THE SCENE NOW:"""
+Setting: {scene_brief.get('location', 'the location')} at {scene_brief.get('time', 'the time')}
+Lead-in: {scene_brief.get('inbound_hook', 'React to previous disaster')}
+Lead-out: {scene_brief.get('outbound_hook', 'Launch into next action')}
+
+Write {word_target} words of emotionally rich prose. Start with physical reaction. No summaries.
+Begin the scene:"""
         
         prompt_data = {
             "system": system_prompt,
             "user": user_prompt
         }
         
-        # Use higher temperature for creative writing
+        # Use higher temperature for creative writing with more tokens
         model_config = {
             "temperature": 0.8,
-            "max_tokens": min(word_target * 3, 8000)  # Much more buffer for full scenes
+            "max_tokens": min(word_target * 4, 8000)  # Even more buffer
         }
         
-        return self.generate(prompt_data, model_config)
+        prose = self.generate(prompt_data, model_config)
+        
+        # Ensure we got actual prose, not a summary
+        if len(prose.split()) < word_target * 0.7:
+            # Try again with more explicit instruction
+            retry_prompt = prompt_data.copy()
+            retry_prompt["user"] = f"""The previous attempt was too short. 
+            
+WRITE A FULL {word_target}-WORD SCENE with:
+- Dialogue between characters
+- Physical actions and movements  
+- Internal thoughts in {pov_character}'s head
+- Sensory details (what they see, hear, feel)
+- Paragraph breaks for pacing
+
+This is not a summary. Write it like a scene from a Stephen King or Dean Koontz novel.
+Full prose, {word_target} words minimum.
+
+START THE SCENE:"""
+            
+            prose = self.generate(retry_prompt, model_config)
+        
+        return prose
