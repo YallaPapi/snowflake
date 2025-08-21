@@ -1,0 +1,38 @@
+STEP 2: ONE PARAGRAPH SUMMARY (FIVE SENTENCES)
+============================================================
+
+COMPLETE PARAGRAPH:
+----------------------------------------
+Now, in the city, Rae, a internal-affairs detective, must expose a municipal security-contract kickback scheme before a deadline. When being assigned to guard her prime suspect from the firm's hit team forces Rae to commit, there is no turning back. After a brutal setback, Rae realizes the old belief was false and must now change tactics in line with the moral premise. Pressure escalates until only one final path remains, leaving no choice but to drive toward the endgame. In a final confrontation, Rae faces the opposition and wins, achieving the goal.
+
+SENTENCE BREAKDOWN:
+----------------------------------------
+1. SETUP: Now, in the city, Rae, a internal-affairs detective, must expose a municipal security-contract kickback scheme before a deadline.
+
+2. DISASTER #1: When being assigned to guard her prime suspect from the firm's hit team forces Rae to commit, there is no turning back.
+
+3. DISASTER #2 (Moral Pivot): After a brutal setback, Rae realizes the old belief was false and must now change tactics in line with the moral premise.
+
+4. DISASTER #3: Pressure escalates until only one final path remains, leaving no choice but to drive toward the endgame.
+
+5. RESOLUTION: In a final confrontation, Rae faces the opposition and wins, achieving the goal.
+
+MORAL PREMISE:
+----------------------------------------
+People succeed when they act with courage, and they fail when they protect themselves at the cost of justice.
+
+MORAL PIVOT ANALYSIS:
+----------------------------------------
+False Belief: protect themselves at the cost of justice
+True Belief: act with courage
+Pivot Shown in D2: Yes
+
+DISASTER VALIDATION:
+----------------------------------------
+D1 Present: ✓ (Type: event)
+D2 Present: ✓ (Type: event)
+D3 Present: ✓ (Type: event)
+
+Sentence Count: 5/5
+Generated: 2025-08-21T15:18:53.678198
+Version: 1.0.0

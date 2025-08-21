@@ -1,0 +1,16 @@
+{
+  "category": "Techno-Thriller",
+  "story_kind": "Heist-and-whistleblower takedown with a found-family crew versus a memory-erasure conspiracy.",
+  "audience_delight": "betrayal-twist, slow-burn, forced-proximity, puzzle, redemption-arc.",
+  "metadata": {
+    "project_id": "memory_cartel",
+    "step": 0,
+    "version": "1.0.0",
+    "created_at": "2025-08-21T14:49:16.946949",
+    "model_name": "gpt-5",
+    "temperature": 1.0,
+    "seed": 42,
+    "prompt_hash": "c5bf5c358c4dc0e8362d654e13807c012c5c9858b35a3c543d980d956b46e761",
+    "validator_version": "1.0.0"
+  }
+}

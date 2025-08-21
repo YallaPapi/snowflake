@@ -1,0 +1,16 @@
+{
+  "category": "Hard Science Fiction",
+  "story_kind": "Fugitive-on-the-run revenge thriller with a memory-heist conspiracy takedown.",
+  "audience_delight": "betrayal-twist, puzzle, slow-burn, forced-proximity, redemption-arc.",
+  "metadata": {
+    "project_id": "memory-thieves",
+    "step": 0,
+    "version": "1.0.0",
+    "created_at": "2025-08-21T14:27:23.096194",
+    "model_name": "gpt-5",
+    "temperature": 1.0,
+    "seed": 42,
+    "prompt_hash": "7e5f20c5f5b23d7cd5ae0da6d89a030bb7b1a4249a4d9aa8aacec302f544c17b",
+    "validator_version": "1.0.0"
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "logline": "Maya, an internal-affairs detective, must expose the officers who staged a shooting despite the police union and command staff stonewalling her case.",
+  "word_count": 22,
+  "metadata": {
+    "project_id": "monitored_e2e_test_novel_20250821_154550",
+    "step": 1,
+    "version": "1.0.0",
+    "created_at": "2025-08-21T15:46:53.798829",
+    "model_name": "gpt-5",
+    "temperature": 1.0,
+    "seed": 42,
+    "prompt_hash": "26a682adfdf1f163ab40520b81c65cb53d3f15b403a72b36a584584859ee816e",
+    "validator_version": "1.0.0",
+    "hash_upstream": "966244748a88e5cb1ff2583c879b61a50fea7470cae9df5e2d3a187d5fb763e5"
+  },
+  "lead_count": 1,
+  "components": {
+    "lead_name": "Maya",
+    "lead_role": "internal-affairs detective",
+    "external_goal": "expose the officers who staged a shooting",
+    "opposition": "the police union and command staff stonewalling her case"
+  }
+}

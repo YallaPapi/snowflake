@@ -8,6 +8,9 @@ python-dotenv>=1.0.0
 pydantic>=2.0.0
 tqdm>=4.60.0
 
+# Agency Swarm for collaborative AI agents
+agency-swarm>=0.7.0
+
 # Observability dependencies
 psutil>=5.9.0
 flask>=2.3.0

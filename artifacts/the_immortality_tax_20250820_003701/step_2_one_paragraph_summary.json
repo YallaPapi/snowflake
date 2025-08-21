@@ -1,0 +1,48 @@
+{
+  "paragraph": "Now, in the city, Casey Chen, a desperate college graduate, must recover their stolen decade of life before a deadline. When time-repo agents collect the final payment forces Casey Chen to commit, there is no turning back. After a brutal setback, Casey Chen realizes the old belief was false and must now change tactics in line with the moral premise. Pressure escalates until only one final path remains, leaving no choice but to drive toward the endgame. In a final confrontation, Casey Chen faces the opposition and wins, achieving the goal.",
+  "moral_premise": "People succeed when they act with courage, and they fail when they protect themselves at the cost of justice.",
+  "metadata": {
+    "project_id": "the_immortality_tax_20250820_003701",
+    "step": 2,
+    "version": "1.0.0",
+    "created_at": "2025-08-20T00:37:51.916623",
+    "model_name": "claude-3-5-sonnet-20241022",
+    "temperature": 0.3,
+    "seed": 42,
+    "prompt_hash": "eb260aa1cf502641f0739f4a8abf969ed2f71257ea7c62124a33fe879a759c40",
+    "validator_version": "1.0.0",
+    "hash_upstream": "ab221da3a83bca822a347395878b1b794639f49c930d90396af759c6fdf65962"
+  },
+  "sentences": {
+    "all": [
+      "Now, in the city, Casey Chen, a desperate college graduate, must recover their stolen decade of life before a deadline.",
+      "When time-repo agents collect the final payment forces Casey Chen to commit, there is no turning back.",
+      "After a brutal setback, Casey Chen realizes the old belief was false and must now change tactics in line with the moral premise.",
+      "Pressure escalates until only one final path remains, leaving no choice but to drive toward the endgame.",
+      "In a final confrontation, Casey Chen faces the opposition and wins, achieving the goal."
+    ],
+    "setup": "Now, in the city, Casey Chen, a desperate college graduate, must recover their stolen decade of life before a deadline.",
+    "disaster_1": "When time-repo agents collect the final payment forces Casey Chen to commit, there is no turning back.",
+    "disaster_2": "After a brutal setback, Casey Chen realizes the old belief was false and must now change tactics in line with the moral premise.",
+    "disaster_3": "Pressure escalates until only one final path remains, leaving no choice but to drive toward the endgame.",
+    "resolution": "In a final confrontation, Casey Chen faces the opposition and wins, achieving the goal."
+  },
+  "sentence_count": 5,
+  "moral_pivot": {
+    "pivot_shown": true,
+    "false_belief": "protect themselves at the cost of justice",
+    "true_belief": "act with courage"
+  },
+  "causality_check": {
+    "has_coincidence": false,
+    "causal_chain": true
+  },
+  "disasters": {
+    "d1_present": true,
+    "d2_present": true,
+    "d3_present": true,
+    "d1_type": "event",
+    "d2_type": "event",
+    "d3_type": "event"
+  }
+}

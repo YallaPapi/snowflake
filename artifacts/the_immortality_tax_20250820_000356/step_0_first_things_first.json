@@ -1,0 +1,16 @@
+{
+  "category": "Dystopian",
+  "story_kind": "A whistleblower enemies-to-lovers story where corporate rivals must work together to expose system corruption",
+  "audience_delight": "Readers will enjoy solving conspiracy puzzles, experiencing slow-burn romance tension, uncovering shocking betrayals, witnessing the corrupt system's collapse",
+  "metadata": {
+    "project_id": "the_immortality_tax_20250820_000356",
+    "step": 0,
+    "version": "1.0.0",
+    "created_at": "2025-08-20T00:04:10.358698",
+    "model_name": "claude-3-5-sonnet-20241022",
+    "temperature": 0.3,
+    "seed": 42,
+    "prompt_hash": "2ecffc01bedd977a0facf1c097899cc6c2df46a8efa0cdb8afd7a8daccc1f727",
+    "validator_version": "1.0.0"
+  }
+}

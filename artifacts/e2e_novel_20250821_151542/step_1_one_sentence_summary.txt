@@ -1,0 +1,16 @@
+STEP 1: ONE SENTENCE SUMMARY (LOGLINE)
+==================================================
+
+LOGLINE: Rae, an internal-affairs detective, must expose a municipal security-contract kickback scheme despite being assigned to guard her prime suspect from the firm's hit team.
+
+Word Count: 24/25
+Named Leads: 1/2
+
+PARSED COMPONENTS:
+  lead_name: Rae
+  lead_role: internal-affairs detective
+  external_goal: expose a municipal security-contract kickback scheme
+  opposition: being assigned to guard her prime suspect from the firm's hit team
+
+Generated: 2025-08-21T15:16:52.087447
+Version: 1.0.0

@@ -1,0 +1,21 @@
+{
+  "project_id": "monitored_e2e_test_novel_20250821_144517",
+  "current_step": 0,
+  "steps": {
+    "step_0": {
+      "step_number": 0,
+      "step_name": "First Things First",
+      "status": "started",
+      "start_time": 1755787517.6335657,
+      "step": 0
+    }
+  },
+  "last_updated": "2025-08-21T14:45:17.649565",
+  "total_events": 3,
+  "pipeline_health": "healthy",
+  "performance_summary": {
+    "cpu_percent": 0.0,
+    "memory_mb": 16156,
+    "last_updated": 1755787517.5955622
+  }
+}

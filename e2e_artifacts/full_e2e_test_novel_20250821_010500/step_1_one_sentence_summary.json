@@ -1,0 +1,23 @@
+{
+  "logline": "Lena, an internal-affairs detective, must expose a bodycam-tampering conspiracy despite a corrupt police tech unit led by her mentor hunting her.",
+  "word_count": 21,
+  "metadata": {
+    "project_id": "full_e2e_test_novel_20250821_010500",
+    "step": 1,
+    "version": "1.0.0",
+    "created_at": "2025-08-21T01:06:44.093694",
+    "model_name": "gpt-5",
+    "temperature": 1.0,
+    "seed": 42,
+    "prompt_hash": "a4192e7af513325e781905a79d83af291cc3baca9a7d80a9798e569ddd85ea2e",
+    "validator_version": "1.0.0",
+    "hash_upstream": "bc3a8a3c30fdb1f47620416efa565894728ae6c3204f1b54f188979ad702c8a3"
+  },
+  "lead_count": 1,
+  "components": {
+    "lead_name": "Lena",
+    "lead_role": "internal-affairs detective",
+    "external_goal": "expose a bodycam-tampering conspiracy",
+    "opposition": "a corrupt police tech unit led by her mentor hunting her"
+  }
+}

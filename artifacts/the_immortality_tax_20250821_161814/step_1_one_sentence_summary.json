@@ -1,0 +1,23 @@
+{
+  "logline": "Casey Chen, a life-debtor, must steal back ten years from LifeHock's vault despite the life-harvesting regime's time-repo agents.",
+  "word_count": 18,
+  "metadata": {
+    "project_id": "the_immortality_tax_20250821_161814",
+    "step": 1,
+    "version": "1.0.0",
+    "created_at": "2025-08-21T16:20:08.419530",
+    "model_name": "gpt-5",
+    "temperature": 1.0,
+    "seed": 42,
+    "prompt_hash": "53d103b0ec0672270c349c1377cdcc6990872d5a1f2f520e9d2b631f6c296a37",
+    "validator_version": "1.0.0",
+    "hash_upstream": "b4e70051ad8ab6806f8a3b5a63a253f03c0ce50af82c001c8ec34bbd3c34ba25"
+  },
+  "lead_count": 1,
+  "components": {
+    "lead_name": "Casey Chen",
+    "lead_role": "life-debtor",
+    "external_goal": "steal back ten years from LifeHock's vault",
+    "opposition": "the life-harvesting regime's time-repo agents"
+  }
+}

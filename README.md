@@ -1,16 +1,27 @@
 # Snowflake Novel Generation Engine 📚
 
-🚀 **BULLETPROOF AI NOVEL GENERATOR** - A production-ready, end-to-end novel generation system implementing the Snowflake Method with **100% reliability guarantee**. Generate complete 50,000-100,000 word novels from just 2-3 sentences.
+🚀 **REVOLUTIONARY AI PUBLISHING HOUSE** - The world's first collaborative multi-agent novel generation system. Features both **bulletproof linear pipeline** and **revolutionary agent collaboration** modes for unmatched creative intelligence.
 
-## ✨ Revolutionary Features
+## ✨ Dual Generation Modes
 
+### 🏭 Agency Swarm Mode (Revolutionary Collaboration)
+- **🤝 7 SPECIALIZED AI AGENTS**: Director, ConceptMaster, StoryArchitect, CharacterCreator, SceneEngine, ProseAgent, EditorAgent
+- **💬 DYNAMIC COLLABORATION**: Agents critique, refine, and enhance each other's work in real-time  
+- **🔄 ITERATIVE IMPROVEMENT**: Multi-round feedback loops for exceptional quality
+- **🎨 CREATIVE SYNERGY**: Cross-agent inspiration and idea cross-pollination
+- **📈 INTELLIGENT WORKFLOW**: Parallel processing with quality gates and approvals
+- **🏆 PROFESSIONAL STANDARDS**: Multi-agent validation ensures publication-ready quality
+
+### 🛡️ Linear Pipeline Mode (Bulletproof Reliability)
 - **🛡️ 100% SUCCESS RATE**: Bulletproof multi-tier fallback system ensures EVERY generation completes
 - **⚡ MINIMAL INPUT**: Just 2-3 sentences → Complete novel with chapters, scenes, characters
 - **🔄 MULTI-MODEL FAILOVER**: Automatic failover across Claude Sonnet/Haiku, GPT-4/3.5, and open-source models
-- **📊 REAL-TIME PROGRESS**: Live progress bars, ETA calculations, and detailed execution tracking
 - **🎯 GUARANTEED OUTPUT**: Emergency content generation when all AI models fail
 - **🧠 SMART MODEL SELECTION**: Automatically chooses optimal models for each step (fast/balanced/quality)
 - **✅ BULLETPROOF VALIDATION**: Multiple parsing strategies and emergency fallbacks for every step
+
+### 🌟 Universal Features
+- **📊 REAL-TIME OBSERVABILITY**: Live dashboard with health checks, performance metrics, and progress tracking
 - **📚 COMPLETE SNOWFLAKE METHOD**: All 11 steps from initial concept to finished manuscript
 - **📤 MULTIPLE EXPORT FORMATS**: DOCX, EPUB, Markdown, JSON, and plain text
 - **🌐 PRODUCTION API**: RESTful API with async generation support
@@ -88,6 +99,47 @@ python -m src.observability.server
 python -m src.api.main
 # API available at http://localhost:8000
 # Docs at http://localhost:8000/docs
+```
+
+## 🏭 Agency Swarm Usage (Revolutionary Collaboration)
+
+The Agency Swarm system creates a collaborative AI publishing house where 7 specialized agents work together to create exceptional novels.
+
+### Quick Start with Agency Swarm
+```bash
+# Run basic functionality test
+python novel_agency_poc.py --test
+
+# Run the collaborative demo
+python novel_agency_poc.py --demo
+
+# Test complete 6-agent system
+python test_complete_agency_system.py
+```
+
+### 🤖 The AI Publishing House Team
+
+- **🎬 NovelDirector**: CEO that orchestrates the entire creative process
+- **💡 ConceptMaster**: Story concept development specialist (Step 0)
+- **🏗️ StoryArchitect**: Narrative structure expert (Steps 1, 2, 4, 6)
+- **👥 CharacterCreator**: Character development specialist (Steps 3, 5, 7)
+- **🎭 SceneEngine**: Scene architecture and pacing expert (Steps 8, 9)
+- **✍️ ProseAgent**: Master prose writer (Step 10)
+- **📝 EditorAgent**: Quality control and final polish specialist
+
+### Agency Collaboration Example
+```python
+from novel_agency import create_complete_agency
+
+# Create the AI publishing house
+agency = create_complete_agency()
+
+# Start collaborative novel creation
+story_brief = "A detective discovers corruption in the police force..."
+response = agency.get_completion(f"Create a novel from: {story_brief}")
+
+# Web interface
+agency.demo_gradio()  # Opens collaborative web interface
 ```
 
 ## 📖 The Snowflake Method Steps

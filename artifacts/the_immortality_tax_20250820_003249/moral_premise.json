@@ -1,0 +1,15 @@
+{
+  "moral_premise": "People succeed when they act with courage, and they fail when they protect themselves at the cost of justice.",
+  "metadata": {
+    "project_id": "the_immortality_tax_20250820_003249",
+    "step": 2,
+    "version": "1.0.0",
+    "created_at": "2025-08-20T00:33:47.447878",
+    "model_name": "claude-3-5-sonnet-20241022",
+    "temperature": 0.3,
+    "seed": 42,
+    "prompt_hash": "48f3907004e8f4c001973b93c8962a20b76964182b6e13b7b0803da64006b4ea",
+    "validator_version": "1.0.0",
+    "hash_upstream": "1d98eeb33f8a7dd27438d3a28ab646f4e8897f85f34a93f01823145f26c504fa"
+  }
+}

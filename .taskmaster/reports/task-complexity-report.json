@@ -1,0 +1,93 @@
+{
+	"meta": {
+		"generatedAt": "2025-08-20T14:50:22.986Z",
+		"tasksAnalyzed": 10,
+		"totalTasks": 10,
+		"analysisCount": 10,
+		"thresholdScore": 5,
+		"projectName": "Snowflake",
+		"usedResearch": true
+	},
+	"complexityAnalysis": [
+		{
+			"taskId": 41,
+			"taskTitle": "Core Data Structure Implementation",
+			"complexityScore": 7,
+			"recommendedSubtasks": 6,
+			"expansionPrompt": "Break down the implementation into: (1) Define TypeScript interfaces and enums for Scene Card, (2) Author JSON Schema for Scene Card, (3) Implement Zod validation logic, (4) Handle nested object structures for proactive/reactive scenes, (5) Add runtime type checking and validation methods, (6) Write unit tests for all schema and validation logic.",
+			"reasoning": "This task involves designing a robust schema, handling complex nested structures, and ensuring runtime validation, which requires careful attention to typing, validation, and test coverage. Industry best practices recommend modularizing schema definition, validation logic, and comprehensive testing to ensure maintainability and correctness."
+		},
+		{
+			"taskId": 42,
+			"taskTitle": "Scene Planning Service",
+			"complexityScore": 8,
+			"recommendedSubtasks": 7,
+			"expansionPrompt": "Expand into: (1) Design service interface and endpoints, (2) Implement Proactive scene planning logic, (3) Implement Reactive scene planning logic, (4) Integrate prompt templates from Section D1, (5) Add 5-point Goal validation for Proactive scenes, (6) Implement Scene Crucible validation, (7) Write integration tests for all planning flows.",
+			"reasoning": "This service requires orchestrating multiple planning flows, integrating prompt templates, and enforcing complex validation rules. Each flow and validation step should be isolated for clarity and testability, following service-oriented and test-driven development patterns."
+		},
+		{
+			"taskId": 43,
+			"taskTitle": "Scene Validation Service",
+			"complexityScore": 8,
+			"recommendedSubtasks": 7,
+			"expansionPrompt": "Decompose into: (1) Implement CrucibleNowCheck, (2) Implement GoalFiveCheck, (3) Implement ConflictEscalationCheck, (4) Implement OutcomePolarityCheck, (5) Implement ReactiveTriadCheck, (6) Implement CompressionIntegrityCheck, (7) Build validation pipeline and reporting with rule citations.",
+			"reasoning": "Multiple specialized validators and a reporting pipeline must be implemented, each with distinct logic and error handling. Modularizing each validator and the pipeline aligns with best practices for maintainability and extensibility."
+		},
+		{
+			"taskId": 44,
+			"taskTitle": "Scene Drafting Service",
+			"complexityScore": 7,
+			"recommendedSubtasks": 6,
+			"expansionPrompt": "Expand into: (1) Design drafting service interface, (2) Implement prose generation for Proactive scenes, (3) Implement prose generation for Reactive scenes, (4) Handle POV and tense logic, (5) Add exposition budget tracking, (6) Write tests for structure adherence and output quality.",
+			"reasoning": "Generating structured prose from data involves mapping schema to narrative, handling linguistic constraints, and enforcing exposition limits. Each aspect should be developed and tested independently for clarity and maintainability."
+		},
+		{
+			"taskId": 45,
+			"taskTitle": "Scene Triage Service",
+			"complexityScore": 8,
+			"recommendedSubtasks": 7,
+			"expansionPrompt": "Break down into: (1) Implement YES/NO/MAYBE classification logic, (2) Develop redesign pipeline for MAYBE scenes, (3) Implement scene type correction, (4) Implement part rewriting logic, (5) Implement compression decision logic, (6) Implement emotion targeting, (7) Add re-validation and re-triage steps.",
+			"reasoning": "This task requires both classification and complex conditional redesign flows, each with distinct logic and validation. Isolating each redesign step and validation ensures clarity and supports iterative improvement."
+		},
+		{
+			"taskId": 46,
+			"taskTitle": "Scene Chaining System",
+			"complexityScore": 7,
+			"recommendedSubtasks": 6,
+			"expansionPrompt": "Expand into: (1) Design chain link data model, (2) Implement chain_link generation logic, (3) Implement chain_link validation, (4) Add Decision→Goal and Setback→Reactive transition logic, (5) Implement chain link import/export, (6) Write tests for chain validation and consistency.",
+			"reasoning": "Managing scene-to-scene connections and transitions involves multiple data flows and validation steps. Each should be modularized for maintainability and to facilitate future extension."
+		},
+		{
+			"taskId": 47,
+			"taskTitle": "REST API Implementation",
+			"complexityScore": 7,
+			"recommendedSubtasks": 7,
+			"expansionPrompt": "Decompose into: (1) Design API specification and documentation, (2) Implement POST /scene/plan endpoint, (3) Implement POST /scene/draft endpoint, (4) Implement POST /scene/triage endpoint, (5) Implement GET /scene/:id endpoint, (6) Add error and input validation handling, (7) Write API integration and performance tests.",
+			"reasoning": "Implementing multiple endpoints with robust validation, error handling, and documentation is standard in modern API development. Each endpoint and cross-cutting concern should be developed and tested independently."
+		},
+		{
+			"taskId": 48,
+			"taskTitle": "Persistence Layer",
+			"complexityScore": 7,
+			"recommendedSubtasks": 6,
+			"expansionPrompt": "Expand into: (1) Design data models for Scene Cards, prose, and chain links, (2) Implement CRUD operations for Scene Cards, (3) Implement prose storage, (4) Implement chain link persistence, (5) Add query and indexing capabilities, (6) Implement backup and recovery mechanisms.",
+			"reasoning": "A robust persistence layer requires careful data modeling, CRUD logic, and support for backup/recovery. Each data type and operation should be modularized for maintainability and scalability."
+		},
+		{
+			"taskId": 49,
+			"taskTitle": "Example Scene Implementation",
+			"complexityScore": 6,
+			"recommendedSubtasks": 5,
+			"expansionPrompt": "Break down into: (1) Implement Dirk parachute Scene Card, (2) Implement Goldilocks pepper spray Scene Card, (3) Generate prose for both scenes, (4) Create and validate chain links, (5) Write documentation and validation tests.",
+			"reasoning": "This task is concrete and bounded, focusing on implementing and validating two example scenes. Each scene and its components can be developed and tested independently."
+		},
+		{
+			"taskId": 50,
+			"taskTitle": "Integration Testing Suite",
+			"complexityScore": 8,
+			"recommendedSubtasks": 7,
+			"expansionPrompt": "Expand into: (1) Design end-to-end test scenarios, (2) Implement workflow coverage tests, (3) Add performance tests, (4) Implement load testing, (5) Integrate with CI/CD pipeline, (6) Generate coverage reports, (7) Write test documentation.",
+			"reasoning": "Comprehensive integration testing requires scenario design, workflow automation, performance/load testing, and CI/CD integration. Each aspect should be developed and maintained separately for clarity and effectiveness."
+		}
+	]
+}

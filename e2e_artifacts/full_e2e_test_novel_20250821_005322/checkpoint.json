@@ -1,0 +1,74 @@
+{
+  "project_id": "full_e2e_test_novel_20250821_005322",
+  "created_at": "2025-08-21T00:54:22.730856",
+  "steps": {
+    "step_0": {
+      "status": "completed",
+      "timestamp": "2025-08-21T00:54:22.730856",
+      "artifact_saved": false,
+      "error": null
+    },
+    "step_1": {
+      "status": "completed",
+      "timestamp": "2025-08-21T00:54:47.630495",
+      "artifact_saved": false,
+      "error": null
+    },
+    "step_2": {
+      "status": "completed",
+      "timestamp": "2025-08-21T01:03:21.354307",
+      "artifact_saved": false,
+      "error": null
+    },
+    "step_3": {
+      "status": "failed",
+      "timestamp": "2025-08-21T01:03:25.965192",
+      "artifact_saved": false,
+      "error": "Error code: 404 - {'error': {'message': 'The model `claude-3-5-haiku-20241022` does not exist or you do not have access to it.', 'type': 'invalid_request_error', 'param': None, 'code': 'model_not_found'}}"
+    },
+    "step_4": {
+      "status": "failed",
+      "timestamp": "2025-08-21T01:03:30.362152",
+      "artifact_saved": false,
+      "error": "Error code: 404 - {'error': {'message': 'The model `claude-3-5-haiku-20241022` does not exist or you do not have access to it.', 'type': 'invalid_request_error', 'param': None, 'code': 'model_not_found'}}"
+    },
+    "step_5": {
+      "status": "failed",
+      "timestamp": "2025-08-21T01:03:30.414154",
+      "artifact_saved": false,
+      "error": null
+    },
+    "step_6": {
+      "status": "failed",
+      "timestamp": "2025-08-21T01:03:30.471164",
+      "artifact_saved": false,
+      "error": null
+    },
+    "step_7": {
+      "status": "failed",
+      "timestamp": "2025-08-21T01:03:30.530164",
+      "artifact_saved": false,
+      "error": null
+    },
+    "step_8": {
+      "status": "failed",
+      "timestamp": "2025-08-21T01:03:30.594168",
+      "artifact_saved": false,
+      "error": null
+    },
+    "step_9": {
+      "status": "failed",
+      "timestamp": "2025-08-21T01:03:30.641172",
+      "artifact_saved": false,
+      "error": null
+    },
+    "step_10": {
+      "status": "failed",
+      "timestamp": "2025-08-21T01:03:30.690170",
+      "artifact_saved": false,
+      "error": null
+    }
+  },
+  "last_updated": "2025-08-21T01:03:30.690170",
+  "current_step": 10
+}

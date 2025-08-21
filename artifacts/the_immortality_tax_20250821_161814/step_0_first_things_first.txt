@@ -1,0 +1,9 @@
+STEP 0: FIRST THINGS FIRST
+==================================================
+
+Category: Dystopian
+Story Kind: A found-family heist against a life-harvesting regime with a redemption arc.
+Audience Delight: betrayal-twist, slow-burn, forced-proximity, puzzle, redemption-arc
+
+Generated: 2025-08-21T16:19:29.338627
+Version: 1.0.0

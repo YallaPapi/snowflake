@@ -1,0 +1,16 @@
+STEP 1: ONE SENTENCE SUMMARY (LOGLINE)
+==================================================
+
+LOGLINE: Casey Chen, a time-debt borrower, must steal back ten sold years despite LifeHock's repo agents and citywide surveillance.
+
+Word Count: 18/25
+Named Leads: 1/2
+
+PARSED COMPONENTS:
+  lead_name: Casey Chen
+  lead_role: time-debt borrower
+  external_goal: steal back ten sold years
+  opposition: LifeHock's repo agents and citywide surveillance
+
+Generated: 2025-08-20T12:35:06.310234
+Version: 1.0.0

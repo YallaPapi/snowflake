@@ -1,0 +1,15 @@
+{
+  "moral_premise": "People succeed when they act with courage, and they fail when they protect themselves at the cost of justice.",
+  "metadata": {
+    "project_id": "full_e2e_test_novel_20250821_002656",
+    "step": 2,
+    "version": "1.0.0",
+    "created_at": "2025-08-21T00:32:34.905072",
+    "model_name": "gpt-5",
+    "temperature": 1.0,
+    "seed": 42,
+    "prompt_hash": "70aaf836afaa30f4d51a3f5d3b681132e4a71e1ebd50fd0ebd87c6b52ac879d1",
+    "validator_version": "1.0.0",
+    "hash_upstream": "3f073ecff88bafeca44eb0af47278f8a6b485e46344105d372ed24a737879a0d"
+  }
+}

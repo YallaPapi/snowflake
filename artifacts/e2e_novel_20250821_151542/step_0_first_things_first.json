@@ -1,0 +1,16 @@
+{
+  "category": "Romantic Suspense",
+  "story_kind": "Forced-proximity forbidden romance with a whodunit conspiracy.",
+  "audience_delight": "betrayal-twist, slow-burn, forced-proximity, puzzle, redemption-arc.",
+  "metadata": {
+    "project_id": "e2e_novel_20250821_151542",
+    "step": 0,
+    "version": "1.0.0",
+    "created_at": "2025-08-21T15:16:22.198278",
+    "model_name": "gpt-5",
+    "temperature": 1.0,
+    "seed": 42,
+    "prompt_hash": "20bb82118fd1605b73f085d7a5c0dd6f3821ed180e99328920002cb332d7cf52",
+    "validator_version": "1.0.0"
+  }
+}

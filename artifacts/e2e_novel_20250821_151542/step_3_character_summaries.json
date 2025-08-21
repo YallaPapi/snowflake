@@ -1,0 +1,70 @@
+{
+  "characters": [
+    {
+      "role": "Protagonist",
+      "name": "Rae",
+      "goal": "expose a municipal security-contract kickback scheme",
+      "ambition": "justice",
+      "values": [
+        "Nothing is more important than protecting the innocent.",
+        "Nothing is more important than telling the truth.",
+        "Nothing is more important than keeping my word."
+      ],
+      "conflict": "being assigned to guard her prime suspect from the firm's hit team blocks Rae by controlling key evidence and allies.",
+      "epiphany": "Realizes that working strictly by the book empowers corruption and learns to act with courageous flexibility.",
+      "one_sentence_summary": "Rae, a internal-affairs detective, must expose a municipal security-contract kickback scheme despite being assigned to guard her prime suspect from the firm's hit team.",
+      "one_paragraph_summary": "Beginning: Rae commits to expose a municipal security-contract kickback scheme (D1). Middle: after a devastating reversal, Rae realizes the old belief was false and must change tactics (D2). End: pressure narrows to one path and forces the final confrontation (D3)."
+    },
+    {
+      "role": "Antagonist",
+      "name": "Morrison",
+      "goal": "protect the operation and stop the investigation",
+      "ambition": "power",
+      "values": [
+        "Nothing is more important than maintaining control.",
+        "Nothing is more important than security.",
+        "Nothing is more important than my family's future."
+      ],
+      "conflict": "Opposes Rae by withholding resources and deploying corrupt leverage to stop the goal.",
+      "epiphany": "NONE",
+      "epiphany_justification": "Believes the ends justify the means; admits no change because control is the only way to survive.",
+      "one_sentence_summary": "A powerful rival blocks the investigation to keep his empire intact.",
+      "one_paragraph_summary": "Act I: sets traps that commit the hero (D1). Act II: escalates pressure and reveals the hero's false belief (D2). Act III: forces a single endgame that creates the showdown (D3).",
+      "interiority": {
+        "motive_history": "Early failures and threats to his family taught him that control protects those he loves.",
+        "justification": "He frames corruption as necessary to provide security and stability."
+      }
+    }
+  ],
+  "character_count": 2,
+  "metadata": {
+    "project_id": "e2e_novel_20250821_151542",
+    "step": 3,
+    "version": "1.0.0",
+    "created_at": "2025-08-21T15:32:21.325409",
+    "model_name": "claude-3-haiku-20240307",
+    "temperature": 0.3,
+    "seed": 42,
+    "prompt_hash": "6a693884eef55fc8bc2b86156e630c7c10704c9d5467de73c57b1ee67a84480e",
+    "validator_version": "1.0.0",
+    "hash_upstream": "36b0314422b2fc0d5fef3719bc1969987a3ea7d6472d0473864cd956898cdb17"
+  },
+  "protagonist_antagonist_collision": {
+    "collision_verified": true,
+    "collision_point": "Direct opposition of goals"
+  },
+  "disaster_alignment": {
+    "d1_characters": [
+      "Rae",
+      "Morrison"
+    ],
+    "d2_characters": [
+      "Rae",
+      "Morrison"
+    ],
+    "d3_characters": [
+      "Rae",
+      "Morrison"
+    ]
+  }
+}

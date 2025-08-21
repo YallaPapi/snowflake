@@ -1,0 +1,9 @@
+STEP 0: FIRST THINGS FIRST
+==================================================
+
+Category: Space Opera
+Story Kind: Heist to crash a lifespan market.
+Audience Delight: betrayal-twist, slow-burn, forced-proximity, puzzle, redemption-arc.
+
+Generated: 2025-08-20T13:20:36.640823
+Version: 1.0.0

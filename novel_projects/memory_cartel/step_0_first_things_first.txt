@@ -1,0 +1,9 @@
+STEP 0: FIRST THINGS FIRST
+==================================================
+
+Category: Techno-Thriller
+Story Kind: Heist-and-whistleblower takedown with a found-family crew versus a memory-erasure conspiracy.
+Audience Delight: betrayal-twist, slow-burn, forced-proximity, puzzle, redemption-arc.
+
+Generated: 2025-08-21T14:49:16.946949
+Version: 1.0.0

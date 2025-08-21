@@ -1,0 +1,16 @@
+{
+  "category": "Hard Science Fiction",
+  "story_kind": "A heist with mentor-betrayal to reclaim sold years from corporate time banks.",
+  "audience_delight": "Delivers betrayal-twist, slow-burn, forced-proximity, puzzle, and redemption-arc.",
+  "metadata": {
+    "project_id": "the_immortality_tax_20250820_131319",
+    "step": 0,
+    "version": "1.0.0",
+    "created_at": "2025-08-20T13:14:25.433020",
+    "model_name": "gpt-5",
+    "temperature": 1.0,
+    "seed": 42,
+    "prompt_hash": "2ecffc01bedd977a0facf1c097899cc6c2df46a8efa0cdb8afd7a8daccc1f727",
+    "validator_version": "1.0.0"
+  }
+}

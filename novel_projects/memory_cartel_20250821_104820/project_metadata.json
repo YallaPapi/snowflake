@@ -1,0 +1,67 @@
+{
+  "project_id": "memory_cartel_20250821_104820",
+  "project_name": "Memory Cartel",
+  "created_at": "2025-08-21T10:48:20.584674",
+  "status": "created",
+  "current_step": 1,
+  "steps": {
+    "step_0": {
+      "status": "completed",
+      "artifacts": [],
+      "approved_at": "2025-08-21T10:49:42.244393",
+      "approved_by": "NovelDirector",
+      "updated_at": "2025-08-21T10:49:46.793693"
+    },
+    "step_1": {
+      "status": "pending",
+      "artifacts": []
+    },
+    "step_2": {
+      "status": "pending",
+      "artifacts": []
+    },
+    "step_3": {
+      "status": "pending",
+      "artifacts": []
+    },
+    "step_4": {
+      "status": "pending",
+      "artifacts": []
+    },
+    "step_5": {
+      "status": "pending",
+      "artifacts": []
+    },
+    "step_6": {
+      "status": "pending",
+      "artifacts": []
+    },
+    "step_7": {
+      "status": "pending",
+      "artifacts": []
+    },
+    "step_8": {
+      "status": "pending",
+      "artifacts": []
+    },
+    "step_9": {
+      "status": "pending",
+      "artifacts": []
+    },
+    "step_10": {
+      "status": "pending",
+      "artifacts": []
+    }
+  },
+  "agents_assigned": [],
+  "quality_gates": {
+    "step_0": {
+      "approved_at": "2025-08-21T10:49:42.244393",
+      "approved_by": "NovelDirector",
+      "status": "approved",
+      "approval_notes": "The story concept is well-developed with a strong foundation in themes and core elements. The focus on identity, memory, and power is compelling and aligns with the cyberpunk thriller genre. The next steps should include enhancing delight factors to captivate readers further."
+    }
+  },
+  "notes": "Story concept foundations approved. Focus on identity, memory, and power is compelling. Next steps include enhancing delight factors.",
+  "last_updated": "2025-08-21T10:49:46.793693"
+}

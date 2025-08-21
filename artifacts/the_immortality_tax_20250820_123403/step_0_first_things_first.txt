@@ -1,0 +1,9 @@
+STEP 0: FIRST THINGS FIRST
+==================================================
+
+Category: Dystopian
+Story Kind: A heist against a time-debt cartel in a surveillance state.
+Audience Delight: betrayal-twist, slow-burn, forced-proximity, puzzle, redemption-arc.
+
+Generated: 2025-08-20T12:34:35.125387
+Version: 1.0.0

@@ -1,0 +1,23 @@
+{
+  "logline": "Maya, an internal-affairs detective, must prove a fatal police shooting was staged despite a citywide manhunt led by her mentor and a corrupt task force.",
+  "word_count": 25,
+  "metadata": {
+    "project_id": "full_e2e_test_novel_20250821_005322",
+    "step": 1,
+    "version": "1.0.0",
+    "created_at": "2025-08-21T00:54:47.490483",
+    "model_name": "gpt-5",
+    "temperature": 1.0,
+    "seed": 42,
+    "prompt_hash": "cc261c70d8b7de6fe696458555d2f7ed44a8ed77d9e22974cb49ce4c16bc7e4a",
+    "validator_version": "1.0.0",
+    "hash_upstream": "dcaebef8cdffb443d62fccd892116048d43cf3dba68ff7e7ee4d29de8335725a"
+  },
+  "lead_count": 1,
+  "components": {
+    "lead_name": "Maya",
+    "lead_role": "internal-affairs detective",
+    "external_goal": "prove a fatal police shooting was staged",
+    "opposition": "a citywide manhunt led by her mentor and a corrupt task force"
+  }
+}

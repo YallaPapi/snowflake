@@ -1,0 +1,23 @@
+{
+  "logline": "Lena, an internal-affairs detective, must prove a fatal shooting was a cover-up despite a police syndicate wiping digital evidence.",
+  "word_count": 19,
+  "metadata": {
+    "project_id": "full_e2e_test_novel_20250821_002656",
+    "step": 1,
+    "version": "1.0.0",
+    "created_at": "2025-08-21T00:29:31.736636",
+    "model_name": "gpt-5",
+    "temperature": 1.0,
+    "seed": 42,
+    "prompt_hash": "ecb5fa0f29dce1b5fa0842961d6508ac1ccbe4458b64dd56c1e4c215e617c30e",
+    "validator_version": "1.0.0",
+    "hash_upstream": "b7963d0adc0665186a251cffbb126023b3d7892b92bb77ebb93e41ac78a0f5f8"
+  },
+  "lead_count": 1,
+  "components": {
+    "lead_name": "Lena",
+    "lead_role": "internal-affairs detective",
+    "external_goal": "prove a fatal shooting was a cover-up",
+    "opposition": "a police syndicate wiping digital evidence"
+  }
+}

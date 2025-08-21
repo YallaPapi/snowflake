@@ -1,0 +1,20 @@
+{
+  "project_id": "the_immortality_tax_20250820_131319",
+  "current_step": 1,
+  "steps": {
+    "step_0": {
+      "step": 0,
+      "current_step": 0,
+      "valid": true
+    },
+    "step_1": {
+      "step": 1,
+      "current_step": 1,
+      "valid": true
+    },
+    "step_2": {
+      "step": 2
+    }
+  },
+  "last_updated": "2025-08-20T13:15:09.462867"
+}

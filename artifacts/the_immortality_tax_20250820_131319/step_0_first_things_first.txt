@@ -1,0 +1,9 @@
+STEP 0: FIRST THINGS FIRST
+==================================================
+
+Category: Hard Science Fiction
+Story Kind: A heist with mentor-betrayal to reclaim sold years from corporate time banks.
+Audience Delight: Delivers betrayal-twist, slow-burn, forced-proximity, puzzle, and redemption-arc.
+
+Generated: 2025-08-20T13:14:25.433020
+Version: 1.0.0

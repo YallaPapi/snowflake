@@ -1,0 +1,9 @@
+STEP 0: FIRST THINGS FIRST
+==================================================
+
+Category: Action Adventure
+Story Kind: Manhunt thriller with mentor-betrayal and cat-and-mouse.
+Audience Delight: Breakneck chases, layered corruption reveals, tough moral choices, authority-betrayal twist, justice-against-odds payoff.
+
+Generated: 2025-08-21T00:54:22.598847
+Version: 1.0.0

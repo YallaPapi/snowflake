@@ -1,0 +1,16 @@
+{
+  "category": "Dystopian",
+  "story_kind": "A heist against a time-debt cartel in a surveillance state.",
+  "audience_delight": "betrayal-twist, slow-burn, forced-proximity, puzzle, redemption-arc.",
+  "metadata": {
+    "project_id": "the_immortality_tax_20250820_123403",
+    "step": 0,
+    "version": "1.0.0",
+    "created_at": "2025-08-20T12:34:35.125387",
+    "model_name": "gpt-5",
+    "temperature": 1.0,
+    "seed": 42,
+    "prompt_hash": "2ecffc01bedd977a0facf1c097899cc6c2df46a8efa0cdb8afd7a8daccc1f727",
+    "validator_version": "1.0.0"
+  }
+}

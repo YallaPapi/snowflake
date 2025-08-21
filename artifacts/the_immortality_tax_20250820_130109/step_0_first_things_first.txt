@@ -1,0 +1,9 @@
+STEP 0: FIRST THINGS FIRST
+==================================================
+
+Category: Dystopian
+Story Kind: Heist to reclaim stolen years from a life-harvesting corporation.
+Audience Delight: Betrayal-twist, slow-burn, forced-proximity, puzzle, redemption-arc.
+
+Generated: 2025-08-20T13:01:45.970077
+Version: 1.0.0

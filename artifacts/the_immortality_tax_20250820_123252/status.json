@@ -1,0 +1,11 @@
+{
+  "project_id": "the_immortality_tax_20250820_123252",
+  "current_step": 0,
+  "steps": {
+    "step_0": {
+      "step": 0,
+      "message": "AI generation failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'"
+    }
+  },
+  "last_updated": "2025-08-20T12:32:55.609097"
+}

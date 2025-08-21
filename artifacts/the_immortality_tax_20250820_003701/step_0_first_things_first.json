@@ -1,0 +1,16 @@
+{
+  "category": "Young Adult Dystopian",
+  "story_kind": "A chosen-one rebellion story where a teen discovers they have unique powers to fight an oppressive system",
+  "audience_delight": "Readers will enjoy supernatural power reveals, found-family bonding, betrayal twists, resistance uprising victories, and a redemption arc",
+  "metadata": {
+    "project_id": "the_immortality_tax_20250820_003701",
+    "step": 0,
+    "version": "1.0.0",
+    "created_at": "2025-08-20T00:37:16.626329",
+    "model_name": "claude-3-5-sonnet-20241022",
+    "temperature": 0.3,
+    "seed": 42,
+    "prompt_hash": "2ecffc01bedd977a0facf1c097899cc6c2df46a8efa0cdb8afd7a8daccc1f727",
+    "validator_version": "1.0.0"
+  }
+}

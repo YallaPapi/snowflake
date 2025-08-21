@@ -1,0 +1,23 @@
+{
+  "logline": "Rae, an internal-affairs detective, must expose a municipal security-contract kickback scheme despite being assigned to guard her prime suspect from the firm's hit team.",
+  "word_count": 24,
+  "metadata": {
+    "project_id": "e2e_novel_20250821_151542",
+    "step": 1,
+    "version": "1.0.0",
+    "created_at": "2025-08-21T15:16:52.087447",
+    "model_name": "gpt-5",
+    "temperature": 1.0,
+    "seed": 42,
+    "prompt_hash": "8ceb70d28b1033061b2d49f9e2c57183f7d1f125ff4e521c929c6f94a3c49971",
+    "validator_version": "1.0.0",
+    "hash_upstream": "98996ae81c856b73f17ed46fcb8914fa759d58d8515f99f7d133734167a72ae4"
+  },
+  "lead_count": 1,
+  "components": {
+    "lead_name": "Rae",
+    "lead_role": "internal-affairs detective",
+    "external_goal": "expose a municipal security-contract kickback scheme",
+    "opposition": "being assigned to guard her prime suspect from the firm's hit team"
+  }
+}

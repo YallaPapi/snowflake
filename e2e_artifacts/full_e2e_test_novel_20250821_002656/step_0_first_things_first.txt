@@ -1,0 +1,9 @@
+STEP 0: FIRST THINGS FIRST
+==================================================
+
+Category: Techno-Thriller
+Story Kind: Unreliable-narrator cat-and-mouse conspiracy with a high-tech cover-up.
+Audience Delight: Cutting-edge hacks, red-herring clues, betrayal twist, ticking-clock chase, redemption arc.
+
+Generated: 2025-08-21T00:29:14.146694
+Version: 1.0.0

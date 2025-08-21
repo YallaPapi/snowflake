@@ -1,0 +1,74 @@
+{
+  "project_id": "monitored_e2e_test_novel_20250821_154550",
+  "created_at": "2025-08-21T15:46:28.835342",
+  "steps": {
+    "step_0": {
+      "status": "completed",
+      "timestamp": "2025-08-21T15:46:28.835342",
+      "artifact_saved": false,
+      "error": null
+    },
+    "step_1": {
+      "status": "completed",
+      "timestamp": "2025-08-21T15:46:53.868836",
+      "artifact_saved": false,
+      "error": null
+    },
+    "step_2": {
+      "status": "completed",
+      "timestamp": "2025-08-21T15:51:44.543086",
+      "artifact_saved": false,
+      "error": null
+    },
+    "step_3": {
+      "status": "completed",
+      "timestamp": "2025-08-21T16:03:00.032436",
+      "artifact_saved": false,
+      "error": null
+    },
+    "step_4": {
+      "status": "failed",
+      "timestamp": "2025-08-21T16:17:43.558686",
+      "artifact_saved": false,
+      "error": "VALIDATION FAILED:\nERROR: TOO LONG: paragraph_1 exceeds reasonable paragraph length | FIX: Add concrete cause\u2192effect details; minimize named extras; keep plain style"
+    },
+    "step_5": {
+      "status": "failed",
+      "timestamp": "2025-08-21T16:17:47.718911",
+      "artifact_saved": false,
+      "error": "AI generation failed: Error code: 404 - {'error': {'message': 'The model `claude-3-5-haiku-20241022` does not exist or you do not have access to it.', 'type': 'invalid_request_error', 'param': None, 'code': 'model_not_found'}}"
+    },
+    "step_6": {
+      "status": "failed",
+      "timestamp": "2025-08-21T16:17:48.283951",
+      "artifact_saved": false,
+      "error": "Steps 0-5 must be completed first"
+    },
+    "step_7": {
+      "status": "failed",
+      "timestamp": "2025-08-21T16:17:48.838991",
+      "artifact_saved": false,
+      "error": "Steps 0-6 must be completed first"
+    },
+    "step_8": {
+      "status": "failed",
+      "timestamp": "2025-08-21T16:17:49.402034",
+      "artifact_saved": false,
+      "error": "Steps 0-7 must be completed first"
+    },
+    "step_9": {
+      "status": "failed",
+      "timestamp": "2025-08-21T16:17:49.964075",
+      "artifact_saved": false,
+      "error": "Steps 0-8 must be completed first"
+    },
+    "step_10": {
+      "status": "failed",
+      "timestamp": "2025-08-21T16:17:50.521740",
+      "artifact_saved": false,
+      "error": "Steps 7, 8, and 9 must be completed first"
+    }
+  },
+  "last_updated": "2025-08-21T16:17:50.521740",
+  "current_step": 10
+}

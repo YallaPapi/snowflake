@@ -1,0 +1,65 @@
+{
+  "project_id": "memory_thieves_20250821_102618",
+  "project_name": "Memory Thieves",
+  "created_at": "2025-08-21T10:26:18.379993",
+  "status": "created",
+  "current_step": 1,
+  "steps": {
+    "step_0": {
+      "status": "approved",
+      "artifacts": [],
+      "approved_at": "2025-08-21T10:27:43.172242",
+      "approved_by": "NovelDirector"
+    },
+    "step_1": {
+      "status": "pending",
+      "artifacts": []
+    },
+    "step_2": {
+      "status": "pending",
+      "artifacts": []
+    },
+    "step_3": {
+      "status": "pending",
+      "artifacts": []
+    },
+    "step_4": {
+      "status": "pending",
+      "artifacts": []
+    },
+    "step_5": {
+      "status": "pending",
+      "artifacts": []
+    },
+    "step_6": {
+      "status": "pending",
+      "artifacts": []
+    },
+    "step_7": {
+      "status": "pending",
+      "artifacts": []
+    },
+    "step_8": {
+      "status": "pending",
+      "artifacts": []
+    },
+    "step_9": {
+      "status": "pending",
+      "artifacts": []
+    },
+    "step_10": {
+      "status": "pending",
+      "artifacts": []
+    }
+  },
+  "agents_assigned": [],
+  "quality_gates": {
+    "step_0": {
+      "approved_at": "2025-08-21T10:27:43.172242",
+      "approved_by": "NovelDirector",
+      "status": "approved",
+      "approval_notes": "The story concept for 'Memory Thieves' is well-developed, engaging, and aligns perfectly with the cyberpunk thriller genre. The themes and setting are intriguing, and the core conflict is compelling. This foundation provides a strong basis for the next steps in the novel creation process."
+    }
+  },
+  "notes": "Project created by Novel Director"
+}

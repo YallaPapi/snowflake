@@ -1,0 +1,16 @@
+{
+  "category": "Space Opera",
+  "story_kind": "Heist to crash a lifespan market.",
+  "audience_delight": "betrayal-twist, slow-burn, forced-proximity, puzzle, redemption-arc.",
+  "metadata": {
+    "project_id": "test_3_steps_20250820_131956",
+    "step": 0,
+    "version": "1.0.0",
+    "created_at": "2025-08-20T13:20:36.640823",
+    "model_name": "gpt-5",
+    "temperature": 1.0,
+    "seed": 42,
+    "prompt_hash": "ab1493eb4a092e3c0f1db1cb1033a3cf3f6039a4e0cd4f249ec1dc3571170ae7",
+    "validator_version": "1.0.0"
+  }
+}

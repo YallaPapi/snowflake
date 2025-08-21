@@ -1,0 +1,9 @@
+STEP 0: FIRST THINGS FIRST
+==================================================
+
+Category: Hard Science Fiction
+Story Kind: Fugitive-on-the-run revenge thriller with a memory-heist conspiracy takedown.
+Audience Delight: betrayal-twist, puzzle, slow-burn, forced-proximity, redemption-arc.
+
+Generated: 2025-08-21T14:27:23.096194
+Version: 1.0.0

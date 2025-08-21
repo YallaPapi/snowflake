@@ -1,0 +1,13 @@
+{
+  "project_id": "full_e2e_test_novel_20250821_005322",
+  "project_name": "Full E2E Test Novel",
+  "created_at": "2025-08-21T00:53:22.053146",
+  "current_step": 2,
+  "steps_completed": [
+    0,
+    1,
+    2
+  ],
+  "pipeline_version": "1.0.0",
+  "last_updated": "2025-08-21T01:03:21.298304"
+}

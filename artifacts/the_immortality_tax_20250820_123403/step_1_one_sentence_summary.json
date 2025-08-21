@@ -1,0 +1,23 @@
+{
+  "logline": "Casey Chen, a time-debt borrower, must steal back ten sold years despite LifeHock's repo agents and citywide surveillance.",
+  "word_count": 18,
+  "metadata": {
+    "project_id": "the_immortality_tax_20250820_123403",
+    "step": 1,
+    "version": "1.0.0",
+    "created_at": "2025-08-20T12:35:06.310234",
+    "model_name": "gpt-5",
+    "temperature": 1.0,
+    "seed": 42,
+    "prompt_hash": "5dfd4c9884984565c300056a4ba400567aa13c8ff4e053f7fb973cfd1af6ae3a",
+    "validator_version": "1.0.0",
+    "hash_upstream": "98e0185a2134922623a45cd9b9437ca163f08759a616e9973f46d03b526bc784"
+  },
+  "lead_count": 1,
+  "components": {
+    "lead_name": "Casey Chen",
+    "lead_role": "time-debt borrower",
+    "external_goal": "steal back ten sold years",
+    "opposition": "LifeHock's repo agents and citywide surveillance"
+  }
+}

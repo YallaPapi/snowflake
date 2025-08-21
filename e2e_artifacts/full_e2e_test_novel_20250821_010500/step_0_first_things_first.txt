@@ -1,0 +1,9 @@
+STEP 0: FIRST THINGS FIRST
+==================================================
+
+Category: Techno-Thriller
+Story Kind: Conspiracy whistleblower hunt with mentor-betrayal and cat-and-mouse inside a corrupt police tech unit.
+Audience Delight: Bodycam tampering clue, planted evidence reveal, mentor-betrayal twist, cat-and-mouse pursuit, public exposure climax.
+
+Generated: 2025-08-21T01:06:19.959253
+Version: 1.0.0

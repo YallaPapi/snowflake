@@ -1,0 +1,23 @@
+{
+  "logline": "Casey Chen, a desperate college graduate, must recover their stolen decade of life before underground time-brokers permanently claim it.",
+  "word_count": 19,
+  "metadata": {
+    "project_id": "the_immortality_tax_20250820_002829",
+    "step": 1,
+    "version": "1.0.0",
+    "created_at": "2025-08-20T00:28:46.634136",
+    "model_name": "claude-3-5-sonnet-20241022",
+    "temperature": 0.2,
+    "seed": 42,
+    "prompt_hash": "f8d729e95a43d80e5f8dc70c6f4f4e60163d396c86ffb279fff27287756d9325",
+    "validator_version": "1.0.0",
+    "hash_upstream": "f5d0a5574dd6a97f2bd6b858a217a1003696ec0327b31510f1c61308d339d368"
+  },
+  "lead_count": 1,
+  "components": {
+    "lead_name": "Casey Chen",
+    "lead_role": "desperate college graduate",
+    "external_goal": "recover their stolen decade of life",
+    "opposition": "underground time-brokers permanently claim it"
+  }
+}

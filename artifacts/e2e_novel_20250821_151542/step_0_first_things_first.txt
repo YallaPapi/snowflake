@@ -1,0 +1,9 @@
+STEP 0: FIRST THINGS FIRST
+==================================================
+
+Category: Romantic Suspense
+Story Kind: Forced-proximity forbidden romance with a whodunit conspiracy.
+Audience Delight: betrayal-twist, slow-burn, forced-proximity, puzzle, redemption-arc.
+
+Generated: 2025-08-21T15:16:22.198278
+Version: 1.0.0

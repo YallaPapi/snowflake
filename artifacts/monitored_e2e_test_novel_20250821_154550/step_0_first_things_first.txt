@@ -1,0 +1,9 @@
+STEP 0: FIRST THINGS FIRST
+==================================================
+
+Category: Police Procedural
+Story Kind: Conspiracy whodunit with an underdog whistleblower and cat-and-mouse between an IA detective and dirty cops.
+Audience Delight: Delivers betrayal-twist, puzzle, slow-burn, forced-proximity, redemption-arc.
+
+Generated: 2025-08-21T15:46:28.781336
+Version: 1.0.0

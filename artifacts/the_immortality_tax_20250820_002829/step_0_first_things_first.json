@@ -1,0 +1,16 @@
+{
+  "category": "Psychological Thriller",
+  "story_kind": "An enemies-to-lovers thriller where a whistleblower falls for their prime suspect.",
+  "audience_delight": "Readers will enjoy moral dilemmas, slow-burn romance, corporate betrayal reveals, and a redemption arc.",
+  "metadata": {
+    "project_id": "the_immortality_tax_20250820_002829",
+    "step": 0,
+    "version": "1.0.0",
+    "created_at": "2025-08-20T00:28:43.956739",
+    "model_name": "claude-3-5-sonnet-20241022",
+    "temperature": 0.3,
+    "seed": 42,
+    "prompt_hash": "2ecffc01bedd977a0facf1c097899cc6c2df46a8efa0cdb8afd7a8daccc1f727",
+    "validator_version": "1.0.0"
+  }
+}
