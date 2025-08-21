@@ -1,0 +1,16 @@
+{
+  "category": "Dystopian",
+  "story_kind": "A redemption-arc story about a reluctant hero forced into a double-agent role inside a surveillance state.",
+  "audience_delight": "betrayal-twist, forced-proximity, puzzle, redemption-arc.",
+  "metadata": {
+    "project_id": "QMPT-AdultSciFiThriller-01",
+    "step": 0,
+    "version": "1.0.0",
+    "created_at": "2025-08-21T12:59:33.457756",
+    "model_name": "gpt-5",
+    "temperature": 1.0,
+    "seed": 42,
+    "prompt_hash": "56d3ac951c87125848bfc8f9ed313fef14e5f5b5f5c21ff8f85ed13ed4ba9ce9",
+    "validator_version": "1.0.0"
+  }
+}

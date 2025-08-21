@@ -1,0 +1,56 @@
+{
+  "project_id": "the_memory_thief_20250821_084643",
+  "project_name": "The Memory Thief",
+  "created_at": "2025-08-21T08:46:43.203581",
+  "status": "created",
+  "current_step": 0,
+  "steps": {
+    "step_0": {
+      "status": "pending",
+      "artifacts": []
+    },
+    "step_1": {
+      "status": "pending",
+      "artifacts": []
+    },
+    "step_2": {
+      "status": "pending",
+      "artifacts": []
+    },
+    "step_3": {
+      "status": "pending",
+      "artifacts": []
+    },
+    "step_4": {
+      "status": "pending",
+      "artifacts": []
+    },
+    "step_5": {
+      "status": "pending",
+      "artifacts": []
+    },
+    "step_6": {
+      "status": "pending",
+      "artifacts": []
+    },
+    "step_7": {
+      "status": "pending",
+      "artifacts": []
+    },
+    "step_8": {
+      "status": "pending",
+      "artifacts": []
+    },
+    "step_9": {
+      "status": "pending",
+      "artifacts": []
+    },
+    "step_10": {
+      "status": "pending",
+      "artifacts": []
+    }
+  },
+  "agents_assigned": [],
+  "quality_gates": {},
+  "notes": "Project created by Novel Director"
+}

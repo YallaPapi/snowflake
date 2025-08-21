@@ -1,0 +1,16 @@
+{
+  "category": "Psychological Thriller",
+  "story_kind": "Unreliable narrator thriller where a memory thief faces mentor-betrayal and redemption.",
+  "audience_delight": "Memory heists, unreliable narrator reveals, moral dilemma showdowns, betrayal twist, ambiguous ending.",
+  "metadata": {
+    "project_id": "TheMemoryThief-Step0",
+    "step": 0,
+    "version": "1.0.0",
+    "created_at": "2025-08-21T12:52:04.930722",
+    "model_name": "gpt-5",
+    "temperature": 1.0,
+    "seed": 42,
+    "prompt_hash": "6d292c81286258e9d29ef8295169af84871559b310a24d7864b9f9ca97b89948",
+    "validator_version": "1.0.0"
+  }
+}

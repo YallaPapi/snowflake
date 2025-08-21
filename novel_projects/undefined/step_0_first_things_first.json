@@ -1,0 +1,16 @@
+{
+  "category": "Techno-Thriller",
+  "story_kind": "Doppelgänger team-up heist against a corporate immortality conspiracy.",
+  "audience_delight": "betrayal-twist, puzzle, hacker-duel, vault-infiltration setpiece, redemption-arc.",
+  "metadata": {
+    "project_id": "undefined",
+    "step": 0,
+    "version": "1.0.0",
+    "created_at": "2025-08-21T13:06:51.009650",
+    "model_name": "gpt-5",
+    "temperature": 1.0,
+    "seed": 42,
+    "prompt_hash": "07256f9c5f67cb2fd8258e4292f369969dae36fc6e737b7747e1f904e44b3e24",
+    "validator_version": "1.0.0"
+  }
+}

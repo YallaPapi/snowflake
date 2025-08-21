@@ -1,0 +1,9 @@
+STEP 0: FIRST THINGS FIRST
+==================================================
+
+Category: Techno-Thriller
+Story Kind: Doppelgänger team-up heist against a corporate immortality conspiracy.
+Audience Delight: betrayal-twist, puzzle, hacker-duel, vault-infiltration setpiece, redemption-arc.
+
+Generated: 2025-08-21T13:06:51.009650
+Version: 1.0.0

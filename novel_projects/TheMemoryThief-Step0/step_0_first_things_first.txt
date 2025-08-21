@@ -1,0 +1,9 @@
+STEP 0: FIRST THINGS FIRST
+==================================================
+
+Category: Psychological Thriller
+Story Kind: Unreliable narrator thriller where a memory thief faces mentor-betrayal and redemption.
+Audience Delight: Memory heists, unreliable narrator reveals, moral dilemma showdowns, betrayal twist, ambiguous ending.
+
+Generated: 2025-08-21T12:52:04.930722
+Version: 1.0.0

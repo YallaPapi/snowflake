@@ -1,0 +1,9 @@
+STEP 0: FIRST THINGS FIRST
+==================================================
+
+Category: Dystopian
+Story Kind: A redemption-arc story about a reluctant hero forced into a double-agent role inside a surveillance state.
+Audience Delight: betrayal-twist, forced-proximity, puzzle, redemption-arc.
+
+Generated: 2025-08-21T12:59:33.457756
+Version: 1.0.0
