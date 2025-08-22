@@ -1,0 +1,382 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Step 12: Formatted Comic Script Artifact",
+  "description": "Schema for professionally formatted comic script artifacts",
+  "type": "object",
+  "required": [
+    "metadata",
+    "format_options",
+    "formatted_outputs", 
+    "export_info"
+  ],
+  "properties": {
+    "metadata": {
+      "type": "object",
+      "required": [
+        "step",
+        "step_name",
+        "project_id",
+        "created_at",
+        "version",
+        "source_step",
+        "format_type"
+      ],
+      "properties": {
+        "step": {
+          "type": "integer",
+          "const": 12
+        },
+        "step_name": {
+          "type": "string",
+          "const": "comic_formatter"
+        },
+        "project_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "version": {
+          "type": "string",
+          "pattern": "^\\d+\\.\\d+\\.\\d+$"
+        },
+        "source_step": {
+          "type": "integer",
+          "const": 11
+        },
+        "format_type": {
+          "type": "string",
+          "enum": ["dc_style", "marvel_method", "indie"]
+        }
+      }
+    },
+    "format_options": {
+      "type": "object",
+      "required": ["script_format"],
+      "properties": {
+        "script_format": {
+          "type": "string",
+          "enum": ["dc_style", "marvel_method", "indie"]
+        },
+        "include_character_sheets": {
+          "type": "boolean"
+        },
+        "include_panel_layouts": {
+          "type": "boolean"
+        },
+        "export_formats": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["txt", "pdf", "docx", "fountain"]
+          }
+        },
+        "template_style": {
+          "type": "string"
+        }
+      }
+    },
+    "formatted_outputs": {
+      "type": "object",
+      "required": ["professional_script", "production_notes"],
+      "properties": {
+        "professional_script": {
+          "$ref": "#/definitions/professional_script"
+        },
+        "character_sheets": {
+          "$ref": "#/definitions/character_sheets"
+        },
+        "panel_layouts": {
+          "$ref": "#/definitions/panel_layouts"
+        },
+        "production_notes": {
+          "$ref": "#/definitions/production_notes"
+        }
+      }
+    },
+    "export_info": {
+      "type": "object",
+      "required": [
+        "formats_generated",
+        "template_style",
+        "total_pages",
+        "total_panels"
+      ],
+      "properties": {
+        "formats_generated": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["txt", "pdf", "docx", "fountain"]
+          }
+        },
+        "template_style": {
+          "type": "string"
+        },
+        "total_pages": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "total_panels": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    },
+    "export_paths": {
+      "type": "object",
+      "patternProperties": {
+        "^(txt|pdf|docx|fountain)$": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "definitions": {
+    "professional_script": {
+      "type": "object",
+      "required": [
+        "format_name",
+        "description",
+        "script_content"
+      ],
+      "properties": {
+        "format_name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1
+        },
+        "script_content": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "character_sheets": {
+      "type": "object",
+      "required": [
+        "format_name",
+        "description",
+        "characters"
+      ],
+      "properties": {
+        "format_name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "characters": {
+          "type": "object",
+          "minProperties": 1,
+          "patternProperties": {
+            "^[A-Za-z0-9_\\s]+$": {
+              "$ref": "#/definitions/character_sheet"
+            }
+          }
+        }
+      }
+    },
+    "character_sheet": {
+      "type": "object",
+      "required": [
+        "character_name",
+        "design_notes",
+        "art_requirements"
+      ],
+      "properties": {
+        "character_name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "appearances": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "design_notes": {
+          "type": "object",
+          "properties": {
+            "physical_description": {"type": "string"},
+            "height_build": {"type": "string"},
+            "hair_eyes": {"type": "string"},
+            "distinguishing_features": {"type": "string"},
+            "typical_clothing": {"type": "string"},
+            "color_palette": {"type": "string"}
+          }
+        },
+        "art_requirements": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
+        },
+        "consistency_notes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "panel_layouts": {
+      "type": "object",
+      "required": [
+        "format_name",
+        "description",
+        "pages"
+      ],
+      "properties": {
+        "format_name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "pages": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/definitions/page_layout"
+          }
+        }
+      }
+    },
+    "page_layout": {
+      "type": "object",
+      "required": [
+        "page_number",
+        "panel_count",
+        "layout_recommendation"
+      ],
+      "properties": {
+        "page_number": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "panel_count": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9
+        },
+        "layout_recommendation": {
+          "type": "string"
+        },
+        "dramatic_panels": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          }
+        },
+        "flow_notes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "composition_notes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "production_notes": {
+      "type": "object",
+      "required": [
+        "format_name",
+        "description",
+        "script_statistics",
+        "industry_compliance"
+      ],
+      "properties": {
+        "format_name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "script_statistics": {
+          "type": "object",
+          "required": [
+            "total_pages",
+            "total_panels"
+          ],
+          "properties": {
+            "total_pages": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "total_panels": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "average_panels_per_page": {
+              "type": "number",
+              "minimum": 0
+            },
+            "maximum_panels_per_page": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "average_words_per_panel": {
+              "type": "number",
+              "minimum": 0
+            },
+            "maximum_words_per_panel": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        },
+        "industry_compliance": {
+          "type": "object",
+          "required": [
+            "panel_density",
+            "word_density",
+            "format_standard"
+          ],
+          "properties": {
+            "panel_density": {
+              "type": "string",
+              "enum": ["PASS", "REVIEW NEEDED"]
+            },
+            "word_density": {
+              "type": "string",
+              "enum": ["PASS", "REVIEW NEEDED"]
+            },
+            "format_standard": {
+              "type": "string"
+            }
+          }
+        },
+        "team_guidelines": {
+          "type": "object",
+          "properties": {
+            "letterer_notes": {
+              "type": "array",
+              "items": {"type": "string"}
+            },
+            "artist_notes": {
+              "type": "array",
+              "items": {"type": "string"}
+            },
+            "colorist_notes": {
+              "type": "array", 
+              "items": {"type": "string"}
+            }
+          }
+        }
+      }
+    }
+  }
+}

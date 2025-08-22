@@ -1,6 +1,6 @@
 """
 Snowflake Pipeline Orchestrator
-Manages the execution of all 11 Snowflake Method steps
+Manages the execution of all Snowflake Method steps (0-10 for novels, 11-12 for graphic novels)
 """
 
 import sys
@@ -22,13 +22,15 @@ from src.pipeline.steps.step_7_character_bibles import Step7CharacterBibles
 from src.pipeline.steps.step_8_scene_list import Step8SceneList
 from src.pipeline.steps.step_9_scene_briefs_v2 import Step9SceneBriefsV2 as Step9SceneBriefs
 from src.pipeline.steps.step_10_first_draft import Step10FirstDraft
+from src.pipeline.steps.step_11_manuscript_to_script import Step11ManuscriptToScript
+from src.pipeline.steps.step_12_comic_formatter import Step12ComicFormatter
 from src.observability.events import emit_event
 from src.ui.progress_tracker import ProgressTracker, StepProgressContext, get_global_tracker
 
 class SnowflakePipeline:
     """
     Main orchestrator for the Snowflake Method pipeline
-    Manages all 11 steps from initial concept to complete manuscript
+    Manages Steps 0-10 for novels, plus Steps 11-12 for graphic novel conversion
     """
     
     def __init__(self, project_dir: str = "artifacts"):
@@ -53,6 +55,9 @@ class SnowflakePipeline:
         self.step8 = Step8SceneList(project_dir)
         self.step9 = Step9SceneBriefs(project_dir)
         self.step10 = Step10FirstDraft(project_dir)
+        # Graphic novel extension steps
+        self.step11 = Step11ManuscriptToScript(project_dir)
+        self.step12 = Step12ComicFormatter(project_dir)
         
         # Progress tracking
         self.progress_tracker = get_global_tracker()
@@ -357,6 +362,53 @@ class SnowflakePipeline:
         else:
             emit_event(self.current_project_id, "step_failed", {"step": 10, "step_key": "step_10", "message": message})
         return success, artifact, message
+
+    def execute_step_11(self) -> Tuple[bool, Dict[str, Any], str]:
+        """
+        Execute Step 11: Manuscript to Comic Script
+        Converts completed novel manuscript into comic book script format
+        """
+        step10_artifact = self._load_step_artifact(10)
+        step7_artifact = self._load_step_artifact(7)  # Character bibles
+        step8_artifact = self._load_step_artifact(8)  # Scene list
+        if not all([step10_artifact, step7_artifact, step8_artifact]):
+            return False, {}, "Steps 7, 8, and 10 must be completed first"
+        emit_event(self.current_project_id, "step_start", {"step": 11, "step_key": "step_11"})
+        success, artifact, message = self.step11.execute(
+            step10_artifact,
+            step7_artifact,
+            step8_artifact,
+            self.current_project_id,
+            model_config={"temperature": 0.7, "max_tokens": 2000}
+        )
+        if success:
+            self._update_project_state(11, artifact)
+            emit_event(self.current_project_id, "step_complete", {"step": 11, "step_key": "step_11", "valid": True})
+        else:
+            emit_event(self.current_project_id, "step_failed", {"step": 11, "step_key": "step_11", "message": message})
+        return success, artifact, message
+
+    def execute_step_12(self, format_options: Optional[Dict[str, Any]] = None) -> Tuple[bool, Dict[str, Any], str]:
+        """
+        Execute Step 12: Comic Script Formatter
+        Formats comic script into professional industry-standard outputs
+        """
+        step11_artifact = self._load_step_artifact(11)
+        if not step11_artifact:
+            return False, {}, "Step 11 must be completed first"
+        emit_event(self.current_project_id, "step_start", {"step": 12, "step_key": "step_12"})
+        success, artifact, message = self.step12.execute(
+            step11_artifact,
+            self.current_project_id,
+            model_config={},
+            format_options=format_options
+        )
+        if success:
+            self._update_project_state(12, artifact)
+            emit_event(self.current_project_id, "step_complete", {"step": 12, "step_key": "step_12", "valid": True})
+        else:
+            emit_event(self.current_project_id, "step_failed", {"step": 12, "step_key": "step_12", "message": message})
+        return success, artifact, message
     
     def execute_all_steps(self, initial_brief: str, story_brief: str, target_words: int = 90000) -> bool:
         """
@@ -432,12 +484,69 @@ class SnowflakePipeline:
         self.progress_tracker.finish_pipeline(all_success)
         return all_success
     
+    def execute_graphic_novel_pipeline(self, initial_brief: str, story_brief: str, 
+                                     target_words: int = 90000,
+                                     format_options: Optional[Dict[str, Any]] = None) -> bool:
+        """
+        Execute the complete graphic novel pipeline (Steps 0-12)
+        
+        Args:
+            initial_brief: The user's story idea/brief for Step 0
+            story_brief: User's story concept for Step 1
+            target_words: Target word count for the novel
+            format_options: Comic formatting options
+            
+        Returns:
+            True if all steps completed successfully
+        """
+        # First execute novel pipeline (Steps 0-10)
+        novel_success = self.execute_all_steps(initial_brief, story_brief, target_words)
+        
+        if not novel_success:
+            return False
+        
+        # Then execute graphic novel extension (Steps 11-12)
+        self.progress_tracker.start_pipeline(2)  # 2 additional steps
+        
+        step_configs = [
+            (11, "Manuscript to Script", "Converting novel to comic script format"),
+            (12, "Comic Formatter", "Professional comic script formatting")
+        ]
+        
+        all_success = True
+        
+        for step_num, step_name, description in step_configs:
+            with StepProgressContext(self.progress_tracker, step_num, step_name, description) as step_ctx:
+                try:
+                    if step_num == 11:
+                        success, artifact, message = self.execute_step_11()
+                    elif step_num == 12:
+                        success, artifact, message = self.execute_step_12(format_options)
+                    
+                    if success:
+                        step_ctx.log_info(f"Completed successfully", "success")
+                        step_ctx.set_result(True, message)
+                    else:
+                        step_ctx.log_info(f"Failed: {message}", "error")
+                        step_ctx.set_result(False, message)
+                        all_success = False
+                        break
+                        
+                except Exception as e:
+                    step_ctx.log_info(f"Exception: {str(e)}", "error")
+                    step_ctx.set_result(False, f"Exception: {str(e)}")
+                    all_success = False
+                    break
+        
+        self.progress_tracker.finish_pipeline(all_success)
+        return all_success
+    
     def validate_step(self, step_number: int) -> Tuple[bool, str]:
         """
         Validate a specific step's artifact
         
         Args:
-            step_number: Step to validate (0-10)
+            step_number: Step to validate (0-12)
             
         Returns:
             Tuple of (is_valid, message)
@@ -460,7 +569,8 @@ class SnowflakePipeline:
             8: self.step8.validate_only,
             9: self.step9.validate_only,
             # Step 10 has no validator; skip
-            # Add more as implemented
+            11: self.step11.validator.validate_only,
+            12: self.step12.validator.validate_only
         }
         
         if step_number not in validators:
@@ -562,7 +672,9 @@ class SnowflakePipeline:
             7: "step_7_character_bibles.json",
             8: "step_8_scene_list.json",
             9: "step_9_scene_briefs.json",
-            10: "step_10_manuscript.json"
+            10: "step_10_manuscript.json",
+            11: "step_11_comic_script.json",
+            12: "step_12_formatted_comic.json"
         }
         
         artifact_path = self.project_dir / self.current_project_id / step_files.get(step_number, "")

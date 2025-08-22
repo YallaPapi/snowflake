@@ -1,0 +1,164 @@
+# Product Requirements Document (PRD): Graphic Novel Extension for Snowflake Engine
+
+## 1. Comic Book Industry Research
+
+### Comic Script Formats
+- **Full Script (DC Style)**: The writer specifies page and panel breakdowns, descriptions, and all dialogue/captions for each panel. This method provides maximum detail and control for artists and letterers.[1][2][3]
+- **Marvel Method**: Writer supplies a plot outline. Artist draws the pages, and the writer adds dialogue/captions after the fact. This allows greater artistic freedom but requires tight collaboration between writer and artist.[4][5][2][1]
+- **DC Style**: Essentially the Full Script method, emphasizing panel-by-panel breakdown, typically used by DC Comics.[2][1]
+- **Industry Example**: A script page typically formats as:
+  ```
+  Page 1 (5 panels)
+  Panel 1: Description...
+    Character (CAPTION): "Dialogue here."
+    Character (BALLOON): "Talk bubble here."
+  Panel 2: ...
+  ```
+
+### Panel Composition Best Practices
+- **Panel Count per Page**: Standard is 5–7 panels per page. Up to 9 for detailed pages, but more than 9 risks overcrowding.[6]
+- **Panel Sizing & Flow**: Vary panel size for pacing—large panels for drama, small panels for rapid action. Creative and consistent gutters (spacing) enhance flow and clarity.[7][8]
+- **Visual Flow**: Use leading lines, character gaze, body language, and panel arrangement to guide reader's eye in the proper sequence.[8][7]
+- **Page Layout & Pacing**: Rhythm is driven by panel size and placement. Important beats or reveals are often reserved for full-page splashes or dramatic page turns.[9][8]
+
+### Visual Storytelling Principles
+- **Showing vs Telling**: Favor actions and visual cues over exposition. Limit narration; rely on imagery for mood and plot.[10]
+- **Visual Beats**: Each panel should capture a specific moment ("beat"). Moment-to-moment actions are reserved for tension or drama, action-to-action is used for sequences.[11][10]
+- **Types of Panel Transitions** (per Scott McCloud): 
+  - Moment-to-Moment
+  - Action-to-Action
+  - Subject-to-Subject
+  - Scene-to-Scene
+  - Aspect-to-Aspect
+  - Non-Sequitur[9][11]
+
+### Dialogue Formatting Standards
+- **Balloon Placement**: Letterers and artists coordinate to ensure balloons do not cover faces/action. Balloons usually placed top-to-bottom, left-to-right for natural reading order.[3][6]
+- **Word Count Limits**: No more than 50 words per panel, and usually 20–35 per balloon to avoid visual clutter.[6]
+- **Formatting**: Character names above the dialogue line; no quotation marks or brackets to streamline letterer workflows.[12][3]
+
+### Art Direction Terminology
+- Consistent use of terms like:
+  - Close-up, Medium shot, Wide shot
+  - Foreground/Background
+  - Off-panel/On-panel
+  - SFX (Sound Effects)
+  - CAPTION, BALLOON[13][3]
+
+### Industry Tools & Workflows
+- **Popular writing tools**: Final Draft, Scrivener, Celtx, Comics Experience script templates.[3][12]
+- **Art & Lettering tools**: Clip Studio Paint, Adobe Photoshop/Illustrator, Procreate, Affinity Designer.
+
+***
+
+## 2. Technical Requirements
+
+### Prose-to-Panel Conversion
+- **Breaking Paragraphs**: Each paragraph is parsed for discrete actions or beats, which map to panels. Each panel represents a visually distinct moment or exchange, typically one major action or dialogue exchange per panel.[14][10]
+- **Guidelines**: Avoid multiple emotional beats in a panel. Limit to one expressive change/action per panel for clarity.[10]
+
+### Character Design Consistency
+- **Character Design Sheets**: Include full-body poses, multiple angles, facial expression ranges, color palettes, personality blurb, and standout features for each character to ensure consistency across panels and artists.[15][16]
+
+### Visual Scene Direction Standards
+- **Descriptions**: For every panel, specify setting, lighting, character positions, and emotional context. Use concise, visual-first direction.[13][3]
+
+### Panel Transition Types
+- Encode transition type for each panel as metadata:
+  - Moment-to-Moment (small changes, slow pacing)
+  - Action-to-Action (shows motion steps)
+  - Scene-to-Scene (location/time change)
+  - Subject-to-Subject, etc.[11][9]
+
+### Page Turn Timing
+- **Page Reveals**: Use the last panel on a right-hand page (often even numbered) for major reveals/twists, taking advantage of the natural dramatic effect of turning the page.[8][9]
+- **Guidance**: Insert metadata/tag for intended dramatic page turns.
+
+***
+
+## 3. Format Specifications
+
+### Script Formatting
+- **Panel Description Structure**:
+  ```
+  PAGE [number] (X panels)
+  PANEL [number]: [Description]
+    [Character]: (BALLOON) "Dialogue"
+    [Character]: (CAPTION) "Caption narration"
+    SFX: "Sound Effect"
+  ```
+- **Panel Descriptions**: Start with panel number and a concise, vivid description of visuals.[1][13][3]
+- **Downloadable Script Templates**: Official templates available via Comics Experience, Fred Van Lente’s format, and other professional comic scripting resources.[12][13][3]
+
+### Character Design Sheet Requirements
+- Include: full-body, turnarounds (front, back, side), 4–8 facial expressions, scale comparison, signature items, and a short character bio.[16][15]
+
+### Art Direction Annotation
+- Use comment tags for specific visual instructions, e.g.:
+  - [ARTIST NOTE]: "Emphasize character’s emotions here."
+  - [COLORIST]: "Nighttime mood, cool blues."
+- Avoid excessive art direction—trust the artist but ensure critical elements are clear.[13][3][12]
+
+***
+
+## 4. Quality Gates
+
+### Validating Visual Storytelling Flow
+- **Automated Checks**: 
+  - Each panel should be a single coherent moment/beat.
+  - Progression between panels should be logical and smooth (scene/subject/moment-to-moment transitions).[10][11]
+- **Manual Review**: Editor review for visual clarity and narrative flow.
+
+### Panel Count and Dialogue Density Guidelines
+- **Panels Per Page**: 5–7 standard; max 9 panels for dense scenes. Minimize overuse of high-density pages to avoid clutter.[6][8]
+- **Dialogue Density**: Max 50 words per panel, preferably less. Max 20–35 per speech balloon. No more than 2–3 balloons per panel unless for group scenes.[6]
+
+### Visual Continuity Checks
+- Character appearances/checks against design sheet.[15][16]
+- Environmental consistency across sequences.
+- Prop and costume continuity validated against previous panels.
+
+***
+
+## References and Industry Sources
+- Scott McCloud, “Understanding Comics”.[9][11][10]
+- DC and Marvel writer guidelines and script samples.[2][1][12]
+- CreatorResource, Comics Experience, Professional script format tutorials.[3][12][13]
+- Academic and professional articles on panel composition and visual storytelling.[7][8]
+- Skillshare, RetroSupply and other guides for character design.[16][15]
+- Professional comic writing software documentation and workflows.[12][3]
+
+***
+
+## Implementation Requirements for Snowflake Engine Extension (Steps 11–12)
+- Integrate parsing for prose-to-panel translation as per industry standards above.
+- Support creation and export of scripts in Full Script (DC Style) and Marvel Method.
+- Automatically generate and validate:
+  - Panel and page pacing/flow
+  - Adherence to word count and layout rules
+  - Character design sheets and reference annotations
+- Enable tagging/prompting for page-turn reveals, panel types, and art directions.
+- Include downloadable templates matching industry conventions.
+
+***
+
+This PRD ensures that the Snowflake Engine's new Steps 11–12 output comic book scripts that align with industry standards set by major publishers, use professional script formats, and support both writers and artists in the production of high-quality graphic novels.[1][7][15][8][11][16][13][3][12]
+
+[1](https://en.wikipedia.org/wiki/Script_(comics))
+[2](https://www.youtube.com/watch?v=q3q7_7DOxKA)
+[3](https://www.frankgogol.com/making-comics/how-to-format-a-comic-script-explained/)
+[4](https://www.comicbookdaily.com/columns/tales-from-the-comicdenn/marvel-method-full-script/)
+[5](https://sebastian-chow.com/why-i-prefer-the-marvel-method-for-making-comics-over-full-script/)
+[6](https://richardmooneyvi.wordpress.com/2020/10/21/the-art-of-conversation-part-2-representing-dialogue-in-comics/)
+[7](https://www.numberanalytics.com/blog/mastering-comic-panels-the-ultimate-guide)
+[8](https://www.twelvept.com/blog/en/comics/BLG002-panel-by-panel-mastering-the-basics-of-comic-script-layout.html)
+[9](http://ozandends.blogspot.com/2010/12/higher-level-of-transition-in-comics.html)
+[10](https://evanjwaterman.com/guide/writing/breaking-scenes-down/)
+[11](https://comics.sdsu.edu/_resources/docs/neh-hsi/jenkins-transitions.pptx)
+[12](https://www.reddit.com/r/ComicBookCollabs/comments/1ef8s9r/standard_comic_graphic_novel_script_format/)
+[13](https://www.creatorresource.com/anatomy-of-a-comic-script/)
+[14](https://timstout.wordpress.com/2011/09/03/how-to-use-3-act-story-structure-in-comic-strips/)
+[15](https://www.skillshare.com/en/blog/how-to-make-a-character-design-sheet/)
+[16](https://www.retrosupply.co/blogs/tutorials/character-reference-sheet)
+[17](https://www.reddit.com/r/ComicBookCollabs/comments/gqftix/marvel_style_script_samples/)
+[18](https://dashtoon.com/blog/comic-book-panels/)
