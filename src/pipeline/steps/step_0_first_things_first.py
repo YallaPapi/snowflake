@@ -49,7 +49,7 @@ class Step0FirstThingsFirst:
         # Default model config
         if not model_config:
             model_config = {
-                "model_name": "gpt-4o-mini",
+                "model_name": "gpt-5.2-2025-12-11",
                 "temperature": 0.3,  # Lower temperature for structured output
                 "seed": 42
             }
@@ -133,7 +133,7 @@ class Step0FirstThingsFirst:
             artifact_content,
             project_id,
             prompt_data["prompt_hash"],
-            model_config or {"model_name": "gpt-4o-mini", "temperature": 0.3}
+            model_config or {"model_name": "gpt-5.2-2025-12-11", "temperature": 0.3}
         )
         artifact["metadata"]["version"] = new_version
         artifact["metadata"]["revision_reason"] = revision_reason
@@ -196,8 +196,8 @@ class Step0FirstThingsFirst:
             f.write(f"Category: {artifact.get('category', 'ERROR: MISSING')}\n")
             f.write(f"Story Kind: {artifact.get('story_kind', 'ERROR: MISSING')}\n")
             f.write(f"Audience Delight: {artifact.get('audience_delight', 'ERROR: MISSING')}\n")
-            f.write(f"\nGenerated: {artifact['metadata']['created_at']}\n")
-            f.write(f"Version: {artifact['metadata']['version']}\n")
+            f.write(f"\nGenerated: {artifact.get('metadata', {}).get('created_at', 'N/A')}\n")
+            f.write(f"Version: {artifact.get('metadata', {}).get('version', 'N/A')}\n")
             
         return artifact_path
     
@@ -213,7 +213,7 @@ class Step0FirstThingsFirst:
     def snapshot_artifact(self, artifact: Dict[str, Any], project_id: str):
         """Save snapshot of current artifact before revision"""
         project_path = self.project_dir / project_id / "snapshots"
-        project_path.mkdir(exist_ok=True)
+        project_path.mkdir(parents=True, exist_ok=True)
         
         timestamp = datetime.utcnow().strftime("%Y%m%d_%H%M%S")
         version = artifact.get("metadata", {}).get("version", "unknown")

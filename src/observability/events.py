@@ -42,6 +42,7 @@ class MetricsCollector:
         self.health_history: List[HealthStatus] = []
         self._collecting = False
         self._thread = None
+        self._lock = threading.RLock()
         
     def start_collection(self, project_id: str):
         """Start metrics collection in background thread"""
@@ -125,7 +126,7 @@ def emit_event(project_id: str, event_type: str, payload: Dict[str, Any]) -> Non
     # Enrich event with current metrics
     latest_metrics = _metrics_collector.get_latest_metrics()
     latest_health = _metrics_collector.get_latest_health()
-    
+
     event = {
         "ts": datetime.utcnow().isoformat(),
         "type": event_type,
@@ -133,67 +134,68 @@ def emit_event(project_id: str, event_type: str, payload: Dict[str, Any]) -> Non
         "system_metrics": asdict(latest_metrics) if latest_metrics else None,
         "health_status": asdict(latest_health) if latest_health else None,
     }
-    
-    # Append to JSONL events
-    with open(paths["events"], "a", encoding="utf-8") as f:
-        f.write(json.dumps(event) + "\n")
 
-    # Update status.json with enhanced information
-    try:
-        if paths["status"].exists():
-            with open(paths["status"], "r", encoding="utf-8") as f:
-                status = json.load(f)
-        else:
-            status = {
-                "project_id": project_id,
-                "current_step": 0,
-                "steps": {},
-                "last_updated": None,
-                "total_events": 0,
-                "pipeline_health": "unknown",
-                "performance_summary": {},
-            }
-        
-        # Update step information
-        step_key = payload.get("step_key")
-        if step_key:
-            step_entry = status["steps"].get(step_key, {})
-            step_entry.update({k: v for k, v in payload.items() if k not in {"step_key"}})
-            status["steps"][step_key] = step_entry
-            
-        if "current_step" in payload:
-            status["current_step"] = payload["current_step"]
-            
-        # Update overall status
-        status["last_updated"] = event["ts"]
-        status["total_events"] = status.get("total_events", 0) + 1
-        
-        # Update health status
-        if latest_health:
-            status["pipeline_health"] = "healthy" if all([
-                latest_health.ai_provider_healthy,
-                latest_health.disk_space_healthy,
-                latest_health.memory_healthy
-            ]) else "degraded"
-            
-        # Update performance summary
-        if latest_metrics:
-            status["performance_summary"] = {
-                "cpu_percent": latest_metrics.cpu_percent,
-                "memory_mb": int(latest_metrics.memory_mb),
-                "last_updated": latest_metrics.timestamp
-            }
-        
-        with open(paths["status"], "w", encoding="utf-8") as f:
-            json.dump(status, f, indent=2)
-            
-        # Save detailed metrics periodically
-        if status["total_events"] % 10 == 0:  # Every 10 events
-            save_metrics_snapshot(project_id)
-            
-    except Exception:
-        # Observability should not break pipeline
-        pass
+    with _metrics_collector._lock:
+        # Append to JSONL events
+        with open(paths["events"], "a", encoding="utf-8") as f:
+            f.write(json.dumps(event) + "\n")
+
+        # Update status.json with enhanced information
+        try:
+            if paths["status"].exists():
+                with open(paths["status"], "r", encoding="utf-8") as f:
+                    status = json.load(f)
+            else:
+                status = {
+                    "project_id": project_id,
+                    "current_step": 0,
+                    "steps": {},
+                    "last_updated": None,
+                    "total_events": 0,
+                    "pipeline_health": "unknown",
+                    "performance_summary": {},
+                }
+
+            # Update step information
+            step_key = payload.get("step_key")
+            if step_key:
+                step_entry = status["steps"].get(step_key, {})
+                step_entry.update({k: v for k, v in payload.items() if k not in {"step_key"}})
+                status["steps"][step_key] = step_entry
+
+            if "current_step" in payload:
+                status["current_step"] = payload["current_step"]
+
+            # Update overall status
+            status["last_updated"] = event["ts"]
+            status["total_events"] = status.get("total_events", 0) + 1
+
+            # Update health status
+            if latest_health:
+                status["pipeline_health"] = "healthy" if all([
+                    latest_health.ai_provider_healthy,
+                    latest_health.disk_space_healthy,
+                    latest_health.memory_healthy
+                ]) else "degraded"
+
+            # Update performance summary
+            if latest_metrics:
+                status["performance_summary"] = {
+                    "cpu_percent": latest_metrics.cpu_percent,
+                    "memory_mb": int(latest_metrics.memory_mb),
+                    "last_updated": latest_metrics.timestamp
+                }
+
+            with open(paths["status"], "w", encoding="utf-8") as f:
+                json.dump(status, f, indent=2)
+
+            # Save detailed metrics periodically
+            if status["total_events"] % 10 == 0:  # Every 10 events
+                save_metrics_snapshot(project_id)
+
+        except Exception:
+            # Observability should not break pipeline
+            pass
 
 
 def start_monitoring(project_id: str):
@@ -218,17 +220,18 @@ def save_metrics_snapshot(project_id: str):
     """Save current metrics snapshot to disk"""
     try:
         paths = _project_paths(project_id)
-        
-        # Save metrics history
-        metrics_data = {
-            "timestamp": datetime.utcnow().isoformat(),
-            "metrics_history": [asdict(m) for m in _metrics_collector.metrics_history[-100:]],  # Last 100
-            "health_history": [asdict(h) for h in _metrics_collector.health_history[-100:]]
-        }
-        
-        with open(paths["metrics"], "w", encoding="utf-8") as f:
-            json.dump(metrics_data, f, indent=2)
-            
+
+        with _metrics_collector._lock:
+            # Save metrics history
+            metrics_data = {
+                "timestamp": datetime.utcnow().isoformat(),
+                "metrics_history": [asdict(m) for m in _metrics_collector.metrics_history[-100:]],  # Last 100
+                "health_history": [asdict(h) for h in _metrics_collector.health_history[-100:]]
+            }
+
+            with open(paths["metrics"], "w", encoding="utf-8") as f:
+                json.dump(metrics_data, f, indent=2)
+
     except Exception:
         pass  # Don't break pipeline
 
@@ -291,26 +294,27 @@ def get_project_summary(project_id: str) -> Dict[str, Any]:
     """Get comprehensive project summary"""
     try:
         paths = _project_paths(project_id)
-        
-        # Load status
-        status = {}
-        if paths["status"].exists():
-            with open(paths["status"], "r", encoding="utf-8") as f:
-                status = json.load(f)
-        
-        # Load recent events
-        events = []
-        if paths["events"].exists():
-            with open(paths["events"], "r", encoding="utf-8") as f:
-                lines = f.read().strip().split('\n')[-50:]  # Last 50 events
-                events = [json.loads(line) for line in lines if line.strip()]
-        
-        # Load metrics
-        metrics = {}
-        if paths["metrics"].exists():
-            with open(paths["metrics"], "r", encoding="utf-8") as f:
-                metrics = json.load(f)
-        
+
+        with _metrics_collector._lock:
+            # Load status
+            status = {}
+            if paths["status"].exists():
+                with open(paths["status"], "r", encoding="utf-8") as f:
+                    status = json.load(f)
+
+            # Load recent events
+            events = []
+            if paths["events"].exists():
+                with open(paths["events"], "r", encoding="utf-8") as f:
+                    lines = f.read().strip().split('\n')[-50:]  # Last 50 events
+                    events = [json.loads(line) for line in lines if line.strip()]
+
+            # Load metrics
+            metrics = {}
+            if paths["metrics"].exists():
+                with open(paths["metrics"], "r", encoding="utf-8") as f:
+                    metrics = json.load(f)
+
         return {
             "project_id": project_id,
             "status": status,
@@ -318,6 +322,6 @@ def get_project_summary(project_id: str) -> Dict[str, Any]:
             "metrics": metrics,
             "summary_generated": datetime.utcnow().isoformat()
         }
-        
+
     except Exception:
         return {"project_id": project_id, "error": "Failed to load project summary"}

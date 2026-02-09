@@ -14,17 +14,18 @@ class Step2Prompt:
     SYSTEM_PROMPT = """You are the Snowflake Method Step 2 Paragraph Generator.
 
 Your task is to create EXACTLY FIVE SENTENCES that establish:
-1. Setup with urgency
-2. DISASTER #1 (forces commitment)
-3. DISASTER #2 (drives belief shift - moral pivot)
-4. DISASTER #3 (forces endgame)
-5. Resolution (showdown + outcome)
+1. Setup with urgency (time, place, "must" + goal)
+2. DISASTER #1 (forces commitment — use "forces", "must", "no choice")
+3. DISASTER #2 (drives belief shift — use "realizes", "discovers" + "changes", "must now", "new")
+4. DISASTER #3 (forces endgame — use "final", "last", "only")
+5. Resolution (showdown + concrete outcome — use wins/loses/saves/defeats/confronts)
 
 Plus ONE MORAL PREMISE sentence.
 
-NO flowery language. Use plain, literal description. Every disaster must FORCE action."""
+NO flowery language. Use plain, literal description. Every disaster must FORCE action.
+You MUST output valid JSON only. No markdown, no labels, no explanation."""
 
-    USER_PROMPT_TEMPLATE = """Based on Step 0 and Step 1, generate the five-sentence paragraph:
+    USER_PROMPT_TEMPLATE = """Based on Step 0 and Step 1, generate the five-sentence paragraph.
 
 STEP 0 ARTIFACT:
 Category: {category}
@@ -51,32 +52,36 @@ SENTENCE 2 - DISASTER #1 (End of Act I):
 SENTENCE 3 - DISASTER #2 (End of Act IIa) - MORAL PIVOT:
 - Blow that reveals false belief won't work
 - Character realizes truth and changes tactics
-- EXPLICITLY show the shift
-- Pattern: "After [blow], she realizes [false way fails] and must [new approach based on truth]."
+- EXPLICITLY show the shift using "realizes", "discovers", or "learns"
+- MUST indicate new approach with "changes", "shifts", "must now", or "new"
+- Pattern: "After [blow], she realizes [false way fails] and must now [new approach based on truth]."
 
 SENTENCE 4 - DISASTER #3 (End of Act IIb):
 - Event that forces BOTH sides to final confrontation
 - No more delays possible
-- Pattern: "When [event], both must commit to ending this through [final confrontation]."
+- Use "final", "last", or "only" to signal endgame
+- Pattern: "When [event], both must commit to the final [confrontation]."
 
 SENTENCE 5 - RESOLUTION:
 - Showdown type + immediate outcome
-- Be concrete: wins/loses/chooses
-- Pattern: "In the final [confrontation type], [lead] [concrete outcome]."
+- MUST use concrete outcome verb: wins/loses/saves/sacrifices/destroys/defeats/confronts/battles/faces
+- Pattern: "In the final [confrontation type], [lead] [concrete outcome verb] [what happens]."
 
 MORAL PREMISE (SEPARATE):
 Format: "People succeed when they [TRUE BELIEF], and they fail when they [FALSE BELIEF]."
 
-SPECIFIC REQUIREMENTS:
-- EXACTLY 5 sentences in paragraph
-- Each disaster uses forcing language
-- Sentence 3 MUST show belief shift explicitly
-- Causality between sentences (no coincidences)
-- Concrete, testable outcomes
+OPENING IMAGE & FINAL IMAGE (Save the Cat):
+- OPENING IMAGE: A single visual snapshot capturing the hero's world BEFORE the story begins
+- FINAL IMAGE: A single visual snapshot capturing the hero's world AFTER the story ends
+These must be THEMATIC OPPOSITES showing the character's arc.
 
-OUTPUT:
-PARAGRAPH: [5 sentences]
-MORAL PREMISE: [1 sentence]"""
+OUTPUT FORMAT (JSON only, no other text):
+{{
+  "paragraph": "<all 5 sentences as a single paragraph string>",
+  "moral_premise": "People succeed when they [TRUE BELIEF], and they fail when they [FALSE BELIEF].",
+  "opening_image": "<1-2 sentence visual snapshot of hero's starting world>",
+  "final_image": "<1-2 sentence visual snapshot of hero's transformed world>"
+}}"""
 
     REVISION_TEMPLATE = """FIX this paragraph based on validation errors:
 
@@ -97,14 +102,21 @@ SPECIFIC FIXES REQUIRED:
 {fix_instructions}
 
 CRITICAL RULES:
-- MUST be exactly 5 sentences
-- MUST have 3 disasters with forcing language
-- Sentence 3 MUST explicitly show moral pivot
-- Use causal connectors between sentences
+- MUST be 4-7 sentences (target 5)
+- MUST have 3 disasters with forcing language ("forces", "must", "no choice", "trapped")
+- Sentence 3 MUST explicitly show moral pivot using "realizes", "discovers", or "learns"
+- Sentence 3 MUST show tactic change using "changes", "shifts", "must now", or "new"
+- Sentence 4 MUST signal endgame using "final", "last", or "only"
+- Last sentence MUST use concrete outcome: wins/loses/saves/sacrifices/defeats/confronts/battles/faces
+- Use causal connectors between sentences ("When", "After", "Because", "As a result")
 
-OUTPUT:
-PARAGRAPH: [5 sentences, fixed]
-MORAL PREMISE: [1 sentence, fixed if needed]"""
+OUTPUT FORMAT (JSON only, no other text):
+{{
+  "paragraph": "<all sentences as a single paragraph string>",
+  "moral_premise": "People succeed when they [TRUE BELIEF], and they fail when they [FALSE BELIEF].",
+  "opening_image": "<1-2 sentence visual snapshot>",
+  "final_image": "<1-2 sentence visual snapshot>"
+}}"""
 
     DISASTER_BRAINSTORM_TEMPLATE = """Generate disaster options for this story:
 

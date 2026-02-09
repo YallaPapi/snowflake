@@ -24,20 +24,16 @@ class BulletproofGenerator:
         # Multi-tier fallback models
         self.fallback_models = {
             "openai": [
-                "gpt-4o",                     # GPT-4o primary
-                "gpt-4o",                     # GPT-4o fallback
-                "gpt-4o-mini",                # GPT-4o mini fallback
-                "gpt-3.5-turbo"               # GPT-3.5 final fallback
+                "gpt-5.2-2025-12-11",
+                "gpt-5.2-2025-12-11",
             ],
             "anthropic": [
-                "claude-3-5-haiku-20241022",    # Fast primary
-                "claude-3-5-sonnet-20241022",   # Quality fallback
-                "claude-3-opus-20240229"        # Premium fallback
+                "claude-sonnet-4-5-20250929",
+                "claude-sonnet-4-5-20250929",
             ],
             "openrouter": [
-                "meta-llama/llama-3.2-3b-instruct",   # Very fast
-                "microsoft/wizardlm-2-8x22b",         # Quality
-                "anthropic/claude-3.5-sonnet"         # Premium
+                "anthropic/claude-sonnet-4-5-20250929",
+                "anthropic/claude-sonnet-4-5-20250929",
             ]
         }
         

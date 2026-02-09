@@ -55,11 +55,15 @@ class TestPipelineIntegration(unittest.TestCase):
         )
         
         # For now, manually set a valid logline since AI isn't connected
-        step1_artifact['logline'] = "Dr. Sarah Chen, a therapist, must prove her patient's innocence before he's executed by the state."
-        
+        step1_artifact['logline'] = "Sarah Chen, a therapist, must prove her patient's innocence before he's executed by the state."
+
         # Re-validate
         is_valid, message = self.step1.validate_only(step1_artifact)
         self.assertTrue(is_valid, f"Step 1 validation failed: {message}")
+
+        # Save manually-fixed artifact to disk
+        step1_artifact = self.step1.add_metadata(step1_artifact, self.project_id, "test-hash", {"model_name": "mock"}, "upstream-hash")
+        self.step1.save_artifact(step1_artifact, self.project_id)
         
         # Step 2: One Paragraph Summary
         success, step2_artifact, message = self.step2.execute(
@@ -68,18 +72,22 @@ class TestPipelineIntegration(unittest.TestCase):
         
         # Manually set valid paragraph for testing
         step2_artifact['paragraph'] = (
-            "In present-day Boston, Dr. Sarah Chen must prove her death-row patient innocent before his execution in 30 days. "
+            "In Boston today, Sarah Chen must prove her death-row patient innocent before his execution in 30 days. "
             "When her supervisor dies mysteriously after supporting her, she is forced to investigate alone or abandon her patient. "
-            "After discovering the real killer is a prominent judge, she realizes working within the system will fail and must gather evidence illegally. "
-            "When the judge frames Sarah for murder too, both she and her patient must expose the truth or die. "
-            "In the final courtroom confrontation, Sarah sacrifices her license but saves her patient and exposes the conspiracy."
+            "After discovering the real killer is a prominent judge, she realizes she must risk everything for truth and has no choice but to shift to a new approach gathering evidence illegally. "
+            "When the judge frames Sarah for murder too, both she and her patient are trapped in a final confrontation and must expose the truth or die. "
+            "In the courtroom showdown, Sarah confronts the judge and sacrifices her license but saves her patient and exposes the conspiracy."
         )
         step2_artifact['moral_premise'] = "People succeed when they risk everything for truth, and they fail when they protect their position over justice."
         
         # Re-validate
         is_valid, message = self.step2.validate_only(step2_artifact)
         self.assertTrue(is_valid, f"Step 2 validation failed: {message}")
-        
+
+        # Save manually-fixed artifact to disk
+        step2_artifact = self.step2.add_metadata(step2_artifact, self.project_id, "test-hash", {"model_name": "mock"}, "upstream-hash")
+        self.step2.save_artifact(step2_artifact, self.project_id)
+
         # Step 3: Character Summaries
         success, step3_artifact, message = self.step3.execute(
             step0_artifact, step1_artifact, step2_artifact, self.project_id

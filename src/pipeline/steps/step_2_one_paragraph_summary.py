@@ -44,7 +44,7 @@ class Step2OneParagraphSummary:
         """
         if not model_config:
             model_config = {
-                "model_name": "gpt-4o-mini",
+                "model_name": "gpt-5.2-2025-12-11",
                 "temperature": 0.3,  # Lower temperature for consistency
                 "seed": 42
             }
@@ -68,7 +68,9 @@ class Step2OneParagraphSummary:
         # Ensure required fields
         artifact = {
             "paragraph": content.get("paragraph", ""),
-            "moral_premise": content.get("moral_premise", "")
+            "moral_premise": content.get("moral_premise", ""),
+            "opening_image": content.get("opening_image", ""),
+            "final_image": content.get("final_image", ""),
         }
         
         artifact = self.add_metadata(
@@ -289,6 +291,16 @@ class Step2OneParagraphSummary:
                 f.write(f"D3 Present: {'✓' if artifact['disasters'].get('d3_present') else '✗'} ")
                 f.write(f"(Type: {artifact['disasters'].get('d3_type', 'unknown')})\n\n")
             
+            if artifact.get('opening_image'):
+                f.write("OPENING IMAGE (Save the Cat):\n")
+                f.write("-" * 40 + "\n")
+                f.write(artifact['opening_image'] + "\n\n")
+
+            if artifact.get('final_image'):
+                f.write("FINAL IMAGE (Save the Cat):\n")
+                f.write("-" * 40 + "\n")
+                f.write(artifact['final_image'] + "\n\n")
+
             f.write(f"Sentence Count: {artifact.get('sentence_count', 0)}/5\n")
             f.write(f"Generated: {artifact['metadata']['created_at']}\n")
             f.write(f"Version: {artifact['metadata']['version']}\n")

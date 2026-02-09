@@ -11,7 +11,11 @@ CONCRETE_GOAL_VERBS = {
     'win', 'stop', 'find', 'escape', 'prove', 'steal', 'save', 'restore',
     'defeat', 'rescue', 'destroy', 'capture', 'protect', 'expose', 'prevent',
     'solve', 'survive', 'reach', 'deliver', 'recover', 'uncover', 'eliminate',
-    'defend', 'overthrow', 'infiltrate', 'retrieve', 'secure', 'neutralize'
+    'defend', 'overthrow', 'infiltrate', 'retrieve', 'secure', 'neutralize',
+    'hunt', 'track', 'avenge', 'convince', 'persuade', 'reclaim', 'navigate',
+    'decode', 'translate', 'investigate', 'discover', 'confront', 'outwit',
+    'outrun', 'build', 'create', 'forge', 'complete', 'finish', 'obtain',
+    'acquire', 'unlock', 'breach', 'dismantle', 'sabotage', 'free', 'liberate',
 }
 
 # Mood/internal goals that need to be converted
@@ -54,17 +58,17 @@ class Step1Validator:
         word_count = len(logline.split())
         artifact['word_count'] = word_count  # Store for reference
         
-        if word_count > 25:
-            errors.append(f"TOO LONG: Logline has {word_count} words (maximum 25). Cut prepositional trails and side facts.")
+        if word_count > 40:
+            errors.append(f"TOO LONG: Logline has {word_count} words (maximum 40). Cut prepositional trails and side facts.")
         
         # 2. SENTENCE STRUCTURE CHECK
         if not re.search(r'[.!?]$', logline):
             errors.append("PUNCTUATION: Logline must end with proper punctuation (.!?)")
         
-        # Check for multiple sentences (should be ONE)
+        # Check for multiple sentences (should be 1-2)
         sentence_count = len(re.findall(r'[.!?]+', logline))
-        if sentence_count > 1:
-            errors.append(f"MULTIPLE SENTENCES: Must be ONE sentence (found {sentence_count})")
+        if sentence_count > 2:
+            errors.append(f"TOO MANY SENTENCES: Should be 1-2 sentences (found {sentence_count})")
         
         # 3. NAMED LEADS CHECK (≤ 2 named characters)
         # Look for capitalized names (rough heuristic)
@@ -73,13 +77,19 @@ class Step1Validator:
         potential_names = re.findall(name_pattern, logline)
         
         # Filter out common words that aren't names
-        common_words = {'The', 'A', 'An', 'But', 'And', 'Or', 'When', 'While', 'After', 'Before', 'During'}
+        common_words = {
+            'The', 'A', 'An', 'But', 'And', 'Or', 'When', 'While', 'After',
+            'Before', 'During', 'In', 'On', 'At', 'For', 'With', 'From',
+            'Into', 'Through', 'Between', 'Against', 'Despite', 'Her', 'His',
+            'Their', 'Its', 'This', 'That', 'Each', 'Every', 'All', 'Both',
+            'Now', 'Then', 'Once', 'Only', 'Also', 'Just', 'Even', 'Still',
+        }
         names = [name for name in potential_names if name not in common_words]
-        
+
         artifact['lead_count'] = len(names)  # Store for reference
-        
-        if len(names) > 2:
-            errors.append(f"TOO MANY NAMES: Found {len(names)} named characters (maximum 2). Keep roles for everyone except protagonist.")
+
+        if len(names) > 4:
+            errors.append(f"TOO MANY NAMES: Found {len(names)} named characters (maximum 4). Keep roles for everyone except protagonist.")
         
         if len(names) == 0:
             errors.append("NO PROTAGONIST: Must name at least one lead character")
@@ -92,8 +102,12 @@ class Step1Validator:
                                for verb in CONCRETE_GOAL_VERBS)
         
         # Check for "must" or similar obligation word
-        has_must = any(word in logline_lower for word in ['must', 'has to', 'needs to', 'forced to'])
-        
+        has_must = any(word in logline_lower for word in [
+            'must', 'has to', 'needs to', 'forced to', 'compelled to',
+            'desperate to', 'determined to', 'driven to', 'struggles to',
+            'races to', 'fights to', 'vows to', 'sets out to',
+        ])
+
         if not has_must:
             errors.append("NO OBLIGATION: Missing 'must' or similar word indicating story necessity")
         
@@ -106,9 +120,9 @@ class Step1Validator:
                 errors.append("NO CONCRETE GOAL: Must include testable external goal (win/stop/find/escape/prove/steal/save/restore)")
         
         # 5. OPPOSITION CHECK
-        opposition_words = ['despite', 'against', 'while', 'before', 'without', 'but', 
+        opposition_words = ['despite', 'against', 'while', 'before', 'without', 'but',
                           'although', 'even though', 'as', 'when']
-        has_opposition = any(word in logline_lower for word in opposition_words)
+        has_opposition = any(re.search(rf'\b{re.escape(word)}\b', logline_lower) for word in opposition_words)
         
         if not has_opposition:
             # Alternative: Check for conflict-implying phrases

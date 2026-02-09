@@ -355,7 +355,7 @@ class PipelineErrorRecovery:
             log_path = self.project_dir / project_id / "error_recovery.log"
             log_path.parent.mkdir(exist_ok=True)
             
-            with open(log_path, 'w') as f:
+            with open(log_path, 'w', encoding='utf-8') as f:
                 for entry in self.error_log:
                     f.write(json.dumps(entry) + '\n')
     

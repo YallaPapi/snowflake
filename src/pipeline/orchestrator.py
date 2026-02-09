@@ -85,14 +85,19 @@ class SnowflakePipeline:
             "created_at": datetime.utcnow().isoformat(),
             "current_step": 0,
             "steps_completed": [],
-            "pipeline_version": "1.0.0"
+            "pipeline_version": "1.0.0",
+            "opening_image": "",
+            "final_image": "",
         }
         
         # Save project metadata
         meta_path = project_path / "project.json"
-        with open(meta_path, 'w') as f:
-            json.dump(project_meta, f, indent=2)
-        
+        try:
+            with open(meta_path, 'w', encoding='utf-8') as f:
+                json.dump(project_meta, f, indent=2)
+        except PermissionError as e:
+            raise PermissionError(f"Cannot write project metadata to {meta_path}. File may be locked by another process or antivirus. Details: {e}")
+
         self.current_project_id = project_id
         emit_event(project_id, "project_created", {"project_name": project_name, "current_step": 0})
         return project_id
@@ -112,9 +117,9 @@ class SnowflakePipeline:
         if not project_path.exists():
             raise FileNotFoundError(f"Project {project_id} not found")
         
-        with open(project_path, 'r') as f:
+        with open(project_path, 'r', encoding='utf-8') as f:
             project_meta = json.load(f)
-        
+
         self.current_project_id = project_id
         emit_event(project_id, "project_loaded", {"project_name": project_meta.get('project_name'), "current_step": project_meta.get('current_step')})
         return project_meta
@@ -569,9 +574,13 @@ class SnowflakePipeline:
         
         if not artifact_path.exists():
             return None
-        
-        with open(artifact_path, 'r') as f:
-            return json.load(f)
+
+        try:
+            with open(artifact_path, 'r', encoding='utf-8') as f:
+                return json.load(f)
+        except PermissionError as e:
+            emit_event(self.current_project_id, "file_error", {"path": str(artifact_path), "error": f"Cannot read artifact: {e}"})
+            return None
     
     def _update_project_state(self, step_number: int, artifact: Dict[str, Any]):
         """Update project state after step completion"""
@@ -579,10 +588,14 @@ class SnowflakePipeline:
             return
         
         project_path = self.project_dir / self.current_project_id / "project.json"
-        
-        with open(project_path, 'r') as f:
-            project_meta = json.load(f)
-        
+
+        try:
+            with open(project_path, 'r', encoding='utf-8') as f:
+                project_meta = json.load(f)
+        except PermissionError as e:
+            emit_event(self.current_project_id, "file_error", {"path": str(project_path), "error": str(e)})
+            return
+
         # Update metadata
         project_meta['current_step'] = max(project_meta.get('current_step', 0), step_number)
         emit_event(self.current_project_id, "state_updated", {"current_step": project_meta['current_step'], "step_key": f"step_{step_number}"})
@@ -594,11 +607,19 @@ class SnowflakePipeline:
         project_meta['steps_completed'] = steps_completed
         
         project_meta['last_updated'] = datetime.utcnow().isoformat()
-        
+
+        # After Step 2, copy opening/final image to project metadata
+        if step_number == 2:
+            project_meta['opening_image'] = artifact.get('opening_image', '')
+            project_meta['final_image'] = artifact.get('final_image', '')
+
         # Save updated metadata
-        with open(project_path, 'w') as f:
-            json.dump(project_meta, f, indent=2)
-    
+        try:
+            with open(project_path, 'w', encoding='utf-8') as f:
+                json.dump(project_meta, f, indent=2)
+        except PermissionError as e:
+            emit_event(self.current_project_id, "file_error", {"path": str(project_path), "error": str(e)})
+
     def export_project(self, format: str = "json") -> Path:
         """
         Export complete project bundle
@@ -629,9 +650,12 @@ class SnowflakePipeline:
             
             # Save bundle
             export_path = project_path / f"{self.current_project_id}_complete.json"
-            with open(export_path, 'w') as f:
-                json.dump(bundle, f, indent=2)
-            
+            try:
+                with open(export_path, 'w', encoding='utf-8') as f:
+                    json.dump(bundle, f, indent=2)
+            except PermissionError as e:
+                raise PermissionError(f"Cannot export project to {export_path}. File may be locked by another process. Details: {e}")
+
             return export_path
         
         # Add other export formats as needed

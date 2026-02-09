@@ -229,6 +229,32 @@ class SceneCard(BaseModel):
     updated_at: Optional[datetime] = Field(None, description="Last update timestamp")
     version: Optional[int] = Field(1, description="Scene version number")
 
+    # Save the Cat enhancements
+    emotional_polarity: str = Field(
+        default="",
+        description="'+' (positive change) or '-' (negative/conflict)"
+    )
+    emotional_start: str = Field(
+        default="",
+        description="Emotional state at scene start"
+    )
+    emotional_end: str = Field(
+        default="",
+        description="Emotional state at scene end (must differ from start)"
+    )
+    conflict_parties: str = Field(
+        default="",
+        description="Who vs whom in this scene's conflict (e.g. 'hero vs. antagonist')"
+    )
+    conflict_winner: str = Field(
+        default="",
+        description="Who wins this scene's conflict"
+    )
+    storyline: str = Field(
+        default="A",
+        description="Storyline tag: 'A' (main plot), 'B' (theme/relationship), 'C'+ (subplots)"
+    )
+
     @field_validator('pov', 'place', 'time')
     @classmethod
     def required_fields_not_empty(cls, v):

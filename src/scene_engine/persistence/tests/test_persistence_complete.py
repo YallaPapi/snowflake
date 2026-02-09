@@ -877,7 +877,7 @@ class TestBackupRecovery:
             with gzip.open(backup_metadata.file_path, 'rt') as f:
                 backup_data = json.load(f)
         else:
-            with open(backup_metadata.file_path, 'r') as f:
+            with open(backup_metadata.file_path, 'r', encoding='utf-8') as f:
                 backup_data = json.load(f)
         
         assert 'backup_metadata' in backup_data

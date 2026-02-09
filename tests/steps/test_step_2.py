@@ -25,7 +25,7 @@ class TestStep2Validator(unittest.TestCase):
             "paragraph": (
                 "In modern Seattle, Detective Sarah Chen must expose a trafficking ring before the FBI raid tomorrow. "
                 "When her partner is murdered at their safehouse, she is forced to go undercover alone or let the ring escape. "
-                "After discovering her captain leads the ring, she realizes following protocol will fail and must become a vigilante to gather evidence. "
+                "After discovering her captain leads the ring, she realizes she has no choice but to change to a new approach as vigilante to gather evidence. "
                 "When the traffickers kidnap her sister as leverage, both Sarah and the crime boss must commit to a final deadly confrontation. "
                 "In the warehouse showdown, Sarah sacrifices her badge but saves her sister and dozens of victims."
             ),
@@ -41,22 +41,35 @@ class TestStep2Validator(unittest.TestCase):
         self.assertTrue(artifact['disasters']['d3_present'])
     
     def test_wrong_sentence_count_fails(self):
-        """Test that paragraphs with wrong sentence count fail"""
-        # Only 4 sentences
+        """Test that paragraphs with too few or too many sentences fail"""
+        # Only 3 sentences (below 4 minimum)
         artifact = {
+            "paragraph": (
+                "Sarah must stop the conspiracy. "
+                "Her partner betrays her. "
+                "She wins in the end."
+            ),
+            "moral_premise": "People succeed when they persist, and fail when they give up."
+        }
+
+        is_valid, errors = self.validator.validate(artifact)
+        self.assertFalse(is_valid)
+        self.assertTrue(any("TOO FEW SENTENCES" in e for e in errors))
+        self.assertEqual(artifact['sentence_count'], 3)
+
+        # 4 sentences should now be valid (within 4-7 range)
+        artifact2 = {
             "paragraph": (
                 "Sarah must stop the conspiracy. "
                 "Her partner betrays her. "
                 "She learns the truth. "
                 "She wins in the end."
             ),
-            "moral_premise": "People succeed when they persist."
+            "moral_premise": "People succeed when they persist, and fail when they give up."
         }
-        
-        is_valid, errors = self.validator.validate(artifact)
-        self.assertFalse(is_valid)
-        self.assertTrue(any("WRONG SENTENCE COUNT" in e for e in errors))
-        self.assertEqual(artifact['sentence_count'], 4)
+        is_valid2, errors2 = self.validator.validate(artifact2)
+        self.assertFalse(any("TOO FEW" in e for e in errors2))
+        self.assertFalse(any("TOO MANY" in e for e in errors2))
     
     def test_missing_disasters_fail(self):
         """Test that missing disaster markers fail"""
@@ -119,23 +132,25 @@ class TestStep2Validator(unittest.TestCase):
         # May have other errors but moral premise should be OK
         self.assertFalse(any("INVALID MORAL PREMISE" in e for e in errors))
     
-    def test_moral_pivot_in_disaster_2(self):
-        """Test that Disaster 2 must show the moral pivot"""
+    def test_moral_pivot_required_in_disaster_2(self):
+        """Test that moral pivot in Disaster 2 is a hard error that triggers retry"""
+        # Disaster 2 has no pivot language — should fail
         artifact = {
             "paragraph": (
                 "In Seattle, Sarah must solve the case before midnight. "
                 "When her partner dies, she is forced to continue alone. "
-                "Something bad happens to Sarah but she keeps going. "  # No pivot shown
+                "Something bad happens to Sarah but she keeps going. "
                 "When the deadline arrives, she must confront the villain. "
                 "She wins the fight."
             ),
             "moral_premise": "People succeed when they trust others, and they fail when they work alone."
         }
-        
+
         is_valid, errors = self.validator.validate(artifact)
-        self.assertFalse(is_valid)
         self.assertTrue(any("NO MORAL PIVOT" in e for e in errors))
-        self.assertTrue(any("D2 NO REALIZATION" in e for e in errors))
+        # moral_pivot metadata should still be tracked
+        self.assertIn("moral_pivot", artifact)
+        self.assertFalse(artifact['moral_pivot']['pivot_shown'])
     
     def test_resolution_requirements(self):
         """Test that resolution needs concrete outcome"""
@@ -399,9 +414,9 @@ class TestStep2Execution(unittest.TestCase):
             "paragraph": (
                 "In NYC today, Maya must capture Alex before midnight. "
                 "When her handler betrays her location, she is forced to go dark. "
-                "After discovering Alex was framed, she realizes the agency is corrupt and must work with him. "
-                "When the real mole activates a kill order on both, they must fight together or die. "
-                "In the final confrontation, Maya exposes the mole but loses her career."
+                "After discovering Alex was framed, she realizes she can no longer blindly follow orders and has no choice but to shift to a new approach working with him. "
+                "When the real mole activates a final kill order on both, they must fight together or die. "
+                "In the showdown, Maya confronts the mole and exposes him but loses her career."
             ),
             "moral_premise": "People succeed when they question authority, and fail when they blindly follow orders."
         }

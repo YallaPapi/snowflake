@@ -118,10 +118,13 @@ async def create_project(brief: NovelBrief):
         # Store brief for later use
         project_path = Path("artifacts") / project_id
         brief_path = project_path / "initial_brief.json"
-        with open(brief_path, 'w') as f:
-            import json
-            json.dump(brief.dict(), f, indent=2)
-        
+        try:
+            with open(brief_path, 'w', encoding='utf-8') as f:
+                import json
+                json.dump(brief.dict(), f, indent=2)
+        except PermissionError:
+            raise HTTPException(status_code=500, detail=f"Cannot write brief to {brief_path}. File may be locked by another process.")
+
         # Get status
         project_meta = pipeline.load_project(project_id)
         
@@ -152,7 +155,7 @@ async def list_projects():
             try:
                 meta_path = project_dir / "project.json"
                 if meta_path.exists():
-                    with open(meta_path, 'r') as f:
+                    with open(meta_path, 'r', encoding='utf-8') as f:
                         import json
                         meta = json.load(f)
                         projects.append({
@@ -180,7 +183,7 @@ async def get_project_status(project_id: str):
         manuscript_path = Path("artifacts") / project_id / "step_10_manuscript.json"
         total_words = None
         if manuscript_path.exists():
-            with open(manuscript_path, 'r') as f:
+            with open(manuscript_path, 'r', encoding='utf-8') as f:
                 import json
                 manuscript = json.load(f)
                 total_words = manuscript.get('total_word_count')
@@ -221,7 +224,7 @@ async def execute_step(
         if step_number in [0, 1]:
             brief_path = Path("artifacts") / request.project_id / "initial_brief.json"
             if brief_path.exists():
-                with open(brief_path, 'r') as f:
+                with open(brief_path, 'r', encoding='utf-8') as f:
                     import json
                     brief_data = json.load(f)
                     brief = brief_data.get('brief', '')
@@ -283,9 +286,12 @@ async def generate_full_novel(
                 # Store brief
                 project_path = Path("artifacts") / project_id
                 brief_path = project_path / "initial_brief.json"
-                with open(brief_path, 'w') as f:
-                    import json
-                    json.dump(brief.dict(), f, indent=2)
+                try:
+                    with open(brief_path, 'w', encoding='utf-8') as f:
+                        import json
+                        json.dump(brief.dict(), f, indent=2)
+                except PermissionError:
+                    raise RuntimeError(f"Cannot write brief to {brief_path}. File may be locked by another process.")
                 
                 # Execute all steps
                 steps = [
@@ -327,10 +333,9 @@ async def generate_full_novel(
                     "error": str(e)
                 })
         
-        # Create async task
-        task = asyncio.create_task(generate_novel())
-        app.state.active_generations[task_id] = task
-        
+        # Schedule generation via FastAPI BackgroundTasks (safe on Windows)
+        background_tasks.add_task(generate_novel)
+
         return {
             "project_id": project_id,
             "task_id": task_id,
@@ -352,10 +357,13 @@ async def export_manuscript(request: ExportRequest):
         if not manuscript_path.exists():
             raise HTTPException(status_code=404, detail="Manuscript not found. Complete Step 10 first.")
         
-        with open(manuscript_path, 'r') as f:
-            import json
-            manuscript = json.load(f)
-        
+        try:
+            with open(manuscript_path, 'r', encoding='utf-8') as f:
+                import json
+                manuscript = json.load(f)
+        except PermissionError:
+            raise HTTPException(status_code=500, detail=f"Cannot read manuscript at {manuscript_path}. File may be locked by another process.")
+
         exporter = app.state.exporter
         export_paths = {}
         

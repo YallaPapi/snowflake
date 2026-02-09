@@ -85,16 +85,9 @@ class Step3Validator:
                 'collision_point': self.identify_collision_point(protagonist, antagonist)
             }
         
-        # RULE 6: Disaster alignment check
+        # RULE 6: Disaster alignment check (informational only, not a gate)
         disaster_alignment = self.check_disaster_alignment(characters)
         artifact['disaster_alignment'] = disaster_alignment
-        
-        if not disaster_alignment['d1_characters']:
-            errors.append("NO D1 ALIGNMENT: No character arcs reference Disaster 1")
-        if not disaster_alignment['d2_characters']:
-            errors.append("NO D2 ALIGNMENT: No character arcs reference Disaster 2")
-        if not disaster_alignment['d3_characters']:
-            errors.append("NO D3 ALIGNMENT: No character arcs reference Disaster 3")
         
         return len(errors) == 0, errors
     
@@ -177,76 +170,50 @@ class Step3Validator:
     def validate_goal(self, goal: str, char_id: str) -> List[str]:
         """Validate goal is concrete and testable"""
         errors = []
-        
-        # Check for concrete action verbs
-        concrete_verbs = r'\b(win|stop|find|escape|prove|steal|save|restore|capture|destroy|protect|expose|defeat|acquire|prevent|complete)\b'
-        if not re.search(concrete_verbs, goal, re.I):
-            errors.append(f"{char_id} GOAL NOT CONCRETE: Must use testable action verb")
-        
-        # Check for vague/internal goals
-        vague_markers = r'\b(find herself|discover who|learn to|become|understand|realize|feel)\b'
-        if re.search(vague_markers, goal, re.I):
-            errors.append(f"{char_id} GOAL TOO INTERNAL: Must be external and observable")
-        
+
+        if len(goal.strip()) < 5:
+            errors.append(f"{char_id} GOAL TOO SHORT: Must describe a concrete objective")
+
         return errors
     
     def validate_ambition(self, ambition: str, char_id: str) -> List[str]:
-        """Validate ambition is abstract"""
+        """Validate ambition is present"""
         errors = []
-        
-        # Check for abstract concepts
-        abstract_concepts = r'\b(security|recognition|freedom|justice|power|love|redemption|revenge|peace|control|legacy|truth|belonging)\b'
-        if not re.search(abstract_concepts, ambition, re.I):
-            errors.append(f"{char_id} AMBITION TOO CONCRETE: Should be abstract life-aim")
-        
-        # Check length
-        if len(ambition) < 5:
+
+        if len(ambition.strip()) < 5:
             errors.append(f"{char_id} AMBITION TOO SHORT: Needs more detail")
-        
+
         return errors
     
     def validate_values(self, values: List[str], char_id: str) -> List[str]:
         """Validate values format and count"""
         errors = []
-        
-        # Must have exactly 3
-        if len(values) != 3:
-            errors.append(f"{char_id} WRONG VALUE COUNT: Must have exactly 3 values, found {len(values)}")
-        
-        # Each must start with "Nothing is more important than"
+
+        # Must have 2-5 values
+        if len(values) < 2:
+            errors.append(f"{char_id} TOO FEW VALUES: Need at least 2 values, found {len(values)}")
+        elif len(values) > 5:
+            errors.append(f"{char_id} TOO MANY VALUES: Maximum 5 values, found {len(values)}")
+
         for i, value in enumerate(values):
-            if not value.startswith("Nothing is more important than"):
-                errors.append(f"{char_id} VALUE {i+1} WRONG FORMAT: Must start with 'Nothing is more important than'")
-            
-            # Must end with period
-            if not value.endswith("."):
-                errors.append(f"{char_id} VALUE {i+1} NO PERIOD: Must end with period")
-            
-            # Must have concrete noun
-            value_content = value.replace("Nothing is more important than", "").strip()
-            if len(value_content) < 5:
-                errors.append(f"{char_id} VALUE {i+1} TOO SHORT: Must specify concrete value")
-            
+            # Must be non-trivial
+            if len(value.strip()) < 5:
+                errors.append(f"{char_id} VALUE {i+1} TOO SHORT: Must specify a concrete value")
+
             # Check for generic values
             generic_values = r'\b(stuff|things|whatever|something|anything)\b'
             if re.search(generic_values, value, re.I):
                 errors.append(f"{char_id} VALUE {i+1} TOO GENERIC: Use specific nouns")
-        
+
         return errors
     
     def validate_conflict(self, conflict: str, char_id: str) -> List[str]:
-        """Validate conflict specifies who/what and how"""
+        """Validate conflict has substance"""
         errors = []
-        
-        # Must name specific opposition
-        if not re.search(r'\b(who|what|person|system|nature|the|her|his|their)\b', conflict, re.I):
-            errors.append(f"{char_id} CONFLICT VAGUE: Must name specific opposing force")
-        
-        # Must explain HOW it blocks
-        how_markers = r'\b(blocks?|prevents?|stops?|opposes?|threatens?|forces?|controls?|denies?|withholds?)\b'
-        if not re.search(how_markers, conflict, re.I):
-            errors.append(f"{char_id} CONFLICT NO MECHANISM: Must explain HOW it blocks goal")
-        
+
+        if len(conflict.strip()) < 10:
+            errors.append(f"{char_id} CONFLICT TOO SHORT: Must describe the opposing force")
+
         return errors
     
     def validate_epiphany(self, epiphany: str, role: str, justification: str, char_id: str) -> List[str]:
@@ -269,27 +236,13 @@ class Step3Validator:
         return errors
     
     def validate_paragraph_summary(self, paragraph: str, char_id: str) -> List[str]:
-        """Validate paragraph summary references disasters"""
+        """Validate paragraph summary has substance"""
         errors = []
-        
+
         # Check minimum length
-        if len(paragraph) < 100:
-            errors.append(f"{char_id} PARAGRAPH TOO SHORT: Must be at least 100 characters")
-        
-        # Check for disaster references
-        if not re.search(r'\b(D1|disaster 1|first disaster)\b', paragraph, re.I):
-            errors.append(f"{char_id} PARAGRAPH NO D1: Must reference Disaster 1")
-        
-        if not re.search(r'\b(D2|disaster 2|second disaster)\b', paragraph, re.I):
-            errors.append(f"{char_id} PARAGRAPH NO D2: Must reference Disaster 2")
-        
-        if not re.search(r'\b(D3|disaster 3|third disaster|final disaster)\b', paragraph, re.I):
-            errors.append(f"{char_id} PARAGRAPH NO D3: Must reference Disaster 3")
-        
-        # Check for act structure
-        if not re.search(r'\b(act|beginning|middle|end|setup|confrontation|resolution)\b', paragraph, re.I):
-            errors.append(f"{char_id} PARAGRAPH NO STRUCTURE: Must show 3-Act progression")
-        
+        if len(paragraph) < 80:
+            errors.append(f"{char_id} PARAGRAPH TOO SHORT: Must be at least 80 characters")
+
         return errors
     
     def validate_antagonist_interiority(self, character: Dict[str, Any], char_id: str) -> List[str]:

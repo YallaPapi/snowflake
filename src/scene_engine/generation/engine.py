@@ -165,7 +165,7 @@ class AIModelInterface:
             AIModel.CLAUDE: {
                 "max_tokens": 4000,
                 "temperature": 0.7,
-                "model": "claude-3-sonnet-20240229"
+                "model": "claude-sonnet-4-5-20250929"
             },
             AIModel.GPT4: {
                 "max_tokens": 4000,

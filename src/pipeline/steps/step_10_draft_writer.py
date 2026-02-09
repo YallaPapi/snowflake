@@ -62,7 +62,7 @@ class Step10DraftWriter:
         # Default model config for creative writing
         if not model_config:
             model_config = {
-                "model_name": "gpt-4o",
+                "model_name": "gpt-5.2-2025-12-11",
                 "temperature": 0.7,  # Higher temperature for creative prose
                 "seed": 42
             }

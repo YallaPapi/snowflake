@@ -564,25 +564,25 @@ class Step3CharacterSummaries:
                 parsed = json.loads(content.strip())
                 if self._validate_character_structure(parsed):
                     return parsed
-        except:
+        except Exception as e:
             pass
-        
+
         # Try existing text parser
         try:
             parsed = self._parse_character_text(content)
             if self._validate_character_structure(parsed):
                 return parsed
-        except:
+        except Exception as e:
             pass
-        
+
         # Extract with regex patterns
         try:
             parsed = self._extract_characters_with_regex(content)
             if self._validate_character_structure(parsed):
                 return parsed
-        except:
+        except Exception as e:
             pass
-        
+
         # Emergency fallback - create minimum viable characters
         return self._create_emergency_characters()
     

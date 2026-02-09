@@ -131,7 +131,7 @@ class Step9SceneBriefs:
                         for i in range(len(batch_scenes)):
                             if f"brief_{i+1}" in data:
                                 briefs.append(data[f"brief_{i+1}"])
-        except:
+        except Exception as e:
             pass
         
         # If we don't have enough briefs, create placeholders
@@ -145,6 +145,15 @@ class Step9SceneBriefs:
         """Create a placeholder brief for a scene"""
         scene_type = scene.get("type", "Proactive")
         
+        stc_fields = {
+            "emotional_polarity": "-" if scene_type == "Proactive" else "+",
+            "emotional_start": "tense" if scene_type == "Proactive" else "shaken",
+            "emotional_end": "desperate" if scene_type == "Proactive" else "resolved",
+            "conflict_parties": "protagonist vs. antagonist",
+            "conflict_winner": "antagonist" if scene_type == "Proactive" else "protagonist",
+            "storyline": "A",
+        }
+
         if scene_type == "Proactive":
             return {
                 "type": "Proactive",
@@ -155,7 +164,8 @@ class Step9SceneBriefs:
                 "links": {
                     "character_goal_id": "protagonist_goal",
                     "disaster_anchor": scene.get("disaster_anchor")
-                }
+                },
+                **stc_fields,
             }
         else:
             return {
@@ -167,7 +177,8 @@ class Step9SceneBriefs:
                 "links": {
                     "character_goal_id": "protagonist_goal",
                     "disaster_anchor": scene.get("disaster_anchor")
-                }
+                },
+                **stc_fields,
             }
     
     def validate_only(self, artifact: Dict[str, Any]) -> Tuple[bool, str]:

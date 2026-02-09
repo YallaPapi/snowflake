@@ -25,3 +25,6 @@ node_modules/
 .DS_Store
 agency-swarm/
 __pycache__/
+
+# Windows reserved device names
+nul

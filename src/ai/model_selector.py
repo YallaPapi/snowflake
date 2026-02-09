@@ -13,21 +13,21 @@ class ModelSelector:
     
     # Model tiers by capability and cost
     FAST_MODELS = {
-        "anthropic": "claude-3-haiku-20240229",      # Fast, cheap (older stable version)
-        "openai": "gpt-4o-mini",                     # GPT-4o-mini for fast tasks
-        "openrouter": "meta-llama/llama-3.2-3b-instruct"  # Very fast, very cheap
+        "anthropic": "claude-sonnet-4-5-20250929",
+        "openai": "gpt-5.2-2025-12-11",
+        "openrouter": "anthropic/claude-sonnet-4-5-20250929"
     }
-    
+
     BALANCED_MODELS = {
-        "anthropic": "claude-3-haiku-20240229",    # Good balance (stable model)
-        "openai": "gpt-4o-mini",                   # GPT-4o-mini for balanced tasks
-        "openrouter": "meta-llama/llama-3.1-8b-instruct"  # Good balance
+        "anthropic": "claude-sonnet-4-5-20250929",
+        "openai": "gpt-5.2-2025-12-11",
+        "openrouter": "anthropic/claude-sonnet-4-5-20250929"
     }
-    
+
     QUALITY_MODELS = {
-        "anthropic": "claude-3-5-sonnet-20240620",   # High quality (working model)
-        "openai": "gpt-4o",                          # GPT-4o for quality tasks
-        "openrouter": "anthropic/claude-3.5-sonnet"  # Best quality (simplified)
+        "anthropic": "claude-sonnet-4-5-20250929",
+        "openai": "gpt-5.2-2025-12-11",
+        "openrouter": "anthropic/claude-sonnet-4-5-20250929"
     }
     
     # Step requirements mapping - using fast models for all steps for stability

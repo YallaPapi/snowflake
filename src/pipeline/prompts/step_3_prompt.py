@@ -22,20 +22,22 @@ Create COMPLETE character sheets with ALL required fields:
 
 Make antagonists complex with interiority. Align arcs with the three disasters."""
 
-    CHARACTER_TEMPLATE = """Create a character sheet following this EXACT format:
-
-Role: {role}
-Name: [Create appropriate name]
-Goal: [Concrete, testable, story-bound goal using action verb]
-Ambition: [Abstract life-aim: security/freedom/justice/power/love/etc]
-Values:
-  - Nothing is more important than [specific noun/concept].
-  - Nothing is more important than [specific noun/concept].
-  - Nothing is more important than [specific noun/concept].
-Conflict: [Who/what opposes the goal and HOW it blocks them]
-Epiphany: [What they learn/change] OR "NONE" with justification
-One-sentence summary: [Their complete arc in one line]
-One-paragraph summary: [3-Act arc mentioning D1, D2, D3 involvement]"""
+    CHARACTER_TEMPLATE = """Each character object must have these fields:
+{{
+  "role": "{role}",
+  "name": "<appropriate name>",
+  "goal": "<concrete, testable, story-bound goal using action verb>",
+  "ambition": "<abstract life-aim: security/freedom/justice/power/love/etc>",
+  "values": [
+    "<value statement 1>",
+    "<value statement 2>",
+    "<value statement 3>"
+  ],
+  "conflict": "<who/what opposes the goal and HOW it blocks them>",
+  "epiphany": "<what they learn/change, or 'NONE' with justification>",
+  "arc_one_line": "<their complete arc in one line>",
+  "arc_paragraph": "<3-Act arc paragraph>"
+}}"""
 
     MAIN_PROMPT_TEMPLATE = """Based on Steps 0-2, create character summary sheets:
 
@@ -65,13 +67,38 @@ FOR EACH CHARACTER, PROVIDE:
 CRITICAL REQUIREMENTS:
 1. GOALS must be concrete and testable (win/stop/find/prove/save)
 2. AMBITIONS must be abstract (security/freedom/justice)
-3. VALUES must use exact format starting with "Nothing is more important than"
+3. VALUES: 2-5 value statements per character
 4. CONFLICT must name WHO/WHAT and explain HOW it blocks
 5. Protagonist GOAL must collide with Antagonist CONFLICT
-6. Character arcs must reference D1, D2, D3 from Step 2
-7. Antagonist needs motive history and justification
+6. Antagonist needs motive history and justification
 
-OUTPUT as JSON array of character objects."""
+OUTPUT FORMAT (JSON only, no other text):
+{{
+  "characters": [
+    {{
+      "role": "Protagonist",
+      "name": "<name>",
+      "goal": "<concrete external goal>",
+      "ambition": "<abstract life-aim>",
+      "values": ["<value 1>", "<value 2>", "<value 3>"],
+      "conflict": "<who opposes and how>",
+      "epiphany": "<what they learn>",
+      "arc_one_line": "<arc in one line>",
+      "arc_paragraph": "<3-Act arc paragraph>"
+    }},
+    {{
+      "role": "Antagonist",
+      "name": "<name>",
+      "goal": "<concrete external goal>",
+      "ambition": "<abstract life-aim>",
+      "values": ["<value 1>", "<value 2>", "<value 3>"],
+      "conflict": "<who opposes and how>",
+      "epiphany": "<what they learn or NONE>",
+      "arc_one_line": "<arc in one line>",
+      "arc_paragraph": "<3-Act arc paragraph>"
+    }}
+  ]
+}}"""
 
     ANTAGONIST_INTERIORITY_TEMPLATE = """Develop the antagonist's interiority:
 

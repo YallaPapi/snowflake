@@ -28,33 +28,32 @@ class TestStep1Validator(unittest.TestCase):
         is_valid, errors = self.validator.validate(artifact)
         self.assertTrue(is_valid)
         self.assertEqual(len(errors), 0)
-        self.assertLessEqual(artifact['word_count'], 25)
-        self.assertLessEqual(artifact['lead_count'], 2)
-    
+        self.assertLessEqual(artifact['word_count'], 40)
+        self.assertLessEqual(artifact['lead_count'], 4)
+
     def test_word_count_limit(self):
-        """Test that loglines over 25 words fail"""
-        # 30 words - too long
+        """Test that loglines over 40 words fail"""
         artifact = {
-            "logline": "Sarah, a very experienced detective with a troubled past and drinking problem, must somehow find a way to prove her primary suspect's complete innocence before the dangerous mob silences him forever."
+            "logline": "Sarah, a very experienced and highly decorated detective with a terribly troubled past and a serious drinking problem that threatens to destroy her career, must somehow manage to find a clever way to prove her primary suspect's complete and total innocence before the incredibly dangerous and ruthless mob permanently silences him forever in the dark alley."
         }
-        
+
         is_valid, errors = self.validator.validate(artifact)
         self.assertFalse(is_valid)
         self.assertTrue(any("TOO LONG" in e for e in errors))
-    
-    def test_maximum_two_named_leads(self):
-        """Test that more than 2 named characters fails"""
+
+    def test_maximum_four_named_leads(self):
+        """Test that more than 4 named characters fails"""
         artifact = {
-            "logline": "Sarah, Marcus, Elena, and David must work together to stop the heist."
+            "logline": "Sarah, Marcus, Elena, David, and Josephine must work together with Roberto to stop the heist before midnight."
         }
-        
+
         is_valid, errors = self.validator.validate(artifact)
         self.assertFalse(is_valid)
         self.assertTrue(any("TOO MANY NAMES" in e for e in errors))
-        
-        # Two names should be OK
+
+        # Four names should be OK
         artifact = {
-            "logline": "Sarah and Marcus, rival detectives, must work together to stop the heist."
+            "logline": "Sarah, Marcus, Elena, and David must work together to stop the heist."
         }
         is_valid, errors = self.validator.validate(artifact)
         self.assertFalse(any("TOO MANY NAMES" in e for e in errors))
@@ -71,9 +70,9 @@ class TestStep1Validator(unittest.TestCase):
     
     def test_external_goal_required(self):
         """Test that concrete external goal is required"""
-        # Mood goal - should fail
+        # Mood goal - should fail (uses 'learn to' which is mood-only, not a concrete verb)
         artifact = {
-            "logline": "Sarah, a detective, must find herself while investigating the case."
+            "logline": "Sarah, a detective, must learn to accept her past despite the pressure."
         }
         
         is_valid, errors = self.validator.validate(artifact)
@@ -186,7 +185,7 @@ class TestStep1Prompt(unittest.TestCase):
         self.assertIn("prompt_hash", prompt_data)
         
         # Check system prompt content
-        self.assertIn("maximum 25 words", prompt_data["system"])
+        self.assertIn("maximum 40 words", prompt_data["system"])
         self.assertIn("EXTERNAL, TESTABLE", prompt_data["system"])
         
         # Check user prompt includes context

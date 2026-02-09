@@ -71,7 +71,7 @@ def health_check():
             # Check if API keys are available
             import os
             ai_provider_healthy = bool(os.getenv('OPENAI_API_KEY') or os.getenv('ANTHROPIC_API_KEY'))
-        except:
+        except Exception as e:
             ai_provider_healthy = False
         
         health_status = {

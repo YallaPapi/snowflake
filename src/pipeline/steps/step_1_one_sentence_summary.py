@@ -45,7 +45,7 @@ class Step1OneSentenceSummary:
         # Default model config
         if not model_config:
             model_config = {
-                "model_name": "gpt-4o-mini",
+                "model_name": "gpt-5.2-2025-12-11",
                 "temperature": 0.3,  # Lower temperature for consistency
                 "seed": 42
             }
@@ -57,14 +57,23 @@ class Step1OneSentenceSummary:
         # Generate prompt
         prompt_data = self.prompt_generator.generate_prompt(step_0_artifact, story_brief)
         
-        # Call AI generator to produce a raw logline (text)
+        # Call AI generator
         try:
             raw_output = self.generator.generate(prompt_data, model_config)
         except Exception as e:
             return False, {}, f"AI generation failed: {e}"
-        
-        # Create artifact from raw output
-        logline = raw_output.strip().strip('"')
+
+        # Parse JSON response, fall back to raw text
+        import re
+        logline = ""
+        try:
+            json_match = re.search(r'```(?:json)?\s*({.*?})\s*```', raw_output, re.DOTALL)
+            json_str = json_match.group(1) if json_match else raw_output
+            parsed = json.loads(json_str)
+            logline = parsed.get("logline", "").strip()
+        except (json.JSONDecodeError, AttributeError):
+            logline = raw_output.strip().strip('"')
+
         artifact = {
             "logline": logline,
             "word_count": len(logline.split())

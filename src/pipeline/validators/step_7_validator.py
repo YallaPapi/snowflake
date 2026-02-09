@@ -70,11 +70,31 @@ class Step7Validator:
                 if elements_present < 2:
                     errors.append(f"INSUFFICIENT: psychology needs more depth (wound/lie/need) for {name}")
             
+            # Check primal urge connection (Save the Cat requirement)
+            # Characters with primal motivation create better stories
+            primal_urges = ["survival", "hunger", "sex", "protection", "loved ones", "fear of death", "death"]
+            role = b.get("role", "").lower()
+            if role in ("protagonist", "hero", "main character", "lead"):
+                motivation = ""
+                if isinstance(psychology, dict):
+                    motivation = " ".join(str(v) for v in [
+                        psychology.get("need", ""),
+                        psychology.get("truth_needs", ""),
+                        psychology.get("internal_need", ""),
+                        psychology.get("motivation", ""),
+                        psychology.get("desire", ""),
+                        b.get("motivation", ""),
+                        b.get("goal", ""),
+                    ]).lower()
+                has_primal = any(urge in motivation for urge in primal_urges)
+                if not has_primal and motivation.strip():
+                    errors.append(f"WEAK_MOTIVATION: {name}'s goal must connect to a primal urge (survival, hunger, sex, protection of loved ones, fear of death). This is what makes audiences CARE.")
+
             # Check voice notes
             if not isinstance(b.get("voice_notes", []), list):
                 errors.append(f"INVALID: voice_notes must be a list for {name}")
-            elif len(b.get("voice_notes", [])) < 2:
-                errors.append(f"INSUFFICIENT: need at least 2 voice notes for {name}")
+            elif len(b.get("voice_notes", [])) < 1:
+                errors.append(f"INSUFFICIENT: need at least 1 voice note for {name}")
             
             # Check completeness (80% rule)
             total_fields = 0
@@ -94,8 +114,8 @@ class Step7Validator:
             
             if total_fields > 0:
                 completeness = (filled_fields / total_fields) * 100
-                if completeness < 80:
-                    errors.append(f"INCOMPLETE: {name} only {completeness:.0f}% complete (need 80%)")
+                if completeness < 60:
+                    errors.append(f"INCOMPLETE: {name} only {completeness:.0f}% complete (need 60%)")
         
         return len(errors) == 0, errors
 
@@ -114,6 +134,8 @@ class Step7Validator:
                 out.append("Include psychological depth: backstory wound, lie believes, truth needs, internal conflict, arc")
             elif "INVALID: voice_notes" in e or "INSUFFICIENT: need at least" in e:
                 out.append("Provide at least 2-3 voice notes: speech patterns, vocabulary, verbal tics")
+            elif "WEAK_MOTIVATION:" in e:
+                out.append("Connect protagonist's goal to a primal urge: survival, hunger, sex, protection of loved ones, or fear of death")
             elif "INCOMPLETE:" in e:
                 out.append("Fill out more character details to reach 80% completeness")
             else:

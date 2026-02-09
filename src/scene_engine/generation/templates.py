@@ -576,15 +576,15 @@ class TemplateManager:
             # Load scene templates
             scene_template_files = list(self.template_directory.glob("scene_templates/*.json"))
             for template_file in scene_template_files:
-                with open(template_file, 'r') as f:
+                with open(template_file, 'r', encoding='utf-8') as f:
                     template_data = json.load(f)
                     template = SceneTemplate(**template_data)
                     self.scene_templates[template.template_id] = template
-            
+
             # Load prompt templates
             prompt_template_files = list(self.template_directory.glob("prompt_templates/*.json"))
             for template_file in prompt_template_files:
-                with open(template_file, 'r') as f:
+                with open(template_file, 'r', encoding='utf-8') as f:
                     template_data = json.load(f)
                     template = PromptTemplate(**template_data)
                     self.prompt_templates[template.template_id] = template
@@ -782,21 +782,21 @@ class TemplateManager:
         
         for template_id, template in self.scene_templates.items():
             template_file = scene_dir / f"{template_id}.json"
-            with open(template_file, 'w') as f:
+            with open(template_file, 'w', encoding='utf-8') as f:
                 json.dump(asdict(template), f, indent=2)
-        
-        # Export prompt templates  
+
+        # Export prompt templates
         prompt_dir = output_path / "prompt_templates"
         prompt_dir.mkdir(exist_ok=True)
-        
+
         for template_id, template in self.prompt_templates.items():
             template_file = prompt_dir / f"{template_id}.json"
-            with open(template_file, 'w') as f:
+            with open(template_file, 'w', encoding='utf-8') as f:
                 json.dump(asdict(template), f, indent=2)
-        
+
         # Export usage statistics
         stats_file = output_path / "usage_statistics.json"
-        with open(stats_file, 'w') as f:
+        with open(stats_file, 'w', encoding='utf-8') as f:
             json.dump(self.usage_statistics, f, indent=2, default=str)
     
     def get_template_statistics(self) -> Dict[str, Any]:

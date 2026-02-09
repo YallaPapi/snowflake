@@ -653,7 +653,7 @@ class SceneGenerationService:
             export_data['workflow_history'].append(workflow_data)
         
         # Write to file
-        with open(output_path, 'w') as f:
+        with open(output_path, 'w', encoding='utf-8') as f:
             json.dump(export_data, f, indent=2, default=str)
         
         return export_data

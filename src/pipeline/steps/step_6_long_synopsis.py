@@ -119,9 +119,9 @@ class Step6LongSynopsis:
                                     synopsis = synopsis.replace('\\n', '\n').replace('\\"', '"')
                             if len(synopsis) >= 1000:
                                 return synopsis
-                    except:
+                    except Exception as e:
                         continue
-        except:
+        except Exception as e:
             pass
         
         # Try direct JSON parsing
@@ -132,9 +132,9 @@ class Step6LongSynopsis:
                     synopsis = parsed["long_synopsis"]
                     if len(synopsis) >= 1000:
                         return synopsis
-        except:
+        except Exception as e:
             pass
-        
+
         # Try to extract from text
         if isinstance(content, str) and len(content) >= 1000:
             # Clean up any JSON artifacts

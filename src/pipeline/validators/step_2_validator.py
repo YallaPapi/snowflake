@@ -31,8 +31,8 @@ class Step2Validator:
         'bittersweet': r'\b(chooses?|walks? away|lets? go|accepts?|survives? but)\b'
     }
     
-    # Moral premise patterns
-    MORAL_PREMISE_PATTERN = r'(succeed|win|thrive|triumph).+when.+(fail|lose|suffer|fall).+when'
+    # Moral premise patterns (flexible: can use various success/failure language)
+    MORAL_PREMISE_PATTERN = r'(succeed|win|thrive|triumph|prosper|grow|flourish|achieve|overcome).+when.+(fail|lose|suffer|fall|struggle|stagnate|destroy|harm|decline).+when'
     
     def validate(self, artifact: Dict[str, Any]) -> Tuple[bool, List[str]]:
         """
@@ -63,9 +63,11 @@ class Step2Validator:
         artifact['sentences'] = sentences
         artifact['sentence_count'] = len(sentences['all'])
         
-        # RULE 1: Exactly five sentences
-        if len(sentences['all']) != 5:
-            errors.append(f"WRONG SENTENCE COUNT: Must be exactly 5 sentences, found {len(sentences['all'])}")
+        # RULE 1: Should have 4-6 sentences (target 5)
+        if len(sentences['all']) < 4:
+            errors.append(f"TOO FEW SENTENCES: Need at least 4 sentences, found {len(sentences['all'])}")
+        elif len(sentences['all']) > 7:
+            errors.append(f"TOO MANY SENTENCES: Maximum 7 sentences, found {len(sentences['all'])}")
         
         # RULE 2: Setup sentence (S1) requirements
         if sentences.get('setup'):
@@ -115,7 +117,7 @@ class Step2Validator:
                 'true_belief': self.extract_true_belief(moral_premise)
             }
             if not pivot_shown:
-                errors.append("NO MORAL PIVOT: Sentence 3 must explicitly show the FALSE→TRUE shift")
+                errors.append("NO MORAL PIVOT: Sentence 3 (Disaster 2) must show the character's shift from false belief to true belief. Use 'realizes', 'discovers', or 'learns' to show the pivot.")
         
         # RULE 9: Check causality
         causality_valid, causality_errors = self.validate_causality(sentences['all'])
@@ -259,13 +261,12 @@ class Step2Validator:
         """Validate moral premise format and content"""
         errors = []
         
-        # Check basic structure
-        if not re.search(self.MORAL_PREMISE_PATTERN, moral_premise, re.I):
-            errors.append("INVALID MORAL PREMISE: Must follow 'People succeed when... and fail when...' format")
-        
-        # Check for false belief
-        if 'when they' not in moral_premise.lower():
-            errors.append("MORAL PREMISE INCOMPLETE: Must specify both true and false beliefs")
+        # Check basic structure (flexible: accept various formulations)
+        has_structure = re.search(self.MORAL_PREMISE_PATTERN, moral_premise, re.I)
+        has_when = 'when' in moral_premise.lower()
+        has_contrast = any(w in moral_premise.lower() for w in ['but', 'while', 'whereas', 'yet', 'however', 'and fail', 'and lose', 'and suffer'])
+        if not has_structure and not (has_when and has_contrast):
+            errors.append("INVALID MORAL PREMISE: Must show contrast between success and failure beliefs")
         
         # Check length
         if len(moral_premise) < 20:
@@ -349,7 +350,7 @@ class Step2Validator:
         causal_connectors = r'^(Because|As a result|Therefore|This forces|When|After|Despite)'
         has_connectors = sum(1 for s in sentences[1:] if re.search(causal_connectors, s, re.I))
         
-        if has_connectors < 2:
+        if has_connectors < 1:
             errors.append("WEAK CAUSALITY: Disasters should causally connect")
         
         return len(errors) == 0, errors

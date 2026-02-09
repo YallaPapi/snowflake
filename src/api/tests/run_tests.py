@@ -203,7 +203,7 @@ class APITestRunner:
         """Generate a test summary report"""
         summary_file = self.reports_dir / "test_summary.txt"
         
-        with open(summary_file, 'w') as f:
+        with open(summary_file, 'w', encoding='utf-8') as f:
             f.write("Scene Engine API Test Summary\n")
             f.write("=" * 40 + "\n\n")
             

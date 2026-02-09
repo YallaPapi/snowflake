@@ -13,14 +13,15 @@ class Step1Prompt:
     
     SYSTEM_PROMPT = """You are the Snowflake Method Step 1 Logline Generator.
 
-Your task is to create a SINGLE SENTENCE (maximum 25 words) that:
-1. Names ONE or TWO leads with their functional role
-2. States an EXTERNAL, TESTABLE story goal
+Your task is to create a SINGLE SENTENCE (maximum 40 words) that:
+1. Names ONE to FOUR leads with their functional role
+2. States an EXTERNAL, TESTABLE story goal using "must"
 3. Implies opposition without revealing the ending
 
 Use this EXACT pattern: "[Name], a [role], must [external goal] despite [opposition]."
 
-NO flowery language. NO metaphors. NO mood goals. ONLY concrete, external action."""
+NO flowery language. NO metaphors. NO mood goals. ONLY concrete, external action.
+You MUST output valid JSON only. No markdown, no labels, no explanation."""
 
     USER_PROMPT_TEMPLATE = """Based on this Step 0 artifact and story brief, generate a logline:
 
@@ -50,16 +51,17 @@ REQUIREMENTS (FOLLOW EXACTLY):
    - Examples: "despite the cartel" / "before the deadline"
 
 4. COMPRESSION RULES:
-   - Start with 35-40 word draft
    - Replace vague with specific: "criminals" → "the Bratva"
    - Cut adjectives that don't change the scenario
    - Remove prepositional trails
-   - Compress to ≤25 words
+   - Keep under 40 words
 
 5. VALIDATION CHECKS:
-   - ≤25 words total
-   - ≤2 named characters
-   - External goal is concrete
+   - ≤40 words total
+   - ≤4 named characters
+   - External goal is concrete (action verb: stop/find/prove/save/expose)
+   - "must" or obligation word present
+   - Opposition present ("despite", "before")
    - Ending NOT revealed
    - Ends with period
 
@@ -67,7 +69,10 @@ EXAMPLE OUTPUTS:
 - "Sarah, a detective, must prove her suspect's innocence before the mob silences him."
 - "Marcus and Elena, rival chefs, must win the competition despite sabotage from within."
 
-OUTPUT (JUST THE LOGLINE):"""
+OUTPUT FORMAT (JSON only, no other text):
+{{
+  "logline": "<your logline here, max 40 words>"
+}}"""
 
     def generate_prompt(self, 
                        step_0_artifact: Dict[str, Any],

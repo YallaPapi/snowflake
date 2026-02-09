@@ -420,7 +420,7 @@ class TestTemplateManager:
         assert len(scene_template_files) > 0
         
         # Verify a template file
-        with open(scene_template_files[0], 'r') as f:
+        with open(scene_template_files[0], 'r', encoding='utf-8') as f:
             template_data = json.load(f)
             assert 'template_id' in template_data
             assert 'name' in template_data

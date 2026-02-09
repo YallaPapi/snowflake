@@ -22,6 +22,14 @@ CRITICAL: Generate CONCRETE, SPECIFIC scene briefs with:
 
 For Proactive scenes: Goal→Conflict→Setback
 For Reactive scenes: Reaction→Dilemma→Decision
+
+SAVE THE CAT ENHANCEMENTS (include for every scene):
+- emotional_polarity: "+" if the scene ends better than it starts, "-" if worse
+- emotional_start: Brief emotional state at scene opening (e.g. "hopeful", "terrified")
+- emotional_end: Brief emotional state at scene close (MUST differ from start)
+- conflict_parties: Who vs whom (e.g. "hero vs. corrupt judge", "hero vs. self-doubt")
+- conflict_winner: Who wins this scene's conflict
+- storyline: "A" (main plot), "B" (theme/relationship), "C" (subplot), etc.
 """
 
     USER_PROMPT_TEMPLATE = """Generate scene briefs for ALL {scene_count} scenes below.
@@ -47,7 +55,13 @@ OUTPUT FORMAT (JSON):
       "conflict": "What opposes the goal",
       "setback": "The failure or complication",
       "stakes": "What happens if they fail",
-      "links": {{"character_goal_id": "goal_1", "disaster_anchor": null}}
+      "links": {{"character_goal_id": "goal_1", "disaster_anchor": null}},
+      "emotional_polarity": "+" or "-",
+      "emotional_start": "emotional state at scene opening",
+      "emotional_end": "emotional state at scene close (must differ from start)",
+      "conflict_parties": "hero vs. specific opponent",
+      "conflict_winner": "who wins this scene",
+      "storyline": "A"
     }},
     // For Reactive scenes:
     {{
@@ -57,7 +71,13 @@ OUTPUT FORMAT (JSON):
       "dilemma": "The impossible choice",
       "decision": "What they decide to do next",
       "stakes": "Consequences of the decision",
-      "links": {{"character_goal_id": "goal_1", "disaster_anchor": "D1"}}
+      "links": {{"character_goal_id": "goal_1", "disaster_anchor": "D1"}},
+      "emotional_polarity": "+" or "-",
+      "emotional_start": "emotional state at scene opening",
+      "emotional_end": "emotional state at scene close (must differ from start)",
+      "conflict_parties": "hero vs. specific opponent",
+      "conflict_winner": "who wins this scene",
+      "storyline": "A"
     }}
     // ... continue for all {scene_count} scenes
   ]
@@ -123,7 +143,13 @@ OUTPUT:
     "conflict": "armed guards and motion sensors block vault access",
     "setback": "alarm triggers, exits seal, SWAT team surrounds building",
     "stakes": "key witness dies in prison if evidence not retrieved",
-    "links": {{"character_goal_id": "save_witness", "disaster_anchor": null}}
+    "links": {{"character_goal_id": "save_witness", "disaster_anchor": null}},
+    "emotional_polarity": "-",
+    "emotional_start": "determined",
+    "emotional_end": "desperate",
+    "conflict_parties": "hero vs. armed guards",
+    "conflict_winner": "guards",
+    "storyline": "A"
   }},
   {{
     "type": "Reactive",
@@ -131,7 +157,13 @@ OUTPUT:
     "dilemma": "either expose corruption and lose family or stay silent and let innocents die",
     "decision": "decides to secretly gather evidence while pretending compliance",
     "stakes": "family murdered if discovered, innocents die if silent",
-    "links": {{"character_goal_id": "protect_family", "disaster_anchor": "D1"}}
+    "links": {{"character_goal_id": "protect_family", "disaster_anchor": "D1"}},
+    "emotional_polarity": "+",
+    "emotional_start": "shattered",
+    "emotional_end": "resolved",
+    "conflict_parties": "hero vs. self-doubt",
+    "conflict_winner": "hero",
+    "storyline": "A"
   }}
   // ... {scene_count} briefs total
 ]

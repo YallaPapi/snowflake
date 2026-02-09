@@ -222,9 +222,9 @@ Generate the brief now:"""
         try:
             if response.strip().startswith("{") and response.strip().endswith("}"):
                 return json.loads(response.strip())
-        except:
+        except Exception as e:
             pass
-        
+
         # Strategy 2: Find JSON in code blocks
         import re
         code_pattern = r'```(?:json)?\s*(\{.*?\})\s*```'
@@ -232,18 +232,18 @@ Generate the brief now:"""
         for match in matches:
             try:
                 return json.loads(match)
-            except:
+            except Exception as e:
                 continue
-        
+
         # Strategy 3: Find any JSON-like structure
         json_pattern = r'\{[^{}]*"[^"]*"[^{}]*\}'
         matches = re.findall(json_pattern, response)
         for match in matches:
             try:
                 return json.loads(match)
-            except:
+            except Exception as e:
                 continue
-        
+
         return None
     
     def _extract_brief_from_text(self, response: str, scene_type: str) -> Dict[str, Any]:

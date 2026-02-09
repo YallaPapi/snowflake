@@ -6,7 +6,10 @@ Handles all AI model interactions with retry logic and validation
 import os
 import json
 import time
+import logging
 from typing import Dict, Any, Optional, List
+
+logger = logging.getLogger(__name__)
 
 # Load environment from .env if available
 try:
@@ -39,21 +42,33 @@ class AIGenerator:
                 provider = "anthropic"
             else:
                 raise ValueError("No API key found. Set ANTHROPIC_API_KEY or OPENAI_API_KEY.")
-        
+
         self.provider = provider
-        
+        logger.info("AIGenerator initialized: provider=%s", provider)
+
         if provider == "anthropic":
             api_key = os.getenv("ANTHROPIC_API_KEY")
             if not api_key:
                 raise ValueError("ANTHROPIC_API_KEY not found in environment")
             self.client = Anthropic(api_key=api_key)
-            self.default_model = "claude-3-5-haiku-20241022"
+            self.default_model = "claude-sonnet-4-5-20250929"
         elif provider == "openai":
             api_key = os.getenv("OPENAI_API_KEY")
             if not api_key:
                 raise ValueError("OPENAI_API_KEY not found in environment")
-            self.client = OpenAI(api_key=api_key)
-            self.default_model = "gpt-4o-mini"
+            # 20 min timeout for large screenplay generations (128K tokens)
+            self.client = OpenAI(api_key=api_key, timeout=1200.0)
+            self.default_model = "gpt-5.2-2025-12-11"
+        elif provider == "xai":
+            api_key = os.getenv("XAI_API_KEY")
+            if not api_key:
+                raise ValueError("XAI_API_KEY not found in environment")
+            self.client = OpenAI(
+                api_key=api_key,
+                base_url="https://api.x.ai/v1",
+                timeout=600.0,
+            )
+            self.default_model = "grok-3"
         else:
             raise ValueError(f"Unsupported provider: {provider}")
     
@@ -80,20 +95,29 @@ class AIGenerator:
         temperature = model_config.get("temperature", 0.3)
         max_tokens = model_config.get("max_tokens", 4000)  # Increased default for longer content
         
+        logger.info("AI generate: model=%s temp=%.1f max_tokens=%d provider=%s",
+                    model, temperature, max_tokens, self.provider)
+
         for attempt in range(max_retries):
             try:
+                t0 = time.time()
                 if self.provider == "anthropic":
                     response = self._generate_anthropic(
                         prompt_data, model, temperature, max_tokens
                     )
-                else:
+                else:  # openai or xai (both use OpenAI-compatible API)
                     response = self._generate_openai(
                         prompt_data, model, temperature, max_tokens
                     )
-                
+
+                elapsed = time.time() - t0
+                resp_len = len(response) if response else 0
+                logger.info("AI response: %.1fs, %d chars", elapsed, resp_len)
                 return response
-                
-            except Exception:
+
+            except Exception as exc:
+                logger.warning("AI call attempt %d/%d failed: %s",
+                               attempt + 1, max_retries, exc)
                 if attempt == max_retries - 1:
                     raise
                 time.sleep(2 ** attempt)  # Exponential backoff
@@ -104,16 +128,25 @@ class AIGenerator:
                            temperature: float,
                            max_tokens: int) -> str:
         """Generate using Anthropic Claude"""
-        response = self.client.messages.create(
+        kwargs = dict(
             model=model,
             max_tokens=max_tokens,
             temperature=temperature,
             system=prompt_data.get("system", ""),
             messages=[
                 {"role": "user", "content": prompt_data.get("user", "")}
-            ]
+            ],
         )
-        return response.content[0].text
+        # Use streaming for large requests to avoid SDK timeout limit
+        if max_tokens > 16000:
+            collected = []
+            with self.client.messages.stream(**kwargs) as stream:
+                for text in stream.text_stream:
+                    collected.append(text)
+            return "".join(collected)
+        else:
+            response = self.client.messages.create(**kwargs)
+            return response.content[0].text
     
     def _generate_openai(self,
                         prompt_data: Dict[str, str],
@@ -122,11 +155,11 @@ class AIGenerator:
                         max_tokens: int) -> str:
         """Generate using OpenAI GPT"""
         messages = []
-        
+
         if "system" in prompt_data:
             messages.append({"role": "system", "content": prompt_data["system"]})
         messages.append({"role": "user", "content": prompt_data.get("user", "")})
-        
+
         # Use correct parameter name based on model
         # o1 models use max_completion_tokens, others use max_tokens
         kwargs = {
@@ -134,14 +167,25 @@ class AIGenerator:
             "messages": messages,
             "temperature": temperature,
         }
-        
-        if model in ["o1-preview", "o1-mini"]:
+
+        if model.startswith(("o1", "o3", "gpt-5")):
             kwargs["max_completion_tokens"] = max_tokens
         else:
             kwargs["max_tokens"] = max_tokens
-        
-        response = self.client.chat.completions.create(**kwargs)
-        return response.choices[0].message.content
+
+        # Use streaming for large requests to avoid SDK timeout (default 600s)
+        # 128K token screenplay takes 10-15 minutes — streaming keeps connection alive
+        if max_tokens > 16000:
+            kwargs["stream"] = True
+            collected = []
+            stream = self.client.chat.completions.create(**kwargs)
+            for chunk in stream:
+                if chunk.choices and chunk.choices[0].delta.content:
+                    collected.append(chunk.choices[0].delta.content)
+            return "".join(collected)
+        else:
+            response = self.client.chat.completions.create(**kwargs)
+            return response.choices[0].message.content
     
     def generate_with_validation(self,
                                 prompt_data: Dict[str, str],
@@ -160,8 +204,13 @@ class AIGenerator:
         Returns:
             Validated artifact
         """
+        validator_name = getattr(validator, '__class__', type(validator)).__name__
+        logger.info("generate_with_validation: validator=%s max_attempts=%d",
+                    validator_name, max_attempts)
+
         for attempt in range(max_attempts):
             # Generate content
+            logger.debug("Validation attempt %d/%d", attempt + 1, max_attempts)
             raw_output = self.generate(prompt_data, model_config)
             
             # Parse response (assuming JSON or structured format)
@@ -229,19 +278,31 @@ class AIGenerator:
             
             # Validate
             is_valid, errors = validator.validate(artifact)
-            
+
             if is_valid:
+                logger.info("Validation PASSED on attempt %d/%d", attempt + 1, max_attempts)
                 return artifact
-            
+
             # If not valid, add errors to prompt for next attempt
+            logger.warning("Validation FAILED attempt %d/%d: %d errors",
+                          attempt + 1, max_attempts, len(errors))
+            for i, err in enumerate(errors[:5]):
+                logger.warning("  error[%d]: %s", i, err)
+
             if attempt < max_attempts - 1:
-                print(f"Validation attempt {attempt + 1} failed with {len(errors)} errors, retrying...")
-                print(f"First 3 errors: {errors[:3]}")
+                try:
+                    print(f"Validation attempt {attempt + 1} failed with {len(errors)} errors, retrying...")
+                    print(f"First 3 errors: {errors[:3]}")
+                except UnicodeEncodeError:
+                    print(f"Validation attempt {attempt + 1} failed with {len(errors)} errors, retrying...")
+                    print(f"First 3 errors: (contains non-ASCII characters, see artifact)")
                 prompt_data = self._add_revision_context(
                     prompt_data, artifact, errors, validator
                 )
-        
+
         # Return best attempt even if not perfect
+        logger.warning("Returning best-effort artifact after %d attempts (%d errors remain)",
+                       max_attempts, len(errors))
         return artifact
     
     def _parse_text_response(self, text: str) -> Dict[str, Any]:

@@ -181,7 +181,7 @@ class EventSystem:
                 event = self.event_queue.get(timeout=1)
                 self._dispatch_event(event)
                 self.event_queue.task_done()
-            except:
+            except Exception as e:
                 continue  # Timeout or other error
     
     def _dispatch_event(self, event: Event):
@@ -553,6 +553,8 @@ class SceneEngineAPI:
     
     def _route_matches(self, route_pattern: str, actual_path: str) -> bool:
         """Check if route pattern matches actual path"""
+        route_pattern = route_pattern.replace('\\', '/')
+        actual_path = actual_path.replace('\\', '/')
         pattern_parts = route_pattern.split('/')
         path_parts = actual_path.split('/')
         
@@ -824,7 +826,7 @@ class SceneEngineMaster:
                 if projects:
                     project_stats = self.persistence_service.get_project_summary(projects[0].id)
                     stats['persistence'] = project_stats.get('statistics', {})
-            except:
+            except Exception as e:
                 stats['persistence'] = {'error': 'Unable to retrieve persistence stats'}
         
         # Generation statistics

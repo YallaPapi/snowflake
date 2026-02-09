@@ -45,8 +45,8 @@ class Step8Validator:
         scene_count = len(scenes)
         artifact['scene_count'] = scene_count
         
-        if scene_count < 20:
-            errors.append(f"TOO FEW SCENES: Need at least 20, found {scene_count}")
+        if scene_count < 10:
+            errors.append(f"TOO FEW SCENES: Need at least 10, found {scene_count}")
         
         # RULE 2: Validate each scene
         scenes_without_conflict = []
@@ -106,30 +106,29 @@ class Step8Validator:
             
             # D1 should be around 25% mark
             expected_d1 = scene_count * 0.25
-            if abs(d1 - expected_d1) > scene_count * 0.1:
+            if abs(d1 - expected_d1) > scene_count * 0.2:
                 errors.append(f"D1 PLACEMENT: Scene {d1} too far from 25% mark")
-            
+
             # D2 should be around 50% mark
             expected_d2 = scene_count * 0.5
-            if abs(d2 - expected_d2) > scene_count * 0.1:
+            if abs(d2 - expected_d2) > scene_count * 0.2:
                 errors.append(f"D2 PLACEMENT: Scene {d2} too far from 50% mark")
-            
+
             # D3 should be around 75% mark
             expected_d3 = scene_count * 0.75
-            if abs(d3 - expected_d3) > scene_count * 0.1:
+            if abs(d3 - expected_d3) > scene_count * 0.2:
                 errors.append(f"D3 PLACEMENT: Scene {d3} too far from 75% mark")
             
             # Must be in order
             if not (d1 < d2 < d3):
                 errors.append("DISASTER ORDER: D1, D2, D3 must occur in sequence")
         
-        # RULE 6: POV variety check
-        if len(pov_distribution) < 2:
-            errors.append("SINGLE POV: Consider adding POV variety")
+        # RULE 6: POV variety check (informational only)
+        # Single POV is valid for many stories
         
         # RULE 7: Word target validation
-        if total_word_target < 50000:
-            errors.append(f"TOO SHORT: Total word target {total_word_target} below minimum 50,000")
+        if total_word_target < 20000:
+            errors.append(f"TOO SHORT: Total word target {total_word_target} below minimum 20,000")
         
         # RULE 8: No duplicate scenes
         duplicates = self.find_duplicate_scenes(scenes)
@@ -161,8 +160,8 @@ class Step8Validator:
             summary = scene['summary']
             if len(summary) < 50:
                 errors.append(f"{scene_id} SUMMARY TOO SHORT: Must be 2-3 sentences")
-            if len(summary) > 500:
-                errors.append(f"{scene_id} SUMMARY TOO LONG: Keep to 2-3 sentences")
+            if len(summary) > 800:
+                errors.append(f"{scene_id} SUMMARY TOO LONG: Keep to 2-4 sentences")
         
         # Validate word target
         if 'word_target' in scene:

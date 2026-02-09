@@ -100,17 +100,17 @@ class Step5CharacterSynopses:
                 parsed = json.loads(content.strip())
                 if self._validate_character_structure(parsed):
                     return parsed
-        except:
+        except Exception as e:
             pass
-        
+
         # Try to extract from text format
         try:
             parsed = self._extract_characters_from_text(content, step3_artifact)
             if self._validate_character_structure(parsed):
                 return parsed
-        except:
+        except Exception as e:
             pass
-        
+
         # Emergency fallback - create valid character synopses from Step 3
         return self._create_emergency_characters(step3_artifact)
     

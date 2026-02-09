@@ -137,9 +137,9 @@ class Step4OnePageSynopsis:
 						parsed = json.loads(match)
 						if self._validate_synopsis_structure(parsed):
 							return parsed
-					except:
+					except Exception as e:
 						continue
-		except:
+		except Exception as e:
 			pass
 		
 		# Try direct JSON parsing
@@ -148,17 +148,17 @@ class Step4OnePageSynopsis:
 				parsed = json.loads(content.strip())
 				if self._validate_synopsis_structure(parsed):
 					return parsed
-		except:
+		except Exception as e:
 			pass
-		
+
 		# Try to extract paragraphs from text
 		try:
 			parsed = self._extract_paragraphs_from_text(content)
 			if self._validate_synopsis_structure(parsed):
 				return parsed
-		except:
+		except Exception as e:
 			pass
-		
+
 		# Emergency fallback - create valid synopsis
 		return self._create_emergency_synopsis()
 	
