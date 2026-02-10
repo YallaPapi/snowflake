@@ -175,11 +175,11 @@ class TestVersions:
         assert Step4Validator.VERSION == "2.0.0"
 
     def test_prompt_version(self):
-        assert Step4Prompt.VERSION == "2.0.0"
+        assert Step4Prompt.VERSION == "3.0.0"
 
     def test_step_version(self):
         from src.screenplay_engine.pipeline.steps.step_4_beat_sheet import Step4BeatSheet
-        assert Step4BeatSheet.VERSION == "2.0.0"
+        assert Step4BeatSheet.VERSION == "3.0.0"
 
 
 # ═══════════════════════════════════════════════════════════════════════════
@@ -1049,7 +1049,7 @@ class TestPromptGeneration:
             _make_step_3_artifact(),
             _make_snowflake_artifacts(),
         )
-        assert result["version"] == "2.0.0"
+        assert result["version"] == "3.0.0"
 
     def test_prompt_contains_logline(self):
         p = Step4Prompt()

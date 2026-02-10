@@ -1251,7 +1251,7 @@ Write ALL {num_cards} scenes for {act_label}. Full scenes, not outlines."""
         "this screenplay — you are reading it with completely fresh eyes. Your job is to be "
         "brutally honest about quality problems. You evaluate against Blake Snyder's Save the Cat "
         "Chapter 7 diagnostic checks.\n\n"
-        "You MUST respond with valid JSON only. No markdown fences, no commentary."
+        "You MUST respond with valid JSON only. No markdown fences, no commentary, no thinking out loud."
     )
 
     ACT_DIAGNOSTIC_TEMPLATE = """Read this act of a screenplay with FRESH EYES and evaluate it against ALL 9 Save the Cat diagnostic checks.
@@ -1306,42 +1306,68 @@ RUN ALL 9 DIAGNOSTIC CHECKS:
 9. IS IT PRIMAL? — Does the story tap into a universal, primitive instinct (survival, hunger,
    sex, protection of loved ones, fear of death)? Would a caveman understand the stakes?
 
+FOR EVERY FAILED CHECK YOU MUST:
+1. List the EXACT scene numbers that have the problem
+2. QUOTE the exact problematic dialogue or action lines from those scenes
+3. For EACH failing scene, write a CONCRETE rewrite instruction — not "make it better" but
+   "replace Rae's line 'I took a job. I trusted a clean file.' with a visual action: Rae
+   pulls up the doctored surveillance footage on the billboard. The timestamps flicker.
+   Her only words: 'Look at the timestamp.'"
+
 OUTPUT FORMAT (valid JSON):
 {{
   "diagnostics": [
     {{
       "check_number": 1,
       "check_name": "The Hero Leads",
+      "passed": true,
+      "problem_details": "",
+      "failing_scene_numbers": [],
+      "fix_per_scene": {{}}
+    }},
+    {{
+      "check_number": 2,
+      "check_name": "Talking the Plot",
       "passed": false,
-      "problem_details": "<specific examples from the scenes — quote dialogue, cite scene numbers>",
-      "fix_suggestion": "<specific rewrite instructions — which scenes, which lines, what to change>"
+      "problem_details": "Scene 37: Rae's speech 'I took a job. I trusted a clean file. I delivered a man who didn't make it out.' is a backstory dump — audience already knows this from Act 1. Scene 39: Radio voices explain plot: 'Clinic on Alameda. We've got patients alive because she pulled heat off us.'",
+      "failing_scene_numbers": [37, 39],
+      "fix_per_scene": {{
+        "37": "Delete Rae's backstory speech entirely. Replace with visual: Rae pulls up the doctored surveillance footage on the billboard. The timestamps and doctored frames speak for themselves. Her only line: 'Look at the timestamp.' The crowd looks up. Silence.",
+        "39": "Cut the radio exposition. Instead SHOW the clinic: lights flicker on, a nurse checks an IV drip, patients blink in the glow. No one explains it — we SEE it working."
+      }}
     }}
   ],
   "checks_passed_count": 0,
   "total_checks": 9,
-  "overall_notes": "<1-2 sentence summary of biggest issues>"
+  "overall_notes": "<1-2 sentence summary>"
 }}
 
 RULES:
-- Run ALL 9 checks even if some aren't fully applicable to this act alone.
-- For checks that need full-screenplay context (Take a Step Back, Is It Primal), evaluate
-  based on what you can see in this act.
-- CITE SPECIFIC SCENES AND LINES. Don't be vague.
+- Run ALL 9 checks.
+- For PASSED checks: failing_scene_numbers is empty array, fix_per_scene is empty object.
+- For FAILED checks: failing_scene_numbers MUST list every scene number with the problem.
+  fix_per_scene MUST have an entry for EACH failing scene number with a CONCRETE rewrite
+  direction — what to DELETE, what to REPLACE it with, what the new dialogue/action should be.
+  Do NOT write vague instructions like "make the hero more proactive" — write SPECIFIC
+  replacement content like "Replace hero's question 'What do we do?' with hero grabbing the
+  fire extinguisher and saying 'Cover the east door. I'll take the roof.'"
+- CITE SPECIFIC DIALOGUE from the scenes. QUOTE the exact words.
 - Be HARSH. The goal is to catch every problem before the next draft."""
 
-    ACT_REVISION_TEMPLATE = """REVISION REQUIRED for {act_label}.
+    ACT_REVISION_TEMPLATE = """TARGETED SCENE REVISION {revision_round} for {act_label}.
 
-An independent script doctor found the following problems. Rewrite ALL scenes for this act,
-fixing EVERY issue. Keep the same board cards, conflicts, emotional arcs, and characters.
+An independent script doctor found problems in SPECIFIC scenes. You must rewrite ONLY the
+broken scenes listed below. The other scenes in this act are FINE — do NOT touch them.
 
-PROBLEMS FOUND BY SCRIPT DOCTOR:
-{failures_text}
+This is revision attempt #{revision_round}. {revision_urgency}
 
-ORIGINAL SCENES:
-{act_scenes_json}
+═══════════════════════════════════════════════════════
+SCENES THAT NEED REWRITING (only these — nothing else):
+═══════════════════════════════════════════════════════
 
-BOARD CARDS (source material):
-{act_cards_json}
+{targeted_scenes_with_fixes}
+
+═══════════════════════════════════════════════════════
 
 TITLE: {title}
 LOGLINE: {logline}
@@ -1358,15 +1384,19 @@ CHARACTER VOICE GUIDE:
 
 {previous_acts_context}
 
-FIX INSTRUCTIONS:
-- Address EVERY problem cited by the script doctor
-- Keep the same scene count, beat assignments, and emotional arcs
-- The hero must be PROACTIVE — commands, declarations, actions. Not questions.
-- Characters must sound DIFFERENT from each other. Distinct vocabulary, rhythm, sentence length.
-- NO exposition dumps — show through action and behavior, not dialogue explanation
-- Each recurring character must display their identifier from the Voice Guide
+BOARD CARDS FOR BROKEN SCENES (structural blueprint):
+{broken_cards_json}
 
-Output valid JSON with the same format (object with "scenes" array). Write FULL scenes."""
+═══════════════════════════════════════════════════════
+REWRITE CHECKLIST — verify each before outputting:
+═══════════════════════════════════════════════════════
+
+{fix_checklist}
+
+OUTPUT: valid JSON with ONLY the rewritten scenes (object with "scenes" array).
+Each scene must have the same scene_number, board_card_number, beat, emotional_start,
+emotional_end, and conflict as the original. Rewrite the ELEMENTS (action, dialogue,
+character cues) to fix the problems. Full scenes, not outlines."""
 
     def generate_act_prompt(
         self,
@@ -1518,19 +1548,106 @@ Output valid JSON with the same format (object with "scenes" array). Write FULL 
         title: str,
         logline: str,
         genre: str,
+        revision_round: int = 1,
     ) -> Dict[str, str]:
-        """Generate prompt to revise an act based on Grok's diagnostic feedback."""
-        act_scenes_json = json.dumps(act_scenes, indent=2, ensure_ascii=False)
-        act_cards_json = json.dumps(act_cards, indent=2, ensure_ascii=False)
+        """Generate prompt to revise ONLY the broken scenes based on Grok's diagnostic feedback.
 
-        failures_parts = []
+        Grok now returns failing_scene_numbers and fix_per_scene for each failure.
+        We extract ONLY the scenes that need rewriting, bundle Grok's specific fixes,
+        and ask GPT to rewrite just those scenes.
+        """
+        # 1. Collect all failing scene numbers and their per-scene fixes
+        failing_scene_nums = set()
+        scene_fixes = {}  # scene_num -> list of (check_name, fix_text)
+
         for f in failures:
             name = f.get("check_name", "Unknown")
-            problem = f.get("problem_details", "")
-            fix = f.get("fix_suggestion", "")
-            failures_parts.append(f"[{name}]\nPROBLEM: {problem}\nFIX: {fix}\n")
-        failures_text = "\n".join(failures_parts)
+            # Get scene-specific info from Grok's enhanced output
+            scene_nums = f.get("failing_scene_numbers", [])
+            fix_per_scene = f.get("fix_per_scene", {})
 
+            if scene_nums:
+                for sn in scene_nums:
+                    failing_scene_nums.add(int(sn))
+                    fix_text = fix_per_scene.get(str(sn), f.get("fix_suggestion", ""))
+                    scene_fixes.setdefault(int(sn), []).append((name, fix_text))
+            else:
+                # Fallback: Grok didn't provide scene numbers — use problem_details to guess
+                problem = f.get("problem_details", "")
+                fix = f.get("fix_suggestion", "")
+                # Try to extract scene numbers from problem text
+                import re
+                found_nums = re.findall(r"[Ss]cene\s+(\d+)", problem)
+                if found_nums:
+                    for sn_str in found_nums:
+                        sn = int(sn_str)
+                        failing_scene_nums.add(sn)
+                        scene_fixes.setdefault(sn, []).append((name, fix))
+                else:
+                    # Can't determine specific scenes — flag all scenes in act
+                    for scene in act_scenes:
+                        sn = scene.get("scene_number", 0)
+                        failing_scene_nums.add(sn)
+                        scene_fixes.setdefault(sn, []).append((name, fix))
+
+        # 2. Build targeted scene blocks — each broken scene with its specific fixes
+        targeted_parts = []
+        fix_checklist_parts = []
+        broken_cards = []
+        check_idx = 0
+
+        for scene in act_scenes:
+            sn = scene.get("scene_number", 0)
+            if sn not in failing_scene_nums:
+                continue
+
+            scene_json = json.dumps(scene, indent=2, ensure_ascii=False)
+            fixes_for_scene = scene_fixes.get(sn, [])
+
+            fix_lines = []
+            for check_name, fix_text in fixes_for_scene:
+                check_idx += 1
+                why = self._get_failure_why(check_name)
+                fix_lines.append(
+                    f"  PROBLEM ({check_name}): {why}\n"
+                    f"  FIX: {fix_text}"
+                )
+                fix_checklist_parts.append(f"[ ] Scene {sn} — {check_name}: {fix_text[:200]}")
+
+            targeted_parts.append(
+                f"━━━ SCENE {sn} (MUST REWRITE) ━━━\n"
+                f"CURRENT VERSION (broken):\n{scene_json}\n\n"
+                f"WHAT'S WRONG AND HOW TO FIX IT:\n" + "\n".join(fix_lines)
+            )
+
+            # Find matching board card
+            card_num = scene.get("board_card_number", sn)
+            for card in act_cards:
+                if card.get("card_number") == card_num:
+                    broken_cards.append(card)
+                    break
+
+        targeted_scenes_with_fixes = "\n\n".join(targeted_parts)
+        fix_checklist = "\n".join(fix_checklist_parts)
+        broken_cards_json = json.dumps(broken_cards, indent=2, ensure_ascii=False)
+
+        # 3. Urgency escalates
+        if revision_round == 1:
+            revision_urgency = "Fix each scene precisely as the script doctor described."
+        elif revision_round == 2:
+            revision_urgency = "The first revision did NOT fix these scenes. Follow the fix instructions MORE LITERALLY this time."
+        elif revision_round == 3:
+            revision_urgency = "THIRD attempt. Small tweaks are NOT working. THROW OUT the broken dialogue/action and write completely new content for the flagged scenes."
+        elif revision_round >= 4:
+            revision_urgency = (
+                f"Attempt #{revision_round}. COMPLETELY REWRITE each broken scene FROM SCRATCH. "
+                "Do not preserve ANY dialogue or action from the current version. Start fresh "
+                "using only the board card as your guide."
+            )
+        else:
+            revision_urgency = ""
+
+        # 4. Previous acts context
         if previous_scenes:
             prev_parts = []
             for s in previous_scenes:
@@ -1544,9 +1661,8 @@ Output valid JSON with the same format (object with "scenes" array). Write FULL 
 
         user_prompt = self.ACT_REVISION_TEMPLATE.format(
             act_label=act_label,
-            failures_text=failures_text,
-            act_scenes_json=act_scenes_json,
-            act_cards_json=act_cards_json,
+            targeted_scenes_with_fixes=targeted_scenes_with_fixes,
+            broken_cards_json=broken_cards_json,
             title=title,
             logline=logline,
             genre=genre,
@@ -1554,6 +1670,9 @@ Output valid JSON with the same format (object with "scenes" array). Write FULL 
             characters_summary=characters_summary,
             character_identifiers=character_identifiers,
             previous_acts_context=previous_acts_context,
+            revision_round=revision_round,
+            revision_urgency=revision_urgency,
+            fix_checklist=fix_checklist,
         )
 
         prompt_content = f"{self.ACT_GENERATION_SYSTEM}{user_prompt}{self.VERSION}"
@@ -1604,6 +1723,66 @@ Output valid JSON with the same format (object with "scenes" array). Write FULL 
                     cards.extend(row_cards)
 
         return cards
+
+    @staticmethod
+    def _get_failure_why(check_name: str) -> str:
+        """Return a WHY explanation for each diagnostic check failure."""
+        why_map = {
+            "The Hero Leads": (
+                "Audiences disengage when the hero is passive. A hero who asks questions and waits "
+                "for others to explain things is a REPORTER, not a protagonist. The hero must DRIVE "
+                "the story through commands, decisions, and physical action. Every question mark in "
+                "hero dialogue is a red flag — replace questions with statements and actions."
+            ),
+            "Talking The Plot": (
+                "When characters explain plot through dialogue, the audience feels lectured, not "
+                "entertained. Real people don't say 'As you know, the AI controls the grid.' They "
+                "SHOW it through action: the lights go out, a drone swoops, a screen flashes a "
+                "warning. Every line of exposition dialogue must be replaced with a visual action "
+                "or a conflict-driven exchange where information leaks through subtext."
+            ),
+            "Make The Bad Guy Badder": (
+                "If the antagonist stays at the same threat level, the story flatlines. Each scene "
+                "must show the antagonist getting MORE powerful, MORE dangerous, MORE personal. "
+                "The audience needs to feel the noose tightening. Escalate the threat in every scene."
+            ),
+            "Turn Turn Turn": (
+                "Repeating the same type of obstacle at the same difficulty is boring. Each obstacle "
+                "must be DIFFERENT in kind and HARDER than the last. If Scene 3 has 'dodge a camera' "
+                "and Scene 5 has 'dodge a camera again,' that's a pacing failure. Escalate: camera → "
+                "drone swarm → human hunters → system-wide lockdown."
+            ),
+            "Emotional Color Wheel": (
+                "A screenplay that only hits fear/tension/dread is emotionally monotone. The audience "
+                "needs variety: a moment of dark humor, a flash of tenderness, unexpected joy, bitter "
+                "regret. Even in a thriller, you need at least 4 distinct emotions per act. Add scenes "
+                "that hit different emotional notes."
+            ),
+            "Hi How Are You I'm Fine": (
+                "If you cover the character names and can't tell who's speaking, the characters are "
+                "interchangeable. Each character needs a DISTINCT voice: different vocabulary, sentence "
+                "length, speech patterns, verbal tics. A street-smart bounty hunter doesn't talk like "
+                "a tech engineer. Make each character's dialogue unmistakable."
+            ),
+            "Take a Step Back": (
+                "The hero's growth arc needs DISTANCE to travel. If the hero starts already competent "
+                "and self-aware, there's no transformation to watch. Push the hero's starting point "
+                "FURTHER BACK — more flawed, more wrong, more stubbornly set in bad habits. The bigger "
+                "the gap between who they start as and who they become, the more satisfying the arc."
+            ),
+            "Limp and Eye Patch": (
+                "Recurring characters MUST be instantly recognizable by a distinctive physical trait, "
+                "habit, or prop. If a character appears in multiple scenes without their identifier, "
+                "the audience can't track them. Every time a recurring character appears, reference "
+                "their signature trait: a limp, a scar, a verbal tic, a piece of clothing."
+            ),
+            "Is It Primal": (
+                "The story must tap into a UNIVERSAL, primitive instinct that a caveman would understand: "
+                "survival, protecting loved ones, fear of death, hunger, revenge. If the stakes feel "
+                "abstract or intellectual, the audience won't feel them in their gut."
+            ),
+        }
+        return why_map.get(check_name, "This is a core Save the Cat quality check. Failing it means the screenplay has a structural writing problem that will weaken the final product.")
 
     def _build_genre_scene_guidance(self, genre: str) -> str:
         """

@@ -366,7 +366,7 @@ class Step8Screenplay:
         try:
             checker = AIGenerator(provider="xai")
             checker_config = {
-                "model_name": "grok-3",
+                "model_name": "grok-4-1-fast-reasoning",
                 "temperature": 0.0,
                 "max_tokens": 8000,
             }
@@ -437,8 +437,11 @@ class Step8Screenplay:
 
             try:
                 diag_raw = checker.generate(diag_prompt, checker_config)
+                logger.debug("Grok raw response (%d chars): %s", len(diag_raw), diag_raw[:500])
                 diag_result = self._parse_json_response(diag_raw)
                 diagnostics = diag_result.get("diagnostics", [])
+                if not diagnostics:
+                    logger.warning("Grok returned 0 diagnostics — raw first 500 chars: %s", diag_raw[:500])
                 failures = [d for d in diagnostics if not d.get("passed", True)]
                 passed = sum(1 for d in diagnostics if d.get("passed", True))
 
@@ -452,9 +455,35 @@ class Step8Screenplay:
                 logger.error("Grok diagnostic failed for %s: %s", act_label, e)
                 failures = []
 
-            # 3. If Grok found problems, GPT rewrites based on Grok's feedback
-            if failures:
-                logger.info("Revising %s based on Grok feedback (%d failures)...", act_label, len(failures))
+            # 3. Revision loop: Grok found problems → GPT rewrites ONLY broken scenes → Grok re-checks
+            MAX_REVISIONS = 5
+            revision_round = 0
+
+            # Use smaller token limit for targeted scene revisions (not full act)
+            revision_config = dict(writer_config)
+            revision_config["max_tokens"] = 16000  # Only rewriting 1-4 scenes, not 10
+
+            while failures and revision_round < MAX_REVISIONS:
+                revision_round += 1
+
+                # Count how many specific scenes are broken
+                failing_scene_nums = set()
+                for f in failures:
+                    for sn in f.get("failing_scene_numbers", []):
+                        failing_scene_nums.add(int(sn))
+                # Fallback: extract scene numbers from problem text
+                if not failing_scene_nums:
+                    import re as _re
+                    for f in failures:
+                        found = _re.findall(r"[Ss]cene\s+(\d+)", f.get("problem_details", ""))
+                        for sn_str in found:
+                            failing_scene_nums.add(int(sn_str))
+
+                logger.info("Revising %s round %d/%d — %d scenes broken (%s), %d checks failing...",
+                            act_label, revision_round, MAX_REVISIONS,
+                            len(failing_scene_nums), sorted(failing_scene_nums),
+                            len(failures))
+
                 revision_prompt = self.prompt_generator.generate_act_revision_prompt(
                     act_scenes=act_scenes,
                     failures=failures,
@@ -467,23 +496,82 @@ class Step8Screenplay:
                     title=ctx["title"],
                     logline=ctx["logline"],
                     genre=ctx["genre"],
+                    revision_round=revision_round,
                 )
 
                 try:
-                    revised_raw = self.generator.generate(revision_prompt, writer_config)
+                    revised_raw = self.generator.generate(revision_prompt, revision_config)
                     revised_scenes = self._parse_act_scenes(revised_raw, start_scene)
 
-                    if revised_scenes and len(revised_scenes) >= len(act_cards) * 0.8:
-                        act_scenes = revised_scenes
+                    if revised_scenes:
+                        # Merge: replace ONLY the revised scenes, keep the rest unchanged
+                        revised_by_num = {s.get("scene_number"): s for s in revised_scenes}
+                        merged_count = 0
+                        for idx, orig_scene in enumerate(act_scenes):
+                            sn = orig_scene.get("scene_number")
+                            if sn in revised_by_num:
+                                act_scenes[idx] = revised_by_num[sn]
+                                merged_count += 1
                         acts_revised += 1
-                        logger.info("%s revised: %d scenes", act_label, len(act_scenes))
+                        logger.info("%s revision %d: merged %d revised scenes (of %d broken)",
+                                    act_label, revision_round, merged_count, len(failing_scene_nums))
                     else:
-                        logger.warning("%s revision produced %d scenes (expected ~%d), keeping original",
-                                      act_label, len(revised_scenes) if revised_scenes else 0, len(act_cards))
+                        logger.warning("%s revision %d: GPT returned 0 scenes, keeping previous",
+                                      act_label, revision_round)
+                        break
                 except Exception as e:
-                    logger.error("%s revision failed: %s — keeping original", act_label, e)
-            else:
+                    logger.error("%s revision %d failed: %s — keeping previous", act_label, revision_round, e)
+                    break
+
+                # Re-evaluate with Grok after revision
+                logger.info("Grok re-checking %s after revision %d...", act_label, revision_round)
+                diag_prompt = self.prompt_generator.generate_act_diagnostic_prompt(
+                    act_scenes=act_scenes,
+                    hero_name=ctx["hero_name"],
+                    antagonist_name=ctx["antagonist_name"],
+                    characters_summary=ctx["characters_summary"],
+                    character_identifiers=ctx["character_identifiers"],
+                    act_label=act_label,
+                    previous_scenes=all_scenes,
+                )
+
+                try:
+                    diag_raw = checker.generate(diag_prompt, checker_config)
+                    logger.debug("Grok re-check raw (%d chars): %s", len(diag_raw), diag_raw[:500])
+                    diag_result = self._parse_json_response(diag_raw)
+                    diagnostics = diag_result.get("diagnostics", [])
+                    if not diagnostics:
+                        logger.warning("Grok re-check returned 0 diagnostics — raw first 500: %s", diag_raw[:500])
+                    failures = [d for d in diagnostics if not d.get("passed", True)]
+                    passed = sum(1 for d in diagnostics if d.get("passed", True))
+
+                    logger.info("Grok re-check %s round %d: %d/%d passed",
+                                act_label, revision_round, passed, len(diagnostics))
+                    for f in failures:
+                        failing_nums = f.get("failing_scene_numbers", [])
+                        logger.warning("  STILL FAILING: %s (scenes %s) — %s",
+                                      f.get("check_name", "?"), failing_nums,
+                                      f.get("problem_details", "")[:150])
+                        total_grok_failures += 1
+
+                    if not failures:
+                        logger.info("%s: Grok approved after %d revision(s)", act_label, revision_round)
+
+                except Exception as e:
+                    logger.error("Grok re-check failed for %s round %d: %s", act_label, revision_round, e)
+                    failures = []  # Stop loop on Grok error
+
+            if not failures and revision_round == 0:
                 logger.info("%s: Grok approved — no revision needed", act_label)
+            elif failures and revision_round >= MAX_REVISIONS:
+                remaining = [f.get("check_name", "?") for f in failures]
+                failing_scenes = set()
+                for f in failures:
+                    for sn in f.get("failing_scene_numbers", []):
+                        failing_scenes.add(int(sn))
+                logger.warning("%s: %d checks still failing after %d revisions: %s (scenes: %s)",
+                              act_label, len(failures), MAX_REVISIONS,
+                              ", ".join(remaining), sorted(failing_scenes))
 
             all_scenes.extend(act_scenes)
 
@@ -786,27 +874,65 @@ class Step8Screenplay:
         }
 
     def _parse_json_response(self, raw_content: str) -> Dict[str, Any]:
-        """Generic JSON parser for AI responses. Never raises."""
+        """Generic JSON parser for AI responses. Handles reasoning model output. Never raises."""
         if not raw_content:
             return {}
+
+        # Strip <think>...</think> blocks from reasoning models
+        cleaned = re.sub(r"<think>.*?</think>", "", raw_content, flags=re.DOTALL).strip()
+
+        # 1. Try code-fenced JSON
         try:
-            code_match = re.search(r"```(?:json)?\s*(\{.*?\})\s*```", raw_content, re.DOTALL)
+            code_match = re.search(r"```(?:json)?\s*(\{.*?\})\s*```", cleaned, re.DOTALL)
             if code_match:
                 return json.loads(code_match.group(1))
         except (json.JSONDecodeError, AttributeError):
             pass
+
+        # 2. Try direct parse (response is pure JSON)
         try:
-            stripped = raw_content.strip()
+            stripped = cleaned.strip()
             if stripped.startswith("{"):
                 return json.loads(stripped)
         except json.JSONDecodeError:
             pass
+
+        # 3. Find outermost { ... } using bracket counting (handles reasoning text before JSON)
         try:
-            start = raw_content.index("{")
-            end = raw_content.rindex("}") + 1
-            return json.loads(raw_content[start:end])
+            # Search backwards from end to find the main JSON object
+            depth = 0
+            end_pos = -1
+            start_pos = -1
+            for i in range(len(cleaned) - 1, -1, -1):
+                c = cleaned[i]
+                if c == '}':
+                    if depth == 0:
+                        end_pos = i
+                    depth += 1
+                elif c == '{':
+                    depth -= 1
+                    if depth == 0:
+                        start_pos = i
+                        break
+
+            if start_pos >= 0 and end_pos > start_pos:
+                candidate = cleaned[start_pos:end_pos + 1]
+                result = json.loads(candidate)
+                if isinstance(result, dict):
+                    return result
         except (json.JSONDecodeError, ValueError):
             pass
+
+        # 4. Last resort: find first { to last } (old approach)
+        try:
+            start = cleaned.index("{")
+            end = cleaned.rindex("}") + 1
+            return json.loads(cleaned[start:end])
+        except (json.JSONDecodeError, ValueError):
+            pass
+
+        logger.warning("_parse_json_response: Could not parse JSON from %d chars. First 300: %s",
+                       len(raw_content), raw_content[:300])
         return {}
 
     def _get_milestone_indices(self, total_cards: int) -> List[int]:

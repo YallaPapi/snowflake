@@ -790,16 +790,16 @@ class TestStep3Prompt(unittest.TestCase):
         self.assertIn("No Snowflake character data available", prompt_data["user"])
 
     def test_missing_step_1_keys_use_fallback(self):
-        prompt_data = self.prompt_gen.generate_prompt(
-            {}, _step_2_artifact(), _snowflake_artifacts()
-        )
-        self.assertIn("MISSING", prompt_data["user"])
+        with self.assertRaises(ValueError):
+            self.prompt_gen.generate_prompt(
+                {}, _step_2_artifact(), _snowflake_artifacts()
+            )
 
     def test_missing_step_2_keys_use_fallback(self):
-        prompt_data = self.prompt_gen.generate_prompt(
-            _step_1_artifact(), {}, _snowflake_artifacts()
-        )
-        self.assertIn("MISSING", prompt_data["user"])
+        with self.assertRaises(ValueError):
+            self.prompt_gen.generate_prompt(
+                _step_1_artifact(), {}, _snowflake_artifacts()
+            )
 
     def test_revision_prompt_structure(self):
         current = _valid_artifact()

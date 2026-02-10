@@ -131,6 +131,28 @@ def _make_valid_board(card_count=40, cards_per_row=10):
     return board
 
 
+def _make_step_1_artifact():
+    """Create a Step 1 logline artifact for prompt tests."""
+    return {
+        "title": "Blackout",
+        "logline": "A disgraced bounty hunter must capture an AI that controls LA's power grid before dawn, or be framed for domestic terrorism.",
+    }
+
+
+def _make_step_2_artifact():
+    """Create a Step 2 genre artifact for prompt tests."""
+    return {
+        "genre": "dude_with_a_problem",
+        "genre_label": "Dude with a Problem",
+        "working_parts": [
+            {"part_name": "ordinary_person", "description": "Rae is a regular bounty hunter."},
+            {"part_name": "extraordinary_problem", "description": "An AI frames her for terrorism."},
+            {"part_name": "individuality_as_weapon", "description": "Her street smarts and analog skills."},
+            {"part_name": "ordinary_day_disrupted", "description": "Routine pickup turns into a citywide manhunt."},
+        ],
+    }
+
+
 def _make_step_3_artifact():
     """Create a Step 3 hero artifact for prompt tests."""
     return {
@@ -199,10 +221,10 @@ class TestVersionsAndConstants:
         assert Step5Validator.VERSION == "2.0.0"
 
     def test_prompt_version(self):
-        assert Step5Prompt.VERSION == "2.0.0"
+        assert Step5Prompt.VERSION == "3.0.0"
 
     def test_step_version(self):
-        assert Step5Board.VERSION == "2.0.0"
+        assert Step5Board.VERSION == "3.0.0"
 
     def test_landmark_beats_count(self):
         assert len(LANDMARK_BEATS) == 5
@@ -948,7 +970,8 @@ class TestPromptWithArtifacts:
     def test_generate_prompt_returns_all_keys(self):
         prompt_gen = Step5Prompt()
         result = prompt_gen.generate_prompt(
-            _make_step_4_artifact(), _make_step_3_artifact()
+            _make_step_4_artifact(), _make_step_3_artifact(),
+            _make_step_1_artifact(), _make_step_2_artifact(),
         )
         assert "system" in result
         assert "user" in result
@@ -958,7 +981,8 @@ class TestPromptWithArtifacts:
     def test_prompt_includes_hero_name(self):
         prompt_gen = Step5Prompt()
         result = prompt_gen.generate_prompt(
-            _make_step_4_artifact(), _make_step_3_artifact()
+            _make_step_4_artifact(), _make_step_3_artifact(),
+            _make_step_1_artifact(), _make_step_2_artifact(),
         )
         assert "Alex" in result["user"]
 
@@ -966,7 +990,8 @@ class TestPromptWithArtifacts:
         """Six Things That Need Fixing must be in character summary."""
         prompt_gen = Step5Prompt()
         result = prompt_gen.generate_prompt(
-            _make_step_4_artifact(), _make_step_3_artifact()
+            _make_step_4_artifact(), _make_step_3_artifact(),
+            _make_step_1_artifact(), _make_step_2_artifact(),
         )
         assert "Can't trust anyone" in result["user"]
         assert "Refuses to ask for help" in result["user"]
@@ -975,21 +1000,24 @@ class TestPromptWithArtifacts:
     def test_prompt_includes_antagonist(self):
         prompt_gen = Step5Prompt()
         result = prompt_gen.generate_prompt(
-            _make_step_4_artifact(), _make_step_3_artifact()
+            _make_step_4_artifact(), _make_step_3_artifact(),
+            _make_step_1_artifact(), _make_step_2_artifact(),
         )
         assert "Victor" in result["user"]
 
     def test_prompt_includes_b_story(self):
         prompt_gen = Step5Prompt()
         result = prompt_gen.generate_prompt(
-            _make_step_4_artifact(), _make_step_3_artifact()
+            _make_step_4_artifact(), _make_step_3_artifact(),
+            _make_step_1_artifact(), _make_step_2_artifact(),
         )
         assert "Maya" in result["user"]
 
     def test_prompt_includes_beat_sheet_data(self):
         prompt_gen = Step5Prompt()
         result = prompt_gen.generate_prompt(
-            _make_step_4_artifact(), _make_step_3_artifact()
+            _make_step_4_artifact(), _make_step_3_artifact(),
+            _make_step_1_artifact(), _make_step_2_artifact(),
         )
         assert "Opening Image" in result["user"]
         assert "Midpoint polarity: up" in result["user"]
@@ -997,7 +1025,8 @@ class TestPromptWithArtifacts:
     def test_prompt_includes_hero_states(self):
         prompt_gen = Step5Prompt()
         result = prompt_gen.generate_prompt(
-            _make_step_4_artifact(), _make_step_3_artifact()
+            _make_step_4_artifact(), _make_step_3_artifact(),
+            _make_step_1_artifact(), _make_step_2_artifact(),
         )
         assert "Isolated and bitter" in result["user"]
         assert "Connected and hopeful" in result["user"]
@@ -1010,6 +1039,8 @@ class TestPromptWithArtifacts:
             ["Fix 1", "Fix 2"],
             _make_step_4_artifact(),
             _make_step_3_artifact(),
+            _make_step_1_artifact(),
+            _make_step_2_artifact(),
         )
         assert "system" in result
         assert "user" in result
@@ -1019,10 +1050,12 @@ class TestPromptWithArtifacts:
     def test_prompt_hash_deterministic(self):
         prompt_gen = Step5Prompt()
         result1 = prompt_gen.generate_prompt(
-            _make_step_4_artifact(), _make_step_3_artifact()
+            _make_step_4_artifact(), _make_step_3_artifact(),
+            _make_step_1_artifact(), _make_step_2_artifact(),
         )
         result2 = prompt_gen.generate_prompt(
-            _make_step_4_artifact(), _make_step_3_artifact()
+            _make_step_4_artifact(), _make_step_3_artifact(),
+            _make_step_1_artifact(), _make_step_2_artifact(),
         )
         assert result1["prompt_hash"] == result2["prompt_hash"]
 
@@ -1063,8 +1096,8 @@ class TestCharacterSummary:
 
     def test_no_character_data(self):
         prompt_gen = Step5Prompt()
-        summary = prompt_gen._summarize_characters({})
-        assert "No character data" in summary
+        with pytest.raises(ValueError, match="missing required field.*hero"):
+            prompt_gen._summarize_characters({})
 
 
 # ══════════════════════════════════════════════════════════════════════════
@@ -1142,5 +1175,5 @@ class TestEdgeCases:
 
     def test_beat_sheet_summary_no_beats(self):
         prompt_gen = Step5Prompt()
-        summary = prompt_gen._summarize_beat_sheet({})
-        assert "No beat sheet data" in summary
+        with pytest.raises(ValueError, match="missing required field.*beats"):
+            prompt_gen._summarize_beat_sheet({})

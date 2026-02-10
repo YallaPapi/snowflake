@@ -186,12 +186,13 @@ class TestCallStepRevise:
         mock_step.revise.return_value = (True, {"revised": True}, "OK")
         pipeline._steps = {5: mock_step}
 
-        all_artifacts = {3: {"hero": {}}, 4: {"beats": []}}
+        all_artifacts = {1: {"logline": "x"}, 2: {"genre": "y"}, 3: {"hero": {}}, 4: {"beats": []}}
         result = pipeline._call_step_revise(5, "reason", all_artifacts, {})
 
         assert result == {"revised": True}
         mock_step.revise.assert_called_once_with(
             "test", "reason", all_artifacts[4], all_artifacts[3],
+            all_artifacts[1], all_artifacts[2],
         )
 
     def test_step_6_uses_step_8_executor(self, tmp_path):

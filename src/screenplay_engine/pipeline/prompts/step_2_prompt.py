@@ -49,7 +49,17 @@ SNOWFLAKE SYNOPSIS:
 
 INSTRUCTIONS:
 1. Classify into exactly ONE genre from: monster_in_the_house, golden_fleece, out_of_the_bottle, dude_with_a_problem, rites_of_passage, buddy_love, whydunit, fool_triumphant, institutionalized, superhero
-2. Identify ALL required working parts for the chosen genre and explain how they appear in this story
+2. Your working_parts array MUST contain one entry for EACH part_name listed below for your chosen genre. Use these EXACT part_name values:
+   - monster_in_the_house: monster, inescapable_space, sin_transgression, trapped_victims, run_and_hide_structure (5 entries)
+   - golden_fleece: road_journey, milestones_of_growth, external_goal_vs_self_discovery, thematic_episodes (4 entries)
+   - out_of_the_bottle: wish_or_magic, moral_lesson, escalating_consequences, magic_source (4 entries)
+   - dude_with_a_problem: ordinary_person, extraordinary_problem, individuality_as_weapon, ordinary_day_disrupted (4 entries)
+   - rites_of_passage: life_transition, invisible_monster, pain_of_transition, dramatic_irony, kubler_ross_stages (5 entries)
+   - buddy_love: two_characters, hate_to_need_arc, incomplete_halves, separation_reunion, ego_surrender (5 entries)
+   - whydunit: mystery, investigation, dark_revelation, audience_surrogate (4 entries)
+   - fool_triumphant: underdog_fool, powerful_institution, insider_accomplice (3 entries)
+   - institutionalized: group, newcomer, cost_of_belonging, breakout_character, experienced_guide (5 entries)
+   - superhero: extraordinary_being, ordinary_world, jealous_mediocrity, creation_myth (4 entries)
 3. List the genre's structural rules and constraints that this screenplay must follow
 4. State the core question the genre asks of the audience
 5. Identify the "twist" — what makes this story "the same thing, only different" from other films in this genre. Reference a SPECIFIC convention you are subverting.

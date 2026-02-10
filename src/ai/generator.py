@@ -68,7 +68,7 @@ class AIGenerator:
                 base_url="https://api.x.ai/v1",
                 timeout=600.0,
             )
-            self.default_model = "grok-3"
+            self.default_model = "grok-4-1-fast-reasoning"
         else:
             raise ValueError(f"Unsupported provider: {provider}")
     
@@ -326,13 +326,25 @@ class AIGenerator:
                              artifact: Dict[str, Any],
                              errors: List[str],
                              validator) -> Dict[str, str]:
-        """Add validation errors to prompt for revision"""
+        """Add validation errors to prompt for revision.
+
+        IMPORTANT: Appends revision instructions to the original prompt
+        so the model retains full story context.
+        """
         error_text = "\n".join(f"- {error}" for error in errors)
         suggestions = validator.fix_suggestions(errors)
         fix_text = "\n".join(f"- {fix}" for fix in suggestions)
-        
-        revision_prompt = f"""
-Your previous attempt had validation errors:
+
+        # Truncate previous artifact to avoid token bloat on large outputs
+        artifact_json = json.dumps(artifact, indent=2, ensure_ascii=False)
+        if len(artifact_json) > 20000:
+            artifact_json = artifact_json[:20000] + "\n... [truncated]"
+
+        revision_addendum = f"""
+
+--- REVISION REQUIRED ---
+
+Your previous attempt had these validation errors:
 
 ERRORS:
 {error_text}
@@ -340,106 +352,13 @@ ERRORS:
 FIXES NEEDED:
 {fix_text}
 
-Please revise your response to fix these issues.
+PREVIOUS RESPONSE (fix the errors above, keep everything else):
+{artifact_json}
 
-PREVIOUS RESPONSE:
-{json.dumps(artifact, indent=2)}
+Output the complete corrected JSON:"""
 
-REVISED RESPONSE:"""
-        
-        prompt_data["user"] = revision_prompt
+        prompt_data["user"] = prompt_data["user"] + revision_addendum
         return prompt_data
-    
-    def generate_scene_prose(self,
-                             scene_context: Dict[str, Any],
-                             character_bible: Dict[str, Any],
-                             word_target: int,
-                             model_config: Optional[Dict[str, Any]] = None) -> str:
-        """
-        Generate prose for a single scene
-        
-        Args:
-            scene_context: Scene data including triad and details
-            character_bible: POV character's complete bible
-            word_target: Target word count for scene
-            model_config: Model configuration
-            
-        Returns:
-            Scene prose
-        """
-        if not model_config:
-            model_config = {
-                "temperature": 0.8,  # Higher for creative prose
-                "max_tokens": min(word_target * 2, 4000)  # Allow room for prose
-            }
-        
-        # Build the prompt
-        scene_type = scene_context.get('type', 'Proactive')
-        
-        if scene_type == 'Proactive':
-            triad_elements = f"""
-- GOAL: {scene_context.get('goal', 'Unknown goal')}
-- CONFLICT: {scene_context.get('conflict', 'Unknown conflict')}
-- SETBACK: {scene_context.get('setback', 'Unknown setback')}
-"""
-        else:
-            triad_elements = f"""
-- REACTION: {scene_context.get('reaction', 'Unknown reaction')}
-- DILEMMA: {scene_context.get('dilemma', 'Unknown dilemma')}
-- DECISION: {scene_context.get('decision', 'Unknown decision')}
-"""
-        
-        system_prompt = f"""
-You are drafting a scene for a novel using the Snowflake Method.
-Maintain strict POV discipline - only show what the POV character can perceive.
-Dramatize the scene triad on the page through action, dialogue, and internal thought.
-Show, don't tell. Use vivid, sensory details.
-Maintain the character's unique voice and personality throughout.
-"""
-        
-        user_prompt = f"""
-Write a {word_target}-word scene with these requirements:
-
-SCENE TYPE: {scene_type}
-
-TRIAD ELEMENTS TO DRAMATIZE:
-{triad_elements}
-
-POV CHARACTER: {scene_context.get('pov', 'Unknown')}
-
-CHARACTER VOICE NOTES:
-{character_bible.get('voice_notes', ['Natural voice'])}
-
-PERSONALITY TRAITS:
-{json.dumps(character_bible.get('personality', {}), indent=2)}
-
-SCENE DETAILS:
-- Summary: {scene_context.get('summary', 'Scene summary')}
-- Location: {scene_context.get('location', 'Unknown location')}
-- Time: {scene_context.get('time', 'Unknown time')}
-- Inbound Hook: {scene_context.get('inbound_hook', 'Continue from previous')}
-- Outbound Hook: {scene_context.get('outbound_hook', 'Lead to next')}
-
-REQUIREMENTS:
-1. Open with immediate engagement (no throat-clearing)
-2. Dramatize all three triad elements clearly
-3. Maintain strict POV discipline throughout
-4. Use the character's unique voice consistently
-5. End with the outbound hook
-6. Aim for exactly {word_target} words
-
-Write the scene now:
-"""
-        
-        prompt_data = {
-            "system": system_prompt,
-            "user": user_prompt
-        }
-        
-        # Generate the prose
-        prose = self.generate(prompt_data, model_config)
-        
-        return prose
     
     def generate_step_0(self, user_input: Dict[str, Any]) -> Dict[str, Any]:
         """Generate Step 0: First Things First"""

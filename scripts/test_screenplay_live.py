@@ -168,45 +168,60 @@ def main():
     if start_idx <= STEP_ORDER.index("1"):
         start = run_step(1, "Logline")
         success, artifact, msg = pipeline.execute_step_1(snowflake)
-        if not report(success, artifact, msg, start):
+        report(success, artifact, msg, start)
+        if artifact and artifact.get("logline"):
+            sp[1] = artifact
+        else:
+            print("  ERROR: No logline artifact returned, cannot continue")
             return
-        sp[1] = artifact
 
     # ── Step 2: Genre Classification ─────────────────────────────────
     if start_idx <= STEP_ORDER.index("2"):
         _ensure_loaded(sp, pipeline, 1)
         start = run_step(2, "Genre Classification")
         success, artifact, msg = pipeline.execute_step_2(sp[1], snowflake)
-        if not report(success, artifact, msg, start):
+        report(success, artifact, msg, start)
+        if artifact and artifact.get("genre"):
+            sp[2] = artifact
+        else:
+            print("  ERROR: No genre artifact returned, cannot continue")
             return
-        sp[2] = artifact
 
     # ── Step 3: Hero Construction ────────────────────────────────────
     if start_idx <= STEP_ORDER.index("3"):
         _ensure_loaded(sp, pipeline, 1, 2)
         start = run_step(3, "Hero Construction")
         success, artifact, msg = pipeline.execute_step_3(sp[1], sp[2], snowflake)
-        if not report(success, artifact, msg, start):
+        report(success, artifact, msg, start)
+        if artifact and (artifact.get("hero") or artifact.get("hero_profile")):
+            sp[3] = artifact
+        else:
+            print("  ERROR: No hero artifact returned, cannot continue")
             return
-        sp[3] = artifact
 
     # ── Step 4: Beat Sheet (BS2) ─────────────────────────────────────
     if start_idx <= STEP_ORDER.index("4"):
         _ensure_loaded(sp, pipeline, 1, 2, 3)
         start = run_step(4, "Beat Sheet (BS2)")
         success, artifact, msg = pipeline.execute_step_4(sp[1], sp[2], sp[3], snowflake)
-        if not report(success, artifact, msg, start):
+        report(success, artifact, msg, start)
+        if artifact and artifact.get("beats"):
+            sp[4] = artifact
+        else:
+            print("  ERROR: No beat sheet artifact returned, cannot continue")
             return
-        sp[4] = artifact
 
     # ── Step 5: The Board (40 Scene Cards) ───────────────────────────
     if start_idx <= STEP_ORDER.index("5"):
-        _ensure_loaded(sp, pipeline, 3, 4)
+        _ensure_loaded(sp, pipeline, 1, 2, 3, 4)
         start = run_step(5, "The Board (40 Scene Cards)")
-        success, artifact, msg = pipeline.execute_step_5(sp[4], sp[3])
-        if not report(success, artifact, msg, start):
+        success, artifact, msg = pipeline.execute_step_5(sp[4], sp[3], sp[1], sp[2])
+        report(success, artifact, msg, start)
+        if artifact and artifact.get("row_1_act_one"):
+            sp[5] = artifact
+        else:
+            print("  ERROR: No board artifact returned, cannot continue")
             return
-        sp[5] = artifact
 
     # ── Step 6: Screenplay Writing (WRITE FIRST, then diagnose) ──────
     if start_idx <= STEP_ORDER.index("6"):
