@@ -102,6 +102,14 @@ def report(success, artifact, message, start):
 
 def _load_sp_artifact(pipeline, step_num):
     """Load saved screenplay artifact from disk."""
+    # Step 6 (Screenplay) is saved by Step8Screenplay as sp_step_8_screenplay.json,
+    # but sp_step_6_immutable_laws.json also exists from the Laws step.
+    # Prioritize the screenplay file (step 8) when loading step 6.
+    if step_num == 6:
+        art = pipeline._load_step_artifact(8)
+        if art and art.get("scenes"):
+            print(f"  (loaded screenplay from sp_step_8_screenplay.json)")
+            return art
     art = pipeline._load_step_artifact(step_num)
     if art:
         print(f"  (loaded saved SP step {step_num} artifact from disk)")
@@ -205,9 +213,13 @@ def main():
         _ensure_loaded(sp, pipeline, 1, 2, 3, 5)
         start = run_step(6, "Screenplay Writing")
         success, artifact, msg = pipeline.execute_step_6(sp[5], sp[3], sp[2], sp[1])
-        if not report(success, artifact, msg, start):
+        report(success, artifact, msg, start)
+        # Continue even if validation fails — the screenplay is saved and can still be diagnosed
+        if artifact and artifact.get("scenes"):
+            sp[6] = artifact
+        else:
+            print("  ERROR: No scenes generated, cannot continue")
             return
-        sp[6] = artifact
 
     # ── Step 7: Immutable Laws (on finished screenplay) ──────────────
     if start_idx <= STEP_ORDER.index("7"):

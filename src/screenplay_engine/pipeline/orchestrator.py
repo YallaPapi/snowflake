@@ -410,6 +410,7 @@ class ScreenplayPipeline:
                 ok, artifact, msg = step.revise(
                     project_id, revision_reason,
                     all_artifacts.get(4, {}), all_artifacts.get(3, {}),
+                    all_artifacts.get(1, {}), all_artifacts.get(2, {}),
                 )
             elif step_num == 6:
                 step = self._get_step(8)  # Step 6 uses Step8Screenplay executor
@@ -452,10 +453,10 @@ class ScreenplayPipeline:
         step = self._get_step(4)
         return self._run_step(4, "Beat Sheet (BS2)", lambda: step.execute(step_1_artifact, step_2_artifact, step_3_artifact, snowflake_artifacts, self.current_project_id))
 
-    def execute_step_5(self, step_4_artifact: Dict[str, Any], step_3_artifact: Dict[str, Any]) -> Tuple[bool, Dict[str, Any], str]:
+    def execute_step_5(self, step_4_artifact: Dict[str, Any], step_3_artifact: Dict[str, Any], step_1_artifact: Dict[str, Any], step_2_artifact: Dict[str, Any]) -> Tuple[bool, Dict[str, Any], str]:
         """Step 5: Build The Board — 40 scene cards."""
         step = self._get_step(5)
-        return self._run_step(5, "The Board", lambda: step.execute(step_4_artifact, step_3_artifact, self.current_project_id))
+        return self._run_step(5, "The Board", lambda: step.execute(step_4_artifact, step_3_artifact, step_1_artifact, step_2_artifact, self.current_project_id))
 
     def execute_step_6(self, step_5_artifact: Dict[str, Any], step_3_artifact: Dict[str, Any], step_2_artifact: Dict[str, Any], step_1_artifact: Dict[str, Any]) -> Tuple[bool, Dict[str, Any], str]:
         """Step 6: Write the screenplay from validated Board (was old Step 8)."""
@@ -505,7 +506,7 @@ class ScreenplayPipeline:
             (2, lambda: self.execute_step_2(artifacts[1], snowflake_artifacts)),
             (3, lambda: self.execute_step_3(artifacts[1], artifacts[2], snowflake_artifacts)),
             (4, lambda: self.execute_step_4(artifacts[1], artifacts[2], artifacts[3], snowflake_artifacts)),
-            (5, lambda: self.execute_step_5(artifacts[4], artifacts[3])),
+            (5, lambda: self.execute_step_5(artifacts[4], artifacts[3], artifacts[1], artifacts[2])),
             # Step 6: Write screenplay FIRST (book order: write, then diagnose)
             (6, lambda: self.execute_step_6(artifacts[5], artifacts[3], artifacts[2], artifacts[1])),
         ]

@@ -1,0 +1,1035 @@
+================================================================================
+SAVE THE CAT AUDIT: CHAPTER 1 -- "WHAT IS IT?" (LOGLINE)
+================================================================================
+Audit Date:    2026-02-08
+Auditor:       Claude Opus 4.6
+Book:          Save the Cat! by Blake Snyder (Chapter 1)
+Source Text:   C:\Users\asus\Desktop\projects\snowflake\temp_pages\stc_chapters\ch1_logline.txt
+
+Engine Files Audited:
+  PROMPT:      C:\Users\asus\Desktop\projects\snowflake\src\screenplay_engine\pipeline\prompts\step_1_prompt.py
+  VALIDATOR:   C:\Users\asus\Desktop\projects\snowflake\src\screenplay_engine\pipeline\validators\step_1_validator.py
+  STEP IMPL:   C:\Users\asus\Desktop\projects\snowflake\src\screenplay_engine\pipeline\steps\step_1_logline.py
+  MODEL:       C:\Users\asus\Desktop\projects\snowflake\src\screenplay_engine\models.py (class Logline, lines 60-72)
+
+================================================================================
+PART 1: EXHAUSTIVE EXTRACTION OF ALL SNYDER RULES FROM CHAPTER 1
+================================================================================
+
+Every specific rule, requirement, test, and principle from the full text of
+Chapter 1 ("What Is It?") is catalogued below. Reference line numbers refer
+to the chapter text file listed above.
+
+ID   | Snyder Requirement                                                | Source Lines
+-----|-------------------------------------------------------------------|-------------
+R1   | One sentence that answers "What is it?" -- what the movie is      | 69-71
+     | about, told clearly and with creativity.                          |
+R2   | Logline must be one or two sentences -- "a one or two sentence    | 285
+     | grabber that tells us everything."                                |
+R3   | COMPONENT 1: IRONY. The logline must be emotionally intriguing,  | 107-108, 287
+     | containing an inherent contradiction or dramatic tension. It      |
+     | must be "like an itch you have to scratch."                       |
+R4   | Irony is "the hook" -- it hooks your interest. If your story      | 109, 113-115
+     | lacks irony, "maybe your story's off, too. And maybe it's time   |
+     | to go back and re-think it."                                      |
+R5   | COMPONENT 2: COMPELLING MENTAL PICTURE. A good logline must       | 117-118,
+     | "bloom in your mind" when you hear it. "A whole movie must be     | 288-289
+     | implied."                                                         |
+R6   | The mental picture should often include a TIME FRAME --           | 121-123
+     | demarcate when the story takes place and how long it spans.       |
+     | Examples: "Christmas Day", "a single night", "the weekend of     |
+     | a retreat."                                                       |
+R7   | The mental picture should show WHERE THE STORY BEGINS AND        | 121
+     | ENDS -- "we even see where each film begins and ends."            |
+R8   | The logline should suggest "fish out of water" dynamics or        | 124-127
+     | OPPOSITES FACING OFF over a common goal if applicable. "This     |
+     | is why 'fish out of water' stories are so popular."               |
+R9   | COMPONENT 3: AUDIENCE AND COST. The logline must give a          | 135-139,
+     | built-in sense of WHO THE AUDIENCE IS (target demographic)       | 289-292
+     | and WHAT IT WILL COST (budget scale).                             |
+R10  | Audience analysis should include 4-QUADRANT CONSIDERATION:       | 137-139
+     | Men Under 25, Men Over 25, Women Under 25, Women Over 25.        |
+R11  | The logline must communicate TONE -- comedy, drama, thriller,    | 283
+     | etc. "Its tone... should be easy to understand."                  |
+R12  | A reader should be able to envision the TYPE OF MOVIE            | 139, 292
+     | (block comedy, action, etc.) and approximate PRODUCTION SCALE    |
+     | (star-driven vs. effects-driven, etc.) from the logline alone.   |
+R13  | COMPONENT 4: KILLER TITLE. Title must be part of the "one-two   | 149-153, 293
+     | punch" with the logline. Title and logline together form a       |
+     | combined selling unit.                                            |
+R14  | Title must "SAY WHAT IT IS" -- it must pinpoint what THIS        | 159-167
+     | particular movie is about, not be vague. Snyder underlines       |
+     | "It Says What It Is!!!" as vital.                                 |
+R15  | Title must have IRONY -- "a great title must have irony and      | 151
+     | tell the tale."                                                   |
+R16  | Title must TELL THE TALE -- convey the essential story.          | 151
+R17  | Title must NOT be "on the nose" or stupid -- it should "nail     | 152
+     | it, without being so 'on the nose' that it's stupid."            |
+R18  | Title must NOT be vague -- "For Love or Money" is cited as a     | 155-157
+     | terrible vague title. "Something vague like that kills your      |
+     | interest."                                                        |
+R19  | HIGH CONCEPT. The overall approach must be "high concept": the   | 253-258,
+     | movie must be easy to see from the logline and poster alone.     | 295-299
+     | Especially important for international markets (50% of revenue). |
+R20  | TEST MARKETING. Pitch your logline to strangers, watch their     | 193-205,
+     | eyes, adjust based on reactions. If they drift, the logline      | 239-243, 301
+     | has problems. This is the only way to know what you have.         |
+R21  | The "What is it?" must communicate: TONE, POTENTIAL, the         | 283-284
+     | DILEMMA OF ITS CHARACTERS, and the TYPE OF CHARACTERS they       |
+     | are -- all "easy to understand and compelling."                    |
+R22  | LOGLINE FIRST: Write the logline BEFORE the screenplay. If it   | 65-71,
+     | does not work, rethink the whole movie.                           | 85-87, 131
+R23  | THE POSTER TEST: You should be able to imagine the movie poster  | 182-183,
+     | (one-sheet) from the logline and title.                           | 256-257
+R24  | TITLE + LOGLINE = ONE-TWO PUNCH. They must work as a combined   | 149-150,
+     | unit that reinforces each other.                                  | 168-169
+R25  | CHARACTER AS TYPE, NOT NAME. The logline should feature a        | 93-97
+     | character described by type/role, often with an adjective:       | (examples)
+     | "a newly married couple", "a risk-averse teacher",               |
+     | "a just-hired employee."                                          |
+R26  | CLEAR DILEMMA / PREDICAMENT. The logline must present the        | 283-284
+     | specific dilemma the character faces, not just a generic goal.    |
+R27  | ORIGINALITY. Spec writers must create their own compelling       | 53-63
+     | "What is it?" from scratch, without relying on pre-sold          |
+     | franchises or existing IP.                                        |
+R28  | THE JEALOUSY TEST. A good logline makes other writers say "Why   | 89-91
+     | didn't I think of that!" -- this is the quality bar.              |
+R29  | LOGLINE WORK REFINES THE STORY. The process of crafting the      | 188-191
+     | logline should change and improve the story itself: characters   |
+     | become more distinct, conflicts sharpen, story gets better.       |
+
+
+================================================================================
+PART 2: DETAILED GAP ANALYSIS -- EVERY RULE VS. ENGINE CODE
+================================================================================
+
+For each rule, the verdict is one of:
+  MATCH   -- Engine implements it correctly and completely
+  PARTIAL -- Engine partially implements it (details given)
+  MISSING -- Engine does not implement it at all
+  WRONG   -- Engine contradicts the book
+
+--------------------------------------------------------------------------------
+R1: "WHAT IS IT?" -- ONE CLEAR SENTENCE
+--------------------------------------------------------------------------------
+Verdict: MATCH
+
+Evidence:
+  - Prompt (step_1_prompt.py line 37): Requires "1-2 sentences"
+  - Validator (step_1_validator.py lines 68-84): Checks logline is non-empty
+    and counts sentence endings to enforce 1-2 sentences
+  - Model (models.py line 64): logline: str is a required field
+
+No gaps identified for this rule.
+
+--------------------------------------------------------------------------------
+R2: ONE OR TWO SENTENCES MAXIMUM
+--------------------------------------------------------------------------------
+Verdict: MATCH
+
+Evidence:
+  - Validator (step_1_validator.py lines 73-84): Counts sentence-ending
+    punctuation ([.!?]+) and rejects loglines with >2 sentence endings.
+  - Prompt (step_1_prompt.py line 37): "1-2 sentences"
+
+Note: The sentence-counting regex (line 73) counts punctuation clusters, not
+actual sentences. A logline like "Dr. Smith must escape!" would count 2
+sentence endings due to the period after "Dr", potentially causing false
+positives. This is an implementation fragility, not a conceptual gap.
+
+--------------------------------------------------------------------------------
+R3: COMPONENT 1 -- IRONY (inherent contradiction, emotional intrigue)
+--------------------------------------------------------------------------------
+Verdict: PARTIAL
+Severity: HIGH
+
+What the engine does:
+  - Prompt (step_1_prompt.py lines 18, 38-39): Mentions irony, gives examples
+    ("a claustrophobic astronaut", "a pacifist drafted into war")
+  - Validator (step_1_validator.py lines 10-16, 91-103): Checks for IRONY_MARKERS
+    -- a set of ~30 contrast/tension words ("but", "yet", "despite",
+    "reluctant", "forbidden", "impossible", etc.)
+  - Model (models.py line 69): has_irony: bool (self-reported by LLM)
+
+Gap 1 -- KEYWORD MATCHING IS A POOR PROXY FOR IRONY:
+  The validator scans for contrast words as a proxy for irony. This is
+  fundamentally flawed. A logline can have deep irony without any of these
+  words. Snyder's own example -- "She's the perfect woman -- until she has a
+  drink" (line 119-120) -- uses an em-dash for contrast, not a keyword from
+  the IRONY_MARKERS set. Conversely, "He must fight despite the danger" uses
+  a marker word ("despite") but contains zero irony.
+
+Gap 2 -- NO EVALUATION OF EMOTIONAL INTRIGUE:
+  Snyder says irony must be "emotionally intriguing, like an itch you have to
+  scratch" (line 287). The engine checks for signal words but has no way to
+  evaluate whether the logline is emotionally intriguing or creates that
+  "itch" quality.
+
+Gap 3 -- SELF-REPORT BOOLEANS ARE NEVER VERIFIED:
+  The LLM outputs has_irony: true/false but the validator never cross-checks
+  this boolean against the actual logline content. The boolean is purely
+  decorative -- it has no effect on validation outcome.
+
+Recommendation:
+  Replace keyword matching with an LLM-as-judge evaluation. Have a second
+  LLM call assess: "Does this logline contain genuine irony -- an inherent
+  contradiction or dramatic tension that makes you want to know more?" Score
+  on a 1-5 scale. Reject scores below 3. Alternatively, add a structured
+  "ironic element" field that must explicitly state the contradiction, then
+  validate that the stated contradiction actually appears in the logline text.
+
+--------------------------------------------------------------------------------
+R4: IRONY ABSENCE = FUNDAMENTAL STORY PROBLEM
+--------------------------------------------------------------------------------
+Verdict: PARTIAL
+Severity: MEDIUM
+
+What the engine does:
+  - Validator flags NO_IRONY as an error (step_1_validator.py lines 98-103)
+  - The fix_suggestions method (line 248-253) suggests adding contrast words
+
+What is missing:
+  Snyder says if your logline lacks irony, "maybe your story's off, too. And
+  maybe it's time to go back and re-think it" (ch1 text line 115). The engine
+  treats NO_IRONY as just another validation error to fix with wording changes.
+  It does not escalate it to a story-level concern or suggest the writer
+  rethink the entire concept. The error message should distinguish between
+  "your logline wording lacks irony signals" and "your underlying story
+  concept may lack irony -- consider rethinking the premise."
+
+--------------------------------------------------------------------------------
+R5: COMPONENT 2 -- COMPELLING MENTAL PICTURE ("bloom in your mind")
+--------------------------------------------------------------------------------
+Verdict: PARTIAL
+Severity: HIGH
+
+What the engine does:
+  - Prompt (step_1_prompt.py lines 40-41): "Must paint a MENTAL PICTURE of
+    the complete story arc: a character with a goal facing an obstacle"
+  - Validator (step_1_validator.py lines 105-152): Checks for three elements:
+    * Character: proper noun (regex: [A-Z][a-z]+) OR role noun from a
+      hardcoded list of ~30 roles (lines 110-117)
+    * Goal: action verb or modal from a hardcoded list of ~25 words
+      (lines 120-127)
+    * Obstacle: contrast word or threat word from a hardcoded list of ~18
+      words (lines 130-136)
+
+Gap 4 -- MECHANICAL CHECK, NOT VIVID PICTURE:
+  Snyder says a good logline should make you "see the movie" -- it should
+  "bloom in your mind" with "the promise of more" (lines 117-119). The engine
+  reduces this rich concept to a mechanical check for the presence of
+  character/goal/obstacle keywords. A logline could pass all three keyword
+  checks while painting no vivid picture at all (e.g., "A man must stop the
+  enemy despite the danger." -- passes every check, but conveys nothing).
+
+Gap 5 -- INCOMPLETE CHARACTER ROLE LIST:
+  The role noun list (lines 112-117) contains ~30 roles but misses many valid
+  character types. Examples that would fail: "a washed-up magician", "twin
+  sisters", "an aging rockstar", "a retired librarian", "a crooked senator."
+  The words "magician", "sisters", "rockstar", "librarian", "senator" are
+  not in the list. The proper-noun fallback ([A-Z][a-z]+) would catch some
+  of these but only if capitalized, which is not guaranteed.
+
+Gap 6 -- INCOMPLETE GOAL VERB LIST:
+  The goal verb list (lines 122-125) contains ~25 words but misses many valid
+  goal constructions: "confront", "navigate", "infiltrate", "outwit",
+  "reclaim", "overthrow", "reunite", "convince", "defy", "endure",
+  "transform", "dismantle", "reckon with." A logline using any of these
+  verbs would fail the goal check.
+
+Gap 7 -- INCOMPLETE OBSTACLE WORD LIST:
+  The obstacle list (lines 132-134) contains ~18 words but misses: "race
+  against", "deadline", "betrayal", "conspiracy", "opposition", "nemesis",
+  "at war with", "cursed by", "under siege", "confronted by",
+  "outmatched by." Any logline using these constructions would fail.
+
+Recommendation:
+  Make all three word lists much larger (50+ entries each) or switch to an
+  LLM-as-judge approach. Add a "promise of more" evaluation: does the logline
+  make you want to know what happens next?
+
+--------------------------------------------------------------------------------
+R6: TIME FRAME MUST BE IMPLIED
+--------------------------------------------------------------------------------
+Verdict: MISSING
+Severity: HIGH
+
+What the engine does:
+  Nothing. There is no mention of time frame in the prompt, the validator,
+  or the Logline model.
+
+What Snyder requires:
+  "All three log lines clearly demarcate a time frame in which their story
+  takes place: Christmas Day, the weekend of a retreat, and in the case of
+  Ride Along, a single night." (ch1 text lines 122-123)
+
+  This is an explicit, named quality that Snyder identifies in every good
+  logline example. He singles it out as a distinct property of the
+  "compelling mental picture" component.
+
+Recommendation:
+  Add a "time_frame" field to the Logline model and the JSON output format.
+  Prompt the LLM to specify the implied time frame. Validate that the logline
+  text contains a temporal anchor (day, night, weekend, year, season, etc.).
+
+--------------------------------------------------------------------------------
+R7: BEGINNING AND END IMPLIED IN LOGLINE
+--------------------------------------------------------------------------------
+Verdict: MISSING
+Severity: MEDIUM
+
+What the engine does:
+  Nothing. There is no check that the logline implies a beginning and ending
+  point for the story.
+
+What Snyder requires:
+  "We even see where each film begins and ends, don't we?" (ch1 text line
+  121). Snyder states this as a visible quality of every good logline he
+  cites.
+
+Recommendation:
+  Add a structured field like "implied_arc_start" and "implied_arc_end"
+  that the LLM must fill in. Validate that these are consistent with the
+  logline text. This also feeds into whether the logline truly paints a
+  "whole movie."
+
+--------------------------------------------------------------------------------
+R8: "FISH OUT OF WATER" / OPPOSITES FACING OFF
+--------------------------------------------------------------------------------
+Verdict: MISSING
+Severity: LOW (quality indicator, not hard requirement)
+
+What the engine does:
+  Nothing. No mention of fish-out-of-water dynamics or opposites clashing.
+
+What Snyder says:
+  "This is why 'fish out of water' stories are so popular -- you can see the
+  potential fireworks of one type of person being thrust into a world outside
+  his ken." (ch1 text lines 125-126)
+
+  This is described as a powerful quality in loglines, not as a hard
+  requirement. But it is a named concept the engine could check for.
+
+Recommendation:
+  Consider adding an optional "fish_out_of_water" flag or "contrast_worlds"
+  field to the Logline model. Not mandatory but useful for quality scoring.
+
+--------------------------------------------------------------------------------
+R9: COMPONENT 3 -- AUDIENCE AND COST
+--------------------------------------------------------------------------------
+Verdict: PARTIAL
+Severity: HIGH
+
+What the engine does:
+  - Prompt (step_1_prompt.py line 42): "Tone and scale must be clear so a
+    reader can infer audience and budget"
+  - Validator (step_1_validator.py lines 154-162): Checks that the logline is
+    at least 8 words long. That is the ONLY check for audience/cost.
+  - Model (models.py line 71): has_audience_cost: bool (self-reported by LLM,
+    never verified by validator)
+
+Gap 8 -- WORD COUNT IS NOT AN AUDIENCE/COST CHECK:
+  The validator's only test for Component 3 is: word_count >= 8 (line 158).
+  This is an absurdly weak proxy. A logline could be 50 words and still fail
+  to convey audience or cost. A logline could be 7 words and perfectly convey
+  both. Example: "A cop comes to LA for Christmas" (8 words, passes, but
+  says nothing about audience or cost). This check is essentially a minimum
+  length check masquerading as an audience/cost check.
+
+Gap 9 -- NO EXPLICIT AUDIENCE OR BUDGET OUTPUT:
+  The engine does not ask the LLM to explicitly state the target audience or
+  estimated budget range. The Logline model has no field for target_audience,
+  budget_tier, or production_type. The has_audience_cost boolean is
+  self-reported and never validated.
+
+Gap 10 -- NO TONE CLASSIFICATION OUTPUT:
+  There is no structured field for genre/tone in the logline output. The
+  Snowflake step_0 input includes "category" and "story_kind" but these are
+  inputs, not outputs -- the engine does not verify the logline's tone
+  matches them.
+
+Recommendation:
+  Add these fields to the Logline model:
+    - target_audience: str (e.g., "4-quadrant family", "male 18-34 action")
+    - budget_tier: str (e.g., "low/block comedy", "medium", "tentpole")
+    - genre_tone: str (e.g., "dark comedy", "family drama", "sci-fi thriller")
+  Validate that the genre_tone is consistent with the Snowflake step_0 inputs.
+  Replace the word-count check with an actual evaluation of whether the
+  logline communicates its audience and cost.
+
+--------------------------------------------------------------------------------
+R10: 4-QUADRANT MODEL
+--------------------------------------------------------------------------------
+Verdict: MISSING
+Severity: MEDIUM
+
+What the engine does:
+  Nothing. No concept of quadrant targeting.
+
+What Snyder describes:
+  "A 4-quadrant picture is one that appeals to... everybody! which they
+  divide into four equal quadrants -- Men Under 25, Men Over 25, Women Under
+  25 and Women Over 25." (ch1 text lines 137-139)
+
+  Snyder uses this to evaluate whether a logline communicates its market
+  potential. He determines from the 4 Christmases logline alone that it
+  targets all four quadrants with medium budget.
+
+Recommendation:
+  Add a "quadrant_appeal" field (list of which quadrants the logline
+  naturally appeals to). This helps assess commercial viability as Snyder
+  intends.
+
+--------------------------------------------------------------------------------
+R11: TONE INFERABLE (comedy / drama / thriller / etc.)
+--------------------------------------------------------------------------------
+Verdict: PARTIAL
+Severity: MEDIUM
+
+What the engine does:
+  - Prompt (step_1_prompt.py line 42): "Tone and scale must be clear"
+  - No validator check for tone
+  - No output field for tone
+
+What Snyder requires:
+  "Its tone... should be easy to understand and compelling." (ch1 text
+  line 283). The logline should make the genre immediately obvious.
+
+Recommendation:
+  Add a "tone" or "genre_tone" output field. Validate that the declared
+  tone is consistent with the Snowflake step_0 category/story_kind inputs.
+
+--------------------------------------------------------------------------------
+R12: PRODUCTION SCALE INFERABLE
+--------------------------------------------------------------------------------
+Verdict: MISSING
+Severity: MEDIUM
+
+What the engine does:
+  Nothing. No concept of production scale in the logline step.
+
+What Snyder describes:
+  From 4 Christmases: "It's also not expensive, and from the log line I
+  know that, too... basically it's a block comedy -- so called because it
+  takes place... on the block." (ch1 text line 139). He infers star-driven
+  vs. effects-driven, scope, and budget from the logline alone.
+
+Recommendation:
+  See R9 recommendation. A "budget_tier" field with a brief justification
+  covers this.
+
+--------------------------------------------------------------------------------
+R13: COMPONENT 4 -- KILLER TITLE (one-two punch)
+--------------------------------------------------------------------------------
+Verdict: PARTIAL
+Severity: MEDIUM
+
+What the engine does:
+  - Prompt (step_1_prompt.py lines 44-47): Requires a title that "says what
+    it is" and is "intriguing"
+  - Validator (step_1_validator.py lines 164-176): Checks (a) title has 2+
+    words, (b) title is not in GENERIC_TITLES set
+  - Model (models.py line 65): title: str required field
+
+Gap 11 -- MINIMAL VALIDATION:
+  The validator only checks: word count >= 2 and not in a small generic set
+  (13 entries, lines 35-39). A title like "The Dangerous Journey" or
+  "Hidden Secrets" passes both checks but would fail Snyder's specificity
+  and irony requirements.
+
+Gap 12 -- NO COMBINED TITLE + LOGLINE EVALUATION:
+  Title and logline are validated independently. There is no check that they
+  reinforce each other or form the "one-two punch" Snyder describes.
+
+Recommendation:
+  Add an LLM-as-judge check that evaluates the title + logline pair together:
+  "Does this title complement the logline? Does the combination create a
+  one-two punch that makes you want to see the movie?"
+
+--------------------------------------------------------------------------------
+R14: TITLE MUST "SAY WHAT IT IS"
+--------------------------------------------------------------------------------
+Verdict: PARTIAL
+Severity: HIGH
+
+What the engine does:
+  - Prompt (step_1_prompt.py line 45): "Must 'say what it is' while being
+    intriguing"
+  - Validator: Only checks it is non-empty, 2+ words, and not generic.
+    There is no validation that the title actually says what the movie
+    is about.
+
+What Snyder requires:
+  "It Says What It Is!!!" (ch1 text line 163, underlined as vital).
+  He compares "4 Christmases" (says what it is) to "Yuletide" (does not
+  pinpoint what this particular Christmas movie is about). The test is:
+  "If it doesn't pass the Say What It Is Test, you don't have it." (line 167)
+
+Gap:
+  The prompt instructs the LLM well, but the validator has no mechanism to
+  verify the title actually passes the "Say What It Is" test. A title like
+  "Shadows" or "The Reckoning" would pass all validator checks despite being
+  exactly the kind of vague title Snyder condemns.
+
+Recommendation:
+  Expand the GENERIC_TITLES list substantially. Better yet, add an
+  LLM-as-judge check: "Does this title tell you what the movie is about,
+  or is it vague?"
+
+--------------------------------------------------------------------------------
+R15: TITLE MUST HAVE IRONY
+--------------------------------------------------------------------------------
+Verdict: MISSING
+Severity: HIGH
+
+What the engine does:
+  - Prompt (step_1_prompt.py line 47): "Should evoke the irony or hook of
+    the logline" -- this is in the right direction but is phrased as a
+    suggestion, not a requirement.
+  - Validator: ZERO irony checking on the title. The IRONY_MARKERS check
+    (lines 91-103) is only applied to the logline, not the title.
+
+What Snyder requires:
+  "Like the irony in a good logline, a great title must have irony." (ch1
+  text line 151). This is stated as a direct requirement.
+
+Recommendation:
+  Apply irony evaluation to the title as well. Add a "title_irony" check
+  or include the title in the irony evaluation scope. An LLM-as-judge
+  approach would work better than keyword matching here.
+
+--------------------------------------------------------------------------------
+R16: TITLE MUST "TELL THE TALE"
+--------------------------------------------------------------------------------
+Verdict: MISSING
+Severity: MEDIUM
+
+What the engine does:
+  Nothing specific. The "say what it is" instruction partially overlaps,
+  but "tell the tale" is a distinct concept -- the title should convey
+  the essential story, not just the subject matter.
+
+What Snyder requires:
+  "A great title must have irony and tell the tale." (ch1 text line 151)
+
+  Example: "Legally Blonde" tells the tale (a blonde navigating the legal
+  world), whereas "Barbie Goes to Harvard" says what it is but does not
+  "tell the tale" with any finesse.
+
+Recommendation:
+  Add a validation check or prompt instruction that the title conveys the
+  essential story dynamic, not just the setting or character type.
+
+--------------------------------------------------------------------------------
+R17: TITLE MUST NOT BE "ON THE NOSE" OR STUPID
+--------------------------------------------------------------------------------
+Verdict: MISSING
+Severity: LOW (hard to validate programmatically)
+
+What the engine does:
+  Nothing. No check for overly literal titles.
+
+What Snyder says:
+  The title should "nail it, without being so 'on the nose' that it's
+  stupid." (ch1 text line 152). Example: "Legally Blonde" is good;
+  "Barbie Goes to Harvard" or "Totally In Law School" are on the nose.
+
+Recommendation:
+  Difficult to check programmatically. Could add a prompt instruction to
+  avoid overly literal titles, and/or include it in an LLM-as-judge
+  evaluation.
+
+--------------------------------------------------------------------------------
+R18: TITLE MUST NOT BE VAGUE
+--------------------------------------------------------------------------------
+Verdict: PARTIAL
+Severity: MEDIUM
+
+What the engine does:
+  - Validator (step_1_validator.py lines 35-39): GENERIC_TITLES blocklist
+    contains 13 entries: "the story", "untitled", "my story", "the movie",
+    "the film", "the script", "the screenplay", "a story", "story", "title",
+    "the book", "the novel", "the tale"
+
+Gap:
+  This list is far too small. Vague titles that would pass: "Destiny",
+  "Crossroads", "Reflections", "The Journey", "Redemption", "Awakening",
+  "Eclipse", "Convergence", "The Path", "Shattered", "Broken", "Rising."
+  These are exactly the kind of vague titles Snyder condemns -- "For Love
+  or Money" is his example (lines 155-157) and it would pass the validator.
+
+Recommendation:
+  Massively expand the GENERIC_TITLES list to include common vague movie
+  title patterns. Alternatively, switch to an LLM-as-judge check.
+
+--------------------------------------------------------------------------------
+R19: HIGH CONCEPT
+--------------------------------------------------------------------------------
+Verdict: MISSING
+Severity: HIGH
+
+What the engine does:
+  Nothing. No mention of "high concept" anywhere in the prompt, validator,
+  or model.
+
+What Snyder requires:
+  The entire chapter builds toward the idea that a good logline IS high
+  concept. "Thinking 'high concept,' thinking about 'What is it?' is just
+  good manners." (ch1 text line 263). "High concept is more important than
+  ever before" due to international markets (lines 297-299). He devotes
+  substantial space (lines 253-299) to this concept.
+
+  "This is all part of what is called 'high concept' -- a term that came
+  about to describe movies that are easy to see." (lines 295-296)
+
+Recommendation:
+  Add a "high_concept_score" or "easy_to_see" evaluation. The logline
+  should be assessed for how easily a stranger can visualize the movie
+  from the logline alone. This could be an LLM-as-judge 1-5 rating.
+
+--------------------------------------------------------------------------------
+R20: TEST MARKETING / PITCHING TO STRANGERS
+--------------------------------------------------------------------------------
+Verdict: MISSING
+Severity: LOW (process requirement, not code-automatable)
+
+What the engine does:
+  Nothing.
+
+What Snyder requires:
+  Approximately 2 full pages (ch1 text lines 185-251) on test marketing --
+  pitching your logline to strangers in Starbucks, watching their eyes,
+  adjusting based on their reactions. "This kind of test marketing is not
+  only a great way to meet people, it's the only way to know what you've
+  got." (lines 239-240)
+
+  This is a process requirement that cannot be fully automated. However,
+  the engine could simulate it.
+
+Recommendation:
+  Add a "stranger pitch test" as an LLM-as-judge evaluation. Prompt: "You
+  are a stranger in a coffee shop. Someone pitches this logline to you in
+  one sentence. Rate your interest 1-5. Would you want to know more? Would
+  you see this movie?" Reject loglines scoring below 3.
+
+--------------------------------------------------------------------------------
+R21: MUST COMMUNICATE TONE, POTENTIAL, DILEMMA, CHARACTER TYPE
+--------------------------------------------------------------------------------
+Verdict: PARTIAL
+Severity: MEDIUM
+
+What the engine does:
+  - Character + goal + obstacle checks (validator lines 105-152) partially
+    cover "dilemma" and "character type"
+  - hero_adjective field partially covers character type
+  - "Tone and scale must be clear" in prompt (line 42)
+
+What is missing:
+  - "Potential" (the promise of more -- excitement about where the story
+    could go) is not evaluated
+  - "Tone" is prompted for but never validated
+  - "Type of characters" partially covered by hero_adjective but not
+    fully enforced (see R25)
+
+--------------------------------------------------------------------------------
+R22: LOGLINE FIRST, BEFORE THE SCREENPLAY
+--------------------------------------------------------------------------------
+Verdict: MATCH
+
+Evidence:
+  The pipeline architecture places Step 1 (Logline) as the first step in
+  the screenplay engine. It takes Snowflake outputs as input and generates
+  the logline before any subsequent screenplay steps.
+
+  - step_1_logline.py: execute() takes snowflake_artifacts and produces
+    the logline artifact as the first screenplay output
+  - The step naming convention (sp_1) confirms this is step 1 of the
+    screenplay pipeline
+
+No gaps identified for this rule.
+
+--------------------------------------------------------------------------------
+R23: THE POSTER TEST
+--------------------------------------------------------------------------------
+Verdict: MISSING
+Severity: MEDIUM
+
+What the engine does:
+  Nothing in Step 1. (Note: models.py line 250 has one_sheet_concept in the
+  MarketingValidation model, but that is Step 9, not Step 1.)
+
+What Snyder requires:
+  "I'm proposing that before you head off into your Fade In, that you think
+  long and hard about the log line, the title and the poster." (ch1 text
+  lines 182-183). He repeatedly ties the logline to imagining the poster/
+  one-sheet (lines 256-257).
+
+Recommendation:
+  Add a "poster_concept" or "one_sheet_vision" field to the Logline model.
+  The LLM should describe in 1-2 sentences what the poster would look like.
+  This forces the logline to be visually evocative, which is Snyder's point.
+
+--------------------------------------------------------------------------------
+R24: TITLE + LOGLINE AS ONE-TWO PUNCH (COMBINED UNIT)
+--------------------------------------------------------------------------------
+Verdict: MISSING
+Severity: MEDIUM
+
+What the engine does:
+  Title and logline are generated together in the same JSON output, but
+  they are validated independently. The validator checks the logline for
+  irony/character/goal/obstacle (lines 91-152) and checks the title for
+  length/generic-ness (lines 164-176) with zero cross-referencing.
+
+What Snyder requires:
+  "Title and log line are, in fact, the one-two punch and a good combo
+  never fails to knock me out." (ch1 text line 149-150)
+  "And you can't have the one-two punch that makes a great log line."
+  (line 168-169)
+
+Recommendation:
+  Add a combined evaluation. At minimum, check that the title references
+  or evokes elements from the logline. Better: LLM-as-judge to evaluate
+  whether the pair works together as a selling unit.
+
+--------------------------------------------------------------------------------
+R25: CHARACTER IN LOGLINE AS A TYPE, NOT JUST A NAME
+--------------------------------------------------------------------------------
+Verdict: PARTIAL
+Severity: MEDIUM
+
+What the engine does:
+  - Prompt (step_1_prompt.py lines 38-39): Examples use types ("a
+    claustrophobic astronaut", "a pacifist drafted into war")
+  - Validator (step_1_validator.py lines 109-117): Accepts either a proper
+    noun (capitalized word) OR a role noun from the hardcoded list
+  - Model (models.py line 66): hero_adjective field exists
+
+Gap:
+  The validator accepts proper nouns as valid characters. A logline saying
+  "John must escape" passes because "John" is a proper noun. But Snyder's
+  examples consistently use adjective + character type, never bare names:
+  "a newly married couple", "a risk-averse teacher", "a just-hired employee."
+  The engine should prefer (or require) a type description over a bare name.
+
+  Additionally, the hero_adjective field is separate from the logline
+  validation -- there is no check that the hero adjective actually appears
+  in the logline text.
+
+Recommendation:
+  Add validation that the logline contains a character TYPE (not just a
+  name). Optionally, verify that the hero_adjective appears in or is
+  consistent with the logline text.
+
+--------------------------------------------------------------------------------
+R26: CLEAR DILEMMA (NOT JUST OBSTACLE)
+--------------------------------------------------------------------------------
+Verdict: PARTIAL
+Severity: LOW
+
+What the engine does:
+  - Validator checks for "obstacle" words (step_1_validator.py lines 129-136)
+
+What Snyder means:
+  "The dilemma of its characters" (ch1 text line 283) -- a dilemma is a
+  forced choice between two bad options or an impossible situation, which
+  is different from an obstacle (something blocking the goal). The engine's
+  obstacle check partially overlaps but does not capture the concept of
+  dilemma specifically.
+
+Recommendation:
+  Consider renaming or expanding the "obstacle" concept to "dilemma or
+  obstacle" and adding dilemma-specific words: "choose", "torn between",
+  "sacrifice", "cost", "at the expense of."
+
+--------------------------------------------------------------------------------
+R27: ORIGINALITY (NO RELIANCE ON PRE-SOLD FRANCHISES)
+--------------------------------------------------------------------------------
+Verdict: N/A
+
+This is a meta-principle about the screenwriting industry. The engine
+generates original loglines from Snowflake story concepts, so it inherently
+avoids franchise reliance. No code change needed.
+
+--------------------------------------------------------------------------------
+R28: THE JEALOUSY TEST ("Why didn't I think of that!")
+--------------------------------------------------------------------------------
+Verdict: MISSING
+Severity: LOW (quality bar, hard to automate)
+
+What the engine does:
+  Nothing.
+
+What Snyder says:
+  "When I pick up the trades and read the log line of a spec or a pitch
+  that's sold and my first reaction is 'Shit! Why didn't I think of that!'
+  Well... that's a good one." (ch1 text lines 89-91)
+
+Recommendation:
+  This is the ultimate quality bar. An LLM-as-judge could evaluate: "Is
+  this logline clever enough to make a working screenwriter jealous?
+  Rate 1-5." This is aspirational and may be better suited as a quality
+  score than a pass/fail gate.
+
+--------------------------------------------------------------------------------
+R29: LOGLINE WORK REFINES THE STORY ITSELF
+--------------------------------------------------------------------------------
+Verdict: PARTIAL
+Severity: MEDIUM
+
+What the engine does:
+  - step_1_logline.py has a revise() method (lines 108-182) that allows
+    iterating on the logline with validation errors as feedback
+  - step_1_prompt.py has generate_revision_prompt() (lines 108-169) that
+    feeds errors back to the LLM for correction
+
+What is missing:
+  The revision loop only fixes validation errors -- it patches the logline
+  wording. Snyder describes the process as fundamentally changing the
+  underlying story concept: "He had to start fudging his log line to get it
+  to have irony... and when he finally let go of his preconceived notions
+  of what his story was -- voila! The log line changed. Soon... his story
+  started to change to match the log line." (ch1 text lines 189-191)
+
+  The engine's revision only adjusts the logline to pass validation; it
+  does not feed logline improvements back into the Snowflake artifacts
+  (step_0, step_1) to refine the upstream story concept.
+
+Recommendation:
+  Add a feedback mechanism: if the logline had to change substantially
+  during revision, flag that the Snowflake step_1 one-sentence summary
+  may need updating to match the improved logline. This creates the
+  bidirectional refinement loop Snyder describes.
+
+
+================================================================================
+PART 3: ENGINE ADDITIONS NOT IN CHAPTER 1
+================================================================================
+
+The engine includes fields and concepts that are NOT from Chapter 1.
+These may come from later chapters or may be invented.
+
+FIELD: hero_adjective (prompt line 49-51, model line 66)
+  Book basis: Not a Ch.1 requirement. Snyder uses adjective+type in
+  examples ("a risk-averse teacher", "a just-hired employee") but does
+  not codify "hero adjective" as a standalone output field.
+  Assessment: ADDED. Useful but not a Ch.1 rule. The adjective concept
+  is reasonable but should be validated against the logline text.
+
+FIELD: villain_adjective (prompt lines 53-55, model line 67)
+  Book basis: Not in Ch.1 at all. Villains and antagonists are not
+  discussed in Chapter 1. They appear in Chapter 3 (Hero) and Ch.7.
+  Assessment: WRONG CHAPTER. This field belongs in Step 3 (Hero), not
+  Step 1 (Logline). Including it here adds unnecessary complexity and
+  takes prompt/validation bandwidth away from actual Ch.1 requirements
+  that are currently missing (time frame, high concept, poster test,
+  title irony, etc.).
+
+FIELD: primal_goal (prompt lines 57-60, model line 68, validator lines 18-32, 194-214)
+  Book basis: Not in Ch.1. The PrimalUrge enum (models.py lines 27-33)
+  explicitly cites "Ch.3" in its docstring. These 5 primal drives are
+  from Chapter 3 (Hero), not Chapter 1 (Logline).
+  Assessment: WRONG CHAPTER. This is a significant structural error.
+  The primal goal concept should be introduced in Step 3, not Step 1.
+  It occupies substantial validator logic (lines 194-214) and prompt
+  space (lines 57-60) that should instead be used for missing Ch.1
+  requirements. The primal_goal validation (PRIMAL_URGE_KEYWORDS,
+  lines 18-32) is 15 lines of code dedicated to a requirement from
+  the wrong chapter.
+
+FIELD: has_irony, has_mental_picture, has_audience_cost, has_killer_title
+  (prompt lines 69-72, model lines 69-72)
+  Book basis: These correspond to the 4 criteria from Ch.1.
+  Assessment: WEAK IMPLEMENTATION. The LLM self-reports these booleans,
+  but the validator never checks them. They are purely decorative. The
+  booleans are always set to true in the output format template (prompt
+  lines 69-72), biasing the LLM to always claim true.
+
+
+================================================================================
+PART 4: VALIDATOR IMPLEMENTATION BUGS AND FRAGILITIES
+================================================================================
+
+BUG 1: Sentence counting with abbreviations (validator line 73)
+  The regex re.findall(r'[.!?]+', logline) counts all punctuation clusters.
+  A logline like "Dr. Smith must escape the U.S. embassy!" would count
+  3 sentence endings (Dr., U.S., !) and fail with TOO_MANY_SENTENCES
+  even though it is one sentence.
+
+BUG 2: Proper noun regex too permissive (validator line 110)
+  The regex r'\b[A-Z][a-z]+\b' matches any capitalized word. In a logline
+  starting with a capital letter (as most sentences do), the first word
+  always matches. "The dog runs away" would match "The" as a proper noun,
+  passing the character check for any logline that begins with a capital T.
+
+BUG 3: IRONY_MARKERS overlap with obstacle words (validator lines 10-16, 130-136)
+  Words like "but", "yet", "despite", "although" appear in both the
+  IRONY_MARKERS set and the obstacle word list. A logline containing "but"
+  passes both the irony check AND the obstacle check, even if it has
+  neither genuine irony nor a real obstacle. This creates false confidence
+  in validation.
+
+BUG 4: Self-reported booleans default to false but template says true
+  The model defaults (models.py lines 69-72) are all False, but the prompt
+  template (step_1_prompt.py lines 69-72) shows them as true. The LLM will
+  almost always output true because the template shows true. The validator
+  never checks these booleans, so they serve no purpose.
+
+
+================================================================================
+PART 5: SUMMARY SCORECARD
+================================================================================
+
+ #   | Snyder Requirement                        | Verdict  | Severity
+-----|-------------------------------------------|----------|----------
+ R1  | "What is it?" one clear sentence          | MATCH    | --
+ R2  | 1-2 sentences maximum                     | MATCH    | --
+ R3  | IRONY (contradiction, emotional intrigue)  | PARTIAL  | HIGH
+ R4  | Irony absence = story-level problem        | PARTIAL  | MEDIUM
+ R5  | MENTAL PICTURE (bloom, promise of more)    | PARTIAL  | HIGH
+ R6  | Time frame implied                         | MISSING  | HIGH
+ R7  | Beginning and end implied                  | MISSING  | MEDIUM
+ R8  | Fish out of water / opposites              | MISSING  | LOW
+ R9  | AUDIENCE AND COST                          | PARTIAL  | HIGH
+ R10 | 4-Quadrant model                           | MISSING  | MEDIUM
+ R11 | Tone inferable                             | PARTIAL  | MEDIUM
+ R12 | Production scale inferable                 | MISSING  | MEDIUM
+ R13 | KILLER TITLE (one-two punch)               | PARTIAL  | MEDIUM
+ R14 | Title "Says What It Is"                    | PARTIAL  | HIGH
+ R15 | Title must have irony                      | MISSING  | HIGH
+ R16 | Title must "tell the tale"                 | MISSING  | MEDIUM
+ R17 | Title not "on the nose"                    | MISSING  | LOW
+ R18 | Title not vague                            | PARTIAL  | MEDIUM
+ R19 | High concept                               | MISSING  | HIGH
+ R20 | Test marketing / stranger pitch            | MISSING  | LOW
+ R21 | Tone, potential, dilemma, character type    | PARTIAL  | MEDIUM
+ R22 | Logline first, before screenplay            | MATCH    | --
+ R23 | Poster test                                | MISSING  | MEDIUM
+ R24 | Title + logline one-two punch              | MISSING  | MEDIUM
+ R25 | Character as TYPE not name                 | PARTIAL  | MEDIUM
+ R26 | Clear dilemma (not just obstacle)           | PARTIAL  | LOW
+ R27 | Originality (no franchise reliance)         | N/A      | --
+ R28 | Jealousy test                              | MISSING  | LOW
+ R29 | Logline work refines story                  | PARTIAL  | MEDIUM
+-----|-------------------------------------------|----------|----------
+     | primal_goal in Step 1                      | WRONG    | HIGH
+     | villain_adjective in Step 1                | WRONG    | MEDIUM
+     | Validator implementation bugs              | BUG      | MEDIUM
+
+TOTALS:
+  MATCH:   3
+  PARTIAL: 12
+  MISSING: 12
+  WRONG:   2
+  N/A:     1
+  BUGS:    4
+
+
+================================================================================
+PART 6: PRIORITIZED FIX LIST
+================================================================================
+
+Priority 1 (CRITICAL -- these are core Snyder requirements that are missing
+or badly broken):
+
+  FIX-01: Replace keyword-based irony check with LLM-as-judge evaluation
+          Files: step_1_validator.py lines 91-103
+          Rule: R3 (Irony)
+
+  FIX-02: Replace word-count audience/cost check with real evaluation; add
+          target_audience, budget_tier, genre_tone output fields
+          Files: step_1_validator.py lines 154-162, models.py (Logline class)
+          Rules: R9, R10, R11, R12
+
+  FIX-03: Add time_frame field and validation
+          Files: step_1_prompt.py, step_1_validator.py, models.py
+          Rule: R6
+
+  FIX-04: Add title irony check (currently zero validation on title irony)
+          Files: step_1_validator.py lines 164-176
+          Rule: R15
+
+  FIX-05: Add high_concept_score evaluation
+          Files: step_1_prompt.py, step_1_validator.py, models.py
+          Rule: R19
+
+  FIX-06: Move primal_goal to Step 3 (Hero); remove from Step 1
+          Files: step_1_prompt.py lines 57-60, step_1_validator.py lines
+          18-32 and 194-214, models.py line 68
+          Rule: WRONG CHAPTER (primal_goal is Ch.3, not Ch.1)
+
+  FIX-07: Move villain_adjective to Step 3 (Hero); remove from Step 1
+          Files: step_1_prompt.py lines 53-55, step_1_validator.py lines
+          186-192, models.py line 67
+          Rule: WRONG CHAPTER (villain is Ch.3, not Ch.1)
+
+Priority 2 (IMPORTANT -- named Snyder requirements that are missing):
+
+  FIX-08: Add title "Says What It Is" validation (not just generic check)
+          Files: step_1_validator.py lines 164-176
+          Rules: R14, R16
+
+  FIX-09: Add poster_concept field to Logline model
+          Files: step_1_prompt.py, models.py
+          Rule: R23
+
+  FIX-10: Add combined title + logline "one-two punch" evaluation
+          Files: step_1_validator.py
+          Rule: R24
+
+  FIX-11: Add beginning/end implied check
+          Files: step_1_prompt.py, step_1_validator.py
+          Rule: R7
+
+  FIX-12: Expand character, goal, and obstacle word lists (or replace with
+          LLM-as-judge)
+          Files: step_1_validator.py lines 109-136
+          Rule: R5
+
+  FIX-13: Expand GENERIC_TITLES blocklist substantially
+          Files: step_1_validator.py lines 35-39
+          Rule: R18
+
+  FIX-14: Enforce character as TYPE (adjective + role), not bare proper noun
+          Files: step_1_validator.py lines 109-117
+          Rule: R25
+
+Priority 3 (NICE TO HAVE -- quality improvements):
+
+  FIX-15: Add stranger pitch test (LLM-as-judge interest rating)
+          Rule: R20
+
+  FIX-16: Add jealousy test / hook strength score
+          Rule: R28
+
+  FIX-17: Add fish-out-of-water / opposites-clash detection
+          Rule: R8
+
+  FIX-18: Add story refinement feedback loop (logline changes feed back
+          to Snowflake artifacts)
+          Rule: R29
+
+  FIX-19: Escalate NO_IRONY to a story-level concern, not just a wording fix
+          Files: step_1_validator.py fix_suggestions (lines 248-253)
+          Rule: R4
+
+Priority 4 (BUG FIXES):
+
+  FIX-20: Fix sentence counting for abbreviations (Dr., U.S., etc.)
+          File: step_1_validator.py line 73
+
+  FIX-21: Fix proper noun regex to not match sentence-initial capitals
+          File: step_1_validator.py line 110
+
+  FIX-22: Resolve IRONY_MARKERS / obstacle word overlap (same word
+          passing both checks)
+          File: step_1_validator.py lines 10-16, 130-136
+
+  FIX-23: Remove or actually validate the self-reported boolean fields
+          (has_irony, has_mental_picture, has_audience_cost, has_killer_title)
+          Files: step_1_prompt.py lines 69-72, models.py lines 69-72
+
+
+================================================================================
+END OF AUDIT
+================================================================================

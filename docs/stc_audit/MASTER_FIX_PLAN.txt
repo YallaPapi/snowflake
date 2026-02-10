@@ -1,0 +1,451 @@
+================================================================================
+SAVE THE CAT ENGINE — MASTER FIX PLAN
+Synthesized from 8 chapter-by-chapter audit reports
+Generated: 2026-02-08
+================================================================================
+
+AUDIT REPORTS (all saved to docs/stc_audit/):
+  ch1_logline_audit.txt      — 29 rules, 12 PARTIAL, 12 MISSING, 2 WRONG
+  ch2_genre_audit.txt        — 83 elements, 42 MISSING, 8 PARTIAL, 5 CRITICAL
+  ch3_hero_audit.txt         — 22 rules, 6 PARTIAL, 4 MISSING, 7 BUGS
+  ch4_beat_sheet_audit.txt   — 47 issues: 2 CRITICAL, 17 HIGH, 21 MEDIUM
+  ch5_board_audit.txt        — 20 rules, 3 WRONG, 8 PARTIAL, 5 MISSING
+  ch6_laws_audit.txt         — 1 CRITICAL (fabricated law), 3 MEDIUM, 2 LOW
+  ch7_diagnostics_audit.txt  — 1 CRITICAL (missing 9th check), 1 HIGH
+  ch8_marketing_audit.txt    — 2 CRITICAL, 10 HIGH, 12 MEDIUM, 3 LOW
+
+================================================================================
+PHASE 1: CRITICAL ARCHITECTURAL FIXES (Pipeline Structure)
+Priority: MUST DO FIRST — everything else depends on these
+================================================================================
+
+FIX 1.1: REMOVE FABRICATED "LAYING PIPE" LAW
+  Source: ch6_laws_audit.txt
+  Problem: The 8th law "Laying Pipe" does not exist in Save the Cat Ch.6.
+           The book has exactly 7 laws. This is completely fabricated.
+  Files to change:
+    - src/screenplay_engine/models.py — LawResult.law_number: le=8 → le=7
+    - src/screenplay_engine/pipeline/prompts/step_6_prompt.py — Remove law #8, change count 8→7
+    - src/screenplay_engine/pipeline/validators/step_6_validator.py — Change EXPECTED_LAWS=8→7
+    - src/screenplay_engine/pipeline/steps/step_6_immutable_laws.py — Update any count references
+  The 7 REAL laws (in order):
+    1. Save the Cat
+    2. The Pope in the Pool
+    3. Double Mumbo Jumbo
+    4. Black Vet (a.k.a. Too Much Marzipan)
+    5. Watch Out for That Glacier!
+    6. The Covenant of the Arc
+    7. Keep the Press Out
+
+FIX 1.2: ADD 9TH DIAGNOSTIC "IS IT PRIMAL?"
+  Source: ch7_diagnostics_audit.txt
+  Problem: Book explicitly lists 9 diagnostics. Engine has 8.
+           The 9th is "Is It Primal?" / "Would a Caveman Understand?"
+           PrimalUrge enum already exists in models.py but is only used in Step 3.
+  Files to change:
+    - src/screenplay_engine/models.py — DiagnosticResult.check_number: le=8 → le=9
+    - src/screenplay_engine/pipeline/prompts/step_7_prompt.py — Add check #9
+    - src/screenplay_engine/pipeline/validators/step_7_validator.py — Change expected=8→9
+    - src/screenplay_engine/pipeline/steps/step_7_diagnostics.py — Update count references
+
+FIX 1.3: FIX PIPELINE ORDER — DIAGNOSTICS AFTER SCREENPLAY
+  Source: ch8_marketing_audit.txt, ch7_diagnostics_audit.txt
+  Problem: Current order is Steps 1→2→3→4→5→6→7→8→9
+           Steps 6 (Laws) and 7 (Diagnostics) run BEFORE Step 8 (Screenplay Writing).
+           But Snyder says diagnostics run on a FINISHED screenplay draft.
+           Ch.7 opens with: "You've made it! You've finally written THE END."
+  Correct pipeline order:
+    1. Logline
+    2. Genre Classification
+    3. Hero Construction
+    4. Beat Sheet (BS2)
+    5. The Board (40 scene cards)
+    6. Screenplay Writing (was Step 8)
+    7. Immutable Laws Check (was Step 6) — now runs on actual screenplay
+    8. Diagnostic Checks (was Step 7) — now runs on actual screenplay
+    9. Marketing Validation (unchanged)
+  Files to change:
+    - src/screenplay_engine/pipeline/orchestrator.py — Reorder step_sequence
+    - All step files — Update step numbers in docstrings/metadata
+    - All artifact filenames — Update sp_step_N naming
+  NOTE: This is the biggest structural change. It means Laws and Diagnostics
+        now receive the actual screenplay text, not just Board cards.
+
+FIX 1.4: FIX STEP 8 LABELING
+  Source: ch8_marketing_audit.txt
+  Problem: Chapter 8 of the book is about marketing/selling, NOT screenplay writing.
+           The board-to-screenplay guidance lives at the end of Chapter 5.
+           Current "Step 8: Screenplay Writing" should be "Step 6" (per new order).
+  Impact: Mainly documentation/naming. Functional code stays the same, just reordered.
+
+FIX 1.5: REMOVE 5-PART FINALE FROM BEAT SHEET
+  Source: ch4_beat_sheet_audit.txt
+  Problem: step_4_prompt.py line 86 describes a 5-part Finale structure
+           (Gathering the Team, Executing the Plan, High Tower Surprise,
+           Dig Deep Down, Execution of New Plan).
+           This is from "Save the Cat! Strikes Back" (2009 sequel), NOT the original book.
+           The original book describes Finale as a single beat.
+  Files to change:
+    - src/screenplay_engine/pipeline/prompts/step_4_prompt.py — Remove 5-part breakdown
+    - src/screenplay_engine/pipeline/validators/step_4_validator.py — Remove sub-beat validation
+
+================================================================================
+PHASE 2: DATA MODEL FIXES (Wrong Values & Missing Fields)
+Priority: HIGH — these cause structurally incorrect output
+================================================================================
+
+FIX 2.1: MOVE primal_goal AND villain_adjective OUT OF STEP 1
+  Source: ch1_logline_audit.txt
+  Problem: Logline model includes primal_goal and villain_adjective.
+           These belong in Step 3 (Hero). Ch.1 only covers:
+           irony, mental picture, audience/cost, killer title.
+  Files: src/screenplay_engine/models.py (Logline class)
+  Action: Remove from Logline, ensure they exist in HeroProfile/AntagonistProfile.
+
+FIX 2.2: ADD TIME FRAME TO LOGLINE
+  Source: ch1_logline_audit.txt (Rule R6)
+  Problem: Snyder's logline formula: "On the verge of [stasis=death],
+           a [adjective] [hero] must [action] before [time limit]."
+           The time frame / deadline component is entirely missing.
+  Files: src/screenplay_engine/models.py (Logline), step_1_prompt.py, step_1_validator.py
+
+FIX 2.3: ADD HERO DEMOGRAPHIC/AGE FIELDS
+  Source: ch3_hero_audit.txt
+  Problem: Snyder says casting (age, sex, demographic) is one of the three
+           core hero criteria. Engine has zero demographic fields.
+  Files: src/screenplay_engine/models.py (HeroProfile)
+  Add: age_range, gender, demographic_notes
+
+FIX 2.4: FIX EMOTIONAL POLARITY TO BEFORE/AFTER PAIR
+  Source: ch8_marketing_audit.txt, ch5_board_audit.txt
+  Problem: BoardCard.emotional_polarity is a single value ('+' or '-').
+           Snyder tracks emotional change: the card starts at one polarity
+           and ends at the other. It should be a before/after pair.
+  Files: src/screenplay_engine/models.py (BoardCard)
+  Change: emotional_polarity: str → emotional_start: str, emotional_end: str
+
+FIX 2.5: FIX BOARD CARD COUNT CONSTRAINTS
+  Source: ch5_board_audit.txt
+  Problem: Validator allows 25-55 cards. Book says exactly 40 scene cards.
+  Files: src/screenplay_engine/pipeline/validators/step_5_validator.py
+  Change: MIN_CARDS=25 → 38, MAX_CARDS=55 → 42 (tight tolerance)
+
+FIX 2.6: FIX ROW MINIMUM CARD COUNT
+  Source: ch5_board_audit.txt
+  Problem: Row minimum enforced at 4 cards. Book says ~9-10 per row.
+  Files: src/screenplay_engine/pipeline/validators/step_5_validator.py
+  Change: MIN_ROW=4 → 7
+
+FIX 2.7: FIX BREAK INTO THREE PLACEMENT
+  Source: ch5_board_audit.txt
+  Problem: Break into Three placed at card 34. Book says it appears at the
+           end of Column 3 (Act Two B), which is ~card 30 (3 rows × 10 cards).
+  Files: step_5_prompt.py, step_5_validator.py
+
+FIX 2.8: FIX MAX_STORYLINE_GAP
+  Source: ch5_board_audit.txt
+  Problem: MAX_STORYLINE_GAP = 8 in validator, but the prompt says max gap of 3.
+           Book implies tight interleaving of storylines.
+  Files: src/screenplay_engine/pipeline/validators/step_5_validator.py
+  Change: MAX_STORYLINE_GAP = 8 → 3 (match prompt)
+
+FIX 2.9: FIX BEAT DESCRIPTION SENTENCE LIMIT
+  Source: ch4_beat_sheet_audit.txt
+  Problem: Validator allows 5-6 sentences per beat description.
+           Book says 1-2 sentences maximum. Beat Sheet is a one-page document.
+  Files: src/screenplay_engine/pipeline/validators/step_4_validator.py
+  Change: MAX_SENTENCES → 2
+
+FIX 2.10: FIX LAW COUNT IN LawResult MODEL
+  Source: ch6_laws_audit.txt
+  Already covered by FIX 1.1 — changing le=8 → le=7
+
+FIX 2.11: FIX DIAGNOSTIC COUNT IN DiagnosticResult MODEL
+  Source: ch7_diagnostics_audit.txt
+  Already covered by FIX 1.2 — changing le=8 → le=9
+
+================================================================================
+PHASE 3: MISSING PIPELINE STEPS (New Functionality)
+Priority: HIGH — gaps in the pipeline that cause broken output
+================================================================================
+
+FIX 3.1: ADD SUPPORTING CAST STEP (between Hero and Beat Sheet)
+  Source: ch3_hero_audit.txt, ch8_marketing_audit.txt
+  Problem: Step 3 produces exactly 3 characters (hero, antagonist, b_story).
+           The screenplay then invents 15+ characters ad-hoc during writing.
+           Characters should be defined BEFORE writing begins.
+  Plan: Add a Step 3b "Supporting Cast" that defines all named characters
+        needed for the screenplay: allies, mentors, rivals, love interests,
+        authority figures, victims, comic relief, etc.
+  New files:
+    - src/screenplay_engine/pipeline/steps/step_3b_supporting_cast.py
+    - src/screenplay_engine/pipeline/prompts/step_3b_prompt.py
+    - src/screenplay_engine/pipeline/validators/step_3b_validator.py
+  New model: SupportingCast in models.py with List[SupportingCharacter]
+
+FIX 3.2: ADD CHARACTER VOICE PROFILES (before screenplay writing)
+  Source: ch8_marketing_audit.txt
+  Problem: Screenplay writing step has no character voice guidance.
+           Each character should have a distinct speech pattern, vocabulary,
+           verbal tics, and dialogue style before the screenplay is written.
+  Plan: Add to the Supporting Cast step or as a sub-step.
+
+FIX 3.3: ADD POST-SCREENPLAY DIAGNOSTIC PASS
+  Source: ch8_marketing_audit.txt
+  Problem: After reordering (Fix 1.3), diagnostics will run on the actual
+           screenplay. But we also need a REWRITE pass: if diagnostics fail,
+           the screenplay should be revised and re-checked.
+  Plan: Add retry loop in orchestrator — if diagnostics fail, feed failures
+        back to screenplay step for targeted revision.
+
+FIX 3.4: ADD SCENE-LEVEL OUTLINE INTERMEDIATE STEP
+  Source: ch8_marketing_audit.txt
+  Problem: Board cards jump directly to full screenplay. Snyder implies
+           an intermediate scene-level outline where each card becomes a
+           sequence of scene beats with locations and mini-arcs.
+  Plan: Add step between Board and Screenplay that expands each card into
+        a detailed scene outline before full dialogue writing.
+
+================================================================================
+PHASE 4: GENRE SYSTEM OVERHAUL
+Priority: HIGH — 42 missing genre elements cause weak structural guidance
+================================================================================
+
+FIX 4.1: ADD GENRE SUB-TYPES
+  Source: ch2_genre_audit.txt
+  Problem: Each genre has sub-types the engine ignores entirely.
+  Examples:
+    - Out of the Bottle: "wish" vs "curse" vs "body-swap"
+    - Golden Fleece: "quest" vs "caper" vs "sports"
+    - Buddy Love: "love story" vs "buddy cop" vs "pet love"
+    - Monster in the House: "pure monster" vs "domestic monster" vs "serial killer"
+  Action: Add sub_types field to GENRE_DEFINITIONS, add sub-type selection to Step 2.
+
+FIX 4.2: ADD MISSING GENRE WORKING PARTS (42 items)
+  Source: ch2_genre_audit.txt — full list in the audit report
+  The most critical missing parts (CRITICAL severity):
+    - Out of the Bottle: wish/spell/comeuppance sub-types + moral lesson structure
+    - Buddy Love: "start by hating" + "incomplete halves" requirements
+    - Institutionalized: breakout character (who burns it down or leaves)
+    - Monster in the House: no-escape constraint (why can't they just leave?)
+  Action: Expand GENRE_DEFINITIONS dict in models.py with all missing working parts.
+
+FIX 4.3: ADD GENRE EXAMPLE FILMS
+  Source: ch2_genre_audit.txt
+  Problem: example_films field exists but is always empty.
+  Action: Populate with Snyder's actual examples from Ch.2.
+
+================================================================================
+PHASE 5: STEP-LEVEL REFINEMENTS
+Priority: MEDIUM — improve accuracy but not structurally breaking
+================================================================================
+
+FIX 5.1: IMPROVE LOGLINE IRONY VALIDATION
+  Source: ch1_logline_audit.txt (Rule R3)
+  Problem: Uses keyword matching ("but", "yet", "despite") instead of
+           semantic evaluation. Many ironic loglines don't use these words.
+  Action: Rewrite to use LLM-based semantic irony check.
+
+FIX 5.2: IMPROVE AUDIENCE/COST VALIDATION
+  Source: ch1_logline_audit.txt (Rule R9)
+  Problem: Just checks word_count >= 8. Should verify the logline implies
+           a clear audience and production budget level.
+  Action: Add LLM-based audience identification check.
+
+FIX 5.3: ADD TITLE IRONY CHECK
+  Source: ch1_logline_audit.txt (Rule R15)
+  Problem: Title is validated for non-emptiness only. Snyder says great titles
+           have irony ("Legally Blonde", "A Few Good Men", "40-Year-Old Virgin").
+  Action: Add irony detection to step_1_validator.py.
+
+FIX 5.4: ADD HIGH CONCEPT SCORING
+  Source: ch1_logline_audit.txt (Rule R19)
+  Problem: "High concept" is a key Snyder criterion for a strong logline.
+           No representation in the engine at all.
+  Action: Add high_concept_score field to Logline, validate in Step 1.
+
+FIX 5.5: ADD SIX THINGS PAYOFF TRACKING
+  Source: ch3_hero_audit.txt, ch5_board_audit.txt
+  Problem: six_things_that_need_fixing are defined in Step 3 hero but never
+           tracked through the board or screenplay. Snyder says they must all
+           be resolved by the Final Image.
+  Action: Add payoff tracking in Board validation and post-screenplay check.
+
+FIX 5.6: ADD THESIS/ANTITHESIS/SYNTHESIS FRAMEWORK
+  Source: ch4_beat_sheet_audit.txt
+  Problem: Snyder describes the 3-world structure: Thesis (Act 1) →
+           Antithesis (Act 2) → Synthesis (Act 3). Not represented at all.
+  Action: Add to Beat Sheet model and prompt as structural guidance.
+
+FIX 5.7: ADD MIDPOINT/ALL-IS-LOST POLARITY VALIDATION AT BOARD LEVEL
+  Source: ch5_board_audit.txt
+  Problem: Board validator doesn't check that Midpoint card and All Is Lost
+           card have opposite emotional polarities.
+  Action: Add cross-card polarity validation to step_5_validator.py.
+
+FIX 5.8: FIX "TALKING THE PLOT" DIAGNOSTIC
+  Source: ch7_diagnostics_audit.txt
+  Problem: Check #2 captures the concept but misses the specific techniques:
+           environmental details, behavioral cues, indirect exposition.
+  Action: Expand prompt with Snyder's specific "Show Don't Tell" guidance.
+
+FIX 5.9: ADD SUBPLOT PAYOFF VALIDATION
+  Source: ch5_board_audit.txt (Rule R12)
+  Problem: No validation that all B/C/D storylines reach resolution.
+  Action: Add to step_5_validator.py — every storyline color must appear
+          in Act 3 (Row 4).
+
+FIX 5.10: ADD FIRST REEL RULE
+  Source: ch5_board_audit.txt
+  Problem: Snyder says the first 10 minutes (Row 1) must introduce every
+           major character, establish every relationship, and plant every
+           setup that pays off later.
+  Action: Add to Board prompt and validation.
+
+================================================================================
+PHASE 6: VALIDATOR BUG FIXES
+Priority: MEDIUM — existing code that doesn't work correctly
+================================================================================
+
+FIX 6.1: STEP 3 VALIDATOR — "SIX THINGS" COUNT MISMATCH
+  Source: ch3_hero_audit.txt (BUG #1)
+  Problem: Validator allows 3-8 items but Pydantic model requires exactly 6.
+  File: step_3_validator.py line 104
+  Fix: Change validation range to exactly 6.
+
+FIX 6.2: STEP 3 VALIDATOR — MISSING REQUIRED FIELDS
+  Source: ch3_hero_audit.txt (BUG #2)
+  Problem: Validator omits maximum_conflict_justification and
+           longest_journey_justification from required field checks.
+  File: step_3_validator.py lines 60-70
+  Fix: Add to required fields list.
+
+FIX 6.3: STEP 3 VALIDATOR — OPENING/FINAL STATE OPPOSITION
+  Source: ch3_hero_audit.txt (BUG #3)
+  Problem: Only checks string non-identity (opening != final).
+           Should verify they're actually OPPOSITE, not just different.
+  File: step_3_validator.py lines 110-118
+  Fix: Add semantic opposition check.
+
+FIX 6.4: STEP 3 VALIDATOR — MISSING FIELD VALIDATIONS
+  Source: ch3_hero_audit.txt (BUGs #4-7)
+  Problem: No validation for antagonist.adjective_descriptor,
+           antagonist.name, b_story.relationship_to_hero, b_story.name.
+  File: step_3_validator.py
+  Fix: Add non-empty string checks for all character name/descriptor fields.
+
+FIX 6.5: STEP 1 VALIDATOR — SENTENCE COUNT WITH ABBREVIATIONS
+  Source: ch1_logline_audit.txt (BUG)
+  Problem: Sentence counting splits on "." which breaks for "Dr.", "Mr.", etc.
+  File: step_1_validator.py
+  Fix: Use proper sentence tokenization.
+
+FIX 6.6: STEP 5 VALIDATOR — DOCSTRING/CODE MISMATCH
+  Source: ch5_board_audit.txt (C1-C3)
+  Problem: Validator docstrings describe stricter rules than code enforces.
+  File: step_5_validator.py
+  Fix: Align code to match documented rules.
+
+================================================================================
+PHASE 7: PROMPT IMPROVEMENTS
+Priority: LOW-MEDIUM — improve output quality
+================================================================================
+
+FIX 7.1: ADD SNYDER'S ACTUAL FILM EXAMPLES TO ALL PROMPTS
+  Source: All audit reports
+  Problem: Prompts reference the book methodology but rarely include
+           Snyder's specific film examples that illustrate each concept.
+  Action: Add 2-3 canonical examples per beat, per genre, per law.
+
+FIX 7.2: ADD LOGLINE FEEDBACK LOOP
+  Source: ch1_logline_audit.txt
+  Problem: No iterative refinement. Logline should be tested against the
+           "Stranger on a Bus" test (would a random person want to hear more?).
+  Action: Add self-evaluation prompt asking "would you pay $12 to see this?"
+
+FIX 7.3: ADD CALLBACKS/RUNNING GAGS/BOOSTER ROCKETS
+  Source: ch5_board_audit.txt (Rule R20)
+  Problem: Snyder mentions callbacks and running gags as tools to keep
+           momentum. Not represented in board or screenplay prompts.
+  Action: Add to Board prompt and screenplay writing prompt.
+
+FIX 7.4: ADD POSTER/ONE-SHEET TEST
+  Source: ch1_logline_audit.txt
+  Problem: Snyder says if you can't picture a poster, the concept isn't strong.
+           Step 9 has one_sheet_concept but it's weakly validated.
+  Action: Move poster/one-sheet concept earlier (Step 1 or Step 2).
+
+================================================================================
+IMPLEMENTATION ORDER
+================================================================================
+
+The fixes MUST be implemented in this order due to dependencies:
+
+WAVE 1 (No dependencies — can be done in parallel):
+  - FIX 1.1: Remove Laying Pipe law (models + step_6 files)
+  - FIX 1.2: Add 9th diagnostic (models + step_7 files)
+  - FIX 1.5: Remove 5-part Finale (step_4 files)
+  - FIX 2.1: Move primal_goal out of Logline (models)
+  - FIX 2.2: Add time frame to Logline (models + step_1 files)
+  - FIX 2.3: Add hero demographics (models + step_3 files)
+  - FIX 2.5-2.9: Fix all validator constants (validator files)
+  - FIX 4.1-4.3: Genre system overhaul (models + step_2 files)
+  - FIX 6.1-6.6: All validator bug fixes
+
+WAVE 2 (Depends on Wave 1):
+  - FIX 1.3: Reorder pipeline (orchestrator — needs models fixed first)
+  - FIX 1.4: Fix Step 8 labeling (depends on reorder)
+  - FIX 2.4: Emotional polarity before/after (models + board)
+
+WAVE 3 (Depends on Wave 2):
+  - FIX 3.1: Supporting Cast step (new step, needs pipeline order finalized)
+  - FIX 3.2: Character voice profiles (part of 3.1 or after)
+  - FIX 3.4: Scene-level outline step (new step)
+
+WAVE 4 (Depends on Wave 3):
+  - FIX 3.3: Post-screenplay diagnostic loop (needs reordered pipeline)
+  - FIX 5.1-5.10: All step-level refinements
+  - FIX 7.1-7.4: All prompt improvements
+
+================================================================================
+FILE CHANGE SUMMARY
+================================================================================
+
+Files to MODIFY (existing):
+  src/screenplay_engine/models.py                              — HEAVY changes
+  src/screenplay_engine/pipeline/orchestrator.py               — HEAVY changes
+  src/screenplay_engine/pipeline/prompts/step_1_prompt.py      — MEDIUM changes
+  src/screenplay_engine/pipeline/prompts/step_2_prompt.py      — MEDIUM changes
+  src/screenplay_engine/pipeline/prompts/step_3_prompt.py      — MEDIUM changes
+  src/screenplay_engine/pipeline/prompts/step_4_prompt.py      — MEDIUM changes
+  src/screenplay_engine/pipeline/prompts/step_5_prompt.py      — MEDIUM changes
+  src/screenplay_engine/pipeline/prompts/step_6_prompt.py      — HEAVY changes
+  src/screenplay_engine/pipeline/prompts/step_7_prompt.py      — MEDIUM changes
+  src/screenplay_engine/pipeline/prompts/step_8_prompt.py      — LIGHT changes
+  src/screenplay_engine/pipeline/prompts/step_9_prompt.py      — LIGHT changes
+  src/screenplay_engine/pipeline/validators/step_1_validator.py — MEDIUM changes
+  src/screenplay_engine/pipeline/validators/step_2_validator.py — MEDIUM changes
+  src/screenplay_engine/pipeline/validators/step_3_validator.py — HEAVY changes
+  src/screenplay_engine/pipeline/validators/step_4_validator.py — MEDIUM changes
+  src/screenplay_engine/pipeline/validators/step_5_validator.py — HEAVY changes
+  src/screenplay_engine/pipeline/validators/step_6_validator.py — MEDIUM changes
+  src/screenplay_engine/pipeline/validators/step_7_validator.py — MEDIUM changes
+  src/screenplay_engine/pipeline/validators/step_8_validator.py — LIGHT changes
+  src/screenplay_engine/pipeline/steps/step_1_logline.py       — LIGHT changes
+  src/screenplay_engine/pipeline/steps/step_2_genre.py         — LIGHT changes
+  src/screenplay_engine/pipeline/steps/step_3_hero.py          — LIGHT changes
+  src/screenplay_engine/pipeline/steps/step_4_beat_sheet.py    — LIGHT changes
+  src/screenplay_engine/pipeline/steps/step_5_board.py         — LIGHT changes
+  src/screenplay_engine/pipeline/steps/step_6_immutable_laws.py — LIGHT changes
+  src/screenplay_engine/pipeline/steps/step_7_diagnostics.py   — LIGHT changes
+  src/screenplay_engine/pipeline/steps/step_8_screenplay.py    — LIGHT changes
+  src/screenplay_engine/pipeline/steps/step_9_marketing.py     — LIGHT changes
+
+Files to CREATE (new):
+  src/screenplay_engine/pipeline/steps/step_3b_supporting_cast.py
+  src/screenplay_engine/pipeline/prompts/step_3b_prompt.py
+  src/screenplay_engine/pipeline/validators/step_3b_validator.py
+  (Possibly: step for scene-level outline)
+
+TOTAL: ~30 files modified, ~3 files created
+ESTIMATED SCOPE: ~2000-3000 lines changed across all files

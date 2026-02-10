@@ -22,7 +22,7 @@ class Step4BeatSheet:
     Generates and validates the 15-beat Blake Snyder Beat Sheet.
     """
 
-    VERSION = "2.0.0"
+    VERSION = "3.0.0"
 
     def __init__(self, project_dir: str = "artifacts"):
         self.project_dir = Path(project_dir)
@@ -57,7 +57,7 @@ class Step4BeatSheet:
         if not model_config:
             model_config = {
                 "temperature": 0.4,
-                "max_tokens": 4000,
+                "max_tokens": 16000,
             }
 
         # Compute upstream hash for provenance
@@ -287,7 +287,7 @@ class Step4BeatSheet:
         )
 
         if not model_config:
-            model_config = {"temperature": 0.4, "max_tokens": 8000}
+            model_config = {"temperature": 0.4, "max_tokens": 16000}
 
         # Generate with retry
         raw_content = self.generator.generate(prompt_data, model_config)

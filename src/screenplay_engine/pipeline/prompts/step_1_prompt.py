@@ -42,21 +42,63 @@ SNOWFLAKE STEP 1 (One-Sentence Summary):
 
 COMPONENT 1 -- IRONY (the hook):
 - The logline MUST contain an inherent contradiction or dramatic tension.
-- It must be "emotionally intriguing, like an itch you have to scratch."
+- Snyder: "The number one thing a good logline must have is irony."
+- Irony is "emotionally intriguing, like an itch you have to scratch."
 - If the logline lacks irony, the story concept may be fundamentally off.
 - You MUST explicitly state what the ironic element is in the ironic_element field.
-- Examples of irony: "a claustrophobic astronaut", "a cop whose own building is seized by terrorists",
-  "a businessman falls in love with a hooker he hires for the weekend."
+- GOOD irony examples from the book:
+  * "A cop comes to L.A. to visit his estranged wife and must single-handedly
+    take on a band of terrorists who have seized HER building." (Die Hard)
+    -- Irony: The cop's personal visit becomes a war zone in his wife's workplace.
+  * "A businessman falls in love with a hooker he hires to be his date for
+    the weekend." (Pretty Woman)
+    -- Irony: Paid transaction becomes real love.
+  * "She's the perfect woman -- until she has a drink." (Blind Date)
+    -- Irony: Perfection conceals chaos.
+  * "A holiday season of supposed family joy is turned on its cynical head." (4 Christmases)
+    -- Irony: Christmas = joy, but four Christmases = hell.
 
 COMPONENT 2 -- COMPELLING MENTAL PICTURE:
-- A good logline must "bloom in your mind" -- a whole movie must be implied.
-- The logline must show a CHARACTER described by TYPE with an adjective
-  (NOT a bare name -- "a risk-averse teacher", "a guilt-ridden bounty hunter",
-  "a newly married couple"), facing a DILEMMA with a clear GOAL and OBSTACLE.
+- Snyder: "A good logline, once said, blossoms in your brain."
+- The logline must make you SEE the whole movie -- beginning, middle, and end.
+- STRUCTURE RULE: The logline MUST start with the character, described by TYPE
+  with an adjective. NEVER start with setting or time. The character is the
+  subject of the first clause.
+  * CORRECT: "A guilt-ridden bounty hunter must..." (starts with character)
+  * CORRECT: "A risk-averse teacher plans on..." (starts with character)
+  * CORRECT: "A newly married couple must spend..." (starts with character)
+  * WRONG: "In near-future Los Angeles, a bounty hunter..." (starts with setting)
+  * WRONG: "When a blackout threatens the city..." (starts with event)
 - The logline must imply a TIME FRAME -- when the story takes place and how long
   it spans ("Christmas Day", "one night", "the weekend of a retreat").
 - From the logline, the reader should see where the story BEGINS and ENDS.
-- "Fish out of water" dynamics or opposites facing off are powerful but not required.
+- "Fish out of water" dynamics or opposites facing off are powerful. Snyder:
+  "This is why fish out of water stories are so popular -- you can see the
+  potential fireworks of one type of person being thrust into a world outside
+  his ken."
+
+COMPONENT 2B -- BREVITY (CRITICAL):
+- COUNT YOUR WORDS. The logline must be 15-35 words maximum.
+- Study the word counts of Snyder's examples:
+  * "She's the perfect woman -- until she has a drink." = 10 words
+  * "A newly married couple must spend Christmas Day at each of their four
+    divorced parent's homes." = 17 words
+  * "A just-hired employee goes on a company weekend and soon discovers
+    someone's trying to kill him." = 17 words
+  * "A cop comes to L.A. to visit his estranged wife and must single-handedly
+    take on a band of terrorists who have seized her building." = 25 words
+- If your logline exceeds 35 words, you are EXPLAINING too much. Cut the
+  HOW and keep the WHO + WHAT + WHY-IT'S-IRONIC. Let the reader's
+  imagination fill in the details.
+- BAD (too long, explains mechanics): "In near-future Los Angeles, a bounty
+  hunter has one night to hunt a rogue AI hiding inside the city's power grid
+  before it triggers a permanent blackout while it hijacks cameras, drones and
+  police dispatch to turn the entire city into her pursuer." (48 words, explains
+  HOW the AI works instead of hooking with irony)
+- GOOD (tight, ironic): "A guilt-ridden bounty hunter must capture a target
+  that has no body -- a rogue AI inside the power grid -- in one night, while
+  it turns the whole city against her." (31 words, hooks with the "target with
+  no body" irony)
 
 COMPONENT 3 -- AUDIENCE AND COST:
 - From the logline alone, a reader must be able to infer:
@@ -65,44 +107,45 @@ COMPONENT 3 -- AUDIENCE AND COST:
   * BUDGET TIER: Is this a "block comedy" (low budget, one location)? Medium?
     Star-driven? Effects-driven tentpole?
   * GENRE/TONE: Comedy? Thriller? Drama? The tone must be immediately clear.
-- Snyder infers ALL of this from loglines like "4 Christmases" and "Die Hard."
+- Snyder: "That's a whole lot to ask from one lousy line of description, don't
+  you think? But it's right there." He infers audience, cost, tone, and genre
+  ALL from a single logline like "4 Christmases."
 
 COMPONENT 4 -- KILLER TITLE:
-- Title and logline form a "one-two punch" -- they must reinforce each other.
-- The title MUST have IRONY: "a great title must have irony and tell the tale."
-- The title MUST "Say What It Is" -- it must pinpoint what THIS particular movie
-  is about. "Legally Blonde" says what it is; "Yuletide" does not.
+- Title and logline are a "one-two punch" -- they must reinforce each other.
+- Snyder: "A great title must have irony and tell the tale."
+- The title MUST "Say What It Is" -- pinpoint what THIS particular movie is about.
 - The title must TELL THE TALE -- convey the essential story dynamic.
-- The title must NOT be vague ("For Love or Money", "Crossroads", "Destiny").
-- The title must NOT be "on the nose" or stupid.
+- GOOD TITLES (from the book):
+  * "Legally Blonde" -- ironic (blonde = dumb stereotype, legally = smart profession), says what it is, tells the tale.
+  * "Nuclear Family" -- ironic double meaning (nuclear = family unit AND radioactive), says what it is.
+  * "4 Christmases" -- says exactly what it is (four Christmas celebrations), implies the comedy.
+  * "Ride Along" -- says what it is (a ride along with a cop), double meaning (being taken for a ride).
+- BAD TITLES (from the book):
+  * "For Love or Money" -- Snyder: "Seriously, isn't that title awful? You could call every movie ever made For Love or Money."
+  * "Yuletide" -- "says Christmas, but doesn't pinpoint what THIS Christmas movie is about."
+  * "The Devil's Own" -- vague, doesn't say what it is despite having Brad Pitt + Harrison Ford.
+  * "Crossroads", "Destiny", "Reflections" -- vague, could be anything.
+- The title must NOT be "on the nose" or stupid. Compare: "Legally Blonde" (clever)
+  vs. "Barbie Goes To Harvard" (stupid) vs. "Totally Law School" (on the nose).
 
 HIGH CONCEPT (the overall quality bar):
+- Snyder: "All you had to do is look at the one-sheet and you know 'What is it?'"
 - The logline + title must be "high concept" -- easy to see from the logline
   and poster alone. 50% of box office comes from international markets where
   the concept must travel without explanation.
 - THE POSTER TEST: You should be able to imagine the movie poster from the
-  logline and title alone. Describe what that poster looks like.
-
-SNYDER'S LOGLINE EXAMPLES (from the book):
-- "A cop comes to L.A. to visit his estranged wife and must single-handedly
-  take on a band of terrorists who have seized her building." (Die Hard)
-- "A businessman falls in love with a hooker he hires to be his date for
-  the weekend." (Pretty Woman)
-- "She's the perfect woman -- until she has a drink." (Blind Date)
-- "A newly married couple must spend Christmas Day at each of their four
-  divorced parent's homes." (4 Christmases)
-- "A just-hired employee goes on a company weekend and soon discovers
-  someone's trying to kill him." (The Retreat)
-- "A risk-averse teacher plans on marrying his dream girl but must first
-  accompany his overprotective future brother-in-law -- a cop -- on a ride
-  along from hell!" (Ride Along)
+  logline and title alone.
+- THE STARBUCKS TEST: If you pitched this logline to a stranger at Starbucks,
+  would they lean in or drift away? Snyder road-tested his loglines on strangers:
+  "When they start to drift, when they look away, I've lost them."
 
 THE JEALOUSY TEST: When another writer reads your logline, their reaction
 should be "Why didn't I think of that!"
 
 OUTPUT FORMAT (JSON):
 {{
-  "logline": "<1-2 sentence logline with irony, character type, goal, obstacle, time frame>",
+  "logline": "<1-2 sentence logline, 15-35 words MAX. Start with character type, not setting.>",
   "title": "<killer title with irony that says what it is and tells the tale>",
   "ironic_element": "<explicit statement of the contradiction/dramatic tension>",
   "hero_adjective": "<adjective for protagonist that creates tension with their situation>",
@@ -130,15 +173,31 @@ Generate ONLY valid JSON. No markdown fences, no commentary outside the JSON."""
 
         Returns:
             Dict with system and user prompts, prompt_hash, and version
+
+        Raises:
+            ValueError: If required Snowflake artifacts are missing.
         """
-        step_0 = snowflake_artifacts.get("step_0", {})
-        step_1 = snowflake_artifacts.get("step_1", {})
+        step_0 = snowflake_artifacts.get("step_0")
+        if not step_0:
+            raise ValueError("Snowflake step_0 artifact is required but missing")
+        step_1 = snowflake_artifacts.get("step_1")
+        if not step_1:
+            raise ValueError("Snowflake step_1 artifact is required but missing")
+
+        # Validate required fields exist — no silent fallbacks
+        required_step_0 = ["category", "story_kind", "audience_delight"]
+        for field in required_step_0:
+            if not step_0.get(field):
+                raise ValueError(f"Snowflake step_0 is missing required field: '{field}'")
+
+        if not step_1.get("logline"):
+            raise ValueError("Snowflake step_1 is missing required field: 'logline'")
 
         user_prompt = self.USER_PROMPT_TEMPLATE.format(
-            category=step_0.get("category", "MISSING"),
-            story_kind=step_0.get("story_kind", "MISSING"),
-            audience_delight=step_0.get("audience_delight", "MISSING"),
-            snowflake_logline=step_1.get("logline", "MISSING"),
+            category=step_0["category"],
+            story_kind=step_0["story_kind"],
+            audience_delight=step_0["audience_delight"],
+            snowflake_logline=step_1["logline"],
         )
 
         # Calculate prompt hash for tracking
@@ -169,29 +228,31 @@ Generate ONLY valid JSON. No markdown fences, no commentary outside the JSON."""
         Returns:
             Dict with system and user prompts for revision
         """
-        step_0 = snowflake_artifacts.get("step_0", {})
+        step_0 = snowflake_artifacts.get("step_0")
+        if not step_0:
+            raise ValueError("Snowflake step_0 artifact is required for revision")
         error_text = "\n".join(f"- {error}" for error in validation_errors)
 
         revision_user = f"""REVISION REQUIRED for Screenplay Step 1 (Logline).
 
 CURRENT ARTIFACT:
-Logline: {current_artifact.get('logline', 'MISSING')}
-Title: {current_artifact.get('title', 'MISSING')}
-Ironic Element: {current_artifact.get('ironic_element', 'MISSING')}
-Character Type: {current_artifact.get('character_type', 'MISSING')}
-Hero Adjective: {current_artifact.get('hero_adjective', 'MISSING')}
-Time Frame: {current_artifact.get('time_frame', 'MISSING')}
-Story Beginning: {current_artifact.get('story_beginning', 'MISSING')}
-Story Ending: {current_artifact.get('story_ending', 'MISSING')}
-Target Audience: {current_artifact.get('target_audience', 'MISSING')}
-Budget Tier: {current_artifact.get('budget_tier', 'MISSING')}
-Genre Tone: {current_artifact.get('genre_tone', 'MISSING')}
-Poster Concept: {current_artifact.get('poster_concept', 'MISSING')}
+Logline: {current_artifact.get('logline', '')}
+Title: {current_artifact.get('title', '')}
+Ironic Element: {current_artifact.get('ironic_element', '')}
+Character Type: {current_artifact.get('character_type', '')}
+Hero Adjective: {current_artifact.get('hero_adjective', '')}
+Time Frame: {current_artifact.get('time_frame', '')}
+Story Beginning: {current_artifact.get('story_beginning', '')}
+Story Ending: {current_artifact.get('story_ending', '')}
+Target Audience: {current_artifact.get('target_audience', '')}
+Budget Tier: {current_artifact.get('budget_tier', '')}
+Genre Tone: {current_artifact.get('genre_tone', '')}
+Poster Concept: {current_artifact.get('poster_concept', '')}
 High Concept Score: {current_artifact.get('high_concept_score', 0)}
 
 CONTEXT (Snowflake Step 0):
-Category: {step_0.get('category', 'MISSING')}
-Story Kind: {step_0.get('story_kind', 'MISSING')}
+Category: {step_0.get('category', '')}
+Story Kind: {step_0.get('story_kind', '')}
 
 VALIDATION ERRORS:
 {error_text}

@@ -1,0 +1,766 @@
+================================================================================
+SAVE THE CAT SCREENPLAY ENGINE AUDIT
+Chapter 6: "The Immutable Laws of Screenplay Physics"
+================================================================================
+
+Audit Date:       2026-02-08
+Source Text:       temp_pages\stc_chapters\ch6_laws.txt
+Engine Step:       Step 6 - Immutable Laws Validation
+Auditor:           Claude Opus 4.6 (automated gap analysis)
+
+Files Examined:
+  [PROMPT]     src\screenplay_engine\pipeline\prompts\step_6_prompt.py       (324 lines)
+  [VALIDATOR]  src\screenplay_engine\pipeline\validators\step_6_validator.py  (266 lines)
+  [STEP]       src\screenplay_engine\pipeline\steps\step_6_immutable_laws.py (215 lines)
+  [MODELS]     src\screenplay_engine\models.py                               (344 lines)
+  [BOOK]       temp_pages\stc_chapters\ch6_laws.txt                          (305 lines)
+
+================================================================================
+EXECUTIVE SUMMARY
+================================================================================
+
+The engine claims to enforce "8 Immutable Laws of Screenplay Physics" from
+Chapter 6 of Blake Snyder's "Save the Cat!" However, Chapter 6 contains
+exactly 7 named laws, not 8.
+
+The engine fabricated a law called "Laying Pipe" (listed as law #4) that does
+not appear anywhere in Chapter 6. This phantom law propagates through all four
+source files and shifts the numbering of every subsequent law.
+
+Of the 7 real laws from the book:
+  - 6 are correctly represented (MATCH)
+  - 1 has a minor naming deviation (MATCH with note)
+  - 0 are partially implemented
+  - 0 real laws are missing
+
+There is 1 completely fabricated law that must be removed.
+
+Verdict Tally:
+  MATCH:       6
+  MATCH/MINOR: 1  (naming prefix deviation)
+  PARTIAL:     0
+  MISSING:     0
+  WRONG:       1  (fabricated "Laying Pipe")
+
+Overall Severity: HIGH -- the fabricated law causes structural count mismatches
+throughout the entire pipeline (prompt, validator, model, step executor all
+hard-code the number 8).
+
+================================================================================
+PART 1: LAWS AS THEY APPEAR IN THE BOOK (Chapter 6)
+================================================================================
+
+The chapter presents exactly 7 named laws/rules, in this order:
+
+  1. Save the Cat                  (book lines 31-61)
+  2. The Pope in the Pool          (book lines 63-99)
+  3. Double Mumbo Jumbo            (book lines 101-141)
+  4. Black Vet                     (book lines 143-173)
+  5. Watch Out for That Glacier    (book lines 175-201)
+  6. The Covenant of the Arc       (book lines 203-239)
+  7. Keep the Press Out            (book lines 241-273)
+
+There is NO law called "Laying Pipe" in Chapter 6. The phrase does not appear
+in the chapter text at all.
+
+The chapter summary (book lines 275-291) recaps: "Save the Cat, The Pope In
+the Pool, Black Vet, and Keep The Press Out" as example law names, and refers
+to them collectively as rules learned from watching movies. At no point does
+the chapter claim there are 8 laws.
+
+================================================================================
+PART 2: LAW-BY-LAW GAP ANALYSIS
+================================================================================
+
+--------------------------------------------------------------------------------
+LAW 1: SAVE THE CAT
+--------------------------------------------------------------------------------
+Book Name:       "Save the Cat" (also "Save The Cat" -- Snyder uses both)
+Engine Name:     "Save the Cat"
+Verdict:         MATCH
+Severity:        NONE
+
+BOOK DEFINITION (lines 33-37):
+  "The Hero has to do something when we meet him so that we like him and want
+  him to win."
+  Adjunct: "A screenwriter must be mindful of getting the audience 'in sync'
+  with the plight of the Hero from the very start."
+
+BOOK EXAMPLES:
+  - Pulp Fiction (lines 37-49): Travolta and Jackson are funny and naive
+    discussing McDonald's hamburgers in France. Makes hitmen likeable.
+    Anti-hero trick: make the Boss WORSE (threw someone out a window for a
+    foot massage), so Travolta looks good by comparison.
+  - Aladdin (lines 51-57): Steals food because hungry, chased by guards,
+    then gives stolen food to starving kids. Classic STC.
+  - Lara Croft (line 59): Negative example -- assumes audience will like
+    hero "just cuz."
+
+BOOK TEST FOR VIOLATIONS:
+  Does the hero do something likable through ACTION (not told, shown) early
+  in the story? For anti-heroes, is their enemy demonstrably worse?
+
+BOOK FIX:
+  Add a scene in the Set-Up where the hero demonstrates likability through
+  action. For anti-heroes, introduce the antagonist's worse behavior early.
+
+ENGINE IMPLEMENTATION:
+  [PROMPT] line 43-44:
+    "Hero does something likable early (in Set-Up) to get audience in sync.
+    Anti-heroes: make enemy even MORE horrible."
+    Check: "Does the Board's Act One (Row 1) include a scene where the hero
+    demonstrates likability through ACTION? Not told -- shown."
+
+  [VALIDATOR] line 14: "Save the Cat" in REQUIRED_LAW_NAMES
+  [PROMPT] line 79: "Save the Cat" in JSON output template
+
+ANALYSIS:
+  The engine captures the core definition accurately, includes the anti-hero
+  corollary, and correctly specifies checking Act One for an action-based
+  likability scene. The prompt also references the hero's "save_the_cat_moment"
+  field from Step 3, which provides the AI evaluator with the specific moment
+  to cross-check against the Board.
+
+  No gaps detected.
+
+--------------------------------------------------------------------------------
+LAW 2: THE POPE IN THE POOL
+--------------------------------------------------------------------------------
+Book Name:       "The Pope In The Pool" (with "The" prefix, lines 63, 79, 83)
+Engine Name:     "Pope in the Pool"
+Verdict:         MATCH (minor naming note)
+Severity:        LOW
+
+BOOK DEFINITION (lines 65-73):
+  A technique for burying exposition. Named after "The Plot to Kill the Pope"
+  by George Englund. Representatives visit the Pope at the Vatican pool. The
+  Pope swims laps in his bathing suit while vital backstory is delivered. The
+  audience is distracted by the visual and the exposition goes down painlessly.
+
+BOOK EXAMPLES:
+  - The Plot to Kill the Pope (line 73): Pope in bathing suit swimming laps.
+  - Drips (lines 81-89): Two plumbers need to pee during a heist explanation;
+    pee-inducing visuals distract from exposition.
+  - Austin Powers (line 91): Character literally named "Basil Exposition."
+  - Pirates of the Caribbean (line 95): Two funny guards deliver Jack
+    Sparrow's backstory.
+  - A Clear and Present Danger (line 96): Batting cage scene.
+
+BOOK TEST FOR VIOLATIONS:
+  Are there scenes that are pure exposition dumps with nothing entertaining
+  happening simultaneously?
+
+BOOK FIX:
+  Add visual distraction, comedy, or action to any scene that must deliver
+  plot information.
+
+ENGINE IMPLEMENTATION:
+  [PROMPT] lines 46-47:
+    "All exposition buried inside entertaining action/visuals. Never 'talk
+    the plot.'"
+    Check: "Are there any scenes that are pure exposition dumps? All setup
+    information must be delivered while something entertaining is happening."
+
+  [VALIDATOR] line 15: "Pope in the Pool" in REQUIRED_LAW_NAMES
+  [PROMPT] line 86: "Pope in the Pool" in JSON output template
+
+ANALYSIS:
+  The engine captures the concept correctly. The check is functionally sound.
+
+  Minor naming deviation: The book consistently uses "The Pope In The Pool"
+  with the article "The" as a prefix (see lines 63, 79, 83, 89, 93, 97).
+  The engine drops "The" and uses just "Pope in the Pool." This means if any
+  AI response uses the book's exact phrasing "The Pope in the Pool," the
+  validator will reject it as a name mismatch.
+
+  RECOMMENDATION: Either accept both forms or update to "The Pope in the Pool."
+
+--------------------------------------------------------------------------------
+LAW 3: DOUBLE MUMBO JUMBO
+--------------------------------------------------------------------------------
+Book Name:       "Double Mumbo Jumbo"
+Engine Name:     "Double Mumbo Jumbo"
+Verdict:         MATCH
+Severity:        NONE
+
+BOOK DEFINITION (lines 101-107):
+  "Audiences will only accept one piece of magic per movie. It's The Law."
+  "You can not see aliens from outer space land in a UFO and then be bitten
+  by a Vampire and now be both aliens and undead."
+
+BOOK EXAMPLES:
+  - Spider-Man (lines 111-125): Radioactive spider bite gives Peter powers
+    (magic #1) AND a lab accident creates Green Goblin (magic #2). Two
+    unrelated sources of supernatural power. Interest wanes at the midpoint
+    when the second source of magic appears.
+  - Signs (lines 127-141): Aliens landing on Earth (magic #1) AND Mel
+    Gibson's crisis of faith in God (magic #2). "God and aliens don't mix"
+    -- two different kinds of magic in one movie.
+
+BOOK TEST FOR VIOLATIONS:
+  Count the number of distinct supernatural/magical/sci-fi premises. Must be
+  at most one.
+
+BOOK FIX:
+  Derive all magical elements from a single source. If you have a radioactive
+  spider, the villain's powers must come from the same source.
+
+ENGINE IMPLEMENTATION:
+  [PROMPT] lines 49-50:
+    "Only ONE piece of magic/supernatural per story. Cannot have aliens AND
+    vampires."
+    Check: "Count how many supernatural/magical/sci-fi elements exist. There
+    must be at most ONE."
+
+  [VALIDATOR] line 16: "Double Mumbo Jumbo" in REQUIRED_LAW_NAMES
+  [PROMPT] line 93: "Double Mumbo Jumbo" in JSON output template
+
+ANALYSIS:
+  Accurately represents the law. The "aliens AND vampires" example is the
+  engine's own invention but correctly illustrates the concept (the book's
+  actual example is "aliens from outer space land in a UFO and then be bitten
+  by a Vampire"). The check logic is correct.
+
+  No gaps detected.
+
+--------------------------------------------------------------------------------
+LAW 4 (ENGINE): "LAYING PIPE" -- FABRICATED
+--------------------------------------------------------------------------------
+Book Name:       DOES NOT EXIST IN CHAPTER 6
+Engine Name:     "Laying Pipe"
+Verdict:         WRONG -- FABRICATED LAW
+Severity:        CRITICAL
+
+BOOK EVIDENCE:
+  The phrase "Laying Pipe" does not appear anywhere in Chapter 6. A full-text
+  search of ch6_laws.txt (305 lines) returns zero matches for "lay", "pipe",
+  "laying", or "Laying Pipe." The concept is not discussed, referenced, or
+  alluded to in any form in this chapter.
+
+  "Laying Pipe" is a general screenwriting colloquialism referring to
+  excessive setup/exposition. It may appear elsewhere in screenwriting
+  literature, but it is NOT one of Blake Snyder's "Immutable Laws of
+  Screenplay Physics" from Chapter 6.
+
+ENGINE IMPLEMENTATION:
+  [PROMPT] lines 52-53:
+    "Setup/exposition must not exceed ~25% of Act One. Catalyst by page 12-15
+    (beat 4)."
+    Check: "Is the Catalyst (beat 4) positioned correctly? Is Act One bogged
+    down with too much setup before the story starts?"
+
+  [PROMPT] lines 69, 100, 161: "Laying Pipe" in canonical name lists
+  [VALIDATOR] line 17: "Laying Pipe" in REQUIRED_LAW_NAMES
+  [MODELS] line 187: LawResult allows law_number up to 8 (le=8)
+
+ANALYSIS:
+  This law was fabricated to reach a count of 8. Its content -- checking
+  Catalyst placement and Act One pacing -- is valid screenwriting guidance
+  but belongs to Beat Sheet mechanics (Chapter 4, Step 4), not to the
+  Immutable Laws framework of Chapter 6.
+
+  Additionally, this check is REDUNDANT: Step 4 (Beat Sheet) validation
+  already verifies Catalyst positioning at beat #4 and correct page targets.
+  Having it duplicated here as a fake "Immutable Law" creates confusion
+  about where this validation belongs.
+
+  The fabrication has cascading effects:
+    - The engine claims "8 Immutable Laws" throughout (prompt line 4, 19, 24,
+      41; validator lines 3, 35, 40, 42, 54, 64, 66; step lines 4, 26, 58,
+      69)
+    - The validator requires exactly 8 law entries (validator line 64)
+    - The model allows law_number 1-8 (models line 187)
+    - If the AI correctly generates only 7 laws (the real ones), validation
+      FAILS because the validator demands exactly 8
+
+  IMPACT: This is a hard blocker. The entire Step 6 pipeline is structurally
+  built around an incorrect count of 8.
+
+  FILES AFFECTED (all need changes):
+    src\screenplay_engine\pipeline\prompts\step_6_prompt.py
+      - Line 4: "8 Immutable Laws" -> "7 Immutable Laws"
+      - Line 19: "8 Immutable Laws" -> "7 Immutable Laws"
+      - Line 24: "ALL 8 Immutable Laws" -> "ALL 7 Immutable Laws"
+      - Line 41: "ALL 8 IMMUTABLE LAWS" -> "ALL 7 IMMUTABLE LAWS"
+      - Lines 52-53: DELETE entirely (Laying Pipe definition + check)
+      - Lines 55-65: RENUMBER from 5-8 to 4-7
+      - Lines 68-69: "1-8" -> "1-7", remove "Laying Pipe" from name list
+      - Lines 98-104: DELETE Laying Pipe from JSON template
+      - Lines 105-132: RENUMBER 5-8 to 4-7 in JSON template
+      - Line 161: Remove "Laying Pipe" from revision prompt name list
+
+    src\screenplay_engine\pipeline\validators\step_6_validator.py
+      - Line 3: "all 8 Immutable Laws" -> "all 7 Immutable Laws"
+      - Line 17: DELETE "Laying Pipe" from REQUIRED_LAW_NAMES
+      - Line 35: "exactly 8 entries" -> "exactly 7 entries"
+      - Line 40: "All 8 canonical" -> "All 7 canonical"
+      - Line 42: "all 8 laws" -> "all 7 laws"
+      - Line 54: "exactly 8" -> "exactly 7"
+      - Line 64: len(laws) != 8 -> len(laws) != 7
+      - Line 66: "Expected exactly 8" -> "Expected exactly 7"
+      - Line 86: law_number > 8 -> law_number > 7
+      - Line 89: "1-8" -> "1-7"
+      - Line 198: "exactly 8 entries" -> "exactly 7 entries"
+      - Lines 207, 211: "1-8" -> "1-7"
+      - Lines 219-222: Remove "Laying Pipe" from canonical name string
+      - Line 248: "ALL 8 laws" -> "ALL 7 laws"
+      - Lines 252-255: Remove "Laying Pipe" from canonical name string
+
+    src\screenplay_engine\pipeline\steps\step_6_immutable_laws.py
+      - Line 4: "8 Immutable Laws" -> "7 Immutable Laws"
+      - Line 26: "all 8 Immutable Laws" -> "all 7 Immutable Laws"
+      - Line 58: "8 Immutable Laws" -> "7 Immutable Laws"
+      - Line 69: "all 8 laws" -> "all 7 laws"
+
+    src\screenplay_engine\models.py
+      - Line 187: le=8 -> le=7
+
+--------------------------------------------------------------------------------
+LAW 4 (BOOK) / LAW 5 (ENGINE): BLACK VET
+--------------------------------------------------------------------------------
+Book Name:       "Black Vet"
+Engine Name:     "Black Vet"
+Engine Number:   #5 (should be #4)
+Verdict:         MATCH (numbering is wrong due to Laying Pipe insertion)
+Severity:        MEDIUM (numbering shift)
+
+BOOK DEFINITION (lines 143-173):
+  An offshoot of Double Mumbo Jumbo dealing with conceptual creativity.
+  "Simple is better. One concept at a time, please. You cannot digest too
+  much information, or pile on more to make it better."
+
+  Named after an Albert Brooks Saturday Night Live parody of NBC promos: a
+  show called "Black Vet" about a black veterinarian who is also a military
+  veteran. Punchline: "He's a veteran and a veterinarian!" The joke is about
+  piling too many concepts onto one idea.
+
+BOOK EXAMPLES:
+  - Black Vet (Albert Brooks SNL parody, line 153-159): Vet who is also a
+    veteran -- two concepts crammed into one show.
+  - "Lefty" (lines 163-171): Snyder's own experience. A 1950s blacklisted
+    private eye named "Lefty" for political affiliation. Partner wanted to
+    also make him left-handed AND an ex-boxer. "Pick one." Too Much Marzipan.
+
+BOOK RELATIONSHIP TO DOUBLE MUMBO JUMBO:
+  Line 143: "An offshoot of the Double Mumbo Jumbo rule when dealing with
+  conceptual creativity." Black Vet is about concept overload (too many
+  ideas piled on), while Double Mumbo Jumbo is about magic-system overload
+  (too many supernatural premises). Related but distinct.
+
+BOOK TEST FOR VIOLATIONS:
+  Is there more than one high concept competing for attention?
+
+BOOK FIX:
+  Strip down to ONE clear hook. Remove extra layers of concept. "Pick one."
+
+ENGINE IMPLEMENTATION:
+  [PROMPT] lines 55-56:
+    "One high concept per story. Don't pile on multiple concepts."
+    Check: "Is there more than one high concept competing for attention? The
+    story must have ONE clear hook."
+
+  [VALIDATOR] line 18: "Black Vet" in REQUIRED_LAW_NAMES
+  [PROMPT] line 107: "Black Vet" in JSON template (as law #5)
+
+ANALYSIS:
+  The engine correctly identifies Black Vet as being about concept overload.
+  The check is appropriately simple. The only issue is that the engine
+  numbers it as #5 when it should be #4 (because the fabricated "Laying Pipe"
+  occupies position #4).
+
+  Once "Laying Pipe" is removed, Black Vet should be renumbered to #4.
+
+--------------------------------------------------------------------------------
+LAW 5 (BOOK) / LAW 6 (ENGINE): WATCH OUT FOR THAT GLACIER
+--------------------------------------------------------------------------------
+Book Name:       "Watch Out For That Glacier" (line 195-197)
+Engine Name:     "Watch Out for That Glacier"
+Engine Number:   #6 (should be #5)
+Verdict:         MATCH (numbering is wrong due to Laying Pipe insertion)
+Severity:        MEDIUM (numbering shift)
+
+BOOK DEFINITION (lines 175-197):
+  Danger must be present, imminent, and personal -- not slowly approaching
+  from far away. "Danger must be present danger. Stakes must be stakes for
+  people we care about. And what might happen to them must be shown from the
+  get-go so we know the consequences of the imminent threat."
+
+BOOK EXAMPLES:
+  - Dante's Peak (line 183): A volcano slowly about to blow. Audience waits.
+  - Outbreak (lines 185-187): Super Ebola virus slowly headed toward the US.
+    The "house" is not established until page 75.
+  - Open Range (line 189): After a buddy is killed on page 20, Costner and
+    Duvall talk about going after the bad guys for an hour and a half.
+
+BOOK TEST FOR VIOLATIONS:
+  Is the threat active, personal to the hero, and escalating throughout Act
+  Two? Or is it slowly approaching from far away?
+
+BOOK FIX:
+  Make danger present and imminent from early on. Show consequences. Make it
+  personal to characters we care about.
+
+ENGINE IMPLEMENTATION:
+  [PROMPT] lines 58-59:
+    "Danger must be present, imminent, and personal -- not slowly approaching."
+    Check: "Is the central threat active and personal to the hero throughout
+    Act Two? Does it escalate, not just loom?"
+
+  [VALIDATOR] line 19: "Watch Out for That Glacier" in REQUIRED_LAW_NAMES
+  [PROMPT] line 114: "Watch Out for That Glacier" in JSON template (as law #6)
+
+ANALYSIS:
+  Excellent representation of the law. The "escalate, not just loom" phrasing
+  is a good distillation of Snyder's point. The capitalization differs
+  slightly from the book ("for" vs "For") but the validator uses the engine's
+  canonical form consistently, so this is not a functional issue.
+
+  Once "Laying Pipe" is removed, this should be renumbered to #5.
+
+--------------------------------------------------------------------------------
+LAW 6 (BOOK) / LAW 7 (ENGINE): THE COVENANT OF THE ARC
+--------------------------------------------------------------------------------
+Book Name:       "The Covenant of the Arc" (with "The" prefix, line 203)
+Engine Name:     "Covenant of the Arc"
+Engine Number:   #7 (should be #6)
+Verdict:         MATCH (minor naming note; numbering wrong)
+Severity:        LOW (naming), MEDIUM (numbering shift)
+
+BOOK DEFINITION (lines 203-239):
+  "Every single character in your movie must change in the course of your
+  story. The only characters who don't change are the Bad Guys."
+
+  Arc definition (line 209): "The change that occurs to any character from
+  the beginning, through the middle and to end of each character's 'journey.'"
+
+  "Good guys are those who willingly accept change and see it as a positive
+  force. Bad guys are those who refuse to change."
+
+  Snyder's Post-it note on his iMac (line 231): "Everybody arcs."
+
+BOOK EXAMPLES:
+  - Pretty Woman (line 217): Richard Gere, Julia Roberts, Laura San Giacomo,
+    Hector Elizondo all transform. Only Jason Alexander (bad guy) learns
+    exactly zero.
+
+BOOK TEST FOR VIOLATIONS:
+  Chart every character's transformation from start to end. Hero must have
+  clear arc. Supporting characters must also show change. Bad guy stays static.
+
+BOOK FIX:
+  For each character, define opening state and final state. If they are the
+  same, the story has not affected that character -- revise.
+
+ENGINE IMPLEMENTATION:
+  [PROMPT] lines 61-62:
+    "EVERY character must change. Only exception: the bad guy (stays static
+    -- that's why they lose)."
+    Check: "Does the hero have a clear arc from opening_state to final_state?
+    Do supporting characters show change? Does the antagonist remain static?"
+
+  [VALIDATOR] line 20: "Covenant of the Arc" in REQUIRED_LAW_NAMES
+  [PROMPT] line 121: "Covenant of the Arc" in JSON template (as law #7)
+
+ANALYSIS:
+  The engine captures the law accurately, including the crucial point about
+  the bad guy remaining static. The check correctly references the hero
+  model's opening_state and final_state fields and asks about supporting
+  character arcs.
+
+  Minor naming deviation: The book uses "The Covenant of the Arc" with the
+  article "The" (line 203, 223). The engine drops "The." Same issue as with
+  "Pope in the Pool."
+
+  Once "Laying Pipe" is removed, this should be renumbered to #6.
+
+--------------------------------------------------------------------------------
+LAW 7 (BOOK) / LAW 8 (ENGINE): KEEP THE PRESS OUT
+--------------------------------------------------------------------------------
+Book Name:       "Keep The Press Out" (line 249, 263, 273)
+Engine Name:     "Keep the Press Out"
+Engine Number:   #8 (should be #7)
+Verdict:         MATCH (numbering wrong)
+Severity:        MEDIUM (numbering shift)
+
+BOOK DEFINITION (lines 241-273):
+  Don't bring the media/press/news into your contained story world. Learned
+  from Steven Spielberg while developing "Nuclear Family." Bringing the press
+  in "blew the reality of the premise." Keeping the story "between them and
+  us, the audience" preserves the magic.
+
+BOOK EXAMPLES:
+  - E.T. (lines 257-259): No news crews despite a real alien. Spielberg
+    deliberately kept it contained to the family and neighborhood.
+  - Nuclear Family (lines 249-255): Family gets superpowers. Spielberg
+    rejected the idea of media discovering them.
+  - Signs (lines 263-269): VIOLATES this law. Mel Gibson watches CNN coverage
+    of worldwide alien landings. Makes the situation less desperate because
+    "they're no longer alone with this problem."
+
+BOOK EXCEPTION (line 271):
+  "Unless it's about the press, unless your movie involves a world-wide
+  problem and we follow stories with characters all over the world."
+
+BOOK TEST FOR VIOLATIONS:
+  Do any scenes involve media/press/news reporting on the story's events in
+  a way that breaks the contained world?
+
+BOOK FIX:
+  Remove media scenes unless the story IS about the press.
+
+ENGINE IMPLEMENTATION:
+  [PROMPT] lines 64-65:
+    "Don't break contained story world with outside media awareness (unless
+    story IS about press)."
+    Check: "Do any scenes involve the media/press/news reporting on events
+    in a way that breaks the story's contained world?"
+
+  [VALIDATOR] line 21: "Keep the Press Out" in REQUIRED_LAW_NAMES
+  [PROMPT] line 128: "Keep the Press Out" in JSON template (as law #8)
+
+ANALYSIS:
+  Correctly captures the law, including the exception clause. The exception
+  for stories that are explicitly about the press matches the book's carve-out
+  on line 271.
+
+  Once "Laying Pipe" is removed, this should be renumbered to #7.
+
+================================================================================
+PART 3: STRUCTURAL AND VALIDATION ISSUES
+================================================================================
+
+ISSUE S-1: HARD-CODED COUNT OF 8 (CRITICAL)
+  Every file hard-codes the number 8. This must change to 7 everywhere.
+
+  Affected locations (exhaustive list):
+
+  [PROMPT] step_6_prompt.py:
+    Line 4:   "Blake Snyder's 8 Immutable Laws"
+    Line 19:  "the 8 Immutable Laws of Screenplay Physics"
+    Line 24:  "ALL 8 Immutable Laws"
+    Line 41:  "ALL 8 IMMUTABLE LAWS"
+    Line 68:  "law_number (1-8)"
+    Line 161: "all 8 laws with exact names"
+
+  [VALIDATOR] step_6_validator.py:
+    Line 3:   "all 8 Immutable Laws"
+    Line 35:  "exactly 8 entries"
+    Line 40:  "All 8 canonical"
+    Line 42:  "all 8 laws"
+    Line 54:  "exactly 8 entries"
+    Line 64:  len(laws) != 8
+    Line 66:  "Expected exactly 8 laws"
+    Line 86:  law_number > 8
+    Line 89:  "integer 1-8"
+    Line 198: "exactly 8 entries"
+    Line 248: "ALL 8 laws"
+
+  [STEP] step_6_immutable_laws.py:
+    Line 4:   "8 Immutable Laws"
+    Line 26:  "all 8 Immutable Laws"
+    Line 58:  "8 Immutable Laws"
+    Line 69:  "all 8 laws"
+
+  [MODELS] models.py:
+    Line 187: le=8  (LawResult.law_number constraint)
+
+--------------------------------------------------------------------------------
+
+ISSUE S-2: VALIDATOR ONLY CHECKS STRUCTURE, NOT SEMANTICS (MEDIUM)
+  The validator (step_6_validator.py) checks:
+    - JSON shape (list of 8 dicts)
+    - Required fields present (law_number, law_name, passed)
+    - Correct types (int, str, bool)
+    - Canonical name matching
+    - Failed laws have violation_details and fix_suggestion
+    - all_passed consistency
+
+  The validator does NOT check:
+    - Whether the AI's evaluation of each law actually tests the correct
+      concept. For example, if the AI says "Save the Cat: passed=true" but
+      gives a rationale about exposition rather than hero likability, the
+      validator would still accept it.
+    - Whether the violation_details content is semantically related to the
+      law being evaluated.
+    - Whether the fix_suggestion is actionable or relevant.
+
+  This means the AI could misapply a law's criteria and the validator would
+  not catch it. The structural checks are necessary but not sufficient for
+  ensuring law-correct evaluation.
+
+  RECOMMENDATION: Add keyword-based semantic checks per law. For example:
+    - Save the Cat: violation_details should reference "likab" OR "hero" OR
+      "audience" OR "sync" OR "action"
+    - Double Mumbo Jumbo: should reference "magic" OR "supernatural" OR
+      "one piece"
+    - Covenant of the Arc: should reference "change" OR "arc" OR "transform"
+  This would catch gross misapplications without being overly restrictive.
+
+--------------------------------------------------------------------------------
+
+ISSUE S-3: LAW NAME CAPITALIZATION VS BOOK (LOW)
+  The book uses the following exact forms:
+    "Save The Cat"           (line 33)  or  "Save the Cat" (line 43)
+    "The Pope In The Pool"   (line 63, 79, 83)
+    "Double Mumbo Jumbo"     (line 101, 107)
+    "Black Vet"              (line 143, 151, 169)
+    "Watch Out For That Glacier" (the header on lines 175-177 is garbled in
+                                  OCR but the rule is stated on line 195-197)
+    "The Covenant of the Arc" (line 203, 223)
+    "Keep The Press Out"     (line 249, 263, 273)
+
+  The engine uses:
+    "Save the Cat"                   -- matches one form in book
+    "Pope in the Pool"               -- DROPS "The" prefix
+    "Double Mumbo Jumbo"             -- matches book
+    "Black Vet"                      -- matches book
+    "Watch Out for That Glacier"     -- matches (minor "for" vs "For")
+    "Covenant of the Arc"            -- DROPS "The" prefix
+    "Keep the Press Out"             -- "the" vs "The" (minor)
+
+  Two law names drop the "The" prefix that the book uses. If AI responses
+  follow the book's phrasing, they will fail the canonical name check.
+
+  RECOMMENDATION: Either add "The" to "Pope in the Pool" and "Covenant of
+  the Arc" to match the book, or document the deviation and ensure the prompt
+  instructs the AI to use the engine's exact canonical names.
+
+--------------------------------------------------------------------------------
+
+ISSUE S-4: REDUNDANCY WITH STEP 4 BEAT SHEET VALIDATION (LOW)
+  The fabricated "Laying Pipe" law checks Catalyst placement (beat 4, page
+  12-15) and Act One pacing. This is already handled by Step 4 (Beat Sheet)
+  validation, which checks all 15 beats against their target page positions
+  (see models.py lines 274-290, BEAT_PAGE_TARGETS).
+
+  This redundancy disappears when "Laying Pipe" is removed, so no action is
+  needed beyond removing the fabricated law.
+
+--------------------------------------------------------------------------------
+
+ISSUE S-5: BLACK VET DESCRIBED AS "OFFSHOOT" IN BOOK (INFO)
+  The book explicitly states (line 143) that Black Vet is "An offshoot of
+  the Double Mumbo Jumbo rule." The engine treats it as a fully independent
+  law. This is a reasonable design choice -- Black Vet tests a distinct
+  concept (concept overload vs magic-system overload) -- but it is worth
+  documenting that the book frames it as a sub-rule of DMJ.
+
+  RECOMMENDATION: No action required. The engine's treatment is defensible.
+  Optionally, add a comment in the prompt noting the book's framing.
+
+--------------------------------------------------------------------------------
+
+ISSUE S-6: REVISION PROMPT ENFORCES FABRICATED LAW (MEDIUM)
+  The revision prompt template (step_6_prompt.py line 161) explicitly
+  instructs the AI: "You MUST evaluate all 8 laws with exact names: 'Save
+  the Cat', 'Pope in the Pool', 'Double Mumbo Jumbo', 'Laying Pipe', 'Black
+  Vet', 'Watch Out for That Glacier', 'Covenant of the Arc', 'Keep the
+  Press Out'."
+
+  This means even if the AI's initial response correctly identifies only 7
+  laws, the revision prompt will force it to add the fabricated "Laying Pipe"
+  law in its corrected output.
+
+  FILE: src\screenplay_engine\pipeline\prompts\step_6_prompt.py
+  LINE: 161
+  FIX: Remove "Laying Pipe" from the list; change "all 8 laws" to "all 7
+  laws."
+
+================================================================================
+PART 4: SUMMARY OF ALL FINDINGS BY SEVERITY
+================================================================================
+
+CRITICAL (must fix before engine is book-accurate):
+  [C-1] "Laying Pipe" is fabricated -- not in Chapter 6
+        Files: prompt (lines 52-53, 69, 100-104, 161), validator (line 17),
+               models (line 187), step (lines 4, 26, 58, 69)
+        Fix: Remove "Laying Pipe" entirely; change all counts from 8 to 7;
+             renumber remaining laws 4-7.
+
+MEDIUM (affects correctness/robustness):
+  [M-1] All law numbers after #3 are shifted by +1 due to Laying Pipe
+        insertion. Black Vet is #5 (should be #4), Glacier is #6 (should
+        be #5), Covenant is #7 (should be #6), Press is #8 (should be #7).
+        Fix: Resolved automatically when C-1 is fixed.
+
+  [M-2] Revision prompt (line 161) forces AI to include fabricated law.
+        Fix: Resolved automatically when C-1 is fixed.
+
+  [M-3] Validator only checks structure, not semantic correctness of law
+        evaluations.
+        Fix: Add keyword-based semantic spot-checks per law.
+
+LOW (cosmetic/best-practice):
+  [L-1] "Pope in the Pool" and "Covenant of the Arc" are missing the "The"
+        prefix that the book uses.
+        Fix: Add "The" prefix or document the deviation.
+
+  [L-2] Book frames Black Vet as an "offshoot" of Double Mumbo Jumbo; engine
+        treats it as independent.
+        Fix: None required. Optionally document.
+
+INFORMATIONAL:
+  [I-1] The chapter summary (book lines 287) lists only four law names as
+        examples ("Save the Cat, The Pope In the Pool, Black Vet, and Keep
+        The Press Out"), omitting three others. This does not affect the
+        engine -- all 7 laws are clearly presented in the chapter body.
+
+================================================================================
+PART 5: RECOMMENDED FIX PLAN
+================================================================================
+
+Priority 1 (Critical -- C-1):
+  1. In step_6_prompt.py:
+     a. Remove lines 52-53 (Laying Pipe definition and check)
+     b. Renumber laws 5-8 to 4-7 in the USER_PROMPT_TEMPLATE
+     c. Remove lines 98-104 (Laying Pipe JSON template entry)
+     d. Renumber laws 5-8 to 4-7 in the JSON template
+     e. Change all "8" references to "7" (lines 4, 19, 24, 41, 68, 161)
+     f. Remove "Laying Pipe" from canonical name lists (lines 69, 161)
+
+  2. In step_6_validator.py:
+     a. Remove "Laying Pipe" from REQUIRED_LAW_NAMES (line 17)
+     b. Change all "8" references to "7" (lines 3, 35, 40, 42, 54, 64, 66,
+        86, 89, 198, 248)
+     c. Remove "Laying Pipe" from fix suggestion strings (lines 219-222,
+        252-255)
+
+  3. In step_6_immutable_laws.py:
+     a. Change all "8" references to "7" (lines 4, 26, 58, 69)
+
+  4. In models.py:
+     a. Change LawResult.law_number constraint from le=8 to le=7 (line 187)
+
+Priority 2 (Medium -- M-3):
+  5. In step_6_validator.py:
+     a. Add semantic keyword checks in the per-law validation loop
+     b. For each law, verify that violation_details or pass rationale
+        contains at least one keyword related to the law's actual concept
+
+Priority 3 (Low -- L-1):
+  6. In step_6_prompt.py and step_6_validator.py:
+     a. Decide whether to add "The" prefix to "Pope in the Pool" and
+        "Covenant of the Arc" to match the book exactly
+     b. Update all references consistently across both files
+
+================================================================================
+PART 6: CORRECT LAW MAPPING (for reference after fixes)
+================================================================================
+
+After removing "Laying Pipe," the correct law numbering should be:
+
+  Law #  | Name                         | Book Lines | Engine Check Focus
+  -------|------------------------------|------------|---------------------------
+  1      | Save the Cat                 | 31-61      | Hero likability via ACTION
+  2      | The Pope in the Pool         | 63-99      | Exposition buried in action
+  3      | Double Mumbo Jumbo           | 101-141    | Max 1 magic system
+  4      | Black Vet                    | 143-173    | Max 1 high concept
+  5      | Watch Out for That Glacier   | 175-201    | Danger is present/personal
+  6      | The Covenant of the Arc      | 203-239    | Every character changes
+  7      | Keep the Press Out           | 241-273    | No media breaking world
+
+  Total: 7 laws (matching the book exactly)
+
+================================================================================
+END OF AUDIT REPORT
+================================================================================

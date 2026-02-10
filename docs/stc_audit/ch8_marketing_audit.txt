@@ -1,0 +1,1015 @@
+==============================================================================
+SAVE THE CAT AUDIT: Chapter 8 ("Final Fade In") + Glossary
+vs. Screenplay Engine Steps 8 & 9
+==============================================================================
+
+Date:      2026-02-08
+Auditor:   Claude Opus 4.6
+Scope:     STC Chapter 8, STC Glossary, Engine Steps 8 (Screenplay) & 9 (Marketing)
+Verdict:   SIGNIFICANT GAPS -- 14 MISSING items, 5 PARTIAL, 3 WRONG, 5 MATCH
+
+==============================================================================
+SECTION 0: CRITICAL ARCHITECTURAL FINDING
+==============================================================================
+
+SEVERITY: CRITICAL
+STATUS:   WRONG (Step 8 mislabeled)
+
+Chapter 8 of "Save the Cat" ("Final Fade In") does NOT describe how to write
+a screenplay from board cards. The entire chapter is about:
+
+  - How to get an agent (anecdotes about Hilary Wayne, Budd Friedman)
+  - Contact strategies (in person > phone > letter > email)
+  - Film festivals, screenwriting groups, classes as networking
+  - Specialty pitches (David Kirshner's pitch stunts, Nuclear Family
+    "radioactive containers," Blank Check backpacks)
+  - Why screenplay contests are useless
+  - Career reputation building
+  - Persistence and attitude advice
+
+There is ZERO content in Chapter 8 about screenplay formatting, scene
+expansion, or any mechanical writing process.
+
+The engine's Step 8 ("Screenplay Writing") claims to implement Chapter 8.
+This is incorrect. The actual screenplay-writing guidance lives at the END
+of Chapter 5 ("Building the Perfect Beast"), lines 247-269 of ch5_board.txt,
+specifically the "Get Ready For Your Deep Sea Dive" checklist and the
+transition-to-writing section.
+
+The engine's Step 9 ("Marketing Validation") is correctly mapped to Chapter 8's
+marketing/selling content.
+
+IMPACT:
+  - Step 8's docstring and comments reference "Chapter 8" wrongly.
+  - Step 8 prompt (step_8_prompt.py line 2) says "Save the Cat" but should
+    reference the Ch.5 transition-to-writing rules, not Ch.8.
+
+FILES AFFECTED:
+  C:\Users\asus\Desktop\projects\snowflake\src\screenplay_engine\pipeline\prompts\step_8_prompt.py
+    Line 2:  """Step 8 Prompt Template: Screenplay Writing (Save the Cat)"""
+    Line 3:  "Expands 40 board cards into full screenplay scenes..."
+    -- No chapter reference, but the numbering implies Ch.8 correspondence.
+
+  C:\Users\asus\Desktop\projects\snowflake\src\screenplay_engine\pipeline\steps\step_8_screenplay.py
+    Line 2:  """Step 8 Implementation: Screenplay Writing (Save the Cat)"""
+    Line 3:  "Expands the 40 board cards into full screenplay scenes..."
+
+  C:\Users\asus\Desktop\projects\snowflake\src\screenplay_engine\pipeline\prompts\step_9_prompt.py
+    Line 4:  "...per Blake Snyder Chapter 8."  -- CORRECT mapping for Step 9.
+
+  C:\Users\asus\Desktop\projects\snowflake\src\screenplay_engine\pipeline\steps\step_9_marketing.py
+    Line 4:  "...per Blake Snyder Chapter 8."  -- CORRECT mapping for Step 9.
+
+FIX: Rename Step 8's chapter attribution to "Ch.5 Board-to-screenplay
+transition." Step 9's attribution to Chapter 8 is correct and should remain.
+
+==============================================================================
+SECTION 1: PIPELINE ORDER PROBLEM
+==============================================================================
+
+SEVERITY: HIGH
+STATUS:   WRONG
+
+Current engine pipeline order:
+  Step 1 (Logline) -> Step 2 (Genre) -> Step 3 (Hero) -> Step 4 (Beat Sheet)
+  -> Step 5 (Board) -> Step 6 (Immutable Laws) -> Step 7 (Diagnostics)
+  -> Step 8 (Screenplay) -> Step 9 (Marketing)
+
+Snyder's actual order:
+  Steps 1-5 (plan)
+  -> Step 6 (Immutable Laws -- pre-writing gate, correct)
+  -> WRITE SCREENPLAY
+  -> Set aside for a week
+  -> Step 7 (Diagnostics -- post-writing diagnosis)
+  -> Rewrite to fix problems
+  -> Marketing / selling
+
+The issue: Step 7 (Ch.7 diagnostics) currently runs BEFORE Step 8 (screenplay
+writing). In Snyder's book, Chapter 7 ("What's Wrong With This Picture?")
+opens with: "You've made it! Congratulations! You've followed my advice,
+you've done the prep, you've hit your marks like a pro, and you've finally
+written THE END." (ch7_diagnostics.txt line 3). This proves diagnostics run
+AFTER writing the screenplay, not before.
+
+The engine runs Step 7 against the Board/Beat Sheet (pre-writing artifacts),
+which is useful but is NOT what Snyder describes. Snyder's diagnostics are
+for a FINISHED SCREENPLAY DRAFT.
+
+FILES AFFECTED:
+  C:\Users\asus\Desktop\projects\snowflake\src\screenplay_engine\pipeline\steps\step_7_diagnostics.py
+    Lines 5-7:  "Unlike Step 6 (hard gate), Step 7 diagnostics report problems
+                WITH fixes -- the step succeeds even if diagnostics find issues"
+    Lines 27-30: "Takes step_5_artifact (Board), step_4_artifact (Beat Sheet),
+                 and step_3_artifact (Hero profile), then runs 8 Blake Snyder
+                 Ch.7 diagnostic checks."
+    -- Operates on Board/Beat Sheet artifacts, not the finished screenplay.
+
+FIX: Add a Step 8.5 or Step 8b that runs Ch.7 diagnostics AGAINST the
+finished Step 8 screenplay artifact, checking all 8 diagnostic criteria:
+  1. Hero leads (proactive, no question marks in hero dialogue)
+  2. No "talking the plot"
+  3. Bad guy bad enough
+  4. Turn, Turn, Turn (acceleration after midpoint)
+  5. Emotional variety (not one-note)
+  6. Bad Dialogue Test (characters speak differently)
+  7. Limp and Eyepatch (characters visually distinct)
+  8. Take A Step Back (hero's arc starts far enough back)
+  9. Is it primal?
+
+The current Step 7 against the Board is ALSO useful and should remain, but
+the post-screenplay diagnostic pass is the one Snyder actually describes.
+
+==============================================================================
+SECTION 2: RULE-BY-RULE GAP ANALYSIS
+==============================================================================
+
+Each rule is tagged with:
+  SOURCE:    Which STC chapter/section and line numbers from the OCR text
+  STATUS:    MATCH / PARTIAL / MISSING / WRONG
+  SEVERITY:  CRITICAL / HIGH / MEDIUM / LOW
+  FILES:     Engine files involved, with line numbers
+  DETAILS:   What the book says vs. what the engine does
+  FIX:       Recommended action
+
+------------------------------------------------------------------------------
+RULE 1: +/- Emotional Change Per Scene (Before -> After)
+------------------------------------------------------------------------------
+SOURCE:    Ch.5 (ch5_board.txt lines 187-189), Glossary (glossary.txt line 141)
+STATUS:    PARTIAL
+SEVERITY:  HIGH
+
+BOOK SAYS:
+  Ch.5: "The +/- sign represents the emotional change you must execute in
+  each scene. Think of each scene as a mini-movie. It must have a beginning,
+  middle and an end. And it must also have something happen that causes the
+  emotional tone to change drastically either from + to - or from - to +."
+
+  Glossary: "If you think of each scene as a mini-movie, you must have a
+  BEFORE snapshot and an AFTER snapshot to show this change."
+
+ENGINE DOES:
+  step_8_prompt.py line 51:
+    emotional_polarity (str): "+" or "-" (from the board card)
+  step_8_validator.py lines 149-156:
+    Validates polarity is "+" or "-" (single value).
+  models.py line 223:
+    emotional_polarity: str  -- single string field.
+
+GAP: Snyder explicitly requires a BEFORE and AFTER pair. The engine stores
+only a single polarity value per scene, which represents the scene's ending
+emotional state but not the change. The +/- should be a transition (e.g.,
+"+ to -" or "- to +"), not a static label.
+
+FIX: Change emotional_polarity to an object or two-field structure:
+  emotional_start: str  ("+", "-")
+  emotional_end: str    ("+", "-")
+  -- Validate that start != end (Snyder requires the polarity to CHANGE).
+  Files to modify:
+    models.py line 223
+    step_8_prompt.py lines 51, 107
+    step_8_validator.py lines 149-156
+    step_9_prompt.py line 124 (scene summary references polarity)
+
+------------------------------------------------------------------------------
+RULE 2: >< Conflict Per Scene
+------------------------------------------------------------------------------
+SOURCE:    Ch.5 (ch5_board.txt lines 191-203), Glossary (glossary.txt line 143)
+STATUS:    MATCH
+SEVERITY:  N/A (correct)
+
+BOOK SAYS:
+  "The symbol >< denotes conflict... two people walk into a room from
+  opposite doors, meet in the middle and begin to struggle past each other."
+  "Only one conflict per scene, please. One is plenty."
+  Glossary: "Who has a goal, who's in the way, who wins?"
+
+ENGINE DOES:
+  step_8_prompt.py line 52:
+    conflict (str): "Who wants what from whom; who wins"
+  step_8_validator.py lines 140-147:
+    Validates conflict field is non-empty.
+  models.py line 224:
+    conflict: str
+
+VERDICT: MATCH. Implementation correctly captures the concept. The only minor
+gap is that the validator does not enforce the "only ONE conflict per scene"
+rule (i.e., it does not reject conflicts that describe multiple separate
+conflicts). This is LOW severity and hard to validate programmatically.
+
+------------------------------------------------------------------------------
+RULE 3: Show Don't Tell / No Internal Monologue
+------------------------------------------------------------------------------
+SOURCE:    Ch.7 (ch7_diagnostics.txt lines 65-87)
+STATUS:    PARTIAL
+SEVERITY:  MEDIUM
+
+BOOK SAYS:
+  "Movies are stories told in pictures. So why would you resort to telling
+  us when you can show us?" "Show, Don't Tell." Characters should not deliver
+  exposition; information comes from action.
+
+ENGINE DOES:
+  step_8_prompt.py lines 57-63:
+    Explicit NO INTERNAL MONOLOGUE instruction with examples.
+  step_8_validator.py lines 12-18:
+    INTERNAL_MONOLOGUE_MARKERS = [
+        "thinks", "feels inside", "internally",
+        "in her mind", "in his mind", "in their mind",
+    ]
+
+GAP: The marker list has only 6 entries. Common tell-not-show patterns are
+missing:
+  - "remembers"    (internal cognitive act)
+  - "wonders"      (internal cognitive act)
+  - "realizes"     (internal cognitive act when not shown externally)
+  - "decides"      (internal decision without visible action)
+  - "hopes"        (internal emotional state)
+  - "fears"        (internal emotional state)
+  - "thought to himself"
+  - "knew that"    (omniscient narration)
+  - "could tell"   (mind reading)
+  - "she felt"     (only "feels inside" is caught, not "she felt")
+  - "he sensed"    (internal perception)
+
+Additionally, the validator only checks action and dialogue elements
+(line 164), which is correct, but the markers are case-sensitive via
+.lower() comparison, which is fine.
+
+FIX: Expand INTERNAL_MONOLOGUE_MARKERS list in:
+  C:\Users\asus\Desktop\projects\snowflake\src\screenplay_engine\pipeline\validators\step_8_validator.py
+  Lines 12-18: Add at least 10 more markers.
+
+------------------------------------------------------------------------------
+RULE 4: Hero Must Be Proactive / Never Ask Questions
+------------------------------------------------------------------------------
+SOURCE:    Ch.7 (ch7_diagnostics.txt lines 37-63)
+STATUS:    MISSING
+SEVERITY:  HIGH
+
+BOOK SAYS:
+  "The hero must be proactive." "A hero never asks questions! The hero knows
+  and others around him look to him for answers, not the other way around.
+  If you see a lot of question marks in your hero's dialogue there's a
+  problem."
+
+ENGINE DOES:
+  No check exists anywhere in Step 8 for:
+  - Whether the hero's dialogue contains too many question marks
+  - Whether the hero is proactive or passive in scene descriptions
+  - Whether clues are "given to" the hero vs. the hero seeking them
+
+FIX: Add a validation check in step_8_validator.py:
+  - Identify the hero character name from step_3_artifact
+  - Scan dialogue elements attributed to the hero
+  - Flag if >30% of hero dialogue lines end with "?"
+  - Add a prompt instruction in step_8_prompt.py telling the LLM:
+    "The hero LEADS. The hero never asks questions -- the hero KNOWS."
+
+------------------------------------------------------------------------------
+RULE 5: No "Talking the Plot"
+------------------------------------------------------------------------------
+SOURCE:    Ch.7 (ch7_diagnostics.txt lines 65-85)
+STATUS:    MISSING
+SEVERITY:  HIGH
+
+BOOK SAYS:
+  "Characters will walk into scenes and say 'Well, you're my sister you
+  should know!' and 'This sure isn't like the time I was the star fullback
+  for the N.Y. Giants until my... accident.' This kind of dialogue is bad!"
+  "Your characters don't serve you they serve themselves."
+
+ENGINE DOES:
+  The Show Don't Tell check (Rule 3) catches some internal monologue in
+  action text, but there is NO check for dialogue that "talks the plot" --
+  i.e., characters delivering exposition about things they would already know.
+
+  step_8_prompt.py lines 65-67 come close:
+    "3. DIALOGUE is spoken, not literary.
+     WRONG: 'I have to tell you something of great importance about a matter.'
+     RIGHT: 'Look, about last night--'"
+  But this addresses literary tone, not exposition-through-dialogue.
+
+FIX: Add prompt instruction:
+  "Characters NEVER state facts they both already know. If two characters
+  are siblings, they never say 'As your brother, I...' -- find a visual way
+  to establish relationships."
+  Consider adding a validator heuristic that flags dialogue containing
+  "as you know," "you remember when," "as your [relationship]," etc.
+
+------------------------------------------------------------------------------
+RULE 6: The Pope in the Pool (Bury Exposition)
+------------------------------------------------------------------------------
+SOURCE:    Ch.6 (ch6_laws.txt lines 63-99)
+STATUS:    MISSING
+SEVERITY:  MEDIUM
+
+BOOK SAYS:
+  "Exposition is back story or details of the plot that must be told to the
+  audience in order for them to understand what happens next. But who wants
+  to waste time on this?" The solution is to disguise exposition with
+  something visually interesting happening simultaneously (the Pope swimming
+  laps while exposition unfolds).
+
+ENGINE DOES:
+  No prompt instruction or validation for exposition burial.
+  No check that exposition-heavy scenes have a visual "pope in the pool"
+  distraction element.
+
+FIX: Add a prompt instruction in step_8_prompt.py:
+  "If a scene must deliver exposition (back story, plot mechanics), bury it
+  with a visually interesting activity happening at the same time (see
+  'Pope in the Pool'). Never deliver exposition in a static talking-heads
+  scene."
+
+------------------------------------------------------------------------------
+RULE 7: Bad Dialogue Test (Character Voice Distinctiveness)
+------------------------------------------------------------------------------
+SOURCE:    Ch.7 (ch7_diagnostics.txt lines 161-187)
+STATUS:    MISSING
+SEVERITY:  HIGH
+
+BOOK SAYS:
+  "Take a page of your script and cover up the names of the people speaking.
+  Can you tell who is speaking without seeing the name above the dialogue?"
+  "In a good script, every character must speak differently. Every character
+  must have a unique way of saying even the most mundane chat."
+  "I gave every character a verbal tic. One stuttered, one did malapropisms,
+  one was an Okie versed in Sartre."
+
+ENGINE DOES:
+  step_8_prompt.py: No instruction about character voice distinctiveness.
+  step_8_validator.py: No validation for dialogue uniqueness.
+  models.py ScreenplayScene (line 213): characters_present is a list of
+  names only -- no character voice profiles.
+
+FIX:
+  1. Add a pre-screenplay step or prompt section that defines each
+     character's speech pattern (verbal tics, vocabulary level, dialect,
+     sentence length preference).
+  2. Add a prompt instruction: "Each character MUST speak in a
+     distinctive voice. If you cover the character names, a reader must
+     still be able to tell who is speaking by HOW they talk."
+  3. Consider a post-generation validator that compares dialogue patterns
+     across characters (sentence length variance, vocabulary overlap).
+
+------------------------------------------------------------------------------
+RULE 8: Limp and Eyepatch (Character Visual Distinctiveness)
+------------------------------------------------------------------------------
+SOURCE:    Ch.7 (ch7_diagnostics.txt lines 210-231)
+STATUS:    MISSING
+SEVERITY:  MEDIUM
+
+BOOK SAYS:
+  "Every character has to have a unique way of speaking, but also something
+  memorable that will stick them in the reader's mind. The reader has to
+  have a visual clue, often a running visual reminder."
+  Example: a boy character given "a black t-shirt and sporting a wispy
+  soul-patch" that is referenced every time he appears.
+
+ENGINE DOES:
+  step_8_prompt.py: No instruction to give characters visual hooks.
+  models.py: No field for character visual markers.
+  characters_present (line 225) is a flat list of names with no associated
+  visual descriptions.
+
+FIX: Add prompt instruction in step_8_prompt.py:
+  "When a character FIRST appears in a scene, their action line must include
+  a distinctive visual identifier (clothing item, physical trait, habitual
+  gesture). Reference this identifier in subsequent appearances."
+
+------------------------------------------------------------------------------
+RULE 9: First Reel (All Characters Introduced in First 10 Pages/Minutes)
+------------------------------------------------------------------------------
+SOURCE:    Glossary (glossary.txt lines 43)
+STATUS:    MISSING
+SEVERITY:  MEDIUM
+
+BOOK SAYS:
+  "The First Reel still denotes the first ten minutes of a movie and I
+  wisely suggest it be used to introduce every character."
+
+ENGINE DOES:
+  step_8_validator.py: No check on when characters are first introduced.
+  No tracking of which scene introduces each character.
+  No validation that all characters appear before scene ~10 (the first
+  10 minutes / 10 pages).
+
+FIX: Add a validator check that extracts all unique character names from
+all scenes, finds the first scene each appears in, and warns if any
+character is first introduced after the estimated 10-minute mark
+(cumulative estimated_duration_seconds > 600).
+
+------------------------------------------------------------------------------
+RULE 10: Save the Cat Moment Must Appear in Early Scene
+------------------------------------------------------------------------------
+SOURCE:    Ch.6 (ch6_laws.txt lines 30-61)
+STATUS:    PARTIAL
+SEVERITY:  HIGH
+
+BOOK SAYS:
+  "The Hero has to do something when we meet him so that we like him and
+  want him to win." Must appear very early -- when we first meet the hero.
+
+ENGINE DOES:
+  models.py line 106:
+    save_the_cat_moment: str = Field(..., description="Specific early scene
+    showing likability through ACTION")
+  -- Field exists in HeroProfile model. DEFINED but NOT ENFORCED.
+
+  step_8_prompt.py lines 147-153: The hero summary passed to the prompt
+  includes only name, archetype, motivation, and arc. The save_the_cat_moment
+  field from HeroProfile is NOT included in the prompt.
+
+  step_8_validator.py: No check that any scene contains the STC moment.
+
+GAP: The hero model defines the STC moment but the screenplay step never
+sees it and never validates that it appears in the screenplay.
+
+FIX:
+  1. Include hero.save_the_cat_moment in the hero_summary string built at
+     step_8_prompt.py lines 148-153.
+  2. Add a prompt instruction: "The hero's Save the Cat moment MUST appear
+     in one of the first 3 scenes."
+  3. Add a validator check that scans early scenes for the STC action.
+
+------------------------------------------------------------------------------
+RULE 11: Six Things That Need Fixing (Set Up in Act 1, Paid Off Later)
+------------------------------------------------------------------------------
+SOURCE:    Ch.5, Ch.7, Glossary (glossary.txt lines 111)
+STATUS:    PARTIAL
+SEVERITY:  HIGH
+
+BOOK SAYS:
+  "The list of a hero's minor character flaws, enemies and rivals that bully
+  him, and a wish list that, if we like the hero enough... get 'fixed' later
+  in the film." "Any problem that needs fixing must be paid off later on."
+  "I personally find myself going back and forth between Act One (set-up)
+  and Act Two or Three (pay-off)."
+
+ENGINE DOES:
+  models.py line 107:
+    six_things_that_need_fixing: List[str] = Field(..., min_length=6,
+    max_length=6)
+  -- Field exists in HeroProfile. DEFINED but NOT ENFORCED in screenplay.
+
+  step_8_prompt.py: The six_things list is NOT included in the prompt.
+  step_8_validator.py: No check for setup/payoff of the six things.
+
+FIX:
+  1. Include the six things in the hero_summary at step_8_prompt.py.
+  2. Add prompt instruction: "The Six Things That Need Fixing must be SET UP
+     in Act 1 scenes and PAID OFF in Act 2/3 scenes."
+  3. Add a validator check that searches for references to each of the six
+     things across the screenplay scenes.
+
+------------------------------------------------------------------------------
+RULE 12: Callbacks (Act 1 Setup Recalled Later)
+------------------------------------------------------------------------------
+SOURCE:    Glossary (glossary.txt lines 31)
+STATUS:    MISSING
+SEVERITY:  MEDIUM
+
+BOOK SAYS:
+  "Bits, images, character traits and metaphors that are set up in Act One
+  and then recalled later in the movie." Example: Back to the Future flier.
+
+ENGINE DOES:
+  No callback tracking in any model, prompt, or validator.
+
+FIX: Add a prompt instruction requesting the LLM identify and plant at
+least 3 callbacks (set up in Act 1, recalled in Act 2/3). Consider adding
+a callbacks list to the screenplay artifact.
+
+------------------------------------------------------------------------------
+RULE 13: Running Gags (Repeating Themes with Twist)
+------------------------------------------------------------------------------
+SOURCE:    Glossary (glossary.txt lines 97-105)
+STATUS:    MISSING
+SEVERITY:  LOW
+
+BOOK SAYS:
+  "Running gags are repeating themes, character tics or bits that are
+  interspersed throughout a movie or screenplay." "The running gag must be
+  given a twist later in the film when a character, by now ready to change,
+  goes into a cafe and orders... tea."
+
+ENGINE DOES:
+  No running gag support in any file.
+
+FIX: Add prompt instruction: "Include at least 2 running gags -- repeating
+character behaviors that appear 3+ times and receive a TWIST near the
+climax to show character change."
+
+------------------------------------------------------------------------------
+RULE 14: Booster Rockets (Energy at Dull Stretches)
+------------------------------------------------------------------------------
+SOURCE:    Glossary (glossary.txt lines 27-29)
+STATUS:    MISSING
+SEVERITY:  MEDIUM
+
+BOOK SAYS:
+  "There are spots in any screenplay that are potentially dull stretches.
+  Usually these are found right after 'big moments' like after the Act One
+  Break and sections where the action is petering out like at the end of
+  Act Two." Solution: introduce a "booster rocket" character (John Candy
+  in Home Alone, manicurist in Legally Blonde).
+
+ENGINE DOES:
+  No booster rocket concept. No check for pacing dips after structural
+  moments. No validation that energy-injecting characters or scenes appear
+  at the right places.
+
+FIX: Add prompt instruction: "After the Break into Two and near the end of
+Act Two, insert a scene with high energy (comic relief character, action
+set piece, or surprising new character) to maintain pacing momentum."
+
+------------------------------------------------------------------------------
+RULE 15: Set Pieces Are Disposable and Interchangeable
+------------------------------------------------------------------------------
+SOURCE:    Glossary (glossary.txt lines 107-109)
+STATUS:    MISSING
+SEVERITY:  LOW
+
+BOOK SAYS:
+  "A set piece is a stand-alone action scene or sequence. It stands alone
+  in that it does less to move the plot forward or enhance our idea of who
+  the characters are... Because of this, set pieces are disposable and
+  interchangeable."
+
+ENGINE DOES:
+  No concept of marking scenes as "set pieces" vs. plot-advancing scenes.
+  No metadata field for scene type.
+
+FIX: Consider adding a scene_type field to ScreenplayScene:
+  scene_type: "plot" | "set_piece" | "character" | "exposition"
+  Instruct the LLM to mark set pieces and ensure they are concentrated in
+  the Fun and Games section (pages 30-55).
+
+------------------------------------------------------------------------------
+RULE 16: Turn, Turn, Turn (Plot Acceleration)
+------------------------------------------------------------------------------
+SOURCE:    Ch.7 (ch7_diagnostics.txt lines 113-137)
+STATUS:    MISSING
+SEVERITY:  HIGH
+
+BOOK SAYS:
+  "The plot just doesn't just move ahead, it spins and intensifies as it
+  goes. It is the difference between velocity (a constant speed) and
+  acceleration (an increasing speed)." "More must be revealed along every
+  step of the plot about your characters."
+
+ENGINE DOES:
+  No acceleration check. No validation that scenes in the second half are
+  more intense than scenes in the first half. No check that new information
+  is revealed progressively.
+
+FIX: Add a post-screenplay validation check:
+  - Compare average scene duration in Act 1 vs. Act 3 (should decrease =
+    faster pacing)
+  - Count conflict intensity keywords or check that conflict descriptions
+    escalate
+  - Add prompt instruction: "After the Midpoint, scenes must accelerate in
+    pace and intensity. Each scene reveals MORE about characters and stakes."
+
+------------------------------------------------------------------------------
+RULE 17: Emotional Variety (All Colors in the Palette)
+------------------------------------------------------------------------------
+SOURCE:    Ch.7 (ch7_diagnostics.txt lines 138-159)
+STATUS:    MISSING
+SEVERITY:  HIGH
+
+BOOK SAYS:
+  "Whether it's a comedy or a drama, wringing out the emotions of the
+  audience is the name of the game." "Where is your lust scene? Where is
+  your frustration scene? Where is your scary scene?"
+
+ENGINE DOES:
+  Only tracks +/- polarity. No tracking of emotional categories (fear,
+  humor, sadness, anger, lust, frustration, triumph, etc.). No validation
+  that the screenplay uses diverse emotions.
+
+FIX:
+  1. Add an emotional_tone field to ScreenplayScene (e.g., "humor", "fear",
+     "sadness", "anger", "romance", "tension", "triumph").
+  2. Add a validator check that at least 4 distinct emotional tones appear
+     across all scenes.
+  3. Add prompt instruction: "Vary the emotional palette. Not every scene
+     should be the same emotion. Include humor, fear, romance, tension,
+     and triumph across the full screenplay."
+
+------------------------------------------------------------------------------
+RULE 18: Take A Step Back (Hero Arc Maximally Extended)
+------------------------------------------------------------------------------
+SOURCE:    Ch.7 (ch7_diagnostics.txt lines 188-209)
+STATUS:    MISSING
+SEVERITY:  MEDIUM
+
+BOOK SAYS:
+  "In order to show how everyone grows and changes in the course of your
+  story you must take them all back to the starting point." "By drawing
+  the bow back to its very quivering end point, the flight of the arrow
+  is its strongest, longest, best flight."
+
+ENGINE DOES:
+  models.py lines 110-111:
+    opening_state: str = Field(..., description="Who hero is at Opening Image")
+    final_state: str = Field(..., description="Who hero is at Final Image
+    (must be opposite)")
+  -- These exist in HeroProfile but are only passed as a brief arc summary
+  in the prompt (line 152: "Arc: {opening_state} -> {final_state}").
+  No validation that Scene 1 actually depicts the opening_state or that the
+  final scene depicts the final_state.
+
+FIX: Add validator checks:
+  - Scene 1's action/dialogue should reference the hero's opening_state
+  - The final scene should show evidence of the hero's final_state
+  - The two states should be "opposite" (validation: opening != final)
+
+------------------------------------------------------------------------------
+RULE 19: One Sheet / Poster Concept
+------------------------------------------------------------------------------
+SOURCE:    Glossary (glossary.txt lines 71-73), Ch.8 marketing context
+STATUS:    MATCH
+SEVERITY:  N/A (correct)
+
+BOOK SAYS:
+  "A one-sheet is the broad sheet that shows the stars, title and tone of
+  the film. A good one is gold."
+
+ENGINE DOES:
+  step_9_prompt.py lines 64-67:
+    "5. ONE SHEET CONCEPT (str):
+     - Describe the movie poster in 1-2 sentences.
+     - What single IMAGE would sell this story?
+     - What TAGLINE would go under the title?"
+  step_9_validator.py lines 75-87:
+    Validates one_sheet_concept is >= 20 chars.
+  models.py line 250:
+    one_sheet_concept: str
+
+VERDICT: MATCH. Well-implemented.
+
+------------------------------------------------------------------------------
+RULE 20: Logline Fidelity Check
+------------------------------------------------------------------------------
+SOURCE:    Ch.1 principles, Ch.8 marketing context
+STATUS:    MATCH
+SEVERITY:  N/A (correct)
+
+ENGINE DOES:
+  step_9_prompt.py lines 44-47:
+    "1. LOGLINE STILL ACCURATE (bool):
+     - Does the logline still describe what actually happens?
+     - If the story drifted during development, identify WHERE."
+  step_9_validator.py lines 39-46, 90-99:
+    Validates logline_still_accurate is boolean and True.
+
+VERDICT: MATCH. Correctly checks for logline drift.
+
+------------------------------------------------------------------------------
+RULE 21: 4 Quadrant Audience Analysis
+------------------------------------------------------------------------------
+SOURCE:    Glossary (glossary.txt lines 133-139)
+STATUS:    MISSING
+SEVERITY:  MEDIUM
+
+BOOK SAYS:
+  "The 4 quadrants are MEN OVER 25, MEN UNDER 25, WOMEN OVER 25 and
+  WOMEN UNDER 25. If you can draw audience from all those quadrants...
+  you are guaranteeing yourself a hit."
+
+ENGINE DOES:
+  step_9_prompt.py lines 54-58:
+    "3. AUDIENCE DEFINED (bool):
+     - Is it clear WHO this screenplay is for?
+     - Would the target audience find this satisfying?"
+  -- This is a simple boolean. No breakdown by quadrant.
+
+FIX: Expand audience_defined from a boolean to a structured object:
+  {
+    "audience_defined": true,
+    "quadrants_targeted": ["men_under_25", "women_under_25"],
+    "primary_quadrant": "men_under_25",
+    "quadrant_justification": "..."
+  }
+
+------------------------------------------------------------------------------
+RULE 22: 40 Cards, ~10 Per Column
+------------------------------------------------------------------------------
+SOURCE:    Ch.5 (ch5_board.txt lines 167, 205-207)
+STATUS:    MATCH
+SEVERITY:  N/A (correct)
+
+BOOK SAYS:
+  "Forty cards. That's all I'm going to give you." "Nine cards in column #1,
+  nine in column #2, nine in column #3 and nine in column #4 -- wait! That's
+  only 36 cards. Well, I'm giving you four extra."
+
+ENGINE DOES:
+  step_8_prompt.py line 35: "BOARD CARDS (40 scene cards to expand)"
+  models.py lines 167-172: TheBoard has 4 rows.
+  models.py line 155: BoardCard card_number ge=1, le=50.
+
+VERDICT: MATCH. Accommodates 40 cards across 4 rows.
+
+------------------------------------------------------------------------------
+RULE 23: Scene Sequences (Chase = 1 Beat, Multiple Locations)
+------------------------------------------------------------------------------
+SOURCE:    Ch.5 (ch5_board.txt lines 117-119, 174-175)
+STATUS:    WRONG
+SEVERITY:  MEDIUM
+
+BOOK SAYS:
+  "Though things like 'a chase' involve many scenes and can range through
+  indoor and outdoor set-ups, it's actually only one beat." "Simply write:
+  CHASE on this section, no matter how many 'scenes,' and consider it one
+  beat."
+
+ENGINE DOES:
+  step_8_prompt.py line 115:
+    "Every board card becomes one scene."
+  -- Forces a strict 1:1 mapping. A board card marked "CHASE" should be
+  allowed to expand into a SEQUENCE of 2-4 sub-scenes (different locations,
+  same beat), not exactly one scene.
+
+FIX: Change the prompt from "Every board card becomes one scene" to:
+  "Every board card becomes at least one scene. Board cards marked as
+  sequences (chases, montages, multi-location action) may expand into 2-4
+  sub-scenes sharing the same beat label."
+  Update the validator minimum scene count accordingly (may exceed 40).
+
+------------------------------------------------------------------------------
+RULE 24: Is It Primal?
+------------------------------------------------------------------------------
+SOURCE:    Ch.7 (ch7_diagnostics.txt lines 232-263), Glossary (lines 87-91)
+STATUS:    MISSING (from Step 8)
+SEVERITY:  MEDIUM
+
+BOOK SAYS:
+  "To ask 'Is it primal?' is to ask if you are connecting with the audience
+  at a basic level. Does your plot hinge on primal drives? Survival, hunger,
+  sex, protection of loved ones, fear of death."
+
+ENGINE DOES:
+  models.py lines 27-33: PrimalUrge enum exists (5 drives).
+  models.py line 97: HeroProfile.primal_motivation: PrimalUrge.
+  -- Defined at the hero level but NOT checked in the screenplay itself.
+  step_8_prompt.py line 151: Only passes hero motivation as a summary.
+  step_8_validator.py: No check that the screenplay's scenes connect to
+  primal drives.
+
+FIX: Add prompt instruction: "Every major scene's conflict must ultimately
+connect to a primal drive (survival, hunger, sex, protection of loved ones,
+fear of death). Make it visceral."
+
+------------------------------------------------------------------------------
+RULE 25: Hook / Promise of the Premise
+------------------------------------------------------------------------------
+SOURCE:    Glossary (glossary.txt lines 57, 93)
+STATUS:    PARTIAL
+SEVERITY:  MEDIUM
+
+BOOK SAYS:
+  Glossary "Hook": "This is the encapsulation of a movie... which grabs your
+  attention and makes you want to run out and see it."
+  Glossary "Promise of the Premise": "The promise of the premise are those
+  scenes or scene sequences that exploit the premise to its maximum and are
+  usually found in the 'fun and games' section (pages 30-55)."
+
+ENGINE DOES:
+  The logline (Step 1) captures the hook. Step 9 checks if the logline is
+  still accurate. But there is NO specific check that the Fun and Games
+  section (scenes corresponding to pages 30-55) delivers on the "promise of
+  the premise." The prompt does not instruct the LLM to focus the Fun and
+  Games scenes on exploiting the premise.
+
+FIX: Add prompt instruction: "Scenes in the Fun and Games beat (roughly
+scenes 10-20) MUST deliver the 'promise of the premise' -- the fun the
+audience bought a ticket for. These scenes exploit the logline's concept to
+its maximum."
+
+------------------------------------------------------------------------------
+RULE 26: Stakes Are Raised at Midpoint
+------------------------------------------------------------------------------
+SOURCE:    Glossary (glossary.txt lines 113-115)
+STATUS:    PARTIAL
+SEVERITY:  MEDIUM
+
+BOOK SAYS:
+  "Suddenly from out of nowhere at the Midpoint, some new thing becomes a
+  problem for our hero, an even bigger and more unexpected thing than we've
+  seen before and one that seems insurmountable."
+
+ENGINE DOES:
+  models.py line 147: midpoint_polarity in BeatSheet.
+  The Beat Sheet captures midpoint direction. But Step 8 has no validation
+  that the midpoint scene actually introduces new, escalated stakes.
+
+FIX: Add a validator check: the scene tagged as "Midpoint" beat should
+contain language indicating stakes escalation (new threat, new obstacle,
+time pressure).
+
+==============================================================================
+SECTION 3: MISSING PIPELINE STEPS
+==============================================================================
+
+------------------------------------------------------------------------------
+MISSING STEP A: Post-Screenplay Diagnostic Pass
+------------------------------------------------------------------------------
+SEVERITY: CRITICAL
+
+As detailed in Section 1, Chapter 7's diagnostics are designed to run on a
+FINISHED screenplay draft. The engine needs a new step (Step 8b or Step 8.5)
+that takes the Step 8 screenplay artifact and runs Ch.7's 8 diagnostic
+checks against it:
+
+  1. Hero leads (proactive, goal clear, no question marks in dialogue)
+  2. No "talking the plot" (no exposition through dialogue)
+  3. Bad guy bad enough (antagonist challenges hero at every turn)
+  4. Turn, Turn, Turn (plot accelerates after midpoint)
+  5. Emotional roller coaster (uses all emotional colors)
+  6. Bad Dialogue Test (characters speak distinctly)
+  7. Limp and Eyepatch (characters visually memorable)
+  8. Take A Step Back (hero arc starts as far back as possible)
+  9. Is it primal? (all drives are primal)
+
+This step should produce a diagnostic report with pass/fail per check and
+specific scene-level fix instructions. Failed checks should trigger a
+revision of Step 8.
+
+FILES TO CREATE:
+  src/screenplay_engine/pipeline/prompts/step_8b_prompt.py
+  src/screenplay_engine/pipeline/validators/step_8b_validator.py
+  src/screenplay_engine/pipeline/steps/step_8b_post_diagnostics.py
+
+------------------------------------------------------------------------------
+MISSING STEP B: Character Voice Profiles (Pre-Screenplay)
+------------------------------------------------------------------------------
+SEVERITY: HIGH
+
+Before generating the screenplay, there should be a step that defines HOW
+each character speaks and looks. This feeds into the Bad Dialogue Test
+(Rule 7) and Limp and Eyepatch (Rule 8).
+
+For each character, define:
+  - Verbal tic or speech pattern (stutter, malapropisms, formal, etc.)
+  - Vocabulary level (simple, academic, street, etc.)
+  - Sentence length preference (short and punchy, long and winding)
+  - Visual identifier (clothing item, physical trait, habitual gesture)
+  - Catch phrase or recurring expression
+
+This could be added as a section within the Step 8 prompt (extracting from
+Step 3 hero/antagonist/b_story profiles) or as a separate sub-step.
+
+FILES TO MODIFY:
+  src/screenplay_engine/pipeline/prompts/step_8_prompt.py
+    -- Add character voice profiles section to the prompt
+  src/screenplay_engine/models.py
+    -- Add CharacterVoiceProfile model or extend HeroProfile/AntagonistProfile
+
+------------------------------------------------------------------------------
+MISSING STEP C: Screenplay Polish / Rewrite Pass
+------------------------------------------------------------------------------
+SEVERITY: MEDIUM
+
+Snyder's Ch.7 workflow includes a rewrite after diagnostics. The engine
+should have a final polish step that takes the diagnostic report and
+produces a revised screenplay. Currently, Step 8 has a retry loop
+(step_8_screenplay.py lines 89-106) that handles VALIDATION failures, but
+no loop for QUALITY/DIAGNOSTIC failures (e.g., flat dialogue, passive hero).
+
+FIX: After Step 8b diagnostics, if any check fails, re-run Step 8 with a
+revision prompt that includes the specific diagnostic failures and fix
+instructions. This mirrors the revise() method already in step_8_screenplay.py
+(lines 176-259) but triggered by diagnostic failures rather than schema
+validation failures.
+
+==============================================================================
+SECTION 4: STEP 9 (MARKETING VALIDATION) SPECIFIC FINDINGS
+==============================================================================
+
+Step 9 is the engine's most faithful implementation of actual Chapter 8
+content. It correctly validates:
+
+  [MATCH] Logline fidelity (logline_still_accurate)
+  [MATCH] Genre clarity (genre_clear)
+  [MATCH] Title effectiveness (title_works)
+  [MATCH] One sheet / poster concept (one_sheet_concept)
+  [MATCH] Issues list for problems
+
+GAPS in Step 9:
+
+  1. MISSING: 4-quadrant audience breakdown (Rule 21)
+     File: step_9_prompt.py lines 54-58
+     audience_defined is a simple boolean, should break down by quadrant.
+
+  2. MISSING: "Every sale has a story" -- Snyder says the WRITER is part
+     of the marketing. The engine has no concept of writer positioning or
+     the "story behind the script." This is LOW severity for an AI pipeline.
+
+  3. MISSING: Franchise potential assessment. Snyder (glossary, "Pre-sold
+     franchise") discusses whether a property has sequel/franchise potential.
+     Step 9 does not evaluate this. LOW severity.
+
+  4. PARTIAL: The one_sheet_concept validation only checks length >= 20 chars
+     (step_9_validator.py line 83). It does not validate that the concept
+     includes BOTH an image description AND a tagline, as the prompt requests.
+     MEDIUM severity.
+
+  5. CORRECT: Step 9's system prompt (step_9_prompt.py line 17-19)
+     correctly references "Chapter 8" for marketing validation. This is the
+     RIGHT chapter mapping.
+
+==============================================================================
+SECTION 5: MODELS.PY FINDINGS
+==============================================================================
+
+File: C:\Users\asus\Desktop\projects\snowflake\src\screenplay_engine\models.py
+
+1. ScreenplayScene.emotional_polarity (line 223):
+   Single string field. Should be before/after pair. See Rule 1.
+
+2. ScreenplayScene has no emotional_tone field (Rule 17).
+
+3. ScreenplayScene has no scene_type field (Rule 15: set piece vs. plot).
+
+4. ScreenplayScene.characters_present (line 225):
+   Flat list of names. No associated voice profiles or visual descriptors.
+   See Rules 7, 8.
+
+5. Screenplay model (line 230) has no callbacks, running_gags, or
+   booster_rockets tracking. See Rules 12, 13, 14.
+
+6. MarketingValidation (line 244) has no quadrant breakdown. See Rule 21.
+
+7. HeroProfile.save_the_cat_moment (line 106) and
+   HeroProfile.six_things_that_need_fixing (line 107) are defined but
+   never passed to Step 8's prompt. See Rules 10, 11.
+
+==============================================================================
+SECTION 6: COMPLETE SEVERITY SUMMARY
+==============================================================================
+
+CRITICAL (2):
+  - Step 8 mislabeled as Ch.8 (Section 0)
+  - Missing post-screenplay diagnostic pass (Missing Step A)
+
+HIGH (7):
+  - Pipeline order wrong -- diagnostics before screenplay (Section 1)
+  - +/- should be before/after pair, not single value (Rule 1)
+  - Hero proactivity / no questions not checked (Rule 4)
+  - No "talking the plot" check (Rule 5)
+  - Bad Dialogue Test missing (Rule 7)
+  - Save the Cat moment not passed to Step 8 (Rule 10)
+  - Six Things not passed to Step 8 (Rule 11)
+  - Missing character voice profiles step (Missing Step B)
+  - Turn Turn Turn acceleration not checked (Rule 16)
+  - Emotional variety not checked (Rule 17)
+
+MEDIUM (8):
+  - Internal monologue markers list too small (Rule 3)
+  - Pope in the Pool not instructed (Rule 6)
+  - Limp and Eyepatch not instructed (Rule 8)
+  - First Reel character intro timing not checked (Rule 9)
+  - Callbacks not tracked (Rule 12)
+  - Booster Rockets not addressed (Rule 14)
+  - Take A Step Back not validated (Rule 18)
+  - 4-quadrant audience analysis missing (Rule 21)
+  - Board card forced 1:1 to scene (Rule 23)
+  - Is It Primal not checked in screenplay (Rule 24)
+  - Promise of the Premise not validated in Fun & Games (Rule 25)
+  - Stakes raised at midpoint not checked (Rule 26)
+  - One sheet validation too weak (Section 4 item 4)
+
+LOW (3):
+  - Running gags not tracked (Rule 13)
+  - Set piece concept not modeled (Rule 15)
+  - Franchise potential not assessed (Section 4 item 3)
+
+==============================================================================
+SECTION 7: FILE INDEX (all paths absolute)
+==============================================================================
+
+SOURCE MATERIAL:
+  C:\Users\asus\Desktop\projects\snowflake\temp_pages\stc_chapters\ch8_screenplay.txt
+  C:\Users\asus\Desktop\projects\snowflake\temp_pages\stc_chapters\ch5_board.txt
+  C:\Users\asus\Desktop\projects\snowflake\temp_pages\stc_chapters\ch6_laws.txt
+  C:\Users\asus\Desktop\projects\snowflake\temp_pages\stc_chapters\ch7_diagnostics.txt
+  C:\Users\asus\Desktop\projects\snowflake\temp_pages\stc_chapters\glossary.txt
+
+ENGINE CODE UNDER AUDIT:
+  C:\Users\asus\Desktop\projects\snowflake\src\screenplay_engine\pipeline\prompts\step_8_prompt.py
+  C:\Users\asus\Desktop\projects\snowflake\src\screenplay_engine\pipeline\validators\step_8_validator.py
+  C:\Users\asus\Desktop\projects\snowflake\src\screenplay_engine\pipeline\steps\step_8_screenplay.py
+  C:\Users\asus\Desktop\projects\snowflake\src\screenplay_engine\pipeline\prompts\step_9_prompt.py
+  C:\Users\asus\Desktop\projects\snowflake\src\screenplay_engine\pipeline\validators\step_9_validator.py
+  C:\Users\asus\Desktop\projects\snowflake\src\screenplay_engine\pipeline\steps\step_9_marketing.py
+  C:\Users\asus\Desktop\projects\snowflake\src\screenplay_engine\models.py
+
+RELATED FILES (context):
+  C:\Users\asus\Desktop\projects\snowflake\src\screenplay_engine\pipeline\steps\step_6_immutable_laws.py
+  C:\Users\asus\Desktop\projects\snowflake\src\screenplay_engine\pipeline\steps\step_7_diagnostics.py
+
+==============================================================================
+END OF AUDIT
+==============================================================================

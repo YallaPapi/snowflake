@@ -1,0 +1,888 @@
+===========================================================================
+SAVE THE CAT AUDIT -- CHAPTER 5: "BUILDING THE PERFECT BEAST" (THE BOARD)
+===========================================================================
+Engine:   Screenplay Engine Step 5 -- The Board (40 Scene Cards)
+Source:   Blake Snyder, "Save the Cat!", Chapter 5
+Date:     2026-02-08
+Auditor:  Claude Opus 4.6 (automated)
+Status:   4 MATCH / 3 WRONG / 8 PARTIAL / 5 MISSING
+
+Files audited:
+  PROMPT:    src/screenplay_engine/pipeline/prompts/step_5_prompt.py
+  VALIDATOR: src/screenplay_engine/pipeline/validators/step_5_validator.py
+  STEP:      src/screenplay_engine/pipeline/steps/step_5_board.py
+  MODELS:    src/screenplay_engine/models.py
+  BOOK:      temp_pages/stc_chapters/ch5_board.txt
+
+All file paths are relative to: C:\Users\asus\Desktop\projects\snowflake
+
+
+===========================================================================
+SECTION A: RULES EXTRACTED FROM CHAPTER 5
+===========================================================================
+
+The following 20 specific rules were extracted from the full text of
+Chapter 5. Each is quoted or paraphrased with the source line number
+from ch5_board.txt.
+
+ R1.  Four rows (columns), each representing an act.
+      Source: line 76-77
+
+ R2.  Exactly 40 cards total -- no more, no less.
+      Source: lines 87, 167, 205-207
+
+ R3.  Approximately 9-10 cards per row. Base is 9x4 = 36 plus 4 extras.
+      Source: lines 127, 205-207
+
+ R4.  Act Three must NOT be light. It requires 9-10 cards.
+      Source: lines 129-133, 147
+
+ R5.  Every card has emotional polarity (+/-) representing an emotional
+      CHANGE within the scene -- from + to - or from - to +.
+      Source: lines 183-189
+
+ R6.  Every card has a conflict marker (><). Only ONE conflict per scene.
+      Must specify who the opposing forces are, what the issue is, and
+      who wins by the end.
+      Source: lines 191-203
+
+ R7.  Each card describes a scene in "simple declarative sentences."
+      Brief enough to fit on a physical index card.
+      Source: lines 89-91
+
+ R8.  Storyline color-coding: use different colors for A (main), B
+      (theme/love), C/D/E (subplots), theme/imagery, minor arcs.
+      Source: lines 151-162
+
+ R9.  Color-coded storylines must be "woven together" -- no storyline
+      should disappear for long stretches (implicit, lines 151-153).
+
+ R10. Hinge points appear at the ENDS of each column:
+      - Break into Two at end of Column 1
+      - Midpoint at end of Column 2
+      - Break into Three at end of Column 3
+      Source: lines 80-81
+
+ R11. Midpoint is a "false victory" (up) or "false defeat" (down).
+      Source: lines 105-107
+
+ R12. All Is Lost is the "flip" (opposite polarity) of the Midpoint.
+      Source: line 109
+
+ R13. Scene heading must include INT./EXT. LOCATION - TIME.
+      Source: lines 89-90
+
+ R14. Sequences (chases, set pieces) count as ONE beat/card.
+      Source: lines 117-119, 175
+
+ R15. Set-Up should cover 3-4 cards for pages 1-10, getting to Catalyst.
+      Source: line 113
+
+ R16. Characters tracked via color-coding and interleaving.
+      Source: line 151
+
+ R17. B-story and all subplots (C, D, E) must be "paid off" in Act Three.
+      Source: lines 141-143
+
+ R18. "Six Things That Need Fixing" from Act One must be resolved in
+      Act Three.
+      Source: lines 137-139
+
+ R19. Black holes (structural gaps) should be visible and addressed.
+      Source: lines 122-127
+
+ R20. Row assignments and page ranges:
+      Column 1 = Act One, pages 1-25
+      Column 2 = Act Two first half, pages 25-55
+      Column 3 = Act Two second half, pages 55-85
+      Column 4 = Act Three, pages 85-110
+      Source: lines 76-77
+
+
+===========================================================================
+SECTION B: RULE-BY-RULE VERDICTS
+===========================================================================
+
+Each rule gets one of:
+  MATCH   -- Correctly and fully implemented
+  PARTIAL -- Partially implemented; gaps or inconsistencies exist
+  WRONG   -- Contradicts the book or contradicts the engine's own specs
+  MISSING -- Not implemented at all
+
+
+---------------------------------------------------------------------------
+R1. FOUR ROWS / ACT ASSIGNMENTS
+---------------------------------------------------------------------------
+Verdict: MATCH
+Severity: n/a
+
+Book says: Three lines dividing the board into four equal columns
+(rows), each mapped to an act and page range.
+
+Engine implementation:
+  - step_5_prompt.py lines 49-52: Row assignments with correct page
+    ranges (1-25, 25-55, 55-85, 85-110).
+  - models.py lines 167-172: TheBoard has row_1_act_one,
+    row_2_act_two_a, row_3_act_two_b, row_4_act_three.
+  - step_5_validator.py lines 59-64: Validates presence of all 4 row
+    keys.
+
+No issues found.
+
+
+---------------------------------------------------------------------------
+R2. EXACTLY 40 CARDS TOTAL
+---------------------------------------------------------------------------
+Verdict: PARTIAL
+Severity: HIGH
+
+Book says: "Forty cards. That's all I'm going to give you for your
+finished board. That's ten cards per column roughly. So if you've got
+fifty or if you've got twenty you've got problems." (line 167)
+
+Engine implementation:
+  - step_5_prompt.py line 83: "Generate exactly 40 cards total across
+    all 4 rows" -- CORRECT instruction.
+  - step_5_validator.py lines 82-92: Accepts 25-55 cards. The lower
+    bound check is `total < 25` (line 83) and upper bound is
+    `total > 55` (line 88).
+  - Validator docstring at line 42 claims "35-45 (approximately 40,
+    +/-5)" but the CODE checks 25 and 55.
+
+Issues:
+  1. The validator's code (25-55) contradicts its own docstring (35-45).
+  2. The validator's code (25-55) contradicts the prompt (exactly 40).
+  3. The book is emphatic about 40. A range of 25-55 is unacceptably
+     wide. A board with 25 cards is missing 37.5% of its content. A
+     board with 55 cards is 37.5% over.
+
+Recommended fix:
+  step_5_validator.py line 83: change `total < 25` to `total < 35`
+  step_5_validator.py line 88: change `total > 55` to `total > 45`
+  This gives the +/-5 range the docstring already describes.
+
+
+---------------------------------------------------------------------------
+R3. APPROXIMATELY 9-10 CARDS PER ROW
+---------------------------------------------------------------------------
+Verdict: WRONG
+Severity: HIGH
+
+Book says: "You've got nine to ten cards per column that you need to
+fill." (line 127). Summary at lines 205-207 confirms 9 per column
+plus 4 extras distributed anywhere.
+
+Engine implementation:
+  - step_5_prompt.py line 41: "~10 per row" -- correct instruction.
+  - step_5_prompt.py line 104 (revision prompt): "minimum 7 per row"
+    -- reasonable.
+  - step_5_validator.py docstring line 43: "Each row has at least 7
+    cards (not too light)".
+  - step_5_validator.py line 104: ACTUAL CHECK is `len(row) < 4`.
+
+The code contradicts its own docstring. The docstring says 7 minimum
+but the code enforces 4 minimum. A row with 4 cards out of 40 total
+means one act has only 10% of the story's scenes -- far below the
+book's requirement of 9-10 per row.
+
+Recommended fix:
+  step_5_validator.py line 104: change `len(row) < 4` to
+  `len(row) < 7`.
+  Also update error message on line 107 to say "minimum is 7".
+
+
+---------------------------------------------------------------------------
+R4. ACT THREE MUST NOT BE LIGHT
+---------------------------------------------------------------------------
+Verdict: PARTIAL
+Severity: HIGH
+
+Book says: "In the early going, you almost always have a light Act
+Three. It's usually two cards... Nine or ten cards will be required."
+(lines 129-133, 147)
+
+Engine implementation:
+  - step_5_prompt.py line 58: "Act Three MUST NOT be light" -- correct.
+  - step_5_prompt.py line 109 (revision): "Act Three (row 4) must have
+    at least 7 cards" -- correct instruction.
+  - step_5_validator.py line 115: ACTUAL CHECK is `len(row_4) < 4`.
+  - step_5_validator.py lines 110-113: Comment says "redundant with
+    check 3" and only fires if the generic check didn't already catch
+    it.
+
+The Act Three check uses the same weak threshold of 4 as the generic
+row check. The prompt and revision prompt both say 7, but the
+validator accepts 4. A 4-card Act Three is the exact problem Snyder
+warns against.
+
+Recommended fix:
+  step_5_validator.py line 115: change `len(row_4) < 4` to
+  `len(row_4) < 7`.
+  Give this check its own threshold independent of the generic check.
+
+
+---------------------------------------------------------------------------
+R5. EMOTIONAL POLARITY (+/-) = EMOTIONAL CHANGE
+---------------------------------------------------------------------------
+Verdict: PARTIAL
+Severity: MEDIUM
+
+Book says: "The +/- sign represents the emotional change you must
+execute in each scene. Think of each scene as a mini-movie. It must
+have a beginning, middle and an end. And it must also have something
+happen that causes the emotional tone to change drastically either
+from + to - or from - to +." (lines 187-189)
+
+This is NOT a single static label. It is a TRANSITION from one
+emotional state to its opposite within the scene. The book uses the
+compound symbol "+/-" to represent the shift.
+
+Engine implementation:
+  - models.py line 160: `emotional_polarity: str` with description
+    "'+' or '-'". This is a single value.
+  - step_5_prompt.py line 56: "Every scene MUST have emotional change
+    ('+' positive or '-' negative)". This conflates "change" with a
+    single static label.
+  - step_5_validator.py lines 140-145: Checks polarity is "+" or "-".
+    A single character.
+
+Issues:
+  1. The model captures only the END STATE (or perhaps the dominant
+     tone), not the change from beginning to end of the scene.
+  2. The book explicitly requires both halves: where the scene starts
+     emotionally and where it ends. Example from the book: "a lawyer
+     feeling cocky (+) then his wife wants a divorce (-)" = change
+     from + to -.
+  3. There is no validation that scenes actually undergo change. A
+     card marked "+" tells us nothing about whether the scene started
+     negative and moved positive, or was positive throughout.
+
+Recommended fix:
+  - Option A (minimal): Add a second field `emotional_polarity_start`
+    alongside the existing field (renamed to `emotional_polarity_end`).
+    Validate that start != end.
+  - Option B (compact): Change `emotional_polarity` to accept compound
+    values "+/-" or "-/+" where the first character is the start state
+    and the second is the end state. Validate the format.
+
+  Either option ensures the engine captures the emotional CHANGE that
+  Snyder requires, not just a static marker.
+
+
+---------------------------------------------------------------------------
+R6. CONFLICT MARKERS (><) -- STRUCTURED, ONE PER SCENE
+---------------------------------------------------------------------------
+Verdict: PARTIAL
+Severity: MEDIUM
+
+Book says: "Only one conflict per scene, please. One is plenty."
+(line 195). Must identify: "who each of the players is in each scene
+of conflict, what the issue is, and who wins by the end" (lines
+195-196). Uses the >< symbol.
+
+Engine implementation:
+  - models.py line 161: `conflict: str` -- free-text field.
+  - step_5_prompt.py line 73: Template shows "who wants what from
+    whom; who wins" -- correct intent.
+  - step_5_validator.py lines 132-137: Validates only that the field
+    is non-empty.
+
+Issues:
+  1. No structural enforcement. The AI can write "lots of conflicts
+     happening" or list 5 different conflicts and it would pass.
+  2. The "one conflict per scene" rule is not validated at all. No
+     check for multiple conflicts in a single card.
+  3. No parsing to verify the three required components: (a) two
+     opposing parties, (b) the issue, (c) who wins.
+  4. The >< notation from the book is not reflected in output.
+
+Recommended fix:
+  - Option A (structured model): Replace free-text `conflict` with a
+    structured sub-model:
+      class SceneConflict(BaseModel):
+          party_a: str  # "the lawyer"
+          party_b: str  # "his wife"
+          issue: str    # "the divorce"
+          winner: str   # "the wife"
+    This enforces exactly one conflict with all required components.
+  - Option B (pattern validation): Keep the string but validate it
+    matches a pattern like "X vs. Y over Z; Y wins" or similar.
+
+
+---------------------------------------------------------------------------
+R7. BRIEF DESCRIPTIONS ("SIMPLE DECLARATIVE SENTENCES")
+---------------------------------------------------------------------------
+Verdict: MATCH
+Severity: n/a (with caveat)
+
+Book says: "The basic action of the scene told in simple declarative
+sentences." (lines 89-91). Content fits on a physical index card.
+
+Engine implementation:
+  - models.py line 158: description field documented as "1-2 lines of
+    what happens".
+  - step_5_prompt.py line 70: Template says "1-2 lines of what happens".
+
+The prompt and model correctly capture the intent.
+
+Caveat: There is NO length enforcement in the validator. The AI could
+produce paragraph-length descriptions and nothing would flag it. A
+word-count or character-count check (e.g., max 200 characters or max
+40 words) would strengthen this. This is noted but not enough to
+downgrade the verdict since the prompt guidance is correct.
+
+
+---------------------------------------------------------------------------
+R8. STORYLINE COLOR-CODING (A-E)
+---------------------------------------------------------------------------
+Verdict: MATCH
+Severity: n/a
+
+Book says: "Color code each story." (line 151). Colors for main
+character stories, theme/repeating imagery, minor character arcs,
+C/D/E stories (lines 157-161).
+
+Engine implementation:
+  - step_5_prompt.py lines 43-47: A (main plot), B (theme/love), C/D/E
+    (subplots).
+  - models.py line 162: `storyline_color: str` with A-E values.
+  - step_5_validator.py lines 155-161: Validates color is in
+    {A, B, C, D, E}.
+
+Correctly implemented.
+
+
+---------------------------------------------------------------------------
+R9. STORYLINE GAP -- NO COLOR DISAPPEARS TOO LONG
+---------------------------------------------------------------------------
+Verdict: WRONG
+Severity: HIGH
+
+Book says (implicit): Storylines should be "woven together" and
+visible as interleaved colors on the board (lines 151-153). The
+engine itself specifies a stricter rule than the book.
+
+Engine implementation:
+  - step_5_prompt.py line 60: "No storyline color should disappear for
+    more than 3 consecutive cards".
+  - step_5_prompt.py line 108 (revision): "No storyline color
+    disappears for more than 3 consecutive cards".
+  - step_5_validator.py line 28: `MAX_STORYLINE_GAP = 8`.
+  - step_5_validator.py line 195: Check uses MAX_STORYLINE_GAP (8).
+  - step_5_validator.py line 49 (docstring): "No storyline color
+    disappears for more than 3 consecutive cards".
+
+INTERNAL CONTRADICTION: The prompt says 3, the revision prompt says 3,
+the validator docstring says 3, but the actual code constant is 8.
+The AI is instructed to keep gaps <= 3 but the validator would not
+flag a gap of 7. This means the validator can silently accept boards
+that violate the engine's own stated rule.
+
+Recommended fix:
+  step_5_validator.py line 28: change `MAX_STORYLINE_GAP = 8` to
+  `MAX_STORYLINE_GAP = 3`.
+
+  Also update the fix_suggestions method line 307 which already says
+  "more than 3 consecutive cards" -- at least that text is consistent
+  with the intended value.
+
+
+---------------------------------------------------------------------------
+R10. HINGE POINTS AT ENDS OF COLUMNS
+---------------------------------------------------------------------------
+Verdict: PARTIAL
+Severity: MEDIUM
+
+Book says: "The ends of each column are the hinges of your story. The
+Break into Two, the Midpoint and the Break into Three are where the
+turns are, each appears at the end of Columns 1, 2 and 3." (line 81)
+
+Mapping to cards:
+  - Break into Two = end of Column 1 = approximately card 10
+  - Midpoint = end of Column 2 = approximately card 20
+  - Break into Three = end of Column 3 = approximately card 30
+
+Engine implementation:
+  - step_5_prompt.py line 36: Break into Two at ~card 10 -- CORRECT
+  - step_5_prompt.py line 37: Midpoint at ~card 20 -- CORRECT
+  - step_5_prompt.py line 39: Break into Three at ~card 34 -- WRONG
+  - step_5_validator.py line 18: Break into Three target = 34 -- WRONG
+  - step_5_validator.py line 22: Tolerance = +/-5
+
+The Break into Three is placed at card 34, which is 4 cards into Act
+Three (Row 4). The book explicitly says it belongs "at the end of
+Column 3," which corresponds to approximately card 30 -- the boundary
+between Row 3 and Row 4.
+
+The current configuration means Break into Three and All Is Lost are
+placed at cards 30 and 34 respectively, both deep into Row 3 or early
+Row 4. But per the book:
+  - All Is Lost should precede Break into Three (it's around page 75)
+  - Break into Three is at page 85 (the boundary between Columns 3/4)
+
+So the engine has the positions roughly backward for these two. The
+book's page numbers: All Is Lost ~ page 75, Break into Three ~ page 85.
+That maps to: All Is Lost ~ card 27-28, Break into Three ~ card 30.
+
+Recommended fix:
+  step_5_prompt.py line 38: All Is Lost -> ~card 28
+  step_5_prompt.py line 39: Break into Three -> ~card 30
+  step_5_validator.py line 17: "All Is Lost": 28
+  step_5_validator.py line 18: "Break into Three": 30
+
+
+---------------------------------------------------------------------------
+R11. MIDPOINT IS FALSE VICTORY OR FALSE DEFEAT
+---------------------------------------------------------------------------
+Verdict: MATCH
+Severity: n/a
+
+Book says: "Either your hero (or heroes) reach a dizzyingly false
+victory at page 55 or an equally false and dizzying defeat." (lines
+105-106)
+
+Engine implementation:
+  - step_5_prompt.py line 37: "False victory or false defeat (stakes
+    raised)" -- correct description.
+  - models.py line 147 (BeatSheet): `midpoint_polarity` field.
+  - The beat sheet from Step 4 carries this information downstream.
+
+The concept is properly captured in the data model and prompt.
+
+
+---------------------------------------------------------------------------
+R12. ALL IS LOST IS THE FLIP OF THE MIDPOINT (OPPOSITE POLARITY)
+---------------------------------------------------------------------------
+Verdict: MISSING
+Severity: CRITICAL
+
+Book says: "All is Lost... It's the flip of the Midpoint. What about
+the 'up' or 'down' of the Midpoint can be reversed to create its
+false opposite?" (line 109)
+
+Engine implementation:
+  - step_5_prompt.py line 38: "Opposite polarity of Midpoint" -- the
+    prompt INSTRUCTS the AI correctly.
+  - models.py line 148 (BeatSheet): `all_is_lost_polarity` field with
+    description "Must be opposite of midpoint" -- data MODEL is correct.
+  - step_5_prompt.py lines 136-147: The prompt builder reads both
+    `midpoint_polarity` and `all_is_lost_polarity` from the Step 4
+    artifact and includes them in the prompt context.
+
+  BUT: step_5_validator.py has NO CHECK that the Midpoint card and the
+  All Is Lost card on the board actually carry opposite emotional
+  polarity values.
+
+The upstream Step 4 beat sheet may have the correct polarity values,
+but when those beats are expanded into board cards, nothing verifies
+that the board-level Midpoint card is "+" and the All Is Lost card is
+"-" (or vice versa). The AI could generate both as "+" and the
+validator would accept it.
+
+Recommended fix:
+  Add to Step5Validator.validate() after the landmark position check:
+  1. Find the card whose beat = "Midpoint"
+  2. Find the card whose beat = "All Is Lost"
+  3. Verify their emotional_polarity values are opposite ("+" vs "-")
+  4. If same polarity, add error: "POLARITY_FLIP: Midpoint and All Is
+     Lost must have opposite emotional polarity."
+
+
+---------------------------------------------------------------------------
+R13. SCENE HEADING FORMAT (INT./EXT. LOCATION - TIME)
+---------------------------------------------------------------------------
+Verdict: PARTIAL
+Severity: LOW
+
+Book says: "Write it with a magic marker: INT. JOE'S APARTMENT - DAY."
+(lines 89-90)
+
+Engine implementation:
+  - models.py line 157: `scene_heading: str` with description
+    "INT./EXT. LOCATION - TIME".
+  - step_5_prompt.py line 69: Template shows "INT./EXT. LOCATION - TIME".
+  - step_5_validator.py lines 148-153: Validates non-empty only.
+
+Issues:
+  The validator does not check that the heading follows standard
+  screenplay format. A heading of "some place at some time" or even
+  "asdf" would pass validation. There is no regex or pattern check for
+  the expected INT./EXT. prefix, location, and time-of-day suffix.
+
+Recommended fix:
+  Add a format check. At minimum, verify the heading starts with one
+  of: "INT.", "EXT.", "INT./EXT.", "I/E." (common screenplay
+  abbreviations). Optionally verify it contains " - " separator and
+  a time indicator (DAY, NIGHT, DAWN, DUSK, CONTINUOUS, etc.).
+
+
+---------------------------------------------------------------------------
+R14. SEQUENCES COUNT AS ONE CARD
+---------------------------------------------------------------------------
+Verdict: PARTIAL
+Severity: LOW
+
+Book says: "Things like 'a chase' involve many scenes and can range
+through indoor and outdoor set-ups, it's actually only one beat."
+(lines 117-119)
+
+Engine implementation:
+  - step_5_prompt.py line 57: "Sequences count as ONE card (do not
+    split a sequence into sub-cards)" -- correct instruction.
+
+Issues:
+  This is a prompt-only rule with no enforcement. The validator has no
+  mechanism to detect when the AI has split a sequence into multiple
+  consecutive cards with similar settings or escalating action that
+  should logically be one beat.
+
+Recommended fix:
+  This is difficult to validate automatically. One heuristic: flag
+  consecutive cards with the same beat name, same location prefix, or
+  highly similar descriptions. Not critical, but worth noting.
+
+
+---------------------------------------------------------------------------
+R15. SET-UP SHOULD BE 3-4 CARDS FOR PAGES 1-10
+---------------------------------------------------------------------------
+Verdict: PARTIAL
+Severity: LOW
+
+Book says: "I give myself three or four cards for the first ten pages,
+that's three or four scenes to get me to the Catalyst." (line 113)
+
+Engine implementation:
+  - step_5_prompt.py line 59: "Set-Up (beat 3) should be 3-4 cards
+    covering pages 1-10" -- correct instruction.
+
+Issues:
+  Prompt-only rule. The validator does not count how many cards are
+  assigned to the "Set-Up" beat or verify the count is 3-4.
+
+Recommended fix:
+  In the validator, count cards where beat == "Set-Up" and warn if
+  the count is outside 2-5 (generous tolerance). Not critical but
+  would improve structural fidelity.
+
+
+---------------------------------------------------------------------------
+R16. CHARACTERS TRACKED ON EVERY CARD
+---------------------------------------------------------------------------
+Verdict: MATCH
+Severity: n/a
+
+Book says: "Often you will have multiple characters in a screenplay.
+Their stories intertwine..." (line 151). Characters are implicitly
+present in each scene via the color-coding discussion.
+
+Engine implementation:
+  - models.py line 163: `characters_present: List[str] = Field(
+    default_factory=list)`.
+  - step_5_prompt.py line 61: "Every card must have at least one
+    character present".
+  - step_5_validator.py lines 164-169: Validates at least one
+    character per card.
+
+Correctly implemented. This is an enhancement beyond what the book
+explicitly requires but is structurally sound.
+
+
+---------------------------------------------------------------------------
+R17. B-STORY AND SUBPLOTS PAID OFF IN ACT THREE
+---------------------------------------------------------------------------
+Verdict: MISSING
+Severity: HIGH
+
+Book says: "What about your B story? Whether it's the true love story
+or the thematic center of the movie, this must be paid off, too. In
+fact, the more you think about tying up all the loose ends, the C, D
+and E stories, recurring images etc." (lines 141-143)
+
+Engine implementation:
+  No check exists to verify that storyline colors present in earlier
+  rows also appear in Row 4 (Act Three). The storyline gap check
+  (R9 above) only looks at maximum consecutive absence globally, not
+  whether storylines are resolved in the final act.
+
+Example of the gap: A board could have storyline "B" appear in Rows
+1-3 but have zero "B" cards in Row 4. The gap check might pass (if
+the last B card is within 8 cards of the end), but the B-story would
+never be resolved on screen.
+
+Recommended fix:
+  Add a check: for each storyline color that appears in rows 1-3,
+  verify it also appears at least once in row_4_act_three. If not,
+  add error: "UNRESOLVED_STORYLINE: Storyline 'B' appears in earlier
+  acts but has no cards in Act Three. All storylines must be paid off."
+
+
+---------------------------------------------------------------------------
+R18. "SIX THINGS THAT NEED FIXING" PAID OFF IN ACT THREE
+---------------------------------------------------------------------------
+Verdict: MISSING
+Severity: MEDIUM
+
+Book says: "Go back to Act One and look at all your set-ups and the
+'Six Things That Need Fixing.' Are these 'paid off' in Act Three?
+If not, they should be." (lines 137-139)
+
+Engine implementation:
+  - models.py line 107: HeroProfile has `six_things_that_need_fixing:
+    List[str]` with 6 items.
+  - step_5_prompt.py: Does NOT reference the six things at all. The
+    character summary builder (_summarize_characters, lines 151-189)
+    extracts hero name, goal, need, and save-the-cat moment, but NOT
+    the six things.
+  - step_5_validator.py: No check for six-things payoff.
+
+The data exists in the upstream Step 3 artifact but is completely
+unused in Step 5. The board generation does not ensure these six items
+are addressed or resolved in Act Three cards.
+
+Recommended fix:
+  1. In step_5_prompt.py _summarize_characters(), add extraction of
+     hero.six_things_that_need_fixing into the character summary.
+  2. In the prompt template, add an instruction: "Act Three must
+     include at least one card addressing/resolving each of the hero's
+     Six Things That Need Fixing."
+  3. Optionally add a validator check that scans Act Three card
+     descriptions for references to the six things (fuzzy match).
+
+
+---------------------------------------------------------------------------
+R19. BLACK HOLES / STRUCTURAL GAP DETECTION
+---------------------------------------------------------------------------
+Verdict: MISSING
+Severity: LOW
+
+Book says: "When you have a black hole -- a place in your script that
+you can't figure out how to connect one chunk to another -- you know
+it, 'cause it's staring you right in the face." (lines 122-125)
+
+Engine implementation:
+  No check for structural gaps within a row (e.g., a cluster of cards
+  at the start of a row with nothing covering the middle or end of
+  that act's page range). No check for uneven card distribution.
+
+Recommended fix:
+  Within each row, verify that cards are distributed across the act's
+  page range rather than clumped at one end. This could use the
+  card_number values to detect gaps of 3+ missing sequential numbers
+  within a row.
+
+
+---------------------------------------------------------------------------
+R20. ROW PAGE RANGES
+---------------------------------------------------------------------------
+Verdict: MATCH (covered by R1)
+Severity: n/a
+
+Identical to R1. The four rows with their page ranges (1-25, 25-55,
+55-85, 85-110) are correctly assigned in both the prompt template
+and the human-readable output format.
+
+
+===========================================================================
+SECTION C: ADDITIONAL ISSUES FOUND IN CODE REVIEW
+===========================================================================
+
+C1. VALIDATOR DOCSTRING vs. CODE DISCREPANCIES
+    Severity: HIGH (documentation lies to maintainers)
+
+    Three places where the validator docstring describes a stricter
+    check than the code actually performs:
+
+    a) Line 42: Docstring says "Total card count is 35-45"
+       Line 83/88: Code checks 25/55
+
+    b) Line 43: Docstring says "Each row has at least 7 cards"
+       Line 104: Code checks < 4
+
+    c) Line 49: Docstring says "No storyline color disappears for more
+       than 3 consecutive cards"
+       Line 28: Code constant is MAX_STORYLINE_GAP = 8
+
+    These discrepancies mean the docstring gives a false sense of
+    strictness. Anyone reading the validator's docstring would believe
+    the checks are much tighter than they actually are.
+
+
+C2. FIX SUGGESTIONS INCONSISTENCY
+    Severity: LOW
+
+    step_5_validator.py line 269: fix_suggestions says "Each row must
+    have at least 7 cards" -- but the actual check triggers at < 4.
+    step_5_validator.py line 307: fix_suggestions says "more than 3
+    consecutive cards" -- but the constant is 8.
+    step_5_validator.py line 319: fix_suggestions says "within +/-3
+    cards" -- but LANDMARK_TOLERANCE is 5.
+
+    The fix_suggestions text describes stricter rules than what the
+    code enforces. This will confuse the AI during revision cycles: it
+    will receive suggestions about rules that aren't actually enforced.
+
+
+C3. BoardCard.card_number UPPER BOUND
+    Severity: LOW
+
+    models.py line 155: `card_number: int = Field(..., ge=1, le=50)`
+    allows card numbers up to 50. If the board has exactly 40 cards,
+    they should be numbered 1-40. The upper bound of 50 is overly
+    permissive. Not a functional problem but a data hygiene concern.
+
+    Recommended fix: Change le=50 to le=45 (matching the recommended
+    upper total count bound).
+
+
+C4. DESCRIPTION LENGTH NOT VALIDATED
+    Severity: LOW
+
+    Neither the validator nor the Pydantic model enforces a maximum
+    length on card descriptions. The book's index-card metaphor implies
+    brevity. An AI model could produce 500-word descriptions for each
+    card and nothing would flag it.
+
+    Recommended fix: Add `max_length=200` to the description Field in
+    BoardCard, or add a validator check for description word count.
+
+
+C5. NO VALIDATION OF BEAT NAME AGAINST KNOWN BEATS
+    Severity: MEDIUM
+
+    models.py line 159: `beat: str` is free text. The AI could assign
+    a card to a beat named "Random Nonsense" and the validator would
+    not flag it. The engine defines BEAT_NAMES (lines 256-272) with
+    the 15 canonical beat names, but the Step 5 validator does not
+    cross-reference card beats against this list.
+
+    Recommended fix: In the per-card validation loop, check that
+    card.beat is in BEAT_NAMES (or a case-insensitive match). Add
+    error: "INVALID_BEAT: Card {n} beat '{beat}' is not one of the
+    15 BS2 beats."
+
+
+C6. NO CARD NUMBER UNIQUENESS CHECK
+    Severity: LOW
+
+    The validator does not verify that card_numbers are unique across
+    the board. The AI could assign card_number=1 to multiple cards
+    and it would pass validation.
+
+
+C7. NO CARD NUMBER SEQUENCE CHECK
+    Severity: LOW
+
+    The validator does not verify that card numbers within each row
+    are sequential or within the expected range (e.g., Row 1 should
+    have cards 1-10, Row 2 should have cards 11-20, etc.). Cards
+    could be misnumbered or out of order.
+
+
+===========================================================================
+SECTION D: SUMMARY SCOREBOARD
+===========================================================================
+
+    VERDICT       COUNT   ITEMS
+    ─────────────────────────────────────────
+    MATCH           4     R1, R8, R11, R16
+    WRONG           3     R3, R9, R10
+    PARTIAL         8     R2, R4, R5, R6, R7, R13, R14, R15
+    MISSING         5     R12, R17, R18, R19, R20 (= R1)
+
+    Effective MISSING (excluding R20 which duplicates R1): 4
+    Total unique rules audited: 19
+
+    Additional code issues (C1-C7): 7
+
+
+===========================================================================
+SECTION E: PRIORITY FIX ORDER
+===========================================================================
+
+The following is the recommended fix order, from highest impact to
+lowest, based on how fundamentally the issue undermines Save the Cat
+fidelity.
+
+PRIORITY 1 -- CRITICAL (breaks core STC rules)
+───────────────────────────────────────────────
+  FIX-1: Validator constant MAX_STORYLINE_GAP = 8 -> 3
+         File: step_5_validator.py line 28
+         Affects: R9 (WRONG)
+
+  FIX-2: Row minimum cards check: < 4 -> < 7
+         File: step_5_validator.py line 104
+         Affects: R3 (WRONG), R4 (PARTIAL)
+
+  FIX-3: Act Three specific minimum: < 4 -> < 7
+         File: step_5_validator.py line 115
+         Affects: R4 (PARTIAL)
+
+  FIX-4: Break into Three position: 34 -> 30
+         File: step_5_prompt.py line 39
+         File: step_5_validator.py line 18
+         Also adjust All Is Lost: 30 -> 28
+         File: step_5_prompt.py line 38
+         File: step_5_validator.py line 17
+         Affects: R10 (PARTIAL -> MATCH)
+
+  FIX-5: Add Midpoint/All-Is-Lost opposite polarity validation
+         File: step_5_validator.py (new check after landmark section)
+         Affects: R12 (MISSING -> MATCH)
+
+PRIORITY 2 -- HIGH (significant structural gaps)
+─────────────────────────────────────────────────
+  FIX-6: Total card count bounds: 25/55 -> 35/45
+         File: step_5_validator.py lines 83, 88
+         Affects: R2 (PARTIAL -> MATCH)
+
+  FIX-7: Align all docstrings with actual code thresholds
+         File: step_5_validator.py lines 42, 43, 49
+         Affects: C1 (documentation correctness)
+
+  FIX-8: Add storyline resolution check for Act Three
+         File: step_5_validator.py (new check)
+         Affects: R17 (MISSING -> MATCH)
+
+  FIX-9: Pass six_things_that_need_fixing into prompt
+         File: step_5_prompt.py _summarize_characters()
+         Affects: R18 (MISSING -> PARTIAL at minimum)
+
+PRIORITY 3 -- MEDIUM (improve fidelity)
+────────────────────────────────────────
+  FIX-10: Change emotional_polarity to capture start/end transition
+          File: models.py line 160
+          File: step_5_prompt.py line 56, 72
+          File: step_5_validator.py lines 140-145
+          Affects: R5 (PARTIAL -> MATCH)
+
+  FIX-11: Validate beat names against BEAT_NAMES list
+          File: step_5_validator.py (add to per-card loop)
+          Affects: C5
+
+  FIX-12: Structure the conflict field or add pattern validation
+          File: models.py line 161 (optionally)
+          File: step_5_validator.py (add pattern check)
+          Affects: R6 (PARTIAL -> MATCH)
+
+PRIORITY 4 -- LOW (polish)
+──────────────────────────
+  FIX-13: Add scene heading format validation (INT./EXT. check)
+          File: step_5_validator.py lines 148-153
+          Affects: R13 (PARTIAL -> MATCH)
+
+  FIX-14: Add description max length check
+          File: step_5_validator.py or models.py
+          Affects: R7 caveat, C4
+
+  FIX-15: Add card_number uniqueness and sequence checks
+          File: step_5_validator.py
+          Affects: C6, C7
+
+  FIX-16: Fix fix_suggestions text to match actual thresholds
+          File: step_5_validator.py lines 269, 307, 319
+          Affects: C2
+
+
+===========================================================================
+END OF AUDIT
+===========================================================================

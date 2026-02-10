@@ -1,10 +1,15 @@
 """
 Step 5 Implementation: The Board -- 40 Scene Cards (Save the Cat Ch.5)
-Takes Step 4 beat sheet and Step 3 characters, generates 40 scene cards
-organized in 4 rows with emotional polarity, conflict, and storyline colors.
+Takes Step 4 beat sheet, Step 3 characters, Step 1 logline, and Step 2 genre,
+generates 40 scene cards organized in 4 rows with emotional polarity, conflict,
+and storyline colors.
+
+v3.0.0 -- Now accepts Step 1 and Step 2 artifacts for genre-specific board guidance.
+No max_tokens defaults. Retry loop with revision prompts (same pattern as Step 4).
 """
 
 import json
+import re
 import uuid
 import hashlib
 from datetime import datetime
@@ -20,20 +25,14 @@ class Step5Board:
     """
     Screenplay Engine Step 5: The Board (40 Scene Cards)
 
-    Takes the Step 4 beat sheet artifact and Step 3 hero/character artifact
-    and generates a 40-card board organized in 4 rows with emotional polarity,
-    conflict markers, and storyline color-coding on every card.
+    Takes the Step 4 beat sheet artifact, Step 3 hero/character artifact,
+    Step 1 logline, and Step 2 genre, and generates a 40-card board organized
+    in 4 rows with emotional polarity, conflict markers, and storyline color-coding.
     """
 
-    VERSION = "2.0.0"
+    VERSION = "3.0.0"
 
     def __init__(self, project_dir: str = "artifacts"):
-        """
-        Initialize Step 5 executor.
-
-        Args:
-            project_dir: Directory to store artifacts
-        """
         self.project_dir = Path(project_dir)
         self.project_dir.mkdir(parents=True, exist_ok=True)
 
@@ -45,190 +44,146 @@ class Step5Board:
         self,
         step_4_artifact: Dict[str, Any],
         step_3_artifact: Dict[str, Any],
+        step_1_artifact: Dict[str, Any],
+        step_2_artifact: Dict[str, Any],
         project_id: Optional[str] = None,
         model_config: Optional[Dict[str, Any]] = None,
     ) -> Tuple[bool, Dict[str, Any], str]:
         """
-        Execute Step 5: Generate The Board (40 scene cards) from beat sheet
-        and character data.
+        Execute Step 5: Generate The Board (40 scene cards).
 
         Args:
             step_4_artifact: Validated Step 4 beat sheet artifact.
             step_3_artifact: Validated Step 3 hero/character artifact.
+            step_1_artifact: Validated Step 1 logline artifact.
+            step_2_artifact: Validated Step 2 genre artifact.
             project_id: Project UUID (auto-generated if not provided).
             model_config: AI model configuration overrides.
 
         Returns:
             Tuple of (success, artifact, message)
         """
-        # Generate project ID if not provided
         if not project_id:
             project_id = str(uuid.uuid4())
 
-        # Default model config -- higher max_tokens for 40 scene cards
         if not model_config:
             model_config = {
-                "model_name": "gpt-5.2-2025-12-11",
                 "temperature": 0.3,
-                "max_tokens": 12000,
-                "seed": 42,
+                "max_tokens": 32000,
             }
 
         # Compute upstream hash for provenance tracking
         upstream_content = json.dumps(
-            {"step_4": step_4_artifact, "step_3": step_3_artifact},
+            {
+                "step_1": step_1_artifact,
+                "step_2": step_2_artifact,
+                "step_3": step_3_artifact,
+                "step_4": step_4_artifact,
+            },
             sort_keys=True,
         )
         upstream_hash = hashlib.sha256(upstream_content.encode()).hexdigest()
 
-        # Generate prompt from input artifacts
+        # Generate prompt
         prompt_data = self.prompt_generator.generate_prompt(
-            step_4_artifact, step_3_artifact
+            step_4_artifact, step_3_artifact, step_1_artifact, step_2_artifact,
         )
 
-        # Call AI generator with validation loop
-        try:
-            artifact_content = self.generator.generate_with_validation(
-                prompt_data, self.validator, model_config
-            )
-        except Exception as e:
-            return False, {}, f"AI generation failed: {e}"
+        # Generate with retry loop
+        max_attempts = 3
+        artifact: Dict[str, Any] = {}
+        last_errors: list = []
+
+        for attempt in range(max_attempts):
+            raw_content = self.generator.generate(prompt_data, model_config)
+            artifact = self._parse_board(raw_content)
+
+            is_valid, errors = self.validator.validate(artifact)
+            if is_valid:
+                break
+
+            last_errors = errors
+
+            # On failure, generate revision prompt for next attempt
+            if attempt < max_attempts - 1:
+                fixes = self.validator.fix_suggestions(errors)
+                prompt_data = self.prompt_generator.generate_revision_prompt(
+                    artifact, errors, fixes,
+                    step_4_artifact, step_3_artifact,
+                    step_1_artifact, step_2_artifact,
+                )
 
         # Add metadata
         artifact = self._add_metadata(
-            artifact_content,
-            project_id,
-            prompt_data["prompt_hash"],
-            model_config,
-            upstream_hash,
+            artifact, project_id, prompt_data.get("prompt_hash", ""),
+            model_config, upstream_hash,
         )
 
-        # Final validation pass
+        # Final validation
         is_valid, errors = self.validator.validate(artifact)
-
         if not is_valid:
-            suggestions = self.validator.fix_suggestions(errors)
-            error_message = "VALIDATION FAILED:\n"
-            for error, suggestion in zip(errors, suggestions):
-                error_message += f"  ERROR: {error}\n  FIX: {suggestion}\n"
-            return False, artifact, error_message
-
-        # Save artifact to disk
-        save_path = self.save_artifact(artifact, project_id)
-
-        return True, artifact, f"Screenplay Step 5 board saved to {save_path}"
-
-    def revise(
-        self,
-        project_id: str,
-        revision_reason: str,
-        step_4_artifact: Dict[str, Any],
-        step_3_artifact: Dict[str, Any],
-        model_config: Optional[Dict[str, Any]] = None,
-    ) -> Tuple[bool, Dict[str, Any], str]:
-        """
-        Revise an existing Step 5 artifact due to downstream conflicts.
-
-        Args:
-            project_id: Project UUID
-            revision_reason: Why revision is needed
-            step_4_artifact: Step 4 beat sheet artifact for context
-            step_3_artifact: Step 3 hero/character artifact for context
-            model_config: AI model configuration
-
-        Returns:
-            Tuple of (success, artifact, message)
-        """
-        # Load current artifact
-        current_artifact = self.load_artifact(project_id)
-        if not current_artifact:
-            return (
-                False,
-                {},
-                f"No existing Step 5 artifact found for project {project_id}",
+            fixes = self.validator.fix_suggestions(errors)
+            msg = "VALIDATION FAILED:\n" + "\n".join(
+                f"ERROR: {e} | FIX: {f}" for e, f in zip(errors, fixes)
             )
+            return False, artifact, msg
 
-        # Snapshot current version
-        self._snapshot_artifact(current_artifact, project_id)
+        # Save to disk
+        save_path = self.save_artifact(artifact, project_id)
+        return True, artifact, f"Step 5 board saved to {save_path}"
 
-        # Validate current to get errors
-        _, current_errors = self.validator.validate(current_artifact)
-        all_errors = [revision_reason] + current_errors
+    # ── Parsing helpers ───────────────────────────────────────────────
 
-        fix_suggestions = self.validator.fix_suggestions(current_errors)
-
-        # Generate revision prompt
-        prompt_data = self.prompt_generator.generate_revision_prompt(
-            current_artifact,
-            all_errors,
-            fix_suggestions,
-            step_4_artifact,
-            step_3_artifact,
-        )
-
-        # Default model config for board revision — needs high token budget for 40 cards
-        if not model_config:
-            model_config = {
-                "model_name": "gpt-5.2-2025-12-11",
-                "temperature": 0.3,
-                "max_tokens": 12000,
-            }
-
-        # Call AI for revision
+    def _parse_board(self, raw_content: str) -> Dict[str, Any]:
+        """Parse AI output into a board dict."""
+        # Try extracting JSON from markdown code blocks
         try:
-            artifact_content = self.generator.generate_with_validation(
-                prompt_data, self.validator, model_config
-            )
-        except Exception as e:
-            return False, {}, f"AI revision failed: {e}"
+            code_match = re.search(r"```(?:json)?\s*(\{.*?\})\s*```", raw_content, re.DOTALL)
+            if code_match:
+                parsed = json.loads(code_match.group(1))
+                if self._is_valid_structure(parsed):
+                    return parsed
+        except (json.JSONDecodeError, AttributeError):
+            pass
 
-        # Update version
-        old_version = current_artifact.get("metadata", {}).get("version", "1.0.0")
-        major, minor, patch = map(int, old_version.split("."))
-        new_version = f"{major}.{minor + 1}.0"
+        # Try direct JSON parse
+        try:
+            stripped = raw_content.strip()
+            if stripped.startswith("{") and stripped.endswith("}"):
+                parsed = json.loads(stripped)
+                if self._is_valid_structure(parsed):
+                    return parsed
+        except json.JSONDecodeError:
+            pass
 
-        # Compute upstream hash
-        upstream_content = json.dumps(
-            {"step_4": step_4_artifact, "step_3": step_3_artifact},
-            sort_keys=True,
-        )
-        upstream_hash = hashlib.sha256(upstream_content.encode()).hexdigest()
+        # Last resort: find outermost JSON object
+        try:
+            start = raw_content.index("{")
+            end = raw_content.rindex("}") + 1
+            parsed = json.loads(raw_content[start:end])
+            if self._is_valid_structure(parsed):
+                return parsed
+        except (json.JSONDecodeError, ValueError):
+            pass
 
-        # Add metadata
-        artifact = self._add_metadata(
-            artifact_content,
-            project_id,
-            prompt_data["prompt_hash"],
-            model_config or {"model_name": "gpt-5.2-2025-12-11", "temperature": 0.3},
-            upstream_hash,
-        )
-        artifact["metadata"]["version"] = new_version
-        artifact["metadata"]["revision_reason"] = revision_reason
-        artifact["metadata"]["previous_version"] = old_version
+        # Return empty structure if all parsing fails
+        return {
+            "row_1_act_one": [],
+            "row_2_act_two_a": [],
+            "row_3_act_two_b": [],
+            "row_4_act_three": [],
+        }
 
-        # Validate revised artifact
-        is_valid, errors = self.validator.validate(artifact)
-
-        if not is_valid:
-            suggestions = self.validator.fix_suggestions(errors)
-            error_message = "REVISION VALIDATION FAILED:\n"
-            for error, suggestion in zip(errors, suggestions):
-                error_message += f"  ERROR: {error}\n  FIX: {suggestion}\n"
-            return False, artifact, error_message
-
-        # Save revised artifact
-        save_path = self.save_artifact(artifact, project_id)
-
-        # Log change
-        self._log_change(project_id, revision_reason, old_version, new_version)
-
-        return (
-            True,
-            artifact,
-            f"Screenplay Step 5 board revised and saved to {save_path}",
+    def _is_valid_structure(self, parsed: Any) -> bool:
+        """Check that parsed data has expected board shape."""
+        if not isinstance(parsed, dict):
+            return False
+        return any(
+            key in parsed
+            for key in ["row_1_act_one", "row_2_act_two_a", "row_3_act_two_b", "row_4_act_three"]
         )
 
-    # ── Internal Helpers ───────────────────────────────────────────────
+    # ── Metadata ──────────────────────────────────────────────────────
 
     def _add_metadata(
         self,
@@ -246,7 +201,10 @@ class Step5Board:
             "step_name": "The Board (Save the Cat)",
             "version": self.VERSION,
             "created_at": datetime.utcnow().isoformat(),
-            "model_name": model_config.get("model_name", "unknown"),
+            "model_name": model_config.get(
+                "model_name",
+                self.generator.default_model if hasattr(self.generator, "default_model") else "unknown",
+            ),
             "temperature": model_config.get("temperature", 0.3),
             "seed": model_config.get("seed"),
             "prompt_hash": prompt_hash,
@@ -254,6 +212,8 @@ class Step5Board:
             "hash_upstream": upstream_hash,
         }
         return artifact
+
+    # ── Persistence ───────────────────────────────────────────────────
 
     def save_artifact(self, artifact: Dict[str, Any], project_id: str) -> Path:
         """Save artifact to disk as JSON and human-readable text."""
@@ -289,7 +249,7 @@ class Step5Board:
                         continue
                     num = card.get("card_number", "?")
                     heading = card.get("scene_heading", "NO HEADING")
-                    e_start = card.get("emotional_start", card.get("emotional_polarity", "?"))
+                    e_start = card.get("emotional_start", "?")
                     e_end = card.get("emotional_end", "?")
                     polarity = f"{e_start}/{e_end}"
                     color = card.get("storyline_color", "?")
@@ -323,6 +283,101 @@ class Step5Board:
         with open(artifact_path, "r", encoding="utf-8") as f:
             return json.load(f)
 
+    def revise(
+        self,
+        project_id: str,
+        revision_reason: str,
+        step_4_artifact: Dict[str, Any],
+        step_3_artifact: Dict[str, Any],
+        step_1_artifact: Dict[str, Any],
+        step_2_artifact: Dict[str, Any],
+        model_config: Optional[Dict[str, Any]] = None,
+    ) -> Tuple[bool, Dict[str, Any], str]:
+        """
+        Revise an existing Step 5 artifact due to downstream conflicts.
+
+        Args:
+            project_id: Project UUID
+            revision_reason: Why revision is needed
+            step_4_artifact: Step 4 beat sheet artifact for context
+            step_3_artifact: Step 3 hero/character artifact for context
+            step_1_artifact: Step 1 logline artifact for context
+            step_2_artifact: Step 2 genre artifact for context
+            model_config: AI model configuration
+
+        Returns:
+            Tuple of (success, artifact, message)
+        """
+        current_artifact = self.load_artifact(project_id)
+        if not current_artifact:
+            return False, {}, f"No existing Step 5 artifact found for project {project_id}"
+
+        self._snapshot_artifact(current_artifact, project_id)
+
+        _, current_errors = self.validator.validate(current_artifact)
+        all_errors = [revision_reason] + current_errors
+        fix_suggestions = self.validator.fix_suggestions(current_errors)
+
+        prompt_data = self.prompt_generator.generate_revision_prompt(
+            current_artifact, all_errors, fix_suggestions,
+            step_4_artifact, step_3_artifact,
+            step_1_artifact, step_2_artifact,
+        )
+
+        if not model_config:
+            model_config = {"temperature": 0.3, "max_tokens": 32000}
+
+        raw_content = self.generator.generate(prompt_data, model_config)
+        artifact = self._parse_board(raw_content)
+
+        is_valid, errors = self.validator.validate(artifact)
+        if not is_valid:
+            # One more attempt
+            fixes2 = self.validator.fix_suggestions(errors)
+            prompt_data2 = self.prompt_generator.generate_revision_prompt(
+                artifact, errors, fixes2,
+                step_4_artifact, step_3_artifact,
+                step_1_artifact, step_2_artifact,
+            )
+            raw_content2 = self.generator.generate(prompt_data2, model_config)
+            artifact = self._parse_board(raw_content2)
+            is_valid, errors = self.validator.validate(artifact)
+
+        # Update version
+        old_version = current_artifact.get("metadata", {}).get("version", "3.0.0")
+        major, minor, patch = map(int, old_version.split("."))
+        new_version = f"{major}.{minor + 1}.0"
+
+        # Compute upstream hash
+        upstream_content = json.dumps(
+            {
+                "step_1": step_1_artifact, "step_2": step_2_artifact,
+                "step_3": step_3_artifact, "step_4": step_4_artifact,
+            },
+            sort_keys=True,
+        )
+        upstream_hash = hashlib.sha256(upstream_content.encode()).hexdigest()
+
+        artifact = self._add_metadata(
+            artifact, project_id, prompt_data.get("prompt_hash", ""),
+            model_config, upstream_hash,
+        )
+        artifact["metadata"]["version"] = new_version
+        artifact["metadata"]["revision_reason"] = revision_reason
+        artifact["metadata"]["previous_version"] = old_version
+
+        if not is_valid:
+            fixes_final = self.validator.fix_suggestions(errors)
+            msg = "REVISION VALIDATION FAILED:\n" + "\n".join(
+                f"ERROR: {e} | FIX: {f}" for e, f in zip(errors, fixes_final)
+            )
+            return False, artifact, msg
+
+        save_path = self.save_artifact(artifact, project_id)
+        self._log_change(project_id, revision_reason, old_version, new_version)
+
+        return True, artifact, f"Step 5 board revised and saved to {save_path}"
+
     def _snapshot_artifact(self, artifact: Dict[str, Any], project_id: str):
         """Save snapshot of current artifact before revision."""
         snapshot_path = self.project_dir / project_id / "snapshots"
@@ -335,9 +390,7 @@ class Step5Board:
         with open(file_path, "w", encoding="utf-8") as f:
             json.dump(artifact, f, indent=2, ensure_ascii=False)
 
-    def _log_change(
-        self, project_id: str, reason: str, old_version: str, new_version: str
-    ):
+    def _log_change(self, project_id: str, reason: str, old_version: str, new_version: str):
         """Log artifact changes."""
         log_path = self.project_dir / project_id / "change_log.txt"
 
@@ -349,15 +402,7 @@ class Step5Board:
             f.write(f"  Reason: {reason}\n\n")
 
     def validate_only(self, artifact: Dict[str, Any]) -> Tuple[bool, str]:
-        """
-        Validate an artifact without executing generation.
-
-        Args:
-            artifact: The artifact to validate
-
-        Returns:
-            Tuple of (is_valid, message)
-        """
+        """Validate an artifact without executing generation."""
         is_valid, errors = self.validator.validate(artifact)
 
         if is_valid:

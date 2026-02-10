@@ -70,7 +70,7 @@ class Step8Screenplay:
       - act_by_act: GPT writes per act, Grok checks with fresh eyes, GPT revises
     """
 
-    VERSION = "4.0.0"
+    VERSION = "5.0.0"
 
     # Max revision attempts per scene (structural + diagnostic)
     MAX_SCENE_REVISIONS = 1

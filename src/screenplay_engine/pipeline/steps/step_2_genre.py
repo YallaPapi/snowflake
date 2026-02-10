@@ -74,13 +74,10 @@ class Step2Genre:
             step_1_artifact, snowflake_artifacts
         )
 
-        # Call AI generator with validation
-        try:
-            artifact_content = self.generator.generate_with_validation(
-                prompt_data, self.validator, model_config
-            )
-        except Exception as e:
-            return False, {}, f"AI generation failed: {e}"
+        # Call AI generator with validation — let exceptions propagate
+        artifact_content = self.generator.generate_with_validation(
+            prompt_data, self.validator, model_config
+        )
 
         # Add metadata
         artifact = self._add_metadata(
@@ -181,13 +178,10 @@ class Step2Genre:
             snowflake_artifacts,
         )
 
-        # Call AI for revision
-        try:
-            artifact_content = self.generator.generate_with_validation(
-                prompt_data, self.validator, model_config
-            )
-        except Exception as e:
-            return False, {}, f"AI revision failed: {e}"
+        # Call AI for revision — let exceptions propagate
+        artifact_content = self.generator.generate_with_validation(
+            prompt_data, self.validator, model_config
+        )
 
         # Update version
         old_version = current_artifact.get("metadata", {}).get("version", "1.0.0")

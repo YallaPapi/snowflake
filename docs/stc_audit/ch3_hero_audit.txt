@@ -1,0 +1,672 @@
+================================================================================
+SAVE THE CAT AUDIT -- CHAPTER 3: "IT'S ABOUT A GUY WHO..."
+Screenplay Engine Step 3: Hero Construction
+================================================================================
+
+Date:       2026-02-08
+Auditor:    Claude Opus 4.6
+Status:     COMPLETE -- reference document for all Step 3 fixes
+
+SOURCE MATERIAL:
+  Book chapter:  C:\Users\asus\Desktop\projects\snowflake\temp_pages\stc_chapters\ch3_hero.txt
+  Lines:         1-297
+
+ENGINE FILES AUDITED:
+  Prompt:        C:\Users\asus\Desktop\projects\snowflake\src\screenplay_engine\pipeline\prompts\step_3_prompt.py
+  Validator:     C:\Users\asus\Desktop\projects\snowflake\src\screenplay_engine\pipeline\validators\step_3_validator.py
+  Step logic:    C:\Users\asus\Desktop\projects\snowflake\src\screenplay_engine\pipeline\steps\step_3_hero.py
+  Models:        C:\Users\asus\Desktop\projects\snowflake\src\screenplay_engine\models.py
+
+================================================================================
+PART 1: COMPLETE EXTRACTION OF SNYDER'S RULES FROM CHAPTER 3
+================================================================================
+
+Every discrete rule, principle, or requirement found in the chapter text,
+with exact line citations.
+
+  R1.  THE "WHO" IS THE AUDIENCE'S WAY IN
+       "The 'who' is our way in. We, the audience, zero in on and project
+       onto the 'who'."
+       [Book line 11]
+
+  R2.  HERO AS AUDIENCE STAND-IN FOR TARGET MARKET
+       "We have to create audience stand-ins that resonate for our target
+       market AND serve the needs and goals of our story."
+       [Book line 17]
+
+  R3.  LOG LINE MUST CONTAIN HERO ADJECTIVE
+       "an adjective to describe the hero"
+       [Book line 19]
+
+  R4.  LOG LINE MUST CONTAIN VILLAIN ADJECTIVE
+       "an adjective to describe the bad guy"
+       [Book line 21]
+
+  R5.  LOG LINE MUST CONTAIN COMPELLING PRIMAL GOAL
+       "a compelling goal we identify with as human beings"
+       [Book line 23]
+
+  R6.  EVERY MOVIE MUST HAVE ONE LEAD CHARACTER
+       "Every movie, even an ensemble piece... has to have a lead character.
+       It has to be about someone."
+       [Book line 31]
+
+  R7.  THE HERO MUST CARRY THE MOVIE'S THEME
+       "someone who can carry the movie's theme"
+       [Book line 31]
+
+  R8.  HERO SERVES THE CONCEPT, NOT VICE VERSA
+       "the 'who' has to serve the 'what is it?' not the other way around"
+       [Book lines 33-35]
+
+  R9.  THREE CRITERIA FOR THE PERFECT HERO
+       "the trick is to create heroes [who]:
+         - Offer the most conflict in that situation
+         - Have the longest way to go emotionally and...
+         - Are the most demographically pleasing!"
+       [Book lines 67-73]
+
+  R10. DEMOGRAPHIC AWARENESS / YOUTH ORIENTATION
+       Snyder devotes lines 75-87 to the importance of character age and
+       demographic appeal. He states heroes should skew young because
+       "This is who shows up for movies." He calls demographic blind spots
+       a critical pitfall and says to make characters younger whenever
+       possible for mass-market appeal.
+       [Book lines 75-87]
+
+  R11. FIVE PRIMAL URGES (THE CANONICAL LIST)
+       "survival, hunger, sex, protection of loved ones, fear of death
+       grab us."
+       [Book lines 103-105, restated at line 129]
+
+  R12. SURFACE GOALS MUST CONNECT TO PRIMAL STAKES
+       "if it's a promotion at work, it better damn well be related to
+       winning the hand of X's beloved or saving up enough money to get
+       X's daughter an operation"
+       [Book lines 99-100]
+
+  R13. USE PRIMAL RELATIONSHIPS
+       "we respond best to stories of husbands and wives, fathers and
+       daughters, mothers and sons, ex-boyfriends and girlfriends"
+       [Book lines 131-133]
+
+  R14. TEN ACTOR ARCHETYPES (THE CANONICAL LIST)
+       1. young man on the rise (Harold Lloyd, Adam Sandler)
+       2. good girl tempted (Doris Day, Reese Witherspoon)
+       3. the imp / clever resourceful child (MacCaulay Culkin)
+       4. sex goddess (Marilyn Monroe, Halle Berry)
+       5. the hunk (Clark Gable, Vin Diesel)
+       6. wounded soldier (Paul Newman, Clint Eastwood)
+       7. troubled sexpot (Veronica Lake, Angelina Jolie)
+       8. lovable fop (Cary Grant, Hugh Grant)
+       9. court jester (Danny Kaye, Woody Allen)
+       10. wise grandfather (Alec Guinness, Ian McKellen)
+       [Book lines 172-188]
+
+  R15. WRITE FOR THE ARCHETYPE, NOT THE STAR
+       "forget the stars and concentrate on the archetypes and strive to
+       make them new"
+       [Book lines 195-197]
+
+  R16. ENSEMBLE: HERO CARRIES THE THEME
+       "the 'hero' is usually the one who carries the theme of the movie"
+       [Book line 229]
+
+  R17. HERO TRANSFORMATION (OPENING vs. FINAL STATE)
+       Implied throughout. The hero has "the longest way to go emotionally."
+       Snyder gives the example of a journey "from henpecked to empowered."
+       [Book line 39, 71]
+
+  R18. DON'T CAST BEFORE SELLING / LEAVE ROOM FOR CASTING
+       "Don't cast the movie before you've sold the script!"
+       [Book lines 141-145]
+
+  R19. RETURN TO THE LOG LINE AFTER HERO IS FOUND
+       "it's time to go back to your log line and add in what you've
+       learned to make it perfect"
+       [Book lines 257-259]
+
+  R20. THE LOG LINE IS THE STORY'S DNA
+       "The log line is your story's code, its DNA, the one constant that
+       has to be true."
+       [Book lines 260-261]
+
+  R21. FIVE-POINT HERO TEST (SUMMARY)
+       "Tell me a story about a guy who...
+         - I can identify with
+         - I can learn from
+         - I have compelling reason to follow
+         - I believe deserves to win and...
+         - Has stakes that are primal and ring true for me."
+       [Book lines 241-251]
+
+  R22. HERO LIKABILITY / ROOTABILITY
+       "we want to root for" the hero; they must "deserve to win."
+       [Book lines 31, 249, 281]
+
+
+CRITICAL OBSERVATION -- WHAT SNYDER DOES NOT SAY IN CHAPTER 3:
+
+  - He does NOT define a full supporting cast at this stage.
+  - He does NOT mention the "Save the Cat" moment in Chapter 3.
+    (That concept is from Chapter 1, the book's title conceit.)
+  - He does NOT introduce the "B-story character" in Chapter 3.
+    (That is from Chapter 4, Beat 7: "B Story".)
+  - He does NOT discuss "Six Things That Need Fixing" in Chapter 3.
+    (That is from Chapter 4, the Set-Up beat description.)
+  - He does NOT mention the "mirror principle" for antagonists in Chapter 3.
+    (That concept appears in later chapters.)
+  - He does NOT discuss physical descriptions of any character.
+  - He does NOT prescribe building sidekicks, mentors, or love interests
+    at this stage.
+  - He DOES mention "sidekicks and talking animals, spinsters and wizards"
+    (line 189) but ONLY as examples of recurring archetypes across cinema
+    history -- NOT as a prescription to create them here.
+
+  At this stage, Snyder prescribes exactly TWO character roles:
+    1. The Hero (extensively detailed)
+    2. The Bad Guy / Antagonist (briefly: adjective + blocking force)
+
+
+================================================================================
+PART 2: LINE-BY-LINE GAP ANALYSIS
+================================================================================
+
+For each Snyder rule: MATCH / PARTIAL / MISSING / WRONG / N/A
+
++------+------------------------------------------+---------+------------------------------------------------------------------+
+| Rule | Snyder Requirement                       | Status  | Details                                                          |
++------+------------------------------------------+---------+------------------------------------------------------------------+
+| R1   | "Who" is audience's way in               | PARTIAL | Engine builds the hero but has no explicit validation that the    |
+|      |                                          |         | hero is relatable or functions as an audience stand-in. No field |
+|      |                                          |         | captures "audience identification" as a property.                |
+|      |                                          |         | FILES: No field in models.py HeroProfile (lines 90-112).        |
++------+------------------------------------------+---------+------------------------------------------------------------------+
+| R2   | Hero as audience stand-in for target     | MISSING | No field for target demographic or target market audience.       |
+|      | market                                   |         | Snyder explicitly calls this out (line 17) and devotes an        |
+|      |                                          |         | entire section to it (lines 75-87).                              |
+|      |                                          |         | FILES: No field in models.py HeroProfile (lines 90-112).        |
+|      |                                          |         | No check in step_3_validator.py.                                 |
++------+------------------------------------------+---------+------------------------------------------------------------------+
+| R3   | Hero adjective in logline                | MATCH   | hero_adjective exists in Logline model (models.py line 66).      |
+|      |                                          |         | Threaded into Step 3 prompt (step_3_prompt.py line 36).          |
+|      |                                          |         | HeroProfile.adjective_descriptor (models.py line 93).            |
++------+------------------------------------------+---------+------------------------------------------------------------------+
+| R4   | Villain adjective in logline             | MATCH   | villain_adjective exists in Logline model (models.py line 67).   |
+|      |                                          |         | Threaded into Step 3 prompt (step_3_prompt.py line 37).          |
+|      |                                          |         | AntagonistProfile.adjective_descriptor (models.py line 118).     |
++------+------------------------------------------+---------+------------------------------------------------------------------+
+| R5   | Compelling primal goal in logline        | MATCH   | primal_goal exists in Logline model (models.py line 68).         |
+|      |                                          |         | Threaded into Step 3 prompt (step_3_prompt.py line 38).          |
++------+------------------------------------------+---------+------------------------------------------------------------------+
+| R6   | Every movie has ONE lead character       | MATCH   | Engine produces exactly one HeroProfile.                         |
++------+------------------------------------------+---------+------------------------------------------------------------------+
+| R7   | Hero must carry the theme                | MATCH   | theme_carrier field on HeroProfile (models.py line 112).         |
+|      |                                          |         | Validated as non-empty by step_3_validator.py lines 184-190.     |
++------+------------------------------------------+---------+------------------------------------------------------------------+
+| R8   | Hero serves the concept, not vice versa  | PARTIAL | The prompt feeds the logline into hero construction              |
+|      |                                          |         | (step_3_prompt.py lines 33-38), which is correct. But there      |
+|      |                                          |         | is no explicit validation or scoring mechanism to ensure the     |
+|      |                                          |         | hero is optimal for the concept. The                             |
+|      |                                          |         | maximum_conflict_justification field is a partial proxy.         |
++------+------------------------------------------+---------+------------------------------------------------------------------+
+| R9a  | Most conflict in the situation           | MATCH   | maximum_conflict_justification field on HeroProfile              |
+|      |                                          |         | (models.py line 102). Prompt requires it                         |
+|      |                                          |         | (step_3_prompt.py line 69).                                      |
++------+------------------------------------------+---------+------------------------------------------------------------------+
+| R9b  | Longest emotional journey                | MATCH   | longest_journey_justification field on HeroProfile               |
+|      |                                          |         | (models.py line 103). Prompt requires it                         |
+|      |                                          |         | (step_3_prompt.py line 71).                                      |
++------+------------------------------------------+---------+------------------------------------------------------------------+
+| R9c  | Most demographically pleasing            | MISSING | No demographic field, no age field, no target audience           |
+|      |                                          |         | validation anywhere in the engine. Snyder explicitly lists       |
+|      |                                          |         | this as one of THE THREE criteria for the perfect hero           |
+|      |                                          |         | (book line 73). This is the third leg of the tripod and          |
+|      |                                          |         | it is completely absent.                                         |
+|      |                                          |         | FILES: Not in models.py, not in step_3_prompt.py,                |
+|      |                                          |         | not in step_3_validator.py.                                      |
++------+------------------------------------------+---------+------------------------------------------------------------------+
+| R10  | Demographic awareness / youth bias       | MISSING | The engine has zero concept of character age or demographic      |
+|      |                                          |         | appeal. Snyder devotes nearly a full page (lines 75-87) to       |
+|      |                                          |         | why heroes should skew young for mass-market movies. No          |
+|      |                                          |         | field, no prompt guidance, no validation.                        |
+|      |                                          |         | FILES: Not in models.py, not in step_3_prompt.py,                |
+|      |                                          |         | not in step_3_validator.py.                                      |
++------+------------------------------------------+---------+------------------------------------------------------------------+
+| R11  | Five primal urges                        | MATCH   | PrimalUrge enum (models.py lines 27-33) perfectly matches:       |
+|      |                                          |         | survival, hunger, sex, protection_of_loved_ones, fear_of_death.  |
+|      |                                          |         | Validated in step_3_validator.py lines 90-96.                    |
++------+------------------------------------------+---------+------------------------------------------------------------------+
+| R12  | Surface goals connect to primal stakes   | PARTIAL | Both stated_goal (models.py line 98) and actual_need             |
+|      |                                          |         | (models.py line 99) exist. primal_motivation (models.py          |
+|      |                                          |         | line 97) is required. BUT there is no validation that            |
+|      |                                          |         | stated_goal actually connects to primal_motivation. They         |
+|      |                                          |         | could be completely unrelated and still pass validation.          |
+|      |                                          |         | The validator (step_3_validator.py) checks each field exists      |
+|      |                                          |         | independently but never checks logical connection between        |
+|      |                                          |         | them.                                                            |
++------+------------------------------------------+---------+------------------------------------------------------------------+
+| R13  | Primal relationships (husband/wife, etc.)| MISSING | No relationship taxonomy for hero-to-other-character bonds.      |
+|      |                                          |         | Snyder says primal kinship types (husband/wife, father/          |
+|      |                                          |         | daughter, mother/son) make characters work better than            |
+|      |                                          |         | strangers. The engine has b_story_character.                      |
+|      |                                          |         | relationship_to_hero (models.py line 127) as a free-text         |
+|      |                                          |         | field, but it is not constrained to primal relationship          |
+|      |                                          |         | types and is not validated against them.                         |
+|      |                                          |         | FILES: models.py line 127 -- free text, no enum.                 |
+|      |                                          |         | step_3_validator.py -- no check on relationship type.            |
++------+------------------------------------------+---------+------------------------------------------------------------------+
+| R14  | 10 actor archetypes                      | MATCH   | ActorArchetype enum (models.py lines 36-47) has all 10:          |
+|      |                                          |         | young_man_on_the_rise, good_girl_tempted, the_imp,               |
+|      |                                          |         | sex_goddess, the_hunk, wounded_soldier, troubled_sexpot,         |
+|      |                                          |         | lovable_fop, court_jester, wise_grandfather.                     |
+|      |                                          |         | Validated in step_3_validator.py lines 82-88.                    |
++------+------------------------------------------+---------+------------------------------------------------------------------+
+| R15  | Write for archetype, not star            | MATCH   | Engine works with archetypes by design. No actor-casting         |
+|      |                                          |         | fields exist. The enum enforces archetype thinking.              |
++------+------------------------------------------+---------+------------------------------------------------------------------+
+| R16  | Ensemble: hero carries theme             | PARTIAL | theme_carrier exists (models.py line 112). But there is no       |
+|      |                                          |         | ensemble detection or handling. If the source material is         |
+|      |                                          |         | an ensemble (e.g., from Snowflake data with many                 |
+|      |                                          |         | protagonists), the engine has no mechanism to identify which      |
+|      |                                          |         | character should be selected as THE hero.                        |
++------+------------------------------------------+---------+------------------------------------------------------------------+
+| R17  | Hero transformation (opening vs. final)  | MATCH   | opening_state (models.py line 110) and final_state               |
+|      |                                          |         | (models.py line 111) both exist. Validator checks they are       |
+|      |                                          |         | not identical (step_3_validator.py lines 110-118). Prompt        |
+|      |                                          |         | says "MUST be the OPPOSITE" (step_3_prompt.py line 79).          |
+|      |                                          |         | See BUG #3 below for a weakness in the validation.               |
++------+------------------------------------------+---------+------------------------------------------------------------------+
+| R18  | Don't cast before selling                | N/A     | Advice for human screenwriters. Not applicable to engine.        |
++------+------------------------------------------+---------+------------------------------------------------------------------+
+| R19  | Return to logline after hero is found    | MISSING | No feedback loop exists. Step 3 does not update Step 1's         |
+|      |                                          |         | logline. The pipeline is strictly forward-flowing: Step 1 ->     |
+|      |                                          |         | Step 2 -> Step 3 -> ... The hero's adjective_descriptor          |
+|      |                                          |         | may diverge from hero_adjective in Step 1 and nothing            |
+|      |                                          |         | reconciles them.                                                 |
+|      |                                          |         | FILES: step_3_hero.py -- no call back to Step 1.                 |
++------+------------------------------------------+---------+------------------------------------------------------------------+
+| R20  | Logline is the story's DNA               | PARTIAL | The logline does feed into all steps via step_1_artifact.        |
+|      |                                          |         | But without a reconciliation loop (see R19), the logline         |
+|      |                                          |         | becomes stale if the hero construction reveals a better          |
+|      |                                          |         | formulation.                                                     |
++------+------------------------------------------+---------+------------------------------------------------------------------+
+| R21  | Five-point hero test                     | PARTIAL | The engine captures some of these (conflict, journey,            |
+|      |                                          |         | primal stakes) but not all five explicitly. "I can identify      |
+|      |                                          |         | with" maps to nothing. "I can learn from" maps to nothing.       |
+|      |                                          |         | "I have compelling reason to follow" is partially covered        |
+|      |                                          |         | by conflict justification. "I believe deserves to win" maps      |
+|      |                                          |         | to save_the_cat_moment. "Primal stakes" maps to                  |
+|      |                                          |         | primal_motivation.                                               |
++------+------------------------------------------+---------+------------------------------------------------------------------+
+| R22  | Hero likability / rootability            | PARTIAL | save_the_cat_moment partially covers this. But "rootability"     |
+|      |                                          |         | is not validated -- the validator only checks the field is        |
+|      |                                          |         | non-empty and >= 20 chars (step_3_validator.py lines 120-127).   |
+|      |                                          |         | There is no semantic check that the moment actually shows         |
+|      |                                          |         | likability through ACTION.                                       |
++------+------------------------------------------+---------+------------------------------------------------------------------+
+
+
+================================================================================
+PART 3: ENGINE ELEMENTS NOT FROM CHAPTER 3
+================================================================================
+
+The engine's Step 3 includes several elements that Snyder introduces in
+OTHER chapters. These are not wrong per se (they may be a reasonable
+design choice to front-load character work), but they should be
+documented as deviations from the book's chapter-by-chapter structure.
+
++-----------------------------+----------------------------+----------------------------------+
+| Engine Element              | Actual Snyder Source       | Assessment                       |
++-----------------------------+----------------------------+----------------------------------+
+| save_the_cat_moment         | Chapter 1 / book's title  | WRONG CHAPTER. Snyder's "Save    |
+| (models.py line 106)        | concept. Not from Ch.3.    | the Cat" concept is the book's   |
+|                             |                            | title idea from Ch.1. Ch.3 does  |
+|                             |                            | not mention it. However,         |
+|                             |                            | including it at the hero stage   |
+|                             |                            | is a reasonable design choice.   |
++-----------------------------+----------------------------+----------------------------------+
+| six_things_that_need_fixing | Chapter 4, Set-Up beat.    | WRONG CHAPTER. This is           |
+| (models.py line 107)        | Not from Ch.3.             | explicitly a Beat Sheet / Set-Up |
+|                             |                            | concept from Ch.4. The engine    |
+|                             |                            | front-loads it into hero         |
+|                             |                            | construction.                    |
++-----------------------------+----------------------------+----------------------------------+
+| mirror_principle             | Later chapters (Ch.7      | WRONG CHAPTER. Snyder does not   |
+| (models.py line 121)        | and beyond).               | discuss the mirror principle in  |
+|                             |                            | Ch.3. In Ch.3, the antagonist   |
+|                             |                            | is described only as having an   |
+|                             |                            | adjective and "trying to block"  |
+|                             |                            | the hero's goal (line 27).       |
++-----------------------------+----------------------------+----------------------------------+
+| b_story_character            | Chapter 4, Beat 7          | WRONG CHAPTER. The B-story       |
+| (models.py lines 124-128)   | ("B Story" beat).          | character is introduced in Ch.4  |
+|                             |                            | as part of the beat sheet, not   |
+|                             |                            | in Ch.3. The engine places it    |
+|                             |                            | here for convenience.            |
++-----------------------------+----------------------------+----------------------------------+
+| moral_difference             | Later chapters.            | WRONG CHAPTER. Not from Ch.3.    |
+| (models.py line 120)        |                            | Ch.3 says nothing about what     |
+|                             |                            | the antagonist is "willing to    |
+|                             |                            | do" that the hero won't.         |
++-----------------------------+----------------------------+----------------------------------+
+| power_level                  | Later chapters.            | WRONG CHAPTER. Not from Ch.3.    |
+| (models.py line 119)        |                            | Ch.3's only requirement for the  |
+|                             |                            | antagonist is an adjective and   |
+|                             |                            | that they block the hero's goal. |
++-----------------------------+----------------------------+----------------------------------+
+
+
+================================================================================
+PART 4: THE SUPPORTING CAST QUESTION
+================================================================================
+
+INITIAL HYPOTHESIS:
+  "The engine only produces 3 characters (hero, antagonist, b_story) but
+  a movie obviously needs a full supporting cast."
+
+FINDING:
+  Snyder's Chapter 3 prescribes exactly TWO character roles:
+    1. The Hero (extensively detailed)
+    2. The Bad Guy / Antagonist (briefly: adjective + blocking force only)
+
+  That is ALL. No supporting cast. No B-story character. No sidekicks.
+  No mentor. No love interest (unless that IS the primal motivation).
+
+  The engine actually OVER-DELIVERS by including the B-story character
+  at this stage. The B-story character comes from Chapter 4, Beat 7.
+
+  Snyder mentions "sidekicks and talking animals, spinsters and wizards,
+  Falstaffs and misers" (book line 189) but this is a general observation
+  about recurring archetypes across cinema history, NOT a prescription to
+  create supporting characters at Step 3.
+
+REAL PROBLEM:
+  The "only 3 characters" concern is valid, but it is a PIPELINE-LEVEL
+  issue, not a Step 3 issue. The supporting cast should be built at a
+  LATER step:
+
+    Option A: Between Step 3 (Hero) and Step 4 (Beat Sheet), as a
+              dedicated character-building step.
+    Option B: At Step 4 (Beat Sheet), where characters naturally emerge
+              from beat descriptions.
+    Option C: At Step 5 (The Board), which already has characters_present
+              per card (models.py line 163) but no mechanism to define
+              those characters before using them.
+
+  Currently, The Board (Step 5) references characters_present as a list
+  of strings, but there is no step that creates those characters. They
+  appear as names with no profile, no archetype, no role definition.
+
+
+================================================================================
+PART 5: BUGS AND INTERNAL INCONSISTENCIES
+================================================================================
+
+BUG #1: VALIDATOR ALLOWS 3-8 ITEMS FOR "SIX THINGS" (CONTRADICTS MODEL)
+  SEVERITY: MEDIUM
+  FILE: step_3_validator.py line 104
+  ISSUE: The validator accepts 3 to 8 items:
+         "elif len(six_things) < 3 or len(six_things) > 8:"
+         But the Pydantic model requires exactly 6:
+         models.py line 107: "min_length=6, max_length=6"
+  EFFECT: If the AI returns 4, 5, 7, or 8 items, the validator passes
+          but the Pydantic model would reject them. This creates a
+          contradictory validation layer. If the artifact is validated
+          before Pydantic parsing, bad data gets through. If Pydantic
+          runs first, the validator's leniency is irrelevant.
+  FIX: Change step_3_validator.py line 104 to:
+       "elif len(six_things) != 6:"
+       And update the error message on line 106-107 to say "exactly 6"
+       instead of "3-8".
+
+BUG #2: VALIDATOR DOES NOT CHECK maximum_conflict_justification OR
+         longest_journey_justification
+  SEVERITY: MEDIUM
+  FILE: step_3_validator.py
+  ISSUE: The required_hero_fields list (lines 60-70) does NOT include
+         maximum_conflict_justification or longest_journey_justification.
+         These two fields are:
+           - On the Pydantic model (models.py lines 102-103)
+           - Required by the prompt (step_3_prompt.py lines 69, 71)
+           - But NEVER validated in step_3_validator.py
+         If the AI omits them, the validator passes. Only the Pydantic
+         model would catch the omission, and the validator is the
+         primary gatekeeper in the generate_with_validation loop.
+  FIX: Add "maximum_conflict_justification" and
+       "longest_journey_justification" to the required_hero_fields
+       list at step_3_validator.py line 60.
+
+BUG #3: OPENING/FINAL STATE CHECKED FOR NON-IDENTITY, NOT OPPOSITION
+  SEVERITY: MEDIUM
+  FILE: step_3_validator.py lines 110-118
+  ISSUE: The validator only checks "opening == final" (string equality
+         after lowering and stripping). It does NOT check that they are
+         truly oppositional. A hero could have:
+           opening_state = "lonely"
+           final_state   = "slightly less lonely"
+         and pass validation. Snyder requires TRUE OPPOSITES (e.g.,
+         "henpecked" -> "empowered", book line 39).
+  EFFECT: Weak, non-transformative arcs pass silently.
+  FIX: This is hard to enforce structurally. Options:
+       (a) Add prompt language emphasizing "must be antonyms or
+           clearly oppositional states, not gradations."
+       (b) Add a semantic similarity check in the validator (would
+           require NLP tooling, may be impractical).
+       (c) Add a validator warning (not error) when states share
+           root words (e.g., "lonely" and "less lonely").
+
+BUG #4: ANTAGONIST adjective_descriptor NOT VALIDATED
+  SEVERITY: LOW
+  FILE: step_3_validator.py
+  ISSUE: The antagonist section (lines 129-164) validates
+         mirror_principle and power_level, but does NOT validate that
+         adjective_descriptor is present. Snyder's Ch.3 explicitly
+         requires an adjective for the bad guy (book line 21). The
+         Pydantic model has the field (models.py line 118), the prompt
+         asks for it (step_3_prompt.py line 87), but the validator
+         does not check it.
+  FIX: Add a check for antagonist.adjective_descriptor in the
+       validator's antagonist section.
+
+BUG #5: B-STORY CHARACTER relationship_to_hero NOT VALIDATED
+  SEVERITY: LOW
+  FILE: step_3_validator.py lines 166-182
+  ISSUE: The validator checks that the b_story_character exists and
+         has theme_wisdom, but does NOT check that
+         relationship_to_hero is present. The field exists on the
+         model (models.py line 127) and the prompt asks for it
+         (step_3_prompt.py line 99), but validation skips it.
+  FIX: Add a check for b_story.relationship_to_hero in the
+       validator's B-story section.
+
+BUG #6: B-STORY CHARACTER name NOT VALIDATED
+  SEVERITY: LOW
+  FILE: step_3_validator.py lines 166-182
+  ISSUE: The validator checks b_story_character is a non-empty dict
+         and has theme_wisdom, but does NOT check that name is present.
+         An unnamed B-story character would pass validation.
+  FIX: Add a check for b_story.name in the validator.
+
+BUG #7: ANTAGONIST name NOT VALIDATED
+  SEVERITY: LOW
+  FILE: step_3_validator.py lines 129-164
+  ISSUE: Same pattern -- the validator checks the dict exists and has
+         mirror_principle and power_level, but does not check that name
+         is present. An unnamed antagonist passes.
+  FIX: Add a check for antagonist.name in the validator.
+
+
+================================================================================
+PART 6: MISSING FEATURES (ORDERED BY SEVERITY)
+================================================================================
+
+GAP #1: NO DEMOGRAPHIC / AGE FIELD
+  SEVERITY: HIGH (one of Snyder's three core criteria is completely absent)
+  SNYDER REF: Book lines 73, 75-87
+  DESCRIPTION: Snyder lists "most demographically pleasing" as the third
+               of three criteria for the perfect hero, right alongside
+               "most conflict" and "longest journey." He devotes nearly
+               a full page to why characters should skew young and
+               demographically appealing. The engine has fields for the
+               other two criteria but completely ignores this one.
+  RECOMMENDATION: Add to HeroProfile model:
+                  - target_demographic: str (e.g., "18-25 male")
+                  - hero_age_range: str (e.g., "early 20s")
+                  - demographic_appeal_justification: str
+                  Add to prompt and validator accordingly.
+
+GAP #2: NO FEEDBACK LOOP TO LOGLINE (STEP 1)
+  SEVERITY: MEDIUM
+  SNYDER REF: Book lines 257-261
+  DESCRIPTION: Snyder explicitly says "go back to your log line and add
+               in what you've learned" after finding the hero. The engine
+               has no mechanism to update Step 1's logline with
+               discoveries from Step 3. The adjective_descriptor
+               generated in Step 3 may differ from hero_adjective in
+               Step 1, and nothing reconciles them.
+  RECOMMENDATION: After Step 3 completes, add a reconciliation pass:
+                  - Compare hero.adjective_descriptor to Step 1
+                    hero_adjective
+                  - Compare antagonist.adjective_descriptor to Step 1
+                    villain_adjective
+                  - If they differ, flag for logline update
+                  - Optionally auto-update Step 1 artifact
+
+GAP #3: NO PRIMAL RELATIONSHIP VALIDATION
+  SEVERITY: MEDIUM
+  SNYDER REF: Book lines 131-133
+  DESCRIPTION: Snyder says "we respond best to stories of husbands and
+               wives, fathers and daughters, mothers and sons,
+               ex-boyfriends and girlfriends." The engine's
+               relationship_to_hero field (models.py line 127) is free
+               text with no constraints. A response like "co-worker who
+               sits nearby" would pass validation despite being
+               non-primal.
+  RECOMMENDATION: Add a PrimalRelationship enum or a validator check
+                  that warns when relationship types are not primal.
+                  Possible values: spouse, parent, child, sibling,
+                  romantic_partner, ex_partner, close_family.
+
+GAP #4: STATED_GOAL NOT VALIDATED AGAINST PRIMAL_MOTIVATION
+  SEVERITY: MEDIUM
+  SNYDER REF: Book lines 99-100
+  DESCRIPTION: Snyder says surface goals "better damn well be related to"
+               a primal urge. The engine has both stated_goal and
+               primal_motivation as separate fields, but the validator
+               never checks that they connect logically. A hero could
+               have stated_goal="get a promotion" and
+               primal_motivation="fear_of_death" with no connecting
+               thread, and pass all validation.
+  RECOMMENDATION: Add to the prompt explicit language requiring the
+                  connection to be stated. Add to the validator a check
+                  that the stated_goal text references or implies the
+                  primal_motivation.
+
+GAP #5: NO "AMPING UP" / ALTERNATIVE HERO TESTING
+  SEVERITY: LOW
+  SNYDER REF: Book lines 47-63
+  DESCRIPTION: Snyder devotes substantial text to "amping up" -- testing
+               different possible heroes for the same concept and picking
+               the one that works best. The engine does a single-shot
+               generation with no mechanism to generate and compare
+               multiple hero candidates.
+  RECOMMENDATION: Optional feature: generate 2-3 hero candidates with
+                  the same inputs, score each against the three criteria,
+                  and select the best. Low priority since single-shot
+                  generation with good prompting may be sufficient.
+
+GAP #6: NO ENSEMBLE DETECTION
+  SEVERITY: LOW
+  SNYDER REF: Book lines 225-231
+  DESCRIPTION: Snyder discusses how to find the hero in ensemble pieces.
+               The engine has no mechanism to detect when the Snowflake
+               source material describes an ensemble story and no
+               guidance for selecting which character should be THE hero.
+  RECOMMENDATION: Add ensemble detection to the prompt: if Snowflake
+                  data contains multiple protagonists, instruct the AI
+                  to select the one who "carries the theme" and "comes
+                  the farthest emotionally."
+
+
+================================================================================
+PART 7: SUMMARY SCORECARD
+================================================================================
+
++----------------------------+-------+
+| Category                   | Count |
++----------------------------+-------+
+| MATCH (fully correct)      |  10   |
+| PARTIAL (incomplete)       |   6   |
+| MISSING (should exist)     |   4   |
+| WRONG CHAPTER (from other) |   6   |
+| N/A (not applicable)       |   1   |
+| BUGS (internal errors)     |   7   |
++----------------------------+-------+
+
+Breakdown by severity:
+
+  HIGH:    1 gap  (missing demographic criterion)
+  MEDIUM:  6 items (3 bugs + 3 gaps)
+  LOW:     7 items (4 bugs + 3 gaps)
+
+
+================================================================================
+PART 8: RECOMMENDED FIX PRIORITY
+================================================================================
+
+Priority 1 -- Fix immediately (blocks correct output):
+  [BUG #1]  Validator six_things count: change 3-8 to exactly 6
+            FILE: step_3_validator.py line 104
+  [BUG #2]  Validator missing two required fields
+            FILE: step_3_validator.py lines 60-70
+  [GAP #1]  Add demographic/age fields to HeroProfile
+            FILES: models.py, step_3_prompt.py, step_3_validator.py
+
+Priority 2 -- Fix soon (weakens output quality):
+  [BUG #3]  Opening/final state opposition check
+            FILE: step_3_validator.py lines 110-118
+  [BUG #4]  Antagonist adjective_descriptor not validated
+            FILE: step_3_validator.py
+  [GAP #2]  Logline feedback loop
+            FILE: step_3_hero.py
+  [GAP #3]  Primal relationship validation
+            FILES: models.py, step_3_validator.py
+  [GAP #4]  Stated goal <-> primal motivation connection
+            FILE: step_3_validator.py
+
+Priority 3 -- Fix when convenient (minor quality improvements):
+  [BUG #5]  B-story relationship_to_hero not validated
+  [BUG #6]  B-story name not validated
+  [BUG #7]  Antagonist name not validated
+  [GAP #5]  Alternative hero testing / amping up
+  [GAP #6]  Ensemble detection
+
+
+================================================================================
+PART 9: ANSWER TO THE ORIGINAL QUESTION
+================================================================================
+
+Q: "Does the engine only produce 3 characters when a movie needs a full
+    supporting cast?"
+
+A: Yes, the engine produces 3 characters (hero, antagonist, b_story),
+   but this is CORRECT for Chapter 3. Snyder only prescribes 2 character
+   roles at this stage (hero + bad guy). The engine adds the B-story
+   character from Chapter 4 as a forward-loading design choice.
+
+   The REAL problem is at the pipeline level: no later step builds the
+   supporting cast. Step 5 (The Board) has characters_present lists per
+   scene card (models.py line 163) but no preceding step defines those
+   characters. They appear as bare names with no profiles.
+
+   RECOMMENDATION: Add a dedicated supporting-cast step between Step 3
+   and Step 5, or integrate cast-building into Step 4 (Beat Sheet) where
+   characters naturally emerge from beat descriptions. Each supporting
+   character should get at minimum: name, role, archetype, relationship
+   to hero, and story function.
+
+
+================================================================================
+END OF AUDIT
+================================================================================

@@ -1,0 +1,1312 @@
+================================================================================
+  SAVE THE CAT! CHAPTER 4 AUDIT REPORT
+  "Let's Beat It Out!" -- The Blake Snyder Beat Sheet (BS2)
+================================================================================
+
+Audit Date:       2026-02-08
+Auditor:          Claude Opus 4.6
+Book Source:      temp_pages\stc_chapters\ch4_beat_sheet.txt (Chapter 4)
+Engine Version:   1.0.0 (all Step 4 files)
+
+Files Under Review:
+  PROMPT:     src\screenplay_engine\pipeline\prompts\step_4_prompt.py
+  VALIDATOR:  src\screenplay_engine\pipeline\validators\step_4_validator.py
+  STEP:       src\screenplay_engine\pipeline\steps\step_4_beat_sheet.py
+  MODELS:     src\screenplay_engine\models.py
+
+Severity Key:
+  [CRITICAL]  -- Contradicts the book; will produce wrong output
+  [HIGH]      -- Important book rule missing; weak screenplay likely
+  [MEDIUM]    -- Book guidance not codified; quality risk
+  [LOW]       -- Nuance or refinement; nice-to-have
+
+
+================================================================================
+SECTION 1: BEAT-BY-BEAT ANALYSIS
+================================================================================
+
+Each of the 15 beats is evaluated against EVERY rule, constraint, and piece of
+guidance that Blake Snyder provides in Chapter 4 of "Save the Cat!"
+
+
+--------------------------------------------------------------------------------
+BEAT 1: OPENING IMAGE
+  Book: page 1 | ~0-1%
+  Prompt line 73 | Validator lines 154-160 | Models line 256
+--------------------------------------------------------------------------------
+
+  [MATCH] Beat name: "Opening Image" in both book and BEAT_NAMES (models.py:257)
+  [MATCH] Page target: "1" -- book says page 1, prompt line 73 says "page 1"
+  [MATCH] Percentage: "0-1%" -- matches book proportions
+  [MATCH] "Before" snapshot of hero -- book: "gives us a moment to see a
+          'Before' snapshot"; prompt line 73: "shows 'before' state"
+  [MATCH] Opposite of Final Image -- book: "These are bookends... Opening and
+          Final Images should be opposites, a plus and a minus"; prompt line 73:
+          "MUST be opposite of Final Image"
+
+  [MEDIUM] MISSING: Tone/mood/scope setting
+    Book says (ch4 line 111-113): "The very first impression of what a movie is
+    -- its tone, its mood, the type and scope of the film -- are all found in
+    the Opening Image."
+    The prompt says "VISUAL only, shows 'before' state" but omits the explicit
+    requirement to set tone, mood, and scope.
+    File: step_4_prompt.py, line 73
+    Fix: Add "sets tone, mood, and scope of the film" to Opening Image beat
+    instruction.
+
+  [HIGH] MISSING: No validation that Opening and Final Image are content-
+    opposites
+    Book is emphatic (ch4 line 121): "Opening and Final Images should be
+    opposites, a plus and a minus, showing change so dramatic it documents the
+    emotional upheaval that the movie represents."
+    Validator lines 154-160 only check that Beat 1 and Beat 15 EXIST. There is
+    no semantic or keyword check that their descriptions describe opposite
+    states.
+    File: step_4_validator.py, lines 154-160
+    Fix: Add validation that Opening Image description and Final Image
+    description contain contrasting language, or at minimum check that both
+    reference visual imagery and that the emotional_direction fields are
+    different.
+
+
+--------------------------------------------------------------------------------
+BEAT 2: THEME STATED
+  Book: page 5 | ~5%
+  Prompt line 74
+--------------------------------------------------------------------------------
+
+  [MATCH] Beat name: "Theme Stated" (models.py:258)
+  [MATCH] Page target: "5" (prompt line 74)
+  [MATCH] Percentage: "~5%" (prompt line 74)
+  [MATCH] Spoken by someone other than protagonist -- book (ch4 line 131):
+          "someone (usually not the main character)"; prompt line 74: "Spoken by
+          someone OTHER than the protagonist"
+
+  [MEDIUM] MISSING: Conversational/offhand nature
+    Book (ch4 line 131): "it will be conversational, an offhand remark that the
+    main character doesn't quite get at the moment -- but which will have far-
+    reaching and meaningful impact later."
+    Neither prompt nor validator enforce that the theme statement is subtle or
+    conversational rather than heavy-handed.
+    File: step_4_prompt.py, line 74
+    Fix: Add "delivered conversationally -- the hero does not fully grasp it
+    yet" to the beat instruction.
+
+  [MEDIUM] MISSING: Movie is an "argument" that proves or disproves theme
+    Book (ch4 lines 135-139): "a good screenplay is an argument posed by the
+    screenwriter, the pros and cons of living a particular kind of life or
+    pursuing a particular goal."
+    This framing is not codified anywhere in the engine. The theme stated beat
+    should be understood as the opening bid of an argument.
+    File: step_4_prompt.py, line 74
+    Fix: Add a note that the theme statement is "the opening bid of the movie's
+    central argument."
+
+  [HIGH] MISSING: No validator check for Theme Stated content
+    There is no validation that Beat 2 description references a thematic
+    statement, a question, or wisdom spoken by a non-protagonist character.
+    File: step_4_validator.py
+    Fix: Add keyword-based or structural check for Beat 2.
+
+
+--------------------------------------------------------------------------------
+BEAT 3: SET-UP
+  Book: pages 1-10 | 1-10%
+  Prompt line 75
+--------------------------------------------------------------------------------
+
+  [MATCH] Beat name: "Set-Up" (models.py:259)
+  [MATCH] Page target: "1-10" (prompt line 75)
+  [MATCH] Percentage: "1-10%" (prompt line 75)
+  [MATCH] All A-story characters introduced -- book (ch4 line 153): "Within the
+          first ten minutes you meet or reference them all"; prompt line 75:
+          "ALL A-story characters introduced"
+  [MATCH] Six Things That Need Fixing planted -- book (ch4 line 155): "'Six
+          Things That Need Fixing'... like little time bombs"; prompt line 75:
+          "plant Six Things That Need Fixing"
+
+  [MEDIUM] PARTIAL: Character tics and behaviors to be addressed later
+    Book (ch4 line 155): "we start to plant every character tic, exhibit every
+    behavior that needs to be addressed later on, and show how and why the Hero
+    will need to change in order to win."
+    The prompt mentions "Six Things That Need Fixing" but does not separately
+    call out character tics and behavioral flaws beyond that list.
+    File: step_4_prompt.py, line 75
+    Fix: Extend beat instruction to say "plant character tics and behaviors that
+    will be turned on their heads later."
+
+  [HIGH] MISSING: Act One = Thesis world concept
+    Book (ch4 line 163): "The first 10 pages and the rest of Act One is the
+    movie's Thesis... It is a full-fledged documentation of the hero's world
+    labeled 'Before.'"
+    The Thesis/Antithesis/Synthesis three-world model is not codified anywhere
+    in the engine. This is a major structural framework from the book.
+    File: step_4_prompt.py; also models.py
+    Fix: Add Thesis/Antithesis/Synthesis labels to the beat sheet. Mark Beats
+    1-6 as "Thesis (Act 1)", Beats 7-13 as "Antithesis (Act 2)", and Beats
+    13-15 as "Synthesis (Act 3)."
+
+  [MEDIUM] MISSING: "Stasis equals death" concept
+    Book (ch4 line 163): "for things to stay as they are... is death. Things
+    must change."
+    The Set-Up should convey that the hero's current world is unsustainable.
+    File: step_4_prompt.py, line 75
+    Fix: Add "Convey that maintaining status quo = death; change is coming."
+
+  [MEDIUM] PARTIAL: Stakes and goal not explicitly validated
+    Book (ch4 line 149): "'sets up' the hero, the stakes and goal of the
+    story... and does so with vigor!"
+    The prompt mentions characters and Six Things but does not explicitly
+    require stating stakes and the hero's goal.
+    File: step_4_prompt.py, line 75
+    Fix: Add "establish the hero's STAKES and GOAL" to the Set-Up instruction.
+
+
+--------------------------------------------------------------------------------
+BEAT 4: CATALYST
+  Book: page 12 | ~10%
+  Prompt line 76
+--------------------------------------------------------------------------------
+
+  [MATCH] Beat name: "Catalyst" (models.py:260)
+  [MATCH] Page target: "12" (prompt line 76)
+  [MATCH] Percentage: "~10%" (prompt line 76)
+  [MATCH] Single life-changing moment, not gradual -- book (ch4 line 173):
+          "the first moment when something happens!"; prompt line 76: "Single
+          life-changing moment, NOT gradual, external event"
+  [MATCH] External event -- book (ch4 line 165): "telegrams, getting fired,
+          catching the wife in bed"; prompt line 76: "external event"
+
+  [LOW] MISSING: Catalyst disguised as bad news, leads to happiness
+    Book (ch4 lines 168-169): "life-changing events often come disguised as bad
+    news... it's the opposite of good news, and yet, by the time the adventure
+    is over, it's what leads the Hero to happiness."
+    Not mentioned in prompt.
+    File: step_4_prompt.py, line 76
+    Fix: Add "often arrives as BAD NEWS that ultimately leads to hero's growth."
+
+  [HIGH] MISSING: No validator check for Catalyst content
+    No validation that Beat 4 description contains an external event or single
+    moment. The LLM could produce a gradual escalation and the validator would
+    accept it.
+    File: step_4_validator.py
+    Fix: Add keyword check for Beat 4: should contain event-oriented language
+    (e.g., "arrives", "discovers", "receives", "learns", "news", "call").
+
+
+--------------------------------------------------------------------------------
+BEAT 5: DEBATE
+  Book: pages 12-25 | 10-23%
+  Prompt line 77
+--------------------------------------------------------------------------------
+
+  [MATCH] Beat name: "Debate" (models.py:261)
+  [MATCH] Page target: "12-25" (prompt line 77)
+  [MATCH] Percentage: "10-23%" (prompt line 77)
+  [MATCH] Hero's last chance to say no -- book (ch4 line 179): "the last chance
+          for the hero to say: This is crazy"; prompt line 77: "Hero's last
+          chance to say no"
+
+  [HIGH] MISSING: Debate MUST ask a question
+    Book (ch4 line 187): "it's important to remember that the Debate section
+    must ask a question of some kind."
+    Examples from book: "But can she pull it off?" (Legally Blonde); "Should I
+    go? Dare I go?"
+    The prompt says "internal hesitation" but does NOT require that a specific
+    question is posed.
+    File: step_4_prompt.py, line 77
+    Fix: Change to "Hero's last chance to say no -- this section MUST pose a
+    question (e.g., 'But can she do it?', 'Should he go?')."
+
+  [HIGH] MISSING: No validator check for Debate content
+    File: step_4_validator.py
+    Fix: Add keyword check for question-oriented language in Beat 5 description.
+
+
+--------------------------------------------------------------------------------
+BEAT 6: BREAK INTO TWO
+  Book: page 25 | ~23%
+  Prompt line 78 | Validator lines 134-142
+--------------------------------------------------------------------------------
+
+  [MATCH] Beat name: "Break into Two" (models.py:262)
+  [MATCH] Page target: "25" (prompt line 78)
+  [MATCH] Percentage: "~23%" (prompt line 78)
+  [MATCH] Must be hero's proactive choice -- book (ch4 lines 201-205): "The
+          Hero cannot be lured, tricked or drift into Act Two. The Hero must
+          make the decision himself."; prompt line 78: "MUST be hero's PROACTIVE
+          CHOICE"
+  [MATCH] Validator enforces proactive keywords -- validator lines 17-23 has
+          comprehensive keyword list including "chooses", "decides", "commits",
+          "makes the choice", "takes the leap", etc.
+
+  [MEDIUM] PARTIAL: Thesis-to-Antithesis transition not explicit
+    Book (ch4 line 199): "leave the old world, the Thesis statement, behind and
+    proceed into a world that is the upside down version of that, its Anti-
+    Thesis... the act of actually stepping into Act Two must be definite."
+    The prompt says "point of no return" but does not mention the Thesis-to-
+    Antithesis world transition.
+    File: step_4_prompt.py, line 78
+    Fix: Add "Hero leaves the Thesis world and enters the upside-down Antithesis
+    world."
+
+
+--------------------------------------------------------------------------------
+BEAT 7: B STORY
+  Book: page 30 | ~27%
+  Prompt line 79
+--------------------------------------------------------------------------------
+
+  [MATCH] Beat name: "B Story" (models.py:263)
+  [MATCH] Page target: "30" (prompt line 79)
+  [MATCH] Percentage: "~27%" (prompt line 79)
+  [MATCH] Usually the love story -- book (ch4 line 209): "the B story of most
+          screenplays is 'the love story'"; prompt line 79: "usually love
+          interest or mentor"
+  [MATCH] Carries the theme -- book (ch4 line 209): "the story that carries the
+          'theme of the movie'"; prompt line 79: "New character carrying THEME"
+
+  [MEDIUM] MISSING: Booster rocket smoothing Act Break
+    Book (ch4 line 209): "a little booster rocket that helps smooth over the
+    shockingly obvious A Story Act Break."
+    Not mentioned in prompt.
+    File: step_4_prompt.py, line 79
+    Fix: Add "provides a needed breather from the A-story after the jarring Act
+    Break."
+
+  [MEDIUM] MISSING: Brand new characters from the Antithesis world
+    Book (ch4 line 220-221): "very often a brand new bunch of characters. We
+    have not always met the B Story players in the first ten pages... they are
+    the upside down versions of those characters who inhabit the world of Act
+    One."
+    The engine has a BStoryCharacter model (models.py:124-128) but does not
+    enforce "new character" or "Antithesis character" nature.
+    File: step_4_prompt.py, line 79; models.py line 124
+    Fix: Add "B Story introduces NEW characters -- funhouse mirror versions of
+    Act One characters."
+
+  [MEDIUM] MISSING: Provides vital cutaways from A story
+    Book (ch4 line 223): "gives the writer the vital 'cutaways' from the A
+    story."
+    Not codified.
+    File: step_4_prompt.py, line 79
+
+  [HIGH] MISSING: No validator check for B Story content
+    File: step_4_validator.py
+    Fix: Add check that Beat 7 description references a new character, theme,
+    or relationship.
+
+
+--------------------------------------------------------------------------------
+BEAT 8: FUN AND GAMES
+  Book: pages 30-55 | 27-50%
+  Prompt line 80
+--------------------------------------------------------------------------------
+
+  [MATCH] Beat name: "Fun and Games" (models.py:264)
+  [MATCH] Page target: "30-55" (prompt line 80)
+  [MATCH] Percentage: "27-50%" (prompt line 80)
+  [MATCH] "Promise of the premise" -- book (ch4 line 225): "provides: 'The
+          promise of the premise!'"; prompt line 80: "'Promise of the premise'"
+
+  [MEDIUM] MISSING: Trailer moments / poster essence
+    Book (ch4 line 225): "the core and essence of the movie's poster... where
+    all the trailer moments of a movie are found."
+    Not stated in prompt.
+    File: step_4_prompt.py, line 80
+    Fix: Add "this is where all the trailer moments live; the essence of the
+    movie poster."
+
+  [MEDIUM] MISSING: Forward progress is NOT the primary concern
+    Book (ch4 line 225): "we aren't as concerned with the forward progress of
+    the story."
+    Not mentioned.
+    File: step_4_prompt.py, line 80
+
+  [MEDIUM] MISSING: Stakes not raised until Midpoint
+    Book (ch4 line 225): "the stakes won't be raised until the Midpoint."
+    Not mentioned.
+    File: step_4_prompt.py, line 80
+
+  [MEDIUM] MISSING: Lighter in tone
+    Book (ch4 line 235): "this section is lighter in tone than other sections."
+    Not mentioned in prompt or validated.
+    File: step_4_prompt.py, line 80
+    Fix: Add "lighter tone than surrounding beats; fun, not heavy stakes."
+
+  [LOW] PARTIAL: "Upward trajectory" is an editorial interpretation
+    Prompt line 80 says "upward trajectory." The book does not explicitly say
+    "upward trajectory" but implies it through the lighter, fun, promise-of-
+    premise framing. This is a reasonable but not book-exact interpretation.
+    No fix needed, but note the distinction.
+
+  [HIGH] MISSING: No validator check for Fun and Games content
+    File: step_4_validator.py
+    Fix: Add check that Beat 8 description references the concept, premise,
+    or fun elements of the story.
+
+
+--------------------------------------------------------------------------------
+BEAT 9: MIDPOINT
+  Book: page 55 | ~50%
+  Prompt line 81 | Validator lines 110-132
+--------------------------------------------------------------------------------
+
+  [MATCH] Beat name: "Midpoint" (models.py:265)
+  [MATCH] Page target: "55" (prompt line 81)
+  [MATCH] Percentage: "~50%" (prompt line 81)
+  [MATCH] False Victory (up) or False Defeat (down) -- book (ch4 lines 243-
+          245); prompt line 81: "FALSE VICTORY (up) or FALSE DEFEAT (down)"
+  [MATCH] Opposite polarity of All Is Lost -- book (ch4 line 257); prompt line
+          81: "opposite polarity of All Is Lost"
+  [MATCH] Polarity validation -- validator lines 110-132 correctly enforce that
+          midpoint_polarity is "up" or "down" and that all_is_lost_polarity is
+          the opposite.
+
+  [HIGH] MISSING: "Stakes are raised at the Midpoint"
+    Book (ch4 line 253): "You will hear the phrase 'the stakes are raised at
+    the Midpoint' in a lot in script meetings. Answer: TRUE."
+    The prompt does not include this rule.
+    File: step_4_prompt.py, line 81
+    Fix: Add "Stakes are RAISED here -- Fun and Games are over, back to the
+    story."
+
+  [MEDIUM] MISSING: Fun and Games are over at Midpoint
+    Book (ch4 line 253): "It's the point where the Fun and Games are over, it's
+    back to the story!"
+    Not codified.
+    File: step_4_prompt.py, line 81
+
+  [MEDIUM] MISSING: "Never as good/bad as it seems" maxim
+    Book (ch4 line 257): "It's never as good as it seems to be at the Midpoint
+    and it's never as bad as it seems at the All Is Lost point."
+    This framing would help the LLM understand the "false" nature of the
+    victory/defeat.
+    File: step_4_prompt.py, line 81
+    Fix: Add Snyder's maxim as a clarifying note.
+
+
+--------------------------------------------------------------------------------
+BEAT 10: BAD GUYS CLOSE IN
+  Book: pages 55-75 | 50-68%
+  Prompt line 82
+--------------------------------------------------------------------------------
+
+  [MATCH] Beat name: "Bad Guys Close In" (models.py:266)
+  [MATCH] Page target: "55-75" (prompt line 82)
+  [MATCH] Percentage: "50-68%" (prompt line 82)
+  [MATCH] External AND internal obstacles -- book (ch4 line 279): "The forces
+          that are aligned against the Hero, internal and external, tighten
+          their grip"; prompt line 82: "External AND internal obstacles"
+  [MATCH] Downward trajectory -- consistent with book's description
+
+  [MEDIUM] MISSING: Bad guys regroup and send heavy artillery
+    Book (ch4 line 269): "the Bad Guys decide to regroup and send in the heavy
+    artillery."
+    Not explicitly stated.
+    File: step_4_prompt.py, line 82
+
+  [MEDIUM] MISSING: Hero's team disintegrates from internal dissent
+    Book (ch4 line 269): "internal dissent, doubt and jealousy begin to
+    disintegrate the Hero's team."
+    The prompt says "internal obstacles" but does not specify team
+    disintegration.
+    File: step_4_prompt.py, line 82
+    Fix: Add "hero's allies fracture from doubt, jealousy, or dissent."
+
+  [MEDIUM] MISSING: Hero is on his own, must endure
+    Book (ch4 line 279): "there is nowhere for the Hero to go for help. He is
+    on his own, and must endure."
+    Not mentioned.
+    File: step_4_prompt.py, line 82
+
+  [HIGH] MISSING: No validator check for BGCI content
+    File: step_4_validator.py
+    Fix: Add check that Beat 10 description references both external threats
+    AND internal problems (two separate elements).
+
+
+--------------------------------------------------------------------------------
+BEAT 11: ALL IS LOST
+  Book: page 75 | ~68%
+  Prompt line 83 | Validator lines 144-152
+--------------------------------------------------------------------------------
+
+  [MATCH] Beat name: "All Is Lost" (models.py:267)
+  [MATCH] Page target: "75" (prompt line 83)
+  [MATCH] Percentage: "~68%" (prompt line 83)
+  [MATCH] Opposite polarity of Midpoint -- book (ch4 line 283); prompt line 83:
+          "OPPOSITE polarity of Midpoint"
+  [MATCH] Whiff of death -- book (ch4 lines 287-299): Snyder's "little trade
+          secret"; prompt line 83: "mandatory 'whiff of death'"
+  [MATCH] Whiff of death keyword validation -- validator lines 26-30 has a
+          comprehensive keyword list: "whiff of death", "death", "dies",
+          "dying", "dead", "mortality", "funeral", "loss", "perish", "fatal",
+          "kill", "killed", "lethal", "grave", "end of the line"
+
+  [MEDIUM] PARTIAL: "False Defeat" label not used in prompt
+    Book (ch4 line 285): "most often labeled 'False Defeat.'"
+    The prompt says "OPPOSITE polarity of Midpoint" but does not use the term
+    "False Defeat" or "False Victory" in the All Is Lost instruction itself.
+    File: step_4_prompt.py, line 83
+    Fix: Add "This is the FALSE DEFEAT (or false victory, if midpoint was
+    down)."
+
+  [MEDIUM] MISSING: Mentors go to die here
+    Book (ch4 line 289): "All is Lost is the place where mentors go to die,
+    presumably so their students can discover 'they had it in them all along.'"
+    Not mentioned.
+    File: step_4_prompt.py, line 83
+    Fix: Add "if there is a mentor character, this is classically where they
+    fall."
+
+  [MEDIUM] MISSING: "Christ on the cross" moment / old world dies
+    Book (ch4 lines 295-297): "the All is Lost beat is the 'Christ on the
+    cross' moment. It's where the old world, the old character, the old way of
+    thinking dies."
+    Not codified.
+    File: step_4_prompt.py, line 83
+
+  [MEDIUM] MISSING: Clears the way for Synthesis
+    Book (ch4 lines 295-297): "it clears the way for the fusion of Thesis and
+    Anti-Thesis to become Synthesis."
+    Not mentioned.
+    File: step_4_prompt.py, line 83
+
+  [LOW] NOTE: "loss" keyword in whiff of death list may cause false positives
+    The keyword "loss" at validator line 28 is very generic and could match
+    descriptions of many beats that mention loss without death implications.
+    File: step_4_validator.py, line 28
+    Fix: Consider narrowing "loss" or removing it in favor of more specific
+    death-related terms.
+
+
+--------------------------------------------------------------------------------
+BEAT 12: DARK NIGHT OF THE SOUL
+  Book: pages 75-85 | 68-77%
+  Prompt line 84
+--------------------------------------------------------------------------------
+
+  [MATCH] Beat name: "Dark Night of the Soul" (models.py:268)
+    NOTE: Minor capitalization difference -- book uses "Of The" (both
+    capitalized), engine uses "of the" (lowercase). The BEAT_NAMES list at
+    models.py:268 has "Dark Night of the Soul." This is cosmetic only.
+  [MATCH] Page target: "75-85" (prompt line 84)
+  [MATCH] Percentage: "68-77%" (prompt line 84)
+  [MATCH] Hero at lowest point -- book (ch4 line 305): "the darkness right
+          before the dawn"; prompt line 84: "Hero at absolute lowest, despair"
+
+  [MEDIUM] MISSING: Hero must be beaten AND KNOW IT to learn
+    Book (ch4 line 309): "We must be beaten and know it to get the lesson!"
+    This is a critical distinction -- it is not just despair, but conscious
+    recognition of defeat.
+    File: step_4_prompt.py, line 84
+    Fix: Add "Hero must be beaten AND KNOW IT -- conscious recognition of total
+    defeat."
+
+  [MEDIUM] MISSING: Hero yields control to Fate
+    Book (ch4 line 309): "yield our control of events over to 'Fate' that we
+    find the solution."
+    The concept of surrender as prerequisite for the solution is not codified.
+    File: step_4_prompt.py, line 84
+
+  [LOW] MISSING: Can last 5 seconds or 5 minutes
+    Book (ch4 line 305): "It can last five seconds or five minutes."
+    This flexibility is not mentioned; it could help the LLM understand that
+    this beat can be very brief.
+    File: step_4_prompt.py, line 84
+
+  [HIGH] MISSING: No validator check for Dark Night content
+    File: step_4_validator.py
+    Fix: Add check for despair/defeat language in Beat 12 description.
+
+
+--------------------------------------------------------------------------------
+BEAT 13: BREAK INTO THREE
+  Book: page 85 | ~77%
+  Prompt line 85
+--------------------------------------------------------------------------------
+
+  [MATCH] Beat name: "Break into Three" (models.py:269)
+  [MATCH] Page target: "85" (prompt line 85)
+  [MATCH] Percentage: "~77%" (prompt line 85)
+  [MATCH] A story + B story merge -- book (ch4 lines 323-324): "Both in the
+          external story (the A story) and the internal story (the B story)
+          which now meet and intertwine"; prompt line 85: "A-story + B-story
+          MERGE"
+  [MATCH] B-story provides key insight -- book (ch4 line 321): "Thanks to the
+          characters found in the B story... the answer is found!!"; prompt line
+          85: "B-story wisdom provides missing piece"
+
+  [MEDIUM] MISSING: "World of Synthesis is at hand"
+    Book (ch4 line 329): "An idea to solve the problem has emerged. The world
+    of Synthesis is at hand."
+    This is the third world in the Thesis/Antithesis/Synthesis framework. Not
+    mentioned.
+    File: step_4_prompt.py, line 85
+
+  [LOW] MISSING: Classic fusion = hero gets clue from The Girl
+    Book (ch4 lines 325-327): "The classic fusion of A and B is the hero
+    getting the clue from The Girl that makes him realize how to solve both --
+    beating the Bad Guys and winning the heart of his beloved."
+    This is illustrative rather than prescriptive. Low priority.
+
+  [HIGH] MISSING: No validator check for Break into Three content
+    The validator does not check that Beat 13 description mentions the A+B
+    story merger.
+    File: step_4_validator.py
+    Fix: Add keyword check for merge/fusion/combine/realize/insight language
+    in Beat 13 description.
+
+
+--------------------------------------------------------------------------------
+BEAT 14: FINALE
+  Book: pages 85-110 | 77-100%
+  Prompt line 86 | Validator lines 162-170
+--------------------------------------------------------------------------------
+
+  [MATCH] Beat name: "Finale" (models.py:270)
+  [MATCH] Page target: "85-110" (prompt line 86)
+  [MATCH] Percentage: "77-100%" (prompt line 86)
+
+  [CRITICAL] WRONG: 5-part Finale structure is from WRONG SOURCE
+    Prompt line 86: "5-part: gather team, execute plan, high tower surprise,
+    dig deep, new plan"
+    This 5-point breakdown comes from "Save the Cat! Strikes Back" (Blake
+    Snyder, 2009), NOT from Chapter 4 of the original "Save the Cat!" (2005).
+    Chapter 4 of the original book describes the Finale as:
+      - "where the lessons learned are applied"
+      - "where the character tics are mastered"
+      - "where A story and B story end in triumph"
+      - "the dispatching of all the bad guys, in ascending order"
+      - "the Hero must change the world"
+    The engine is mixing source material, which is architecturally wrong for
+    an audit against the original book.
+    File: step_4_prompt.py, line 86
+    Fix: Replace the 5-part structure with the original Chapter 4 rules:
+    "Lessons learned are applied, character tics mastered, A+B stories end in
+    triumph, bad guys dispatched in ascending order, new world order created."
+
+  [HIGH] MISSING: Lessons learned are applied
+    Book (ch4 line 331): "where the lessons learned are applied."
+    Not in prompt.
+    File: step_4_prompt.py, line 86
+
+  [HIGH] MISSING: Character tics mastered (Six Things resolved)
+    Book (ch4 line 331): "where the character tics are mastered."
+    The Six Things That Need Fixing planted in the Set-Up should be resolved
+    in the Finale. This connection is not enforced.
+    File: step_4_prompt.py, line 86; also step_4_validator.py
+
+  [HIGH] MISSING: Bad guys dispatched in ascending order
+    Book (ch4 line 333): "the dispatching of all the bad guys, in ascending
+    order. Lieutenants and henchman die first, then the Boss."
+    Not mentioned.
+    File: step_4_prompt.py, line 86
+
+  [HIGH] MISSING: New world order / hero changes the world
+    Book (ch4 line 333): "It's not enough for the Hero to triumph, he must
+    change the world. The Finale is where it happens."
+    Not mentioned.
+    File: step_4_prompt.py, line 86
+
+  [MEDIUM] PARTIAL: Validator checks for plan/confrontation keywords
+    Validator lines 33-38 have a FINALE_KEYWORDS list and check Beat 14.
+    This is reasonable but based on the 5-part structure from the wrong book.
+    Some keywords are fine ("confrontation", "showdown", "battle") but others
+    ("gather", "dig deep", "new approach") are sequel-book-specific.
+    File: step_4_validator.py, lines 33-38
+
+
+--------------------------------------------------------------------------------
+BEAT 15: FINAL IMAGE
+  Book: page 110 | ~100%
+  Prompt line 87 | Validator lines 154-160
+--------------------------------------------------------------------------------
+
+  [MATCH] Beat name: "Final Image" (models.py:271)
+  [MATCH] Page target: "110" (prompt line 87)
+  [MATCH] Percentage: "~100%" (prompt line 87)
+  [MATCH] Opposite of Opening Image -- book (ch4 line 335): "the Final Image
+          in a movie is the opposite of the Opening Image"; prompt line 87:
+          "MUST be visual OPPOSITE of Opening Image"
+  [MATCH] Proof of change -- book (ch4 line 335): "your proof that change has
+          occurred and that it's real"; prompt line 87: "proof of transformation"
+
+  [HIGH] MISSING: "Go back and check your math" diagnostic
+    Book (ch4 line 335): "If you don't have that Final Image, or you can't see
+    how it applies, go back and check your math, there is something not adding
+    up in Act Two."
+    The engine does not perform a cross-beat diagnostic comparing Opening and
+    Final Image content.
+    File: step_4_validator.py, lines 154-160
+    Fix: Add semantic comparison between Beat 1 and Beat 15 descriptions.
+
+  [HIGH] MISSING: Validator does not check Final Image opposes Opening Image
+    The validator only checks that BOTH EXIST (lines 155-160). There is zero
+    content comparison between them.
+    File: step_4_validator.py, lines 154-160
+    Fix: At minimum, verify that the emotional_direction fields of Beat 1 and
+    Beat 15 differ, or use keyword analysis.
+
+
+================================================================================
+SECTION 2: STRUCTURAL / CROSS-BEAT RULES
+================================================================================
+
+These are rules that span multiple beats or apply to the beat sheet as a whole.
+
+
+--------------------------------------------------------------------------------
+RULE: THESIS / ANTITHESIS / SYNTHESIS THREE-WORLD MODEL
+  Severity: [HIGH]
+  Status: MISSING
+--------------------------------------------------------------------------------
+
+  Book references:
+    - ch4 line 163: "The first 10 pages and the rest of Act One is the movie's
+      Thesis"
+    - ch4 line 199: "leave the old world, the Thesis statement, behind and
+      proceed into a world that is the upside down version of that, its Anti-
+      Thesis"
+    - ch4 line 295: "the fusion of Thesis and Anti-Thesis to become Synthesis"
+    - ch4 line 329: "The world of Synthesis is at hand"
+
+  The three-world framework is central to Snyder's structural argument. It is
+  completely absent from the engine. Neither the prompt, the validator, the
+  models, nor the step code reference Thesis, Antithesis, or Synthesis.
+
+  Impact: Without this framework, the engine cannot enforce that Act 2 is
+  genuinely the "upside-down" version of Act 1, and Act 3 is the fusion of
+  both worlds. This weakens the structural integrity of generated screenplays.
+
+  Files affected:
+    - step_4_prompt.py (all beat instructions)
+    - models.py (Beat model has no act_label or world_label field)
+    - step_4_validator.py (no three-world checks)
+
+  Fix: Add an act/world label to each beat in the prompt and model. Validate
+  that beats 1-6 are labeled Thesis, 7-12 are Antithesis, 13-15 are
+  Synthesis.
+
+
+--------------------------------------------------------------------------------
+RULE: SCRIPT IS 110 PAGES
+  Severity: [LOW]
+  Status: MATCH
+--------------------------------------------------------------------------------
+
+  Book (ch4 line 93): "A script in terms of page count should be about as long
+  as a good jockey weighs -- 110."
+
+  The engine's BEAT_PAGE_TARGETS (models.py:274-290) go up to page 110 for
+  Final Image. This is correct.
+
+  Note: The book also says (ch4 lines 94-95): "Though some dramas run longer,
+  the proportions are the same." The engine does not account for longer dramas
+  with adjusted page targets. This is a LOW concern since the proportional
+  model is implicitly handled through percentages.
+
+
+--------------------------------------------------------------------------------
+RULE: MIDPOINT / ALL IS LOST AXIS
+  Severity: N/A
+  Status: MATCH
+--------------------------------------------------------------------------------
+
+  Book (ch4 line 257): "these two points are a set. It's because the two beats
+  are the inverse of each other."
+
+  The validator (lines 110-132) correctly enforces:
+    1. midpoint_polarity is "up" or "down"
+    2. all_is_lost_polarity is "up" or "down"
+    3. They are opposite
+
+  This is well-implemented. No fix needed.
+
+
+--------------------------------------------------------------------------------
+RULE: 1-2 SENTENCES PER BEAT
+  Severity: [CRITICAL]
+  Status: WRONG
+--------------------------------------------------------------------------------
+
+  Book (ch4 line 91): "I learned that if I can't fill in the blank in one or
+  two sentences -- I don't have the beat yet! I am just guessing."
+
+  Prompt line 68: "description (1-2 sentences MAX -- concise and specific to
+  THIS story)" -- This is CORRECT in the prompt.
+
+  Validator line 104-108:
+    if sentence_endings > 6:
+        errors.append(
+            f"DESCRIPTION_TOO_LONG: Beat {num} ({name}) has too many sentences
+            (max 5)"
+        )
+
+  The error message says "max 5" but the check allows up to 6 sentence-ending
+  characters (.!?). A single sentence with an exclamation mark and a period
+  could register as 2 sentence endings. But the tolerance is still far too
+  generous.
+
+  The book says 1-2 sentences. The validator allows what could effectively be
+  5-6 distinct sentences. This is a 3x overrun from the book's specification.
+
+  File: step_4_validator.py, lines 99-108
+  Fix: Change the threshold. A sentence counter that counts .!? characters is
+  imprecise. A better approach:
+    - Split on r'(?<=[.!?])\s+' to count actual sentences
+    - Reject if count > 3 (allows 1-2 sentences with some tolerance for
+      mid-sentence punctuation like "Dr." or "U.S.")
+  At minimum, change the threshold from > 6 to > 4 (allowing up to 3 sentence
+  endings with punctuation tolerance).
+
+
+--------------------------------------------------------------------------------
+RULE: HERO CANNOT DRIFT INTO ACT TWO
+  Severity: N/A
+  Status: MATCH
+--------------------------------------------------------------------------------
+
+  Book (ch4 lines 201-205): "The Hero cannot be lured, tricked or drift into
+  Act Two. The Hero must make the decision himself."
+
+  Prompt line 78: "MUST be hero's PROACTIVE CHOICE"
+  Validator lines 17-23: Comprehensive PROACTIVE_KEYWORDS list.
+  Validator lines 134-142: Checks Beat 6 description against keywords.
+
+  Well-implemented. No fix needed.
+
+
+================================================================================
+SECTION 3: VALIDATOR ANALYSIS
+================================================================================
+
+
+  CHECKS THE VALIDATOR CURRENTLY PERFORMS (10 checks):
+  -----------------------------------------------------------------------
+  #   Check                                      Lines    Status
+  -----------------------------------------------------------------------
+  1   Exactly 15 beats present                   68-70    MATCH
+  2   All beat names match expected names         82-86    MATCH
+  3   Each beat has non-empty description         88-108   MATCH (but see
+                                                          sentence limit
+                                                          issue below)
+  4   midpoint_polarity is "up" or "down"        110-116  MATCH
+  5   all_is_lost_polarity opposite of midpoint  118-132  MATCH
+  6   Beat 6 implies hero's proactive choice     134-142  MATCH
+  7   Beat 11 has whiff of death reference       144-152  MATCH
+  8   Beat 1 and Beat 15 both exist              154-160  MATCH
+  9   Beat 14 references plan or confrontation   162-170  MATCH (but
+                                                          based on wrong
+                                                          source book)
+  10  target_page/percentage fields exist         172-174  PARTIAL -- the
+                                                          comment says
+                                                          "soft check"
+                                                          but no actual
+                                                          check code
+                                                          exists
+  -----------------------------------------------------------------------
+
+
+  CHECKS THE VALIDATOR IS MISSING:
+  -----------------------------------------------------------------------
+  #   Missing Check                                              Severity
+  -----------------------------------------------------------------------
+  1   Opening Image + Final Image content opposition             [HIGH]
+  2   Theme Stated references a thematic statement               [HIGH]
+  3   Theme Stated spoken by non-protagonist character           [MEDIUM]
+  4   Catalyst describes a single external event                 [HIGH]
+  5   Debate poses a question                                    [HIGH]
+  6   B Story introduces a new character                         [MEDIUM]
+  7   B Story references the theme                               [MEDIUM]
+  8   Fun and Games references the premise/concept               [HIGH]
+  9   Midpoint raises the stakes                                 [HIGH]
+  10  Bad Guys Close In has BOTH internal AND external threats   [HIGH]
+  11  Dark Night of the Soul shows despair/defeat                [HIGH]
+  12  Break into Three shows A+B story merger                    [HIGH]
+  13  Finale resolves Six Things That Need Fixing                [MEDIUM]
+  14  Finale dispatches bad guys in ascending order              [MEDIUM]
+  15  target_page values match BEAT_PAGE_TARGETS constants       [MEDIUM]
+  16  target_percentage values match BEAT_PAGE_TARGETS constants [MEDIUM]
+  17  emotional_direction is one of "up"/"down"/"neutral"        [MEDIUM]
+  18  Emotional trajectory follows expected pattern              [LOW]
+      (e.g., Fun and Games should be "up", BGCI should be "down")
+  -----------------------------------------------------------------------
+
+  TOTAL: 10 checks present, 18 checks missing.
+
+
+================================================================================
+SECTION 4: MODEL ANALYSIS (models.py)
+================================================================================
+
+
+  ISSUE 1: BEAT_PAGE_TARGETS imported but never used
+  Severity: [HIGH]
+  -----------------------------------------------------------------------
+  The validator imports BEAT_PAGE_TARGETS at line 8:
+    from src.screenplay_engine.models import BEAT_NAMES, BEAT_PAGE_TARGETS
+
+  But BEAT_PAGE_TARGETS is never referenced anywhere in the validator logic.
+  This is dead code.
+
+  The BEAT_PAGE_TARGETS dict (models.py:274-290) contains correct page/
+  percentage pairs for all 15 beats. It should be used to validate that the
+  LLM output matches the expected targets.
+
+  File: step_4_validator.py, line 8 (import) and lines 172-174 (comment-only
+  "soft check" with no actual code)
+  Fix: Add a validation loop that compares each beat's target_page and
+  target_percentage against the BEAT_PAGE_TARGETS dict.
+
+
+  ISSUE 2: emotional_direction field is unvalidated
+  Severity: [MEDIUM]
+  -----------------------------------------------------------------------
+  The Beat model (models.py:141) has:
+    emotional_direction: str = Field(default="", description="up/down/neutral")
+
+  The prompt (line 70) instructs:
+    emotional_direction ("up", "down", or "neutral")
+
+  But the validator never checks:
+    a. That emotional_direction is one of the three allowed values
+    b. That the direction matches expected patterns (e.g., Fun and Games
+       should be "up", Bad Guys Close In should be "down")
+
+  File: step_4_validator.py (nowhere)
+  Fix: Add enum validation and expected-trajectory check.
+
+
+  ISSUE 3: snowflake_mapping field is unvalidated
+  Severity: [LOW]
+  -----------------------------------------------------------------------
+  The Beat model (models.py:140) has:
+    snowflake_mapping: str = Field(default="", description="...")
+
+  The prompt (lines 89-101) provides explicit mapping rules (e.g., Opening
+  Image maps to "Step 0 + Step 1", Theme Stated maps to "Step 2 moral
+  premise").
+
+  But neither the validator nor the step code checks that the LLM output
+  matches the expected Snowflake mappings.
+
+  File: step_4_validator.py (nowhere)
+  Fix: Add a check that each beat's snowflake_mapping references the
+  expected Snowflake step.
+
+
+  ISSUE 4: BeatSheet Pydantic model defined but never instantiated
+  Severity: [MEDIUM]
+  -----------------------------------------------------------------------
+  The BeatSheet model (models.py:144-148) has proper constraints:
+    beats: List[Beat] = Field(..., min_length=15, max_length=15)
+    midpoint_polarity: str
+    all_is_lost_polarity: str
+
+  And the Beat model (models.py:133-141) has:
+    number: int = Field(..., ge=1, le=15)
+
+  But the step code (step_4_beat_sheet.py) works entirely with raw dicts.
+  The _parse_beat_sheet method (line 121) returns Dict[str, Any]. The
+  validator works on Dict[str, Any]. The BeatSheet Pydantic model is never
+  instantiated during validation or execution.
+
+  This means all the Pydantic field constraints (min_length, max_length,
+  ge, le, required fields) are never enforced.
+
+  File: step_4_beat_sheet.py, lines 86-88 (validate raw dict, not model)
+  Fix: After parsing, instantiate BeatSheet(**artifact) to get Pydantic
+  validation for free. Catch ValidationError and add to the error list.
+
+
+================================================================================
+SECTION 5: PROMPT ANALYSIS (step_4_prompt.py)
+================================================================================
+
+
+  ISSUE 1: Content from wrong source book
+  Severity: [CRITICAL]
+  -----------------------------------------------------------------------
+  The 5-part Finale structure at prompt line 86:
+    "5-part: gather team, execute plan, high tower surprise, dig deep, new
+    plan"
+
+  This comes from "Save the Cat! Strikes Back" (2009), NOT from the original
+  "Save the Cat!" (2005) Chapter 4. The original book's Finale has no sub-
+  parts. It describes the Finale as:
+    1. Lessons learned are applied
+    2. Character tics are mastered
+    3. A and B stories end in triumph
+    4. Bad guys dispatched in ascending order
+    5. New world order created
+
+  File: step_4_prompt.py, line 86
+  Fix: Replace with Chapter 4's actual Finale description.
+
+
+  ISSUE 2: Missing BS2 header fields
+  Severity: [LOW]
+  -----------------------------------------------------------------------
+  Book (ch4 lines 51-57): The BS2 form includes header fields for:
+    - PROJECT TITLE
+    - GENRE
+    - DATE
+
+  The engine captures these in metadata (step_4_beat_sheet.py:177-192) but
+  does not include them as part of the beat sheet's own structure.
+
+  File: step_4_prompt.py; models.py BeatSheet class
+  Fix: Add title, genre, and date fields to BeatSheet model.
+
+
+  ISSUE 3: Missing emphasis on BS2 as a pitchable document
+  Severity: [LOW]
+  -----------------------------------------------------------------------
+  Book (ch4 line 91): "I use this simple one-page blank form whenever I have
+  a pitch meeting. I won't let myself go in to that meeting until I've filled
+  in every space."
+
+  The engine treats BS2 as an internal artifact. It could additionally
+  generate a pitch-ready one-page summary.
+
+  No code fix needed -- this is a product consideration.
+
+
+================================================================================
+SECTION 6: STEP IMPLEMENTATION ANALYSIS (step_4_beat_sheet.py)
+================================================================================
+
+
+  ISSUE 1: Bare except handlers
+  Severity: [MEDIUM]
+  -----------------------------------------------------------------------
+  The _parse_beat_sheet method has three bare "except Exception: pass" blocks
+  at lines 130-131, 140-141, and 150-151. These silently swallow all errors,
+  making debugging difficult.
+
+  File: step_4_beat_sheet.py, lines 130-131, 140-141, 150-151
+  Fix: At minimum, log the exception. Ideally, catch json.JSONDecodeError
+  specifically.
+
+
+  ISSUE 2: Retry loop does not verify final attempt
+  Severity: [LOW]
+  -----------------------------------------------------------------------
+  The retry loop (lines 84-99) breaks on success. If all 3 attempts fail,
+  execution falls through to line 107 where a final validation is performed.
+  This is actually correct -- the final validation at line 107 catches the
+  failure. However, the metadata is added (line 102) before the final
+  validation, which means metadata is present on invalid artifacts.
+
+  File: step_4_beat_sheet.py, lines 84-117
+  Fix: Move metadata addition to after final validation succeeds (minor
+  refactor).
+
+
+  ISSUE 3: No Pydantic model usage
+  Severity: [MEDIUM]
+  -----------------------------------------------------------------------
+  As noted in Section 4 Issue 4, the step code works exclusively with raw
+  dicts and never instantiates the BeatSheet Pydantic model.
+
+  File: step_4_beat_sheet.py
+  Fix: Add Pydantic instantiation step between parsing and validation.
+
+
+================================================================================
+SECTION 7: SUMMARY SCOREBOARD
+================================================================================
+
+
+  CATEGORY                     MATCH    PARTIAL    MISSING    WRONG
+  -------------------------------------------------------------------
+  Beat Names (15 beats)          15         0          0        0
+  Page Targets (15 beats)        15         0          0        0
+  Percentages (15 beats)         15         0          0        0
+  Beat-Specific Rules            14         8         23        0
+  Structural/Cross-Beat Rules     3         0          5        0
+  Validator Checks (current)      7         2          0        1
+  Validator Checks (missing)     --        --         18       --
+  Prompt Accuracy                --        --         --        1
+  -------------------------------------------------------------------
+
+  TOTAL ISSUES BY SEVERITY:
+    CRITICAL:  2
+    HIGH:     17
+    MEDIUM:   21
+    LOW:       7
+  -------------------------------------------------------------------
+  GRAND TOTAL: 47 issues
+
+
+================================================================================
+SECTION 8: PRIORITIZED FIX LIST
+================================================================================
+
+The following fixes are ordered by severity and impact.
+
+
+  PRIORITY 1 -- CRITICAL (must fix immediately)
+  -----------------------------------------------------------------------
+
+  C-1. [CRITICAL] Wrong Finale structure (from wrong book)
+       File: step_4_prompt.py, line 86
+       Problem: 5-part Finale comes from "Strikes Back", not Ch.4
+       Fix: Replace with Ch.4 rules: lessons applied, tics mastered,
+       A+B triumph, bad guys ascending, new world order
+
+  C-2. [CRITICAL] Sentence count limit is 3x too generous
+       File: step_4_validator.py, lines 99-108
+       Problem: Allows 5-6 sentences; book says 1-2
+       Fix: Reduce threshold from > 6 to > 3 or > 4; ideally use proper
+       sentence splitting
+
+
+  PRIORITY 2 -- HIGH (fix before next release)
+  -----------------------------------------------------------------------
+
+  H-1.  Validate Opening/Final Image content opposition
+        File: step_4_validator.py, lines 154-160
+
+  H-2.  Add validator check for Theme Stated content
+        File: step_4_validator.py (new check)
+
+  H-3.  Add validator check for Catalyst content (external event)
+        File: step_4_validator.py (new check)
+
+  H-4.  Add Debate must pose a question (prompt + validator)
+        File: step_4_prompt.py, line 77; step_4_validator.py
+
+  H-5.  Add validator check for B Story content
+        File: step_4_validator.py (new check)
+
+  H-6.  Add validator check for Fun and Games content
+        File: step_4_validator.py (new check)
+
+  H-7.  Add "stakes are raised" to Midpoint beat instruction
+        File: step_4_prompt.py, line 81
+
+  H-8.  Add validator check for Bad Guys Close In (internal + external)
+        File: step_4_validator.py (new check)
+
+  H-9.  Add validator check for Dark Night of the Soul content
+        File: step_4_validator.py (new check)
+
+  H-10. Add validator check for Break into Three (A+B merger)
+        File: step_4_validator.py (new check)
+
+  H-11. Add Finale rules from Ch.4 (lessons, tics, ascending bad guys)
+        File: step_4_prompt.py, line 86
+
+  H-12. Add Final Image content opposition check
+        File: step_4_validator.py, lines 154-160
+
+  H-13. Use BEAT_PAGE_TARGETS (currently dead import)
+        File: step_4_validator.py, line 8 and lines 172-174
+
+  H-14. Codify Thesis/Antithesis/Synthesis framework
+        Files: step_4_prompt.py, models.py, step_4_validator.py
+
+  H-15. Add "stasis equals death" to Set-Up instruction
+        File: step_4_prompt.py, line 75
+
+  H-16. Add Set-Up must establish stakes and goal
+        File: step_4_prompt.py, line 75
+
+  H-17. Add Finale: character tics mastered / Six Things resolved
+        File: step_4_prompt.py, line 86
+
+
+  PRIORITY 3 -- MEDIUM (fix in upcoming sprint)
+  -----------------------------------------------------------------------
+
+  M-1.  Theme Stated: add conversational/offhand nature
+        File: step_4_prompt.py, line 74
+
+  M-2.  Theme Stated: movie is an "argument" framing
+        File: step_4_prompt.py, line 74
+
+  M-3.  Set-Up: character tics beyond Six Things
+        File: step_4_prompt.py, line 75
+
+  M-4.  Break into Two: Thesis-to-Antithesis transition
+        File: step_4_prompt.py, line 78
+
+  M-5.  B Story: booster rocket smoothing Act Break
+        File: step_4_prompt.py, line 79
+
+  M-6.  B Story: brand new Antithesis-world characters
+        File: step_4_prompt.py, line 79; models.py line 124
+
+  M-7.  B Story: provides cutaways from A story
+        File: step_4_prompt.py, line 79
+
+  M-8.  Fun and Games: trailer moments / poster essence
+        File: step_4_prompt.py, line 80
+
+  M-9.  Fun and Games: forward progress not primary concern
+        File: step_4_prompt.py, line 80
+
+  M-10. Fun and Games: stakes not raised until Midpoint
+        File: step_4_prompt.py, line 80
+
+  M-11. Fun and Games: lighter in tone
+        File: step_4_prompt.py, line 80
+
+  M-12. Midpoint: Fun and Games are over
+        File: step_4_prompt.py, line 81
+
+  M-13. Midpoint: "never as good/bad as it seems" maxim
+        File: step_4_prompt.py, line 81
+
+  M-14. Bad Guys Close In: hero's team disintegrates
+        File: step_4_prompt.py, line 82
+
+  M-15. Bad Guys Close In: hero on his own, must endure
+        File: step_4_prompt.py, line 82
+
+  M-16. All Is Lost: "False Defeat" label not used
+        File: step_4_prompt.py, line 83
+
+  M-17. All Is Lost: mentors go to die here
+        File: step_4_prompt.py, line 83
+
+  M-18. All Is Lost: "Christ on the cross" / old world dies
+        File: step_4_prompt.py, line 83
+
+  M-19. All Is Lost: clears way for Synthesis
+        File: step_4_prompt.py, line 83
+
+  M-20. Dark Night: hero beaten AND KNOWS IT
+        File: step_4_prompt.py, line 84
+
+  M-21. Dark Night: hero yields control to Fate
+        File: step_4_prompt.py, line 84
+
+  M-22. Break into Three: world of Synthesis at hand
+        File: step_4_prompt.py, line 85
+
+  M-23. Validate emotional_direction is up/down/neutral
+        File: step_4_validator.py (new check)
+
+  M-24. Instantiate BeatSheet Pydantic model during validation
+        File: step_4_beat_sheet.py
+
+  M-25. Bare except handlers in _parse_beat_sheet
+        File: step_4_beat_sheet.py, lines 130-131, 140-141, 150-151
+
+  M-26. Validate Finale resolves Six Things
+        File: step_4_validator.py (new cross-beat check)
+
+  M-27. Validate Finale dispatches bad guys ascending
+        File: step_4_validator.py (new check)
+
+  M-28. Validate target_page against BEAT_PAGE_TARGETS
+        File: step_4_validator.py (new check)
+
+  M-29. Validate target_percentage against BEAT_PAGE_TARGETS
+        File: step_4_validator.py (new check)
+
+  M-30. Bad Guys Close In: bad guys regroup, heavy artillery
+        File: step_4_prompt.py, line 82
+
+  M-31. Add BS2 header fields (title, genre, date) to model
+        File: models.py, BeatSheet class
+
+
+  PRIORITY 4 -- LOW (fix when convenient)
+  -----------------------------------------------------------------------
+
+  L-1.  Catalyst: disguised as bad news, leads to happiness
+        File: step_4_prompt.py, line 76
+
+  L-2.  "loss" keyword may cause false positives in whiff of death check
+        File: step_4_validator.py, line 28
+
+  L-3.  Dark Night: can last 5 seconds or 5 minutes
+        File: step_4_prompt.py, line 84
+
+  L-4.  Break into Three: classic fusion = clue from The Girl
+        File: step_4_prompt.py, line 85
+
+  L-5.  Dramas can run longer but proportions stay same
+        File: models.py, BEAT_PAGE_TARGETS
+
+  L-6.  Fun and Games "upward trajectory" is editorial addition
+        File: step_4_prompt.py, line 80 (note only, no fix required)
+
+  L-7.  BS2 as pitchable one-page document (product feature)
+        No file change needed
+
+
+================================================================================
+SECTION 9: CROSS-REFERENCE TABLE
+================================================================================
+
+This table maps every book page reference to the engine code location.
+
+  Book Line  Book Rule                        Code Location           Status
+  -------------------------------------------------------------------------
+  91         1-2 sentences per beat           validator.py:104        WRONG
+  93         Script is 110 pages              models.py:289           MATCH
+  95         Act Breaks, Midpoints, All Is
+             Lost hit their marks             validator.py:110-132    MATCH
+  111-113    Opening Image sets tone/mood     prompt.py:73            MISSING
+  117-121    Opening/Final are bookends       validator.py:154-160    PARTIAL
+  131        Theme by non-protagonist         prompt.py:74            MATCH
+  131        Theme is conversational          (nowhere)               MISSING
+  135-139    Movie is an argument             (nowhere)               MISSING
+  149-153    Set-Up: all A-story characters   prompt.py:75            MATCH
+  155        Six Things That Need Fixing      prompt.py:75            MATCH
+  155        Character tics planted           prompt.py:75            PARTIAL
+  163        Act One = Thesis                 (nowhere)               MISSING
+  163        Stasis = death                   (nowhere)               MISSING
+  165        Catalyst: external event         prompt.py:76            MATCH
+  168-169    Catalyst: bad news, leads happy  (nowhere)               MISSING
+  173        Catalyst: page 12               prompt.py:76            MATCH
+  179        Debate: last chance to say no    prompt.py:77            MATCH
+  187        Debate: must ask a question      (nowhere)               MISSING
+  191-205    Break into Two: page 25          prompt.py:78            MATCH
+  201-205    Hero's proactive choice          validator.py:134-142    MATCH
+  199        Thesis to Antithesis             (nowhere)               MISSING
+  209        B Story = love story             prompt.py:79            MATCH
+  209        B Story carries theme            prompt.py:79            MATCH
+  209        B Story = booster rocket         (nowhere)               MISSING
+  220-221    B Story = new characters         (nowhere)               MISSING
+  223        B Story = cutaways               (nowhere)               MISSING
+  225        Fun and Games = promise premise  prompt.py:80            MATCH
+  225        Fun and Games = trailer moments  (nowhere)               MISSING
+  225        Forward progress not primary     (nowhere)               MISSING
+  235        Lighter in tone                  (nowhere)               MISSING
+  243-245    Midpoint: false victory/defeat   prompt.py:81            MATCH
+  253        Stakes raised at Midpoint        (nowhere)               MISSING
+  253        Fun and Games are over           (nowhere)               MISSING
+  257        Midpoint/All Is Lost inverse     validator.py:118-132    MATCH
+  257        "Never as good/bad as seems"     (nowhere)               MISSING
+  269        Bad guys regroup                 (nowhere)               MISSING
+  269        Internal dissent/team fracture   (nowhere)               MISSING
+  279        Hero on own, must endure         (nowhere)               MISSING
+  283-285    All Is Lost opposite Midpoint    prompt.py:83            MATCH
+  285        "False Defeat" label             (nowhere)               MISSING
+  287-299    Whiff of death                   validator.py:144-152    MATCH
+  289        Mentors die here                 (nowhere)               MISSING
+  295-297    Christ on cross / old dies       (nowhere)               MISSING
+  305        Dark Night = darkness before dawn prompt.py:84           MATCH
+  305        Can last 5 sec or 5 min          (nowhere)               MISSING
+  309        Beaten and know it               (nowhere)               MISSING
+  309        Yield control to Fate            (nowhere)               MISSING
+  321-324    Break into 3: A+B merge          prompt.py:85            MATCH
+  329        World of Synthesis               (nowhere)               MISSING
+  331        Finale: lessons applied          (nowhere)               MISSING
+  331        Finale: tics mastered            (nowhere)               MISSING
+  333        Bad guys ascending order         (nowhere)               MISSING
+  333        Hero changes the world           (nowhere)               MISSING
+  335        Final Image opposite Opening     prompt.py:87            MATCH
+  335        Go back and check your math      (nowhere)               MISSING
+
+
+================================================================================
+END OF AUDIT REPORT
+================================================================================

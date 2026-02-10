@@ -145,6 +145,13 @@ class Step1Validator:
                     "a compelling mental picture (character + goal + obstacle + time frame) "
                     "typically needs at least 12 words.".format(wc=word_count)
                 )
+            elif word_count > 40:
+                errors.append(
+                    "LOGLINE_TOO_LONG: Logline has {wc} words. Snyder's loglines are 10-25 "
+                    "words. If yours exceeds 40, you are explaining HOW instead of hooking "
+                    "with WHO + WHAT + irony. Cut the mechanics and trust the reader's "
+                    "imagination.".format(wc=word_count)
+                )
 
         # ══════════════════════════════════════════════════════════════════
         # COMPONENT 3: AUDIENCE AND COST (R9, R10, R11, R12)
@@ -336,6 +343,12 @@ class Step1Validator:
                 suggestions.append(
                     "Describe where the story ends as implied by the logline. "
                     "Example: 'The AI is shut down and the city's power is restored.'"
+                )
+            elif "LOGLINE_TOO_LONG" in error_upper:
+                suggestions.append(
+                    "Cut the logline to under 35 words. Remove explanations of HOW "
+                    "things work and keep WHO + WHAT + irony. Snyder's Die Hard logline "
+                    "is 25 words. Let the reader's imagination fill in the details."
                 )
             elif "LOGLINE_TOO_SHORT" in error_upper:
                 suggestions.append(

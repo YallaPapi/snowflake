@@ -1,0 +1,869 @@
+================================================================================
+SAVE THE CAT CHAPTER 7 AUDIT: DIAGNOSTIC CHECKS
+"What's Wrong With This Picture?"
+================================================================================
+
+Audit date:     2026-02-08
+Auditor:        Claude Opus 4.6 (automated)
+Book source:    temp_pages\stc_chapters\ch7_diagnostics.txt (311 lines)
+Engine files:   src\screenplay_engine\pipeline\prompts\step_7_prompt.py
+                src\screenplay_engine\pipeline\validators\step_7_validator.py
+                src\screenplay_engine\pipeline\steps\step_7_diagnostics.py
+                src\screenplay_engine\models.py
+
+
+================================================================================
+PART 1: BOOK EXTRACTION -- COMPLETE LIST OF DIAGNOSTICS
+================================================================================
+
+Blake Snyder's Chapter 7 defines a post-draft "Is It Broken?" test consisting of
+NINE (9) diagnostic checks. The chapter's summary (book lines 271-291) explicitly
+enumerates all nine. Below is the full extraction with book line references.
+
+------------------------------------------------------------------------------
+BOOK DIAGNOSTIC 1: "THE HERO LEADS"
+Book lines:     37-63
+Summary line:   273
+------------------------------------------------------------------------------
+What it tests:
+    Is the hero proactive? Does the hero drive the action or get dragged
+    through the story?
+
+Four sub-checks (all from lines 49-59):
+    a) Is the hero's goal clearly stated in the set-up? Is what the hero
+       wants obvious? Is it spoken aloud and restated throughout?
+    b) Do clues just come to the hero, or does he seek them out? The hero
+       cannot be handed his destiny; he must work for it at every step.
+    c) Is the hero active or passive? Everything must spring from burning
+       desire and deeply held need.
+    d) Do other characters tell the hero what to do, or does he tell them?
+       "A hero never asks questions" -- count question marks in dialogue;
+       there should be few.
+
+How to fix:
+    Give the hero a clear goal stated early and restated throughout. Make
+    the hero pursue information actively. Reduce question marks in hero
+    dialogue.
+
+Examples:
+    "Johnny Entropy" -- a detective who shows up, goes through motions,
+    never seeks clues, has no goals. (lines 41-45)
+
+------------------------------------------------------------------------------
+BOOK DIAGNOSTIC 2: "TALKING THE PLOT" / "SHOW DON'T TELL"
+Book lines:     65-87
+Summary line:   275
+------------------------------------------------------------------------------
+What it tests:
+    Are characters delivering exposition through unnatural dialogue?
+    Are they telling each other things they already know?
+
+Sub-principles:
+    a) "Talking the Plot" -- Characters say things like "Well, you're my
+       sister, you should know!" or exposition-as-dialogue. Characters
+       should serve themselves, not the writer. (lines 65-76)
+    b) "Show, Don't Tell" (explicitly called an "adjunct" at line 77) --
+       Movies are stories told in pictures. Show a husband eyeing a pretty
+       young thing rather than three pages of marriage counseling dialogue.
+       Show team pictures on the wall, give a limp from the accident.
+       Have characters talk about anything BUT the thing you want to convey.
+       (lines 77-87)
+
+How to fix:
+    Move exposition out of dialogue into visual action or behavior. Show
+    environmental details (team pictures, physical traits). Reveal
+    character through action, not words. "Be more concerned with what's
+    happening now than what happened before the story started." (line 85)
+
+Key quote:
+    "Character is revealed by action taken not by words spoken." (line 85)
+    "Show, don't tell" -- identified by name at lines 77, 87.
+
+Examples:
+    Husband eyeing a pretty young thing vs. three pages of marriage
+    counseling dialogue. Team pictures on the wall, a limp from an
+    accident. (lines 77-80)
+
+------------------------------------------------------------------------------
+BOOK DIAGNOSTIC 3: "MAKE THE BAD GUY BADDER"
+Book lines:     89-111
+Summary line:   277
+------------------------------------------------------------------------------
+What it tests:
+    Is the antagonist powerful enough to make the hero look heroic?
+    Are hero and antagonist a matched set?
+
+Key principles:
+    a) Making the bad guy badder automatically makes the hero bigger.
+       (line 97)
+    b) Hero and bad guy are "two halves of the same person" -- the mirror
+       principle. (lines 103-107)
+    c) They must be of equal skill and strength, with the bad guy having
+       a slight edge because he is "willing to go to any lengths." (line 109)
+    d) Do not make the bad guy impossible to beat -- just a challenge
+       that LOOKS impossible. (lines 109-111)
+
+How to fix:
+    Ratchet up the antagonist's power and invincibility. Give the edge
+    to the bad guy. Ensure hero and antagonist are reflections of each
+    other.
+
+Examples:
+    James Bond needs Goldfinger/Blofeld/Dr. No, not an evil accountant.
+    Batman/Joker (Keaton/Nicholson), Die Hard (Willis/Rickman), Pretty
+    Woman (Gere/Alexander) -- hero and villain as mirror images.
+    (lines 99-107)
+
+------------------------------------------------------------------------------
+BOOK DIAGNOSTIC 4: "TURN, TURN, TURN"
+Book lines:     113-137
+Summary line:   279
+------------------------------------------------------------------------------
+What it tests:
+    Does the plot ACCELERATE, not just maintain speed? Snyder
+    distinguishes velocity (constant speed) from acceleration (increasing
+    speed). The plot must go forward faster, with more complexity, to
+    the climax. (lines 117-119)
+
+Sub-checks:
+    a) New complications must be revealed at every step. (line 129)
+    b) More must be revealed about characters -- flaws, treacheries,
+       doubts, fears of heroes AND hidden powers, untapped resources,
+       dark motivations of bad guys. (lines 129-131)
+    c) After the Midpoint, the grip tightens, things happen faster,
+       pressure builds to the Act Three climax. (lines 133-134)
+    d) "The diamond can not merely move across the screen, it must Turn,
+       Turn, Turn in order to truly dazzle us." (lines 131-132)
+
+How to fix:
+    Show facets of characters at every step. Expose flaws, treacheries,
+    doubts. Reveal hidden powers and dark motivations. Make the plot
+    intensify after the Midpoint turn.
+
+Examples:
+    "The Cat in the Hat" (Mike Myers) -- tons of kinetic action but no
+    forward motion, no stakes, no Turn Turn Turn. (lines 125-128)
+
+------------------------------------------------------------------------------
+BOOK DIAGNOSTIC 5: "THE EMOTIONAL COLOR WHEEL"
+Book lines:     139-159
+Summary line:   281-283
+------------------------------------------------------------------------------
+What it tests:
+    Does the screenplay use the FULL emotional palette, or is it
+    emotionally monotone (one-note)?
+
+Emotions explicitly listed by Snyder:
+    lust, fear, joy, hope, despair, anger, tenderness, surprise,
+    longing, human foible, regret, frustration, near-miss anxiety,
+    triumph. (compiled from lines 139-157)
+
+Key technique:
+    "Take a scene that's just funny or just dramatic and try to play it
+    for one of the missing colors... use the same action, the same +/-,
+    the same conflict and result, but play it for lust instead of laughs,
+    jealousy instead of flat out stare-down dramatic conflict." (155-157)
+
+How to fix:
+    Choose a color for each missing emotion. Tag scenes and change
+    emotional tone while keeping the same action and conflict structure.
+
+Examples:
+    Farrelly Brothers (Something About Mary, Shallow Hal, Stuck On You)
+    -- known for comedy but include scenes of great fear, intense longing,
+    lust, human foible. "Every color in the emotional color wheel."
+    (lines 147-149)
+
+------------------------------------------------------------------------------
+BOOK DIAGNOSTIC 6: "HI, HOW ARE YOU? I'M FINE"
+Book lines:     161-187
+Summary line:   285
+------------------------------------------------------------------------------
+What it tests:
+    Does every character have unique, differentiated dialogue? Or do all
+    characters sound the same (have the writer's voice)?
+
+The Bad Dialogue Test (from Mike Cheda, lines 177-183):
+    Cover up the character names on a page of the script. Read the
+    dialogue back and forth. Can you tell who is speaking without seeing
+    the name? If not, all characters have the writer's voice.
+
+Key principle:
+    "In a good script, every character must speak differently. Every
+    character must have a unique way of saying even the most mundane
+    chat." (lines 183-184)
+
+How to fix:
+    Give each character a verbal tic, unique vocabulary, sentence length,
+    speech rhythm. Differentiate through how they say things, not just
+    what they say.
+
+Examples:
+    "Big Ugly Baby" -- one stuttered, one did malapropisms, one was an
+    Okie versed in Sartre, alien parents always YELLED with at least
+    one CAPITALIZED word per sentence. (lines 185-187)
+
+------------------------------------------------------------------------------
+BOOK DIAGNOSTIC 7: "TAKE A STEP BACK"
+Book lines:     189-208
+Summary line:   289
+------------------------------------------------------------------------------
+What it tests:
+    Does the hero (and ALL characters) start far enough back
+    emotionally to show the ENTIRE arc of transformation?
+
+Key principles:
+    a) The hero cannot already be the person they're supposed to become.
+       They must NEED the journey. (lines 191-193)
+    b) "Getting there WAS the story." (line 199)
+    c) Applies to ALL characters, not just the hero: "Take A Step Back
+       applies to all your characters." (line 201)
+    d) "By drawing the bow back to its very quivering end point, the
+       flight of the arrow is its strongest, longest, best flight."
+       (lines 206-207)
+
+How to fix:
+    Take characters back as far as possible emotionally. Show the
+    complete flight of the arrow. Show all the change, growth, and
+    action of a hero's journey. Apply to every character.
+
+Examples:
+    Sheldon & Blake's Golden Fleece about a kid kicked out of military
+    school -- the kid was already nice and helpful from the start. Took
+    7 drafts to fix because they needed to take him back emotionally.
+    (lines 191-199)
+
+------------------------------------------------------------------------------
+BOOK DIAGNOSTIC 8: "A LIMP AND AN EYE PATCH"
+Book lines:     210-231
+Summary line:   287
+------------------------------------------------------------------------------
+What it tests:
+    Does every recurring/minor character have a memorable distinctive
+    trait (physical, behavioral, or verbal) so the reader can
+    differentiate them?
+
+Key principle:
+    "The reader has to have a visual clue, often a running visual
+    reminder, that makes remembering them easier." (lines 218-219)
+
+How to fix:
+    Assign each recurring character one distinctive physical, behavioral,
+    or verbal trait. Reference it whenever the character appears.
+
+Examples:
+    "Deadly Mean Girls" -- the lead boy needed a soul-patch and black
+    t-shirt. Andy Cohen couldn't identify him across multiple drafts
+    until they added these traits. The character "jumped off the page."
+    (lines 221-229)
+
+------------------------------------------------------------------------------
+BOOK DIAGNOSTIC 9: "IS IT PRIMAL?" / "WOULD A CAVEMAN UNDERSTAND?"
+Book lines:     233-263
+Summary line:   291
+------------------------------------------------------------------------------
+What it tests:
+    Are the characters' drives grounded in primal, biological needs?
+    Does the story connect with the audience at a caveman level?
+
+Primal drives explicitly listed:
+    - Survival
+    - Hunger
+    - Sex
+    - Protection of loved ones
+    - Fear of death
+    (line 235)
+
+Key principle:
+    "At the root of anyone's goal in a movie must be something that
+    basic, even if on its surface it seems to be about something else."
+    (line 235)
+    "At its core it must be about something that resonates at a caveman
+    level." (line 262)
+
+How to fix:
+    Make each character's desire more primal. Ground everything in
+    biological drives. This also makes the story sellable worldwide.
+
+Examples (lines 249-258):
+    Die Hard = desire to save one's family
+    Home Alone = desire to protect one's home
+    Sleepless in Seattle = desire to find a mate
+    Gladiator = desire to exact revenge
+    Titanic = desire to survive
+
+
+================================================================================
+PART 2: ENGINE IMPLEMENTATION INVENTORY
+================================================================================
+
+The engine implements exactly 8 diagnostic checks (not 9).
+
+Hardcoded count locations:
+    step_7_prompt.py     line 18:  "Run 8 diagnostic checks"
+    step_7_prompt.py     line 23:  "Run ALL 8 diagnostic checks"
+    step_7_prompt.py     line 153: "total_checks: 8"
+    step_7_prompt.py     line 157: "You MUST run ALL 8 checks"
+    step_7_prompt.py     line 161: "total_checks MUST always be 8"
+    step_7_prompt.py     line 185: "You MUST run ALL 8 diagnostic checks"
+    step_7_validator.py  line 3:   "Validates that all 8 diagnostic checks"
+    step_7_validator.py  line 37:  "exactly 8 entries"
+    step_7_validator.py  line 58:  "exactly 8 diagnostic check entries"
+    step_7_validator.py  line 69:  "len(diagnostics) != 8"
+    step_7_validator.py  line 96:  "check_number > 8"
+    step_7_diagnostics.py line 27: "8 Blake Snyder Ch.7 diagnostic checks"
+    step_7_diagnostics.py line 58: "Run 8 diagnostic checks"
+    models.py            line 198: "check_number: int = Field(..., ge=1, le=8)"
+
+Canonical check names (step_7_validator.py lines 15-24):
+    1. "The Hero Leads"
+    2. "Talking the Plot"
+    3. "Make the Bad Guy Badder"
+    4. "Turn Turn Turn"
+    5. "Emotional Color Wheel"
+    6. "Hi How Are You I'm Fine"
+    7. "Take a Step Back"
+    8. "Limp and Eye Patch"
+
+Engine prompt checks (step_7_prompt.py lines 40-90):
+    Each check has: description, fail criteria, fix suggestion.
+
+
+================================================================================
+PART 3: CHECK-BY-CHECK GAP ANALYSIS
+================================================================================
+
+Legend:
+    MATCH    = Engine correctly implements the book's diagnostic
+    PARTIAL  = Engine captures the idea but misses significant details
+    MISSING  = Engine does not implement the book's diagnostic at all
+    WRONG    = Engine implements something contradicting the book
+
+Severity scale:
+    CRITICAL = Structural omission; the engine is provably incomplete
+    HIGH     = Significant content missing that changes diagnostic quality
+    MEDIUM   = Minor details or examples missing; diagnostic still works
+    LOW      = Nuance or emphasis difference; cosmetic
+
+------------------------------------------------------------------------------
+CHECK 1: "THE HERO LEADS"
+Status:     MATCH
+Severity:   (none -- no issues)
+------------------------------------------------------------------------------
+
+Book requires (4 sub-checks):
+    a) Hero's goal clearly stated in set-up             [PRESENT - line 41]
+    b) Hero seeks information, not receives passively    [PRESENT - line 41]
+    c) Hero directs others, not directed by them         [PRESENT - line 42]
+    d) Count question marks in hero dialogue             [PRESENT - line 43]
+
+Engine (step_7_prompt.py lines 40-45):
+    "Is the hero PROACTIVE? Does the hero seek information (not receive
+    it passively)? Does the hero direct others rather than being directed?
+    Count question marks in hero dialogue -- there should be FEW.
+    FAIL criteria: Hero is reactive, receives exposition, asks too many
+    questions. FIX: Clarify the hero's goal, make the hero pursue
+    information actively."
+
+Assessment: All four sub-checks are faithfully represented. The question-mark
+counting detail is correctly captured. No gaps.
+
+------------------------------------------------------------------------------
+CHECK 2: "TALKING THE PLOT" / "SHOW DON'T TELL"
+Status:     PARTIAL
+Severity:   MEDIUM
+------------------------------------------------------------------------------
+
+Book requires (2 sub-principles):
+    a) "Talking the Plot" -- characters explain things the listener
+       already knows through unnatural exposition dialogue.
+    b) "Show Don't Tell" (explicitly named as an "adjunct" at line 77) --
+       use visual storytelling instead of dialogue. Movies are stories
+       told in pictures. Specific techniques: environmental details
+       (team pictures on walls), physical traits (a limp from the
+       accident), behavioral cues (husband eyeing a pretty young thing).
+       Have characters talk about anything BUT the exposition target.
+
+Engine (step_7_prompt.py lines 47-52):
+    "Is exposition shown visually or buried in dialogue?
+    Bad example: 'Well, you're my sister, you should know!'
+    Test: Cover character names -- would anyone say this to someone who
+    already knows?
+    FAIL criteria: Characters explain things the listener already knows.
+    FIX: Move exposition out of dialogue and into visual action or
+    behavior."
+
+Gaps found:
+    1. "Show Don't Tell" is not named as a distinct sub-principle. The
+       engine says "shown visually" which is implicit but does not call
+       out the concept by name or give it the weight Snyder does.
+    2. The specific TECHNIQUES for showing are absent:
+       - Environmental storytelling (team pictures on walls)
+       - Physical traits conveying backstory (a limp from the accident)
+       - Behavioral substitution (have characters talk about anything
+         BUT the thing you want to convey)
+       - "Be more concerned with what's happening now than what happened
+         before the story started"
+    3. Snyder's key quote is not referenced: "Character is revealed by
+       action taken not by words spoken" (line 85).
+
+Recommendation:
+    Add "Show Don't Tell" as a named sub-principle within this check.
+    Add specific visual storytelling techniques to the prompt guidance.
+
+------------------------------------------------------------------------------
+CHECK 3: "MAKE THE BAD GUY BADDER"
+Status:     MATCH
+Severity:   (none -- no issues)
+------------------------------------------------------------------------------
+
+Book requires:
+    a) Antagonist equal or superior to hero              [PRESENT - line 55]
+    b) Mirror principle (two halves of same person)      [PRESENT - line 56]
+    c) Bad guy has slight edge -- willing to go further  [PRESENT - line 58]
+    d) Don't make bad guy impossible, just looks it      [NOT EXPLICIT]
+
+Engine (step_7_prompt.py lines 54-58):
+    "Is the antagonist equal or superior to the hero in power?
+    Are hero and antagonist a matched set (mirror principle)?
+    FAIL criteria: Antagonist is weaker, not a mirror, or not threatening
+    enough. FIX: Give antagonist more power, make them willing to do what
+    the hero will not."
+
+Minor note: The nuance "don't make bad guy impossible to beat -- just a
+challenge that LOOKS impossible" (line 109-111) is not stated. This is
+a subtle but useful coaching point for the AI when generating fixes.
+Not severe enough to downgrade from MATCH.
+
+------------------------------------------------------------------------------
+CHECK 4: "TURN, TURN, TURN"
+Status:     MATCH
+Severity:   (none -- no issues, with one LOW note)
+------------------------------------------------------------------------------
+
+Book requires:
+    a) Plot accelerates, not just moves forward          [PRESENT - line 61]
+    b) New complications at every step                   [PRESENT - line 62]
+    c) Reveal more about characters as plot progresses   [NOT EXPLICIT]
+    d) After Midpoint, pressure builds to Act Three      [IMPLICIT in 63]
+
+Engine (step_7_prompt.py lines 60-65):
+    "Does the plot ACCELERATE (not just maintain speed)?
+    Are new complications revealed at every step?
+    Does each sequence raise the stakes higher?
+    FAIL criteria: Pacing is flat, no escalation, repetitive obstacles.
+    FIX: Add complications at each act break, escalate the antagonist's
+    actions."
+
+LOW note: Snyder's emphasis on revealing CHARACTER DEPTH as part of the
+"turning" (flaws, treacheries, doubts, fears of heroes; hidden powers,
+untapped resources, dark motivations of bad guys -- lines 129-131) is
+not in the prompt. The engine focuses on plot/pacing escalation, not
+character revelation through escalation. This is a missed nuance but
+does not constitute a structural gap.
+
+Recommendation:
+    Add to the prompt: "Is more revealed about characters (flaws,
+    treacheries, hidden powers) at each turning point?"
+
+------------------------------------------------------------------------------
+CHECK 5: "EMOTIONAL COLOR WHEEL"
+Status:     MATCH
+Severity:   (none -- no issues, with one LOW note)
+------------------------------------------------------------------------------
+
+Book requires:
+    Full emotional palette. Emotions listed across the chapter:
+    lust, fear, joy, hope, despair, anger, tenderness, surprise,
+    longing, human foible, regret, frustration, near-miss anxiety,
+    triumph. (~14 emotions)
+
+Engine (step_7_prompt.py lines 67-72):
+    "Check for: lust, fear, joy, hope, despair, anger, tenderness,
+    surprise."
+    (8 emotions listed)
+
+LOW note: The engine lists 8 of the ~14 emotions Snyder mentions.
+Missing from the prompt: longing, human foible, regret, frustration,
+near-miss anxiety, triumph.
+
+Additionally, Snyder's specific recoloring technique is absent from the
+prompt: "Take a scene that's just funny and play it for lust instead of
+laughs... use the same action, the same +/-, the same conflict and
+result" (lines 155-157). This technique could help the AI generate
+more specific fix suggestions.
+
+Recommendation:
+    Expand the emotion list to include: longing, regret, frustration,
+    near-miss anxiety, triumph. Add the recoloring technique to the
+    FIX guidance.
+
+------------------------------------------------------------------------------
+CHECK 6: "HI, HOW ARE YOU? I'M FINE"
+Status:     MATCH
+Severity:   (none -- no issues)
+------------------------------------------------------------------------------
+
+Book requires:
+    Bad Dialogue Test (Mike Cheda): Cover character names, read dialogue,
+    determine if characters are distinguishable by speech alone.
+
+Engine (step_7_prompt.py lines 74-78):
+    "Does every character speak DIFFERENTLY?
+    Test: Cover character names -- can you tell who is speaking from
+    dialogue alone?
+    FAIL criteria: Characters sound the same, interchangeable dialogue.
+    FIX: Differentiate vocabulary, sentence length, and speech rhythm
+    per character."
+
+Assessment: The Bad Dialogue Test is correctly captured with its exact
+technique. The fix suggestion is practical. No gaps.
+
+------------------------------------------------------------------------------
+CHECK 7: "TAKE A STEP BACK"
+Status:     MATCH
+Severity:   (none -- no issues, with one LOW note)
+------------------------------------------------------------------------------
+
+Book requires:
+    a) Hero starts as far back as possible emotionally   [IMPLICIT]
+    b) Growth must be visible and earned                 [PRESENT - line 82]
+    c) Applies to ALL characters, not just the hero      [NOT EXPLICIT]
+    d) "Drawing the bow back" metaphor -- distance of
+       starting point determines flight of arrow         [NOT IN PROMPT]
+
+Engine (step_7_prompt.py lines 80-84):
+    "Is character transformation SHOWN step by step?
+    The arc cannot be shortcut -- growth must be visible and earned.
+    FAIL criteria: Character changes suddenly without buildup, arc is
+    told not shown.
+    FIX: Show the starting point clearly, document the process, make
+    change visible."
+
+LOW note #1: The engine says "Is character transformation SHOWN step by
+step?" which is about showing intermediate steps. Snyder's point is more
+about the STARTING POSITION -- how far back the bow is drawn. The engine
+does not ask "Does the hero start as far back as possible?" which is the
+core question.
+
+LOW note #2: Snyder explicitly states "Take A Step Back applies to ALL
+your characters" (line 201). The engine says "character transformation"
+without specifying that this applies to supporting characters too.
+
+Recommendation:
+    Reframe the primary question as: "Does the hero (and all characters)
+    start as far back as possible emotionally?" Add: "Applies to ALL
+    characters, not just the protagonist."
+
+------------------------------------------------------------------------------
+CHECK 8: "A LIMP AND AN EYE PATCH"
+Status:     MATCH
+Severity:   (none -- no issues)
+------------------------------------------------------------------------------
+
+Book requires:
+    Every recurring character needs a memorable distinctive trait.
+    Can be physical, behavioral, or verbal. Gives the reader a visual
+    clue / running visual reminder.
+
+Engine (step_7_prompt.py lines 86-90):
+    "Does every recurring character have a memorable distinctive trait?
+    Can be physical, behavioral, or verbal.
+    FAIL criteria: Characters lack distinctive traits, are generic or
+    forgettable.
+    FIX: Assign each recurring character one distinctive physical,
+    behavioral, or verbal trait."
+
+Assessment: Correctly implemented. The "running visual reminder"
+concept (referencing the trait each time the character appears) is not
+stated but is implied. No significant gaps.
+
+------------------------------------------------------------------------------
+CHECK 9: "IS IT PRIMAL?" / "WOULD A CAVEMAN UNDERSTAND?"
+Status:     MISSING
+Severity:   CRITICAL
+------------------------------------------------------------------------------
+
+Book requires (lines 233-263, summary line 291):
+    Every character's drive must reduce to a primal, biological need.
+    Snyder's explicit primal drives:
+        - Survival
+        - Hunger
+        - Sex
+        - Protection of loved ones
+        - Fear of death
+
+    Key test: "Would a caveman understand?" (line 235)
+    Purpose: Verify that story motivations connect at a biological level.
+    Also makes the story sellable worldwide (line 236).
+
+    Snyder gives 5 specific film examples mapping plot to primal drive:
+        Die Hard        = desire to save one's family
+        Home Alone      = desire to protect one's home
+        Sleepless...    = desire to find a mate
+        Gladiator       = desire to exact revenge
+        Titanic         = desire to survive
+
+Engine status:
+    COMPLETELY ABSENT from Step 7.
+    - Not in step_7_prompt.py (no 9th check defined)
+    - Not in step_7_validator.py (REQUIRED_CHECK_NAMES has 8 entries)
+    - Not in step_7_diagnostics.py (docstrings say "8 checks")
+    - models.py DiagnosticResult constrains check_number to 1-8
+
+    HOWEVER: The PrimalUrge enum EXISTS in models.py (lines 27-33):
+        SURVIVAL, HUNGER, SEX, PROTECTION_OF_LOVED_ONES, FEAR_OF_DEATH
+    And is used in HeroProfile (line 97): primal_motivation: PrimalUrge
+
+    This means the primal drive concept is defined at Step 3 (Hero
+    creation) but is never RE-VERIFIED as a diagnostic at Step 7.
+    Snyder's Chapter 7 treats "Is It Primal?" as something to CHECK
+    AGAIN during the diagnostic pass, not just something to define
+    once. The diagnostic should verify that the primal drives declared
+    in Step 3 actually manifest throughout the beat sheet and board
+    cards, and that ALL characters (not just the hero) are driven by
+    primal motivations.
+
+Files requiring changes to add the 9th diagnostic:
+    1. models.py line 198:
+       Change: check_number: int = Field(..., ge=1, le=8)
+       To:     check_number: int = Field(..., ge=1, le=9)
+
+    2. step_7_validator.py lines 15-24:
+       Add "Is It Primal?" to REQUIRED_CHECK_NAMES list
+
+    3. step_7_validator.py line 69:
+       Change: len(diagnostics) != 8
+       To:     len(diagnostics) != 9
+
+    4. step_7_validator.py line 96:
+       Change: check_number > 8
+       To:     check_number > 9
+
+    5. step_7_validator.py -- all error messages and fix suggestions
+       referencing "8" must change to "9"
+
+    6. step_7_prompt.py lines 18, 23, 153, 157, 161, 185:
+       All instances of "8" in diagnostic count must change to "9"
+
+    7. step_7_prompt.py -- add 9th check definition after line 90:
+       9. IS IT PRIMAL?
+          - Does every character's drive reduce to a primal need?
+          - Primal drives: survival, hunger, sex, protection of loved
+            ones, fear of death.
+          - Test: "Would a caveman understand this character's goal?"
+          - FAIL criteria: Characters motivated by abstract or
+            non-primal goals; story does not connect at a biological
+            level.
+          - FIX: Ground each character's motivation in a primal drive.
+            Map the stated goal to one of the five basic drives.
+
+    8. step_7_prompt.py -- add 9th entry to the JSON output format
+       example (after line 150)
+
+    9. step_7_diagnostics.py -- update docstrings and comments
+       referencing "8 checks" to "9 checks"
+
+
+================================================================================
+PART 4: STRUCTURAL / ARCHITECTURAL ISSUES
+================================================================================
+
+------------------------------------------------------------------------------
+ISSUE A: Count Mismatch (8 vs 9)
+Severity:   CRITICAL
+Files:      ALL Step 7 files + models.py
+------------------------------------------------------------------------------
+The engine hardcodes "8" in 14+ locations across 4 files. The book
+explicitly defines 9 diagnostics. This is not a matter of interpretation --
+the book's own summary (lines 271-291) enumerates all 9 with "Is it
+primal?" as the 9th and final question. The number 8 appears in:
+
+    step_7_prompt.py:     lines 18, 23, 153, 157, 161, 185
+    step_7_validator.py:  lines 3, 37, 58, 69, 71, 96, 98-99
+    step_7_diagnostics.py: lines 27, 58
+    models.py:            line 198
+
+All must be updated to 9.
+
+------------------------------------------------------------------------------
+ISSUE B: "Show Don't Tell" Not Named as Sub-Principle
+Severity:   MEDIUM
+File:       step_7_prompt.py line 47-52
+------------------------------------------------------------------------------
+Snyder explicitly names "Show, Don't Tell" as an "adjunct" to "Talking
+the Plot" (line 77). The engine implicitly captures the concept ("shown
+visually") but does not name it or provide the specific visual
+storytelling techniques Snyder describes. This reduces the diagnostic's
+coaching effectiveness.
+
+Recommendation: Add "Show, Don't Tell" by name to the check description.
+Add techniques: environmental details, behavioral cues, talking about
+anything BUT the exposition target.
+
+------------------------------------------------------------------------------
+ISSUE C: Timing Mismatch -- Dialogue Checks Before Dialogue Exists
+Severity:   HIGH (architectural)
+Files:      step_7_diagnostics.py, step_7_prompt.py
+------------------------------------------------------------------------------
+Step 7 runs BEFORE Step 8 (Screenplay writing). This means diagnostics
+that test DIALOGUE quality (checks 2, 6) are being run against scene
+descriptions and board cards, not actual screenplay dialogue. Snyder's
+diagnostics are designed for a completed first draft.
+
+This is an architectural limitation, not a bug. The engine runs
+diagnostics against structural intent (Hero profile, Beat Sheet, Board)
+rather than actual screenplay text. This means:
+
+    Check 2 ("Talking the Plot"): Can only check whether the board
+    cards DESCRIBE exposition-heavy scenes, not whether actual dialogue
+    is guilty of "talking the plot."
+
+    Check 6 ("Hi How Are You I'm Fine"): Cannot apply the Bad Dialogue
+    Test (cover names, read dialogue) because no dialogue exists yet.
+    The check can only verify that characters are structurally
+    differentiated, not that their actual speech is differentiated.
+
+This is not necessarily wrong -- checking structural intent early is
+valuable. But the diagnostics should acknowledge this scope limitation,
+and ideally a second diagnostic pass should run AFTER Step 8 when
+actual dialogue exists.
+
+Recommendation: Either (a) add a note in the prompt that these checks
+apply to structural intent at this stage, or (b) add a post-Step-8
+diagnostic re-run for dialogue-specific checks.
+
+------------------------------------------------------------------------------
+ISSUE D: No Diagnostic Severity Differentiation
+Severity:   LOW
+Files:      step_7_prompt.py, models.py
+------------------------------------------------------------------------------
+Snyder's diagnostics vary in severity. Some are about fundamental story
+structure (Hero Leads, Bad Guy Badder, Turn Turn Turn) while others are
+about polish (Limp and Eye Patch, Hi How Are You). The engine treats all
+diagnostics identically with a simple pass/fail boolean. There is no
+severity classification (e.g., critical/high/medium/low).
+
+The DiagnosticResult model (models.py lines 196-202) has:
+    check_number, check_name, passed, problem_details, fix_suggestion
+
+It lacks a severity field. A failed "Hero Leads" check is structurally
+more damaging than a failed "Limp and Eye Patch" check, but the engine
+cannot distinguish between them.
+
+Recommendation: Add an optional "severity" field to DiagnosticResult:
+    severity: str = Field(default="medium", description="critical|high|
+    medium|low")
+
+------------------------------------------------------------------------------
+ISSUE E: Emotion List Incomplete
+Severity:   LOW
+File:       step_7_prompt.py line 70
+------------------------------------------------------------------------------
+The engine lists 8 emotions: lust, fear, joy, hope, despair, anger,
+tenderness, surprise.
+
+Snyder lists approximately 14 across the chapter: lust, fear, joy, hope,
+despair, anger, tenderness, surprise, longing, human foible, regret,
+frustration, near-miss anxiety, triumph.
+
+Missing from engine: longing, human foible, regret, frustration,
+near-miss anxiety, triumph.
+
+This is LOW severity because the 8 listed emotions cover the core
+palette. The additional 6 would improve diagnostic precision.
+
+------------------------------------------------------------------------------
+ISSUE F: "Take a Step Back" Emphasis Misaligned
+Severity:   LOW
+File:       step_7_prompt.py lines 80-84
+------------------------------------------------------------------------------
+The engine frames this diagnostic as "Is character transformation SHOWN
+step by step?" -- focusing on intermediate visibility. Snyder's actual
+point is about the STARTING POSITION: "Take the hero back as far as
+possible emotionally." The engine does not ask whether the starting
+point is far enough back, which is the core of the diagnostic.
+
+Additionally, Snyder explicitly states this applies to "all your
+characters" (line 201). The engine uses generic "character" without
+specifying that supporting characters must also be checked.
+
+Recommendation: Change the primary question to: "Does the hero (and ALL
+characters) start as far back as possible emotionally?" Add emphasis
+on the starting position, not just intermediate steps.
+
+
+================================================================================
+PART 5: ITEMS NOT IN THE BOOK THAT THE ENGINE CHECKS
+================================================================================
+
+None found. All 8 implemented diagnostics trace directly to Chapter 7.
+The engine does not introduce fabricated diagnostics, invented checks,
+or content from other chapters. This is correct behavior.
+
+
+================================================================================
+PART 6: COMPLETE SUMMARY TABLE
+================================================================================
+
++---+-----------------------------------+---------------------------+---------+----------+
+| # | Book Diagnostic                   | Engine Check              | Status  | Severity |
++---+-----------------------------------+---------------------------+---------+----------+
+| 1 | The Hero Leads                    | The Hero Leads            | MATCH   | --       |
+| 2 | Talking the Plot / Show Dont Tell | Talking the Plot          | PARTIAL | MEDIUM   |
+| 3 | Make the Bad Guy Badder           | Make the Bad Guy Badder   | MATCH   | --       |
+| 4 | Turn, Turn, Turn                  | Turn Turn Turn            | MATCH   | LOW      |
+| 5 | Emotional Color Wheel             | Emotional Color Wheel     | MATCH   | LOW      |
+| 6 | Hi, How Are You? Im Fine          | Hi How Are You Im Fine    | MATCH   | --       |
+| 7 | Take a Step Back                  | Take a Step Back          | MATCH   | LOW      |
+| 8 | A Limp and an Eye Patch           | Limp and Eye Patch        | MATCH   | --       |
+| 9 | Is It Primal?                     | (not implemented)         | MISSING | CRITICAL |
++---+-----------------------------------+---------------------------+---------+----------+
+
+Extra checks in engine not in book:  NONE
+Wrong checks in engine:              NONE
+
+Final tally:
+    MATCH:    7 checks (4 clean, 3 with LOW notes)
+    PARTIAL:  1 check  (Talking the Plot -- MEDIUM)
+    MISSING:  1 check  (Is It Primal? -- CRITICAL)
+    WRONG:    0 checks
+
+Structural issues:
+    CRITICAL: Count mismatch 8 vs 9 (14+ hardcoded locations)
+    HIGH:     Dialogue checks run before dialogue exists
+    MEDIUM:   "Show Dont Tell" not named as sub-principle
+    LOW:      No severity differentiation
+    LOW:      Emotion list incomplete (8 of ~14)
+    LOW:      "Take a Step Back" emphasis misaligned
+
+
+================================================================================
+PART 7: PRIORITY-ORDERED FIX LIST
+================================================================================
+
+Priority 1 (CRITICAL):
+    Add 9th diagnostic "Is It Primal?" / "Would a Caveman Understand?"
+    Update count from 8 to 9 in all 4 files (14+ locations).
+    See ISSUE A above and CHECK 9 for complete file-by-file change list.
+
+Priority 2 (HIGH):
+    Address timing mismatch for dialogue-dependent diagnostics.
+    Either scope the prompt to acknowledge structural-intent-only
+    checks, or add a post-Step-8 re-run for checks 2 and 6.
+
+Priority 3 (MEDIUM):
+    Enhance Check 2 to name "Show Don't Tell" as a sub-principle
+    and add specific visual storytelling techniques.
+
+Priority 4 (LOW):
+    - Check 4: Add character-revelation aspect to Turn Turn Turn
+    - Check 5: Expand emotion list (add longing, regret, frustration,
+      near-miss anxiety, triumph, human foible)
+    - Check 7: Reframe as starting-position question; add "all
+      characters" scope
+    - Add severity field to DiagnosticResult model
+
+================================================================================
+END OF AUDIT
+================================================================================

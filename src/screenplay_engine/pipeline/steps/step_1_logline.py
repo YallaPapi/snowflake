@@ -74,13 +74,10 @@ class Step1Logline:
         # Generate prompt from Snowflake artifacts
         prompt_data = self.prompt_generator.generate_prompt(snowflake_artifacts)
 
-        # Call AI generator with validation loop
-        try:
-            artifact_content = self.generator.generate_with_validation(
-                prompt_data, self.validator, model_config
-            )
-        except Exception as e:
-            return False, {}, f"AI generation failed: {e}"
+        # Call AI generator with validation loop — let exceptions propagate
+        artifact_content = self.generator.generate_with_validation(
+            prompt_data, self.validator, model_config
+        )
 
         # Add metadata
         artifact = self._add_metadata(

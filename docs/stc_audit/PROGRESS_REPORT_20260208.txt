@@ -1,0 +1,316 @@
+================================================================================
+SAVE THE CAT ENGINE — PROGRESS REPORT
+Date: 2026-02-08
+================================================================================
+
+STATUS SUMMARY
+================================================================================
+
+Steps reviewed and fixed against actual book text (step by step):
+  Step 1 (Logline / Ch.1):       DONE — v2.0.0, 52 tests passing
+  Step 2 (Genre / Ch.2):         DONE — v2.0.0, 75 tests passing
+  Step 3 (Hero / Ch.3):          DONE — v2.0.0, 95 tests passing
+  Step 4 (Beat Sheet / Ch.4):    DONE — v2.0.0, 150 tests passing
+  Step 5 (Board / Ch.5):         DONE — v2.0.0, 107 tests passing
+  Step 6 (Screenplay / end Ch.5):DONE — v2.0.0, 89 tests passing
+  Step 7 (Laws / Ch.6):          DONE — v2.0.0, 100 tests passing
+  Step 8 (Diagnostics / Ch.7):   DONE — v2.0.0, 83 tests passing
+  Step 9 (Marketing / Ch.8):     DONE — v2.0.0, 106 tests passing
+
+Steps NOT yet reviewed against source material:
+  NONE — ALL 9 STEPS COMPLETE at v2.0.0.
+
+TOTAL TESTS: 904 passing (all steps + Snowflake engine)
+
+
+================================================================================
+CRITICAL ISSUE: STEP 3b MUST BE REMOVED
+================================================================================
+
+PROBLEM:
+  Step 3b "Supporting Cast" exists in the codebase and the pipeline.
+  It was created during Wave 3 of the MASTER_FIX_PLAN as a practical
+  engineering addition. However:
+
+  1. Save the Cat does NOT have a supporting cast step.
+     The Ch.3 audit explicitly states: "Snyder's Chapter 3 prescribes
+     exactly TWO character roles: The Hero and The Bad Guy. That is ALL.
+     No supporting cast. No B-story character. No sidekicks."
+
+  2. User directive (from prior session): "from here on out, no
+     assumptions at all as far as how save the cat does things" and
+     "the Save the Cat method is what we want. Whatever order that
+     goes in... that's exactly how we need to do it."
+
+  3. User directive (from prior session): "one api call for all the
+     supporting cast seems like it won't do a good job. i feel like
+     they should be added in layers" — characters should emerge
+     organically, not be dumped in a single bulk step.
+
+WHERE 3b IS WIRED IN:
+  - src/screenplay_engine/pipeline/orchestrator.py lines 78-80, 244-247, 298, 373, 401
+  - src/screenplay_engine/pipeline/steps/step_3b_supporting_cast.py (142 lines)
+  - src/screenplay_engine/pipeline/prompts/step_3b_prompt.py (202 lines)
+  - src/screenplay_engine/pipeline/validators/step_3b_validator.py (161 lines)
+  - src/screenplay_engine/models.py — SupportingCharacter, SupportingCast classes
+
+ACTION NEEDED:
+  Remove Step 3b from the pipeline sequence in orchestrator.py.
+  The 3b files can remain in the codebase (dead code, no harm) or be
+  deleted entirely. The pipeline should go directly from Step 3 to Step 4.
+
+HOW CHARACTERS EMERGE IN ACTUAL STC:
+  - Beat Sheet (Ch.4): B-story character introduced at Beat 7. Other
+    characters naturally appear in beat descriptions as needed by the
+    story structure.
+  - Board (Ch.5): characters_present per card. As 40 scene cards are
+    planned, characters are discovered — they emerge from the scenes
+    that need them.
+  - Screenplay (writing): Dialogue reveals voice. Characters solidify
+    as they speak and act.
+
+  This is the "layers" approach the user described. Characters grow
+  organically through the pipeline, not invented in one bulk step.
+
+
+================================================================================
+CURRENT PIPELINE WIRING (orchestrator.py)
+================================================================================
+
+  CURRENT (WRONG):
+    1 (Logline) → 2 (Genre) → 3 (Hero) → 3b (Supporting Cast) →
+    4 (Beat Sheet) → 5 (Board) → 6 (Screenplay) → 7 (Laws) →
+    8 (Diagnostics) → 9 (Marketing)
+
+  CORRECT (per STC book chapter order):
+    1 (Logline / Ch.1)
+    2 (Genre / Ch.2)
+    3 (Hero / Ch.3)
+    4 (Beat Sheet / Ch.4)         ← characters emerge here
+    5 (Board / Ch.5)              ← characters solidify here
+    6 (Screenplay / end of Ch.5)  ← characters come alive here
+    7 (Laws / Ch.6)               ← evaluate finished screenplay
+    8 (Diagnostics / Ch.7)        ← evaluate finished screenplay
+    9 (Marketing / Ch.8)
+
+  No Step 3b. Step 4 (Beat Sheet) takes hero + antagonist + B-story
+  from Step 3 and naturally introduces supporting characters as
+  needed by the 15 beats.
+
+
+================================================================================
+WHAT WAS DONE IN THE STEP-BY-STEP REVIEW (detail)
+================================================================================
+
+STEP 1 — LOGLINE (Ch.1) — COMPLETE
+  Files changed:
+    - step_1_prompt.py → v2.0.0
+    - step_1_validator.py → v2.0.0
+    - step_1_logline.py → v2.0.0
+    - test_sp_step_1_logline.py → 52 tests
+
+  Key changes:
+    - Removed villain_adjective (Ch.3 content, not Ch.1)
+    - Removed primal_goal (Ch.3 content, not Ch.1)
+    - Added character_type, ironic_element, time_frame, target_audience
+    - Added abbreviation-safe sentence counting (Dr./Mr./etc.)
+    - Added high_concept_score, poster_concept, budget_tier fields
+    - Added audience/cost validation, genre_tone field
+    - Story beginning/ending fields for irony validation
+
+STEP 2 — GENRE (Ch.2) — COMPLETE
+  Files changed:
+    - step_2_prompt.py → v2.0.0
+    - step_2_validator.py → v2.0.0
+    - models.py → GENRE_DEFINITIONS expanded with sub_types, rules, films
+    - test_sp_step_2_genre.py → 75 tests
+
+  Key changes:
+    - All 10 genres have sub_types, working_parts, rules, example_films
+    - Added genre_justification (why this genre)
+    - Added runner_up_genre + elimination reasoning
+    - Added comparable_films (3+ films)
+    - Added sub_type validation
+    - Substance checks on all text fields (min word counts)
+    - Cross-reference working parts against GENRE_DEFINITIONS
+
+STEP 3 — HERO (Ch.3) — COMPLETE
+  Files changed:
+    - step_3_prompt.py → v2.0.0
+    - step_3_validator.py → v2.0.0
+    - step_3_hero.py → v2.0.0
+    - test_sp_step_3_hero.py → 95 tests
+
+  Key changes:
+    - Added age_range, gender (Snyder's 3rd hero criterion: demographic)
+    - Added demographic_appeal_justification (10+ word substance check)
+    - Added surface_to_primal_connection (10+ word substance check)
+    - Fixed broken references to removed Step 1 fields (villain_adjective,
+      primal_goal → character_type, ironic_element, time_frame, target_audience)
+    - Fixed six_things count from 3-8 to exactly 6
+    - Added all missing field validations (antagonist name, descriptor,
+      moral_difference; b_story name, relationship)
+    - Vague state checks (opening_state, final_state min 10 chars)
+
+STEP 9 — MARKETING (Ch.8) — COMPLETE
+  Files changed:
+    - step_9_prompt.py → v2.0.0 (complete rewrite against Ch.8 and Glossary)
+    - step_9_validator.py → v2.0.0 (strengthened one_sheet validation)
+    - step_9_marketing.py → v2.0.0 (fixed metadata format, added VERSION)
+    - test_sp_step_9.py → 106 tests (11 test classes)
+
+  Key changes:
+    - Removed villain_adjective, primal_goal references (removed from Step 1 v2.0.0)
+    - Added v2.0.0 Step 1 fields: character_type, ironic_element, time_frame,
+      target_audience, genre_tone, high_concept_score, budget_tier, poster_concept
+    - Scene summary uses emotional_start/emotional_end with legacy fallback
+    - System prompt: Ch.8 "Final Fade In", Poster Test, 4-Quadrant, Hook test
+    - User prompt: Snyder quotes from Ch.8 and Glossary throughout
+    - Validator: MIN_ONE_SHEET_CHARS=30 (was 20), MIN_ONE_SHEET_WORDS=8 (new)
+    - Step metadata: "step": "sp_9", "step_name": "Marketing Validation (Save the Cat Ch.8)"
+    - Fixed revision prompt doubled-braces bug
+    - fix_suggestions: audience_defined now mentions 4-quadrant analysis
+
+
+================================================================================
+REMAINING WORK — CORRECTED PLAN (follow STC exactly)
+================================================================================
+
+The step-by-step review continues from Step 4. For each step:
+  1. Read the extracted chapter text
+  2. Read current prompt, validator, step implementation
+  3. Line-by-line comparison against book rules
+  4. Fix everything that doesn't match
+  5. Write comprehensive tests
+  6. Verify no regressions
+
+ORDER:
+  DONE:  Step 6 (Screenplay / end of Ch.5) — COMPLETED 2026-02-08
+         - v2.0.0, 89 tests
+         - Prompt rewritten with Snyder "Deep Sea Dive" checklist, mini-movie concept,
+           emotional change (emotional_start/emotional_end), scene density guidance,
+           sustained dialogue rules, beat page targets, Snyder quotes from Ch.5+Ch.7
+         - Validator upgraded: 30+ scenes, 3+ elements/scene, 5+ avg elements,
+           50% dialogue ratio, 2400s min duration, emotional_start/emotional_end
+           with legacy emotional_polarity fallback
+         - Step: fixed hardcoded version bug (was "1.0.0", now self.VERSION)
+
+  DONE:  Step 9 (Marketing / Ch.8)   — COMPLETED 2026-02-08
+         - v2.0.0, 106 tests
+         - Prompt rewritten with Ch.8 "Final Fade In" + Glossary content
+         - Removed villain_adjective/primal_goal, added v2.0.0 Step 1 fields
+         - Validator: MIN_ONE_SHEET_CHARS=30, MIN_ONE_SHEET_WORDS=8
+         - Step metadata fixed (sp_9, proper step_name, self.VERSION)
+
+  DONE:  Step 8 (Diagnostics / Ch.7)    — COMPLETED 2026-02-08
+         - v2.0.0, 83 tests (was 79, +4 screenplay wiring tests)
+         - Prompt enriched with all Snyder quotes, book examples, expanded emotion list
+         - Semantic keyword validation added
+         - total_checks validation added
+         - BUG 2 FIX: Now receives finished screenplay artifact; prompt includes
+           full screenplay JSON as primary evaluation target
+
+  DONE:  Step 7 (Laws / Ch.6)          — COMPLETED 2026-02-08
+         - v2.0.0, 100 tests (was 93, +7 screenplay wiring tests)
+         - Prompt enriched with all Snyder quotes and book examples
+         - Semantic keyword validation added (catches AI misapplications)
+         - 7 laws confirmed, no "Laying Pipe"
+         - BUG 2 FIX: Now receives finished screenplay artifact; prompt uses
+           _summarize_screenplay() with [ACTION]/[DIALOGUE]/[CHARACTER] tags
+
+  DONE:  Remove Step 3b from pipeline  — COMPLETED (prior session)
+         - Removed from orchestrator.py step_sequence
+
+
+================================================================================
+KNOWN CRITICAL BUGS (not yet addressed)
+================================================================================
+
+BUG 1: SCREENPLAY LENGTH
+  Screenplay generates ~40 pages. Should be 90-110 for a feature.
+  The structure should naturally produce correct length — "it should
+  not need to say 'this is a feature film, needs to be 90-110 pages'"
+  (user directive). If the beats and board are right, the screenplay
+  will be the right length.
+
+BUG 2: LAWS/DIAGNOSTICS EVALUATE WRONG INPUT — FIXED
+  Steps 7 (Laws) and 8 (Diagnostics) were evaluating Board cards
+  instead of the finished screenplay. Fixed by threading
+  screenplay_artifact through orchestrator → step executors → prompt
+  generators → prompt templates. Laws prompt now uses
+  _summarize_screenplay() to render scenes with tagged elements.
+  Diagnostics prompt now receives full screenplay JSON. 11 new tests
+  added (7 Laws, 4 Diagnostics). 904 total tests passing.
+
+BUG 3: STEP 9 READS REMOVED FIELDS — FIXED
+  step_9_prompt.py v2.0.0 now reads correct v2.0.0 Step 1 fields
+  (character_type, ironic_element, time_frame, target_audience, etc.)
+  villain_adjective and primal_goal references removed.
+
+
+================================================================================
+FILE INVENTORY — WHAT EXISTS
+================================================================================
+
+Source files (src/screenplay_engine/):
+  models.py                                    — data models
+  pipeline/orchestrator.py                     — pipeline wiring
+  pipeline/prompts/step_1_prompt.py            — v2.0.0 ✅
+  pipeline/prompts/step_2_prompt.py            — v2.0.0 ✅
+  pipeline/prompts/step_3_prompt.py            — v2.0.0 ✅
+  pipeline/prompts/step_3b_prompt.py           — v1.0.0 (TO BE REMOVED)
+  pipeline/prompts/step_4_prompt.py            — v2.0.0 ✅
+  pipeline/prompts/step_5_prompt.py            — v2.0.0 ✅
+  pipeline/prompts/step_6_prompt.py            — v2.0.0 ✅
+  pipeline/prompts/step_7_prompt.py            — v2.0.0 ✅
+  pipeline/prompts/step_8_prompt.py            — v2.0.0 ✅
+  pipeline/prompts/step_9_prompt.py            — v2.0.0 ✅
+  pipeline/validators/step_1_validator.py      — v2.0.0 ✅
+  pipeline/validators/step_2_validator.py      — v2.0.0 ✅
+  pipeline/validators/step_3_validator.py      — v2.0.0 ✅
+  pipeline/validators/step_3b_validator.py     — v1.0.0 (TO BE REMOVED)
+  pipeline/validators/step_4_validator.py      — v1.0.0 (NOT YET REVIEWED)
+  pipeline/validators/step_5_validator.py      — v1.0.0 (NOT YET REVIEWED)
+  pipeline/validators/step_6_validator.py      — v2.0.0 ✅
+  pipeline/validators/step_7_validator.py      — v2.0.0 ✅
+  pipeline/validators/step_8_validator.py      — v2.0.0 ✅
+  pipeline/validators/step_9_validator.py      — v2.0.0 ✅
+  pipeline/steps/step_1_logline.py             — v2.0.0 ✅
+  pipeline/steps/step_2_genre.py               — v2.0.0 ✅
+  pipeline/steps/step_3_hero.py                — v2.0.0 ✅
+  pipeline/steps/step_3b_supporting_cast.py    — v1.0.0 (TO BE REMOVED)
+  pipeline/steps/step_4_beat_sheet.py          — v1.0.0 (NOT YET REVIEWED)
+  pipeline/steps/step_5_board.py               — v1.0.0 (NOT YET REVIEWED)
+  pipeline/steps/step_6_immutable_laws.py      — v2.0.0 ✅
+  pipeline/steps/step_7_diagnostics.py         — v2.0.0 ✅
+  pipeline/steps/step_8_screenplay.py          — v2.0.0 ✅
+  pipeline/steps/step_9_marketing.py           — v2.0.0 ✅
+
+Test files (tests/steps/):
+  test_sp_step_1_logline.py                    — 52 tests ✅
+  test_sp_step_2_genre.py                      — 75 tests ✅
+  test_sp_step_3_hero.py                       — 95 tests ✅
+  test_sp_step_6_immutable_laws.py             — 100 tests ✅
+  test_sp_step_8_diagnostics.py                — 83 tests ✅
+  test_sp_step_9.py                            — 66 tests ✅
+
+Audit reports (docs/stc_audit/):
+  ch1_logline_audit.txt                        — used for Step 1 fix ✅
+  ch2_genre_audit.txt                          — used for Step 2 fix ✅
+  ch3_hero_audit.txt                           — used for Step 3 fix ✅
+  ch4_beat_sheet_audit.txt                     — READY for Step 4 review
+  ch5_board_audit.txt                          — READY for Step 5 review
+  ch6_laws_audit.txt                           — used for Step 7 fix ✅
+  ch7_diagnostics_audit.txt                    — used for Step 8 fix ✅
+  ch8_marketing_audit.txt                      — READY for Step 9 review
+  MASTER_FIX_PLAN.txt                          — original plan (partially
+                                                 superseded by step-by-step
+                                                 review approach)
+
+Extracted book text (temp_pages/stc_chapters/):
+  ch1_logline.txt through ch8_marketing.txt    — source material
+
+
+================================================================================
+END OF REPORT
+================================================================================

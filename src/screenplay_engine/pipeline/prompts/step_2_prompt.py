@@ -147,10 +147,15 @@ Respond with valid JSON only. No markdown, no commentary."""
         Returns:
             Dict with system and user prompts plus metadata.
         """
-        logline = step_1_artifact.get("logline", step_1_artifact.get("content", ""))
-        title = step_1_artifact.get("title", "Untitled")
+        # Validate required inputs — no silent fallbacks
+        logline = step_1_artifact.get("logline")
+        if not logline:
+            raise ValueError("Step 1 artifact is missing required field: 'logline'")
+        title = step_1_artifact.get("title")
+        if not title:
+            raise ValueError("Step 1 artifact is missing required field: 'title'")
 
-        # Extract synopsis from snowflake artifacts
+        # Extract synopsis from snowflake artifacts (try step_4 first, then step_2, then step_1)
         synopsis = ""
         if "step_4" in snowflake_artifacts:
             synopsis = snowflake_artifacts["step_4"].get(
@@ -166,12 +171,15 @@ Respond with valid JSON only. No markdown, no commentary."""
         if not synopsis and "step_1" in snowflake_artifacts:
             synopsis = snowflake_artifacts["step_1"].get("logline", "")
 
+        if not synopsis:
+            raise ValueError("No synopsis found in Snowflake artifacts (checked step_4, step_2, step_1)")
+
         genre_reference = self._build_genre_reference()
 
         user_prompt = self.USER_PROMPT_TEMPLATE.format(
             logline=logline,
             title=title,
-            synopsis=synopsis or "No synopsis available",
+            synopsis=synopsis,
             genre_reference=genre_reference,
         )
 
@@ -209,8 +217,10 @@ Respond with valid JSON only. No markdown, no commentary."""
         """
         import json
 
-        logline = step_1_artifact.get("logline", step_1_artifact.get("content", ""))
-        title = step_1_artifact.get("title", "Untitled")
+        logline = step_1_artifact.get("logline")
+        if not logline:
+            raise ValueError("Step 1 artifact is missing 'logline' for revision")
+        title = step_1_artifact.get("title", "")
 
         synopsis = ""
         if "step_4" in snowflake_artifacts:
@@ -233,7 +243,7 @@ Respond with valid JSON only. No markdown, no commentary."""
             suggestions=suggestion_text,
             logline=logline,
             title=title,
-            synopsis=synopsis or "No synopsis available",
+            synopsis=synopsis or logline,
         )
 
         prompt_content = f"{self.SYSTEM_PROMPT}{user_prompt}{self.VERSION}"

@@ -1,0 +1,1417 @@
+================================================================================
+SAVE THE CAT CHAPTER 2 AUDIT: GENRE CLASSIFICATION
+"Give Me The Same Thing... Only Different!"
+================================================================================
+Audit Date:    2026-02-08
+Auditor:       Claude Opus 4.6
+Book Source:   Save the Cat! by Blake Snyder, Chapter 2
+Engine Source:  Screenplay Engine, Step 2 (Genre Classification)
+
+SOURCE FILES EXAMINED:
+  Book text:
+    C:\Users\asus\Desktop\projects\snowflake\temp_pages\stc_chapters\ch2_genre.txt
+
+  Engine code:
+    C:\Users\asus\Desktop\projects\snowflake\src\screenplay_engine\models.py
+      - SnyderGenre enum:       lines 13-24
+      - GenreDefinition model:  lines 77-86
+      - GENRE_DEFINITIONS dict: lines 292-343
+
+    C:\Users\asus\Desktop\projects\snowflake\src\screenplay_engine\pipeline\prompts\step_2_prompt.py
+      - Step2Prompt class:      lines 12-225
+      - SYSTEM_PROMPT:          lines 17-32
+      - USER_PROMPT_TEMPLATE:   lines 34-76
+      - _build_genre_reference: lines 101-110
+      - generate_prompt:        lines 112-164
+
+    C:\Users\asus\Desktop\projects\snowflake\src\screenplay_engine\pipeline\validators\step_2_validator.py
+      - Step2Validator class:   lines 11-186
+      - validate method:        lines 19-130
+      - fix_suggestions method: lines 132-186
+
+    C:\Users\asus\Desktop\projects\snowflake\src\screenplay_engine\pipeline\steps\step_2_genre.py
+      - Step2Genre class:       lines 18-170
+      - execute method:         lines 41-106
+
+
+================================================================================
+SECTION A: GENRE PRESENCE CHECK (ALL 10 GENRES)
+================================================================================
+
+ #  | Snyder Genre            | Enum Value                | In SnyderGenre? | In GENRE_DEFINITIONS? | Verdict
+----|-------------------------|---------------------------|-----------------|-----------------------|--------
+ 1  | Monster in the House    | monster_in_the_house      | YES (line 15)   | YES (line 293)        | MATCH
+ 2  | Golden Fleece           | golden_fleece             | YES (line 16)   | YES (line 298)        | MATCH
+ 3  | Out of the Bottle       | out_of_the_bottle         | YES (line 17)   | YES (line 303)        | MATCH
+ 4  | Dude with a Problem     | dude_with_a_problem       | YES (line 18)   | YES (line 308)        | MATCH
+ 5  | Rites of Passage        | rites_of_passage          | YES (line 19)   | YES (line 313)        | MATCH
+ 6  | Buddy Love              | buddy_love                | YES (line 20)   | YES (line 318)        | MATCH
+ 7  | Whydunit                | whydunit                  | YES (line 21)   | YES (line 323)        | MATCH
+ 8  | Fool Triumphant         | fool_triumphant           | YES (line 22)   | YES (line 328)        | MATCH
+ 9  | Institutionalized       | institutionalized         | YES (line 23)   | YES (line 333)        | MATCH
+ 10 | Superhero               | superhero                 | YES (line 24)   | YES (line 338)        | MATCH
+
+Result: All 10 genres present. No extras, no omissions.
+
+
+================================================================================
+SECTION B: GENRE-BY-GENRE WORKING PARTS AND RULES AUDIT
+================================================================================
+
+For each genre, we list what the book says, what the engine has, and the verdict
+for every discrete element Snyder describes.
+
+Severity ratings:
+  [CRITICAL] -- Will cause structurally incorrect screenplays
+  [HIGH]     -- Significant gap; downstream steps will lack constraints
+  [MEDIUM]   -- Missing nuance; screenplay will be weaker but not broken
+  [LOW]      -- Nice-to-have refinement
+
+Verdicts:
+  MATCH   -- Engine implements it correctly
+  PARTIAL -- Engine partially implements it
+  MISSING -- Engine does not implement it at all
+  WRONG   -- Engine contradicts the book
+
+
+--------------------------------------------------------------------------------
+GENRE 1: MONSTER IN THE HOUSE
+Engine: models.py lines 293-297
+--------------------------------------------------------------------------------
+
+BOOK REQUIREMENTS:
+  1. Two working parts: "A monster. A house."
+  2. "House" must be a CONFINED SPACE -- beach town, spaceship, futuristic
+     Disneyland, family unit.
+  3. The people in the house are "desperate to kill the monster."
+  4. Sin committed (usually greed, monetary or carnal) PROMPTS the creation
+     of the monster.
+  5. Monster comes "like an avenging angel" to kill those who committed sin.
+  6. Monster SPARES those who realize what the sin is.
+  7. The rest is "run and hide."
+  8. Bad example: Arachnophobia -- weak monster (a spider, not supernatural
+     enough), and NO house (residents can leave at any time).
+  9. Putting a fresh twist on the monster, the monster's powers, and the
+     way we say "Boo!" is the screenwriter's job.
+
+ENGINE HAS:
+  working_parts: ["monster", "confined_space", "sin_transgression"]
+  core_question: "Can they survive the monster they invited in?"
+  core_rule: "Sin invites the monster; structure is run and hide"
+
+ELEMENT-BY-ELEMENT:
+
+  1. Monster as working part
+     Verdict: MATCH
+     Engine has "monster" in working_parts (line 294).
+
+  2. Confined space / house
+     Verdict: MATCH
+     Engine has "confined_space" in working_parts (line 294).
+
+  3. Sin/transgression that creates the monster
+     Verdict: MATCH
+     Engine has "sin_transgression" in working_parts (line 294).
+
+  4. People trapped inside, desperate to kill the monster
+     Verdict: MISSING  [HIGH]
+     Book: "when you add people into that house, desperate to kill the
+     monster, you've got a movie type so primal..." The trapped victims are
+     a distinct structural element. The engine only models "monster" and
+     "confined_space" -- the PEOPLE who are trapped and their desperation
+     are not a working part.
+     File: models.py line 294
+     Fix: Add "trapped_victims" to the working_parts list.
+
+  5. No-escape constraint on the house
+     Verdict: MISSING  [CRITICAL]
+     Book explicitly uses Arachnophobia as counter-example: "At any given
+     moment, the residents can say 'Check please' and be on the next
+     Greyhound out of town. Where is the tension there?" The house MUST
+     be a place characters CANNOT leave. "confined_space" as a name does
+     not enforce this "no exit" quality.
+     File: models.py line 294; step_2_validator.py (no semantic check)
+     Fix: Add rule/constraint: "Characters must be unable to simply leave
+     the confined space." Optionally rename to "inescapable_space."
+
+  6. Monster must be sufficiently powerful/supernatural
+     Verdict: MISSING  [HIGH]
+     Book warns against weak monsters: "Bad monster: a little spider. Not
+     much supernatural there. Not all that scary either -- you step on it
+     and it dies." No engine rule enforces that the monster must be
+     formidable or carry supernatural weight.
+     File: models.py line 296 (core_rule does not mention this)
+     Fix: Add rule: "Monster must be sufficiently powerful/supernatural
+     that it cannot be easily overcome."
+
+  7. Sin causally linked to monster creation
+     Verdict: PARTIAL  [MEDIUM]
+     core_rule says "Sin invites the monster" but this is a freeform
+     string with no validation that the AI output actually establishes a
+     causal link between sin and monster.
+     File: models.py line 296; step_2_validator.py (no semantic check)
+     Fix: Add explicit working part or rule requiring the causal
+     mechanism to be stated.
+
+  8. Monster spares those who recognize the sin
+     Verdict: MISSING  [MEDIUM]
+     Book: the monster "spares those who realize what that sin is."
+     Not captured in any field.
+     File: models.py lines 293-297
+     Fix: Add rule: "The monster spares characters who recognize and
+     atone for the sin."
+
+  9. "Run and hide" structure
+     Verdict: PARTIAL  [MEDIUM]
+     Mentioned in core_rule string but there is no structural enforcement
+     that Act 2/3 follows a run-and-hide pattern.
+     File: models.py line 296
+     Fix: Add as explicit convention/constraint.
+
+
+--------------------------------------------------------------------------------
+GENRE 2: GOLDEN FLEECE
+Engine: models.py lines 298-302
+--------------------------------------------------------------------------------
+
+BOOK REQUIREMENTS:
+  1. Hero goes "on the road" in search of one thing and discovers himself.
+  2. The milestones are "the people and incidents" encountered along the way.
+  3. It is "episodic" but episodes MUST be thematically connected.
+  4. Theme is always INTERNAL GROWTH.
+  5. "It's not the mileage... it's the way the hero changes as he goes."
+  6. Forcing milestones to MEAN something to the hero is the screenwriter's
+     primary job for this genre.
+  7. Heist movies are a sub-type: "Any quest, mission or 'treasure locked
+     in a castle' that is to be approached by an individual or a group."
+  8. In heist movies, the "mission" becomes secondary to personal discoveries.
+
+ENGINE HAS:
+  working_parts: ["road_journey", "milestones_of_growth"]
+  core_question: "Will the journey change the hero internally?"
+  core_rule: "Each incident MUST produce internal growth, not just adventure"
+
+ELEMENT-BY-ELEMENT:
+
+  1. Road/journey
+     Verdict: MATCH
+     "road_journey" present (line 299).
+
+  2. Milestones of internal growth
+     Verdict: MATCH
+     "milestones_of_growth" present (line 299).
+
+  3. Hero searches for one thing, discovers himself
+     Verdict: MISSING  [HIGH]
+     This is the DEFINING FORMULA of the genre. The hero has an external
+     goal (the "fleece") that turns out to be less important than the
+     internal discovery. Not captured anywhere.
+     File: models.py lines 298-302
+     Fix: Add working part "external_goal_vs_self_discovery" or rule
+     stating the hero's stated quest must differ from actual discovery.
+
+  4. Episodic BUT thematically connected
+     Verdict: MISSING  [HIGH]
+     Book: "it seems to not be connected, but it must be." No rule
+     enforces that episodes/incidents share a thematic thread.
+     File: models.py lines 298-302
+     Fix: Add rule: "Episodes must appear episodic but be thematically
+     connected by the hero's internal growth arc."
+
+  5. Each milestone must mean something personal to the hero
+     Verdict: PARTIAL  [MEDIUM]
+     core_rule says "each incident MUST produce internal growth" which
+     captures the spirit, but "milestones_of_growth" as a working part
+     name is abstract. Book says these are specific people and events.
+     File: models.py line 301
+     Fix: Clarify that milestones = encounters with people and events
+     that each produce a specific internal shift.
+
+  6. Heist movies as sub-type
+     Verdict: MISSING  [MEDIUM]
+     Book explicitly includes all heist movies (Ocean's Eleven, Dirty
+     Dozen, Magnificent Seven) as Golden Fleece with specific dynamics:
+     "mission becomes secondary to personal discoveries."
+     File: models.py lines 298-302
+     Fix: Add sub-type recognition or note in the definition.
+
+  7. Internal growth is the PLOT (not a side effect)
+     Verdict: PARTIAL  [MEDIUM]
+     core_rule implies this but doesn't state it as definitively as the
+     book: "how the incidents affect the hero is, in fact, the 'plot.'"
+     File: models.py line 301
+
+
+--------------------------------------------------------------------------------
+GENRE 3: OUT OF THE BOTTLE
+Engine: models.py lines 303-307
+--------------------------------------------------------------------------------
+
+BOOK REQUIREMENTS:
+  1. TWO DISTINCT SUB-TYPES: wish-fulfillment and comeuppance (curse).
+  2. WISH-FULFILLMENT rules:
+     a. Hero must be a "put-upon Cinderella" underdog.
+     b. We root for anyone/anything to give them happiness.
+     c. We don't want to see anyone succeed for too long.
+     d. A LESSON must be in the offing.
+     e. Hero must learn magic isn't everything.
+     f. Good MORAL at the end is required.
+  3. COMEUPPANCE rules:
+     a. Hero is a jerk who needs a "swift kick in the ass."
+     b. Must include a "Save the Cat!" scene at the outset.
+     c. Something REDEEMABLE in the jerk.
+     d. The curse is actually beneficial.
+     e. They triumph in the end.
+  4. Magic source is irrelevant (God, thing, luck, formula, divine
+     intervention).
+
+ENGINE HAS:
+  working_parts: ["wish_or_magic", "cinderella_setup"]
+  core_question: "What is the real cost of getting what you wished for?"
+  core_rule: "Moral lesson REQUIRED at end; magic does not equal happiness"
+
+ELEMENT-BY-ELEMENT:
+
+  1. Wish/magic mechanism
+     Verdict: MATCH
+     "wish_or_magic" present (line 304).
+
+  2. Cinderella/underdog setup (wish-fulfillment path)
+     Verdict: MATCH
+     "cinderella_setup" present (line 304).
+
+  3. Moral lesson at end
+     Verdict: MATCH
+     In core_rule (line 306).
+
+  4. TWO SUB-TYPES (wish vs. comeuppance)
+     Verdict: MISSING  [CRITICAL]
+     The book describes these as FUNDAMENTALLY DIFFERENT story structures
+     with OPPOSITE setups and OPPOSITE rules. The engine only models the
+     wish-fulfillment path via "cinderella_setup." A comeuppance tale
+     (Liar Liar, Groundhog Day, Freaky Friday) has no representation.
+     A Cinderella underdog setup would be WRONG for a comeuppance tale
+     where the hero is a jerk who needs to be taken down.
+     File: models.py lines 303-307
+     Fix: Add sub-type field (wish_fulfillment | comeuppance). Add
+     separate working parts for comeuppance: "jerk_hero",
+     "redeemable_quality", "save_the_cat_scene".
+
+  5. Comeuppance: "Save the Cat!" scene required at outset
+     Verdict: MISSING  [HIGH]
+     Snyder explicitly requires a likability scene showing something
+     redeemable in the jerk hero. Not modeled.
+     File: models.py lines 303-307
+     Fix: Add to comeuppance sub-type rules.
+
+  6. Comeuppance: something redeemable in the jerk
+     Verdict: MISSING  [HIGH]
+     "Must include... something redeemable about them." Not modeled.
+     File: models.py lines 303-307
+
+  7. "We don't want to see anyone succeed for too long"
+     Verdict: MISSING  [MEDIUM]
+     This pacing/structural constraint (the wish must eventually cause
+     problems / the hero must face consequences of success) is not
+     captured.
+     File: models.py lines 303-307
+     Fix: Add rule: "The wish/magic must create escalating problems;
+     prolonged success without consequence violates the genre."
+
+  8. Magic source is irrelevant
+     Verdict: MISSING  [LOW]
+     Book explicitly says it can be God, luck, a thing, a formula.
+     The engine doesn't note this flexibility, which may cause the AI
+     to reject non-magical wish fulfillment scenarios.
+     File: models.py lines 303-307
+
+
+--------------------------------------------------------------------------------
+GENRE 4: DUDE WITH A PROBLEM
+Engine: models.py lines 308-312
+--------------------------------------------------------------------------------
+
+BOOK REQUIREMENTS:
+  1. Definition: "An ordinary guy finds himself in extraordinary
+     circumstances."
+  2. Two working parts: a DUDE (average guy/gal, just like us) and a
+     PROBLEM (something extraordinary).
+  3. The more AVERAGE the guy, the bigger the challenge should be.
+  4. Rule: "The badder the bad guy, the greater the heroics." When in
+     doubt, make the bad guy as bad as possible.
+  5. Dude triumphs through "willingness to use his individuality to
+     outsmart the far more powerful forces aligned against him."
+  6. The extraordinary circumstance arrives into an ORDINARY DAY
+     ("Into this 'just an ordinary day' beginning comes something
+     extraordinary").
+  7. Domestic/personal stakes (save the wife, protect the family).
+
+ENGINE HAS:
+  working_parts: ["ordinary_person", "extraordinary_problem"]
+  core_question: "Can an ordinary person overcome an extraordinary threat?"
+  core_rule: "Badder bad guy equals greater hero; hero is relatable everyman"
+
+ELEMENT-BY-ELEMENT:
+
+  1. Ordinary person
+     Verdict: MATCH
+     "ordinary_person" present (line 309).
+
+  2. Extraordinary problem
+     Verdict: MATCH
+     "extraordinary_problem" present (line 309).
+
+  3. Badder bad guy = greater heroics
+     Verdict: MATCH
+     In core_rule (line 311).
+
+  4. Hero is relatable everyman
+     Verdict: MATCH
+     In core_rule (line 311).
+
+  5. Hero triumphs via individuality/unique qualities
+     Verdict: MISSING  [HIGH]
+     Book: "the dude triumphs from his willingness to use his
+     individuality to outsmart the far more powerful forces aligned
+     against him." This is the hero's victory mechanism, not captured.
+     File: models.py lines 308-312
+     Fix: Add rule: "Hero wins through individuality and
+     resourcefulness, not superior force."
+
+  6. Ordinary day disrupted (inciting incident structure)
+     Verdict: MISSING  [MEDIUM]
+     Book emphasizes the CONTRAST between the ordinary setup and the
+     sudden extraordinary disruption. This structural requirement
+     constrains how the Catalyst beat should work for this genre.
+     File: models.py lines 308-312
+     Fix: Add rule or convention: "Story must begin in mundane normalcy
+     before the extraordinary disruption arrives."
+
+  7. Domestic/personal stakes for the everyman
+     Verdict: MISSING  [MEDIUM]
+     Book repeatedly references personal/domestic motivations (save wife,
+     protect family) as what makes the "dude" relatable.
+     File: models.py lines 308-312
+     Fix: Add convention: "Stakes should be personal/domestic, not
+     abstract."
+
+
+--------------------------------------------------------------------------------
+GENRE 5: RITES OF PASSAGE
+Engine: models.py lines 313-317
+--------------------------------------------------------------------------------
+
+BOOK REQUIREMENTS:
+  1. Stories of "pain and torment" from an outside force -- Life.
+  2. The "monster" is UNSEEN, VAGUE, one which "we can't get a handle on
+     simply because we can't name it."
+  3. Sub-types: puberty, mid-life crisis, old age, grieving, drugs/alcohol.
+  4. "Everybody's in on the joke except the person going through it."
+  5. Follows Elizabeth Kubler-Ross's On Death and Dying -- stages of
+     grudging acceptance.
+  6. Victory is SURRENDER -- acceptance of humanity.
+  7. The end point is "the hero's ability to ultimately smile."
+  8. Moral: "That's Life!"
+  9. In comedic and dramatic forms, "the monster sneaks up on the
+     beleaguered hero."
+
+ENGINE HAS:
+  working_parts: ["life_transition", "life_as_monster"]
+  core_question: "Can the hero accept the change life demands?"
+  core_rule: "Victory equals surrender and acceptance; end point is always acceptance"
+
+ELEMENT-BY-ELEMENT:
+
+  1. Life transition
+     Verdict: MATCH
+     "life_transition" present (line 314).
+
+  2. Life as an unseen monster
+     Verdict: PARTIAL  [MEDIUM]
+     "life_as_monster" captures the metaphor but does not enforce the
+     UNSEEN/UNNAMED quality. Book: "can't get a handle on simply
+     because we can't name it."
+     File: models.py line 314
+
+  3. Victory = surrender and acceptance
+     Verdict: MATCH
+     In core_rule (line 316).
+
+  4. Monster is unseen / vague / cannot be named
+     Verdict: MISSING  [HIGH]
+     The INVISIBLE quality of the antagonist is the genre's defining
+     characteristic that separates it from Monster in the House (visible
+     monster). Without this, the classification engine cannot properly
+     distinguish the two genres.
+     File: models.py lines 313-317
+     Fix: Add rule: "The 'monster' (life force) must be invisible,
+     unnamed, and impossible to directly confront."
+
+  5. "Everyone knows except the hero" (dramatic irony)
+     Verdict: MISSING  [HIGH]
+     Book: "everybody's in on 'the joke' except the person who's going
+     through it." This is a KEY structural requirement -- dramatic irony
+     where everyone around the hero sees the problem except the hero.
+     File: models.py lines 313-317
+     Fix: Add rule: "Everyone around the hero recognizes the problem
+     except the hero themselves."
+
+  6. Kubler-Ross stages of grief as structural template
+     Verdict: MISSING  [HIGH]
+     Book explicitly maps this genre to the five stages of grief (denial,
+     anger, bargaining, depression, acceptance). This provides a concrete
+     structural framework that should constrain beat generation.
+     File: models.py lines 313-317
+     Fix: Add rule: "Structure follows Kubler-Ross stages: denial,
+     anger, bargaining, depression, acceptance."
+
+  7. Sub-types (puberty, mid-life, aging, grief, addiction)
+     Verdict: MISSING  [MEDIUM]
+     Book lists these as distinct categories within the genre, each with
+     recognizable patterns.
+     File: models.py lines 313-317
+     Fix: Add recognized sub-types list.
+
+  8. End point: hero's ability to "smile"
+     Verdict: MISSING  [LOW]
+     The specific emotional endpoint. core_rule says "acceptance" but not
+     the emotional resolution of being able to smile.
+     File: models.py line 316
+
+  9. Pain/torment as central experience
+     Verdict: MISSING  [MEDIUM]
+     Book: "these are tales of pain and torment." Not in working parts.
+     File: models.py lines 313-317
+     Fix: Add working part "pain_of_transition" or similar.
+
+
+--------------------------------------------------------------------------------
+GENRE 6: BUDDY LOVE
+Engine: models.py lines 318-322
+--------------------------------------------------------------------------------
+
+BOOK REQUIREMENTS:
+  1. "They are actually love stories in disguise." All buddy movies ARE
+     love stories; all love stories are buddy movies with sex potential.
+  2. At first, the buddies HATE EACH OTHER.
+  3. The adventure reveals they NEED each other -- "they are, in essence,
+     incomplete halves of a whole."
+  4. "Who can tolerate needing anybody?" -- needing each other leads to
+     MORE conflict.
+  5. The All Is Lost moment is: "separation, a fight, a goodbye-and-good-
+     riddance" that is actually none of these.
+  6. At end: they "surrender their ego to win."
+  7. CATALYST BUDDY sub-type: one buddy is the hero (does most changing),
+     the other is the agent of change (slight or no changing) who may
+     come into hero's life, affect it, and leave.
+     Examples: Rain Man (Cruise changes, Hoffman is catalyst), E.T.,
+     Lethal Weapon (Glover changes, Gibson is catalyst).
+  8. Applies to all romantic comedies, buddy cop films, and any two-
+     character dynamic (two guys, two girls, two fish).
+
+ENGINE HAS:
+  working_parts: ["two_characters", "chemistry", "separation_reunion"]
+  core_question: "Can these two make it work despite their differences?"
+  core_rule: "All Is Lost equals separation; climax MUST bring them back together"
+
+ELEMENT-BY-ELEMENT:
+
+  1. Two characters
+     Verdict: MATCH
+     "two_characters" present (line 319).
+
+  2. Separation/reunion
+     Verdict: MATCH
+     "separation_reunion" present (line 319); core_rule enforces it.
+
+  3. Chemistry
+     Verdict: PARTIAL  [HIGH]
+     Engine says "chemistry" but the book says they start by HATING
+     each other and DISCOVER they need each other. "Chemistry" implies
+     immediate connection, which contradicts the book's trajectory of
+     hate -> need -> conflict -> surrender.
+     File: models.py line 319
+     Fix: Replace "chemistry" with "hate_to_need_arc" or add rule:
+     "Characters must start by hating/resisting each other."
+
+  4. Start by hating each other
+     Verdict: MISSING  [CRITICAL]
+     Book: "At first the 'buddies' hate each other. (Where would they
+     have to go if they didn't?)" This is the genre's starting condition.
+     File: models.py lines 318-322
+     Fix: Add rule: "Characters must begin in opposition/hatred."
+
+  5. Incomplete halves of a whole
+     Verdict: MISSING  [CRITICAL]
+     Book: "they are, in essence, incomplete halves of a whole." This is
+     the genre's CORE DYNAMIC -- why these two characters MUST be
+     together. Without it, the engine cannot enforce that the two
+     characters are complementary.
+     File: models.py lines 318-322
+     Fix: Add working part "incomplete_halves" or rule: "Each character
+     must be an incomplete half of a whole, needing the other."
+
+  6. Surrender ego to win
+     Verdict: MISSING  [HIGH]
+     Book: "when the final curtain comes down, they have... surrendered
+     their ego." This is the resolution mechanism.
+     File: models.py lines 318-322
+     Fix: Add rule: "Resolution requires ego surrender."
+
+  7. Catalyst buddy sub-type
+     Verdict: MISSING  [HIGH]
+     Book devotes significant space to this variant: one character
+     changes, the other is a catalyst who enters, transforms, and may
+     leave. Examples: Rain Man, E.T., Lethal Weapon. This is a common
+     and important structural variant.
+     File: models.py lines 318-322
+     Fix: Add sub-type field or note: "Catalyst variant: one buddy
+     drives change while changing little themselves."
+
+  8. "Love stories in disguise" principle
+     Verdict: MISSING  [MEDIUM]
+     The defining insight that buddy movies ARE love stories. Not
+     captured, which may cause the AI to misclassify romantic stories
+     as a different genre.
+     File: models.py lines 318-322
+
+  9. All Is Lost = fight/goodbye-and-good-riddance (not real)
+     Verdict: PARTIAL  [MEDIUM]
+     core_rule captures separation at All Is Lost but not the specific
+     emotional nature: it's a fight, a "goodbye-and-good-riddance" that
+     is actually none of these -- it's two people who can't stand
+     needing each other.
+     File: models.py line 321
+
+
+--------------------------------------------------------------------------------
+GENRE 7: WHYDUNIT
+Engine: models.py lines 323-327
+--------------------------------------------------------------------------------
+
+BOOK REQUIREMENTS:
+  1. "Who" is never as interesting as "WHY."
+  2. NOT about the hero changing -- about the AUDIENCE discovering
+     something about human nature.
+  3. "We in the audience are the detectives, ultimately." The onscreen
+     character is our SURROGATE.
+  4. Investigation into the "dark side of humanity."
+  5. "Turns the X-ray machine back on ourselves and asks: 'Are we this
+     evil?'"
+  6. Often involves social/institutional corruption (Chinatown, China
+     Syndrome, All The President's Men, JFK, The Insider).
+  7. Citizen Kane is a "classic Whydunit."
+
+ENGINE HAS:
+  working_parts: ["mystery", "investigation", "dark_revelation"]
+  core_question: "What dark truth about human nature will be revealed?"
+  core_rule: "About audience discovering dark human nature, not hero changing"
+
+ELEMENT-BY-ELEMENT:
+
+  1. Mystery
+     Verdict: MATCH
+     "mystery" present (line 324).
+
+  2. Investigation
+     Verdict: MATCH
+     "investigation" present (line 324).
+
+  3. Dark revelation
+     Verdict: MATCH
+     "dark_revelation" present (line 324).
+
+  4. Not about hero changing
+     Verdict: MATCH
+     In core_rule (line 326).
+
+  5. Audience as the real detective
+     Verdict: PARTIAL  [MEDIUM]
+     core_rule says "audience discovering" but working parts say
+     "investigation" implying the character does it. Book specifically
+     says the audience is the ultimate detective, with the character
+     as a surrogate.
+     File: models.py line 326
+
+  6. Onscreen surrogate for the audience
+     Verdict: MISSING  [HIGH]
+     Book explicitly identifies this structural role: "we have a
+     surrogate or surrogates onscreen doing the work for us." This is
+     a required character function.
+     File: models.py lines 323-327
+     Fix: Add working part "audience_surrogate" -- a character who
+     represents the audience in the investigation.
+
+  7. "Are we this evil?" -- self-implication of the audience
+     Verdict: MISSING  [MEDIUM]
+     The M.C. Escher quality where the investigation turns back on the
+     viewer. This is what makes a Whydunit great vs. merely adequate.
+     File: models.py lines 323-327
+     Fix: Add rule: "Investigation must ultimately implicate the
+     audience's own nature."
+
+  8. Social/institutional evil as target
+     Verdict: MISSING  [MEDIUM]
+     Every example Snyder cites involves systemic corruption (government,
+     corporate, political). Not modeled.
+     File: models.py lines 323-327
+
+
+--------------------------------------------------------------------------------
+GENRE 8: FOOL TRIUMPHANT
+Engine: models.py lines 328-332
+--------------------------------------------------------------------------------
+
+BOOK REQUIREMENTS:
+  1. The Fool is the "Village Idiot" who is actually the wisest.
+  2. Working parts:
+     a. An UNDERDOG so inept everyone discounts him (repeatedly, in setup).
+     b. An INSTITUTION for the underdog to attack.
+     c. An INSIDER ACCOMPLICE who is "in on the joke" and can't believe
+        the Fool is getting away with the "ruse."
+  3. The insider/accomplice often gets the BRUNT OF THE SLAPSTICK
+     (Salieri, Lieutenant Dan, Herbert Lom).
+  4. The insider's "crime is being close to the idiot, seeing him for
+     what he really is, and being stupid enough to try to interfere."
+  5. Fool triumphs by "luck and pluck."
+  6. Includes dramatic fools (Charly, Awakenings), not just comedies.
+
+ENGINE HAS:
+  working_parts: ["underdog_fool", "powerful_institution", "insider_accomplice"]
+  core_question: "Can the idiot outsmart the establishment?"
+  core_rule: "The idiot is actually the wisest; establishment is the real fool"
+
+ELEMENT-BY-ELEMENT:
+
+  1. Underdog fool
+     Verdict: MATCH
+     "underdog_fool" present (line 329).
+
+  2. Powerful institution
+     Verdict: MATCH
+     "powerful_institution" present (line 329).
+
+  3. Insider accomplice
+     Verdict: MATCH
+     "insider_accomplice" present (line 329).
+     NOTE: This is the BEST-MODELED genre. All three working parts from
+     the book are present. Use this as the template for improving other
+     genre definitions.
+
+  4. Everyone discounts fool's odds (repeatedly, in setup)
+     Verdict: MISSING  [MEDIUM]
+     Book: "so unequipped for life that everyone around him discounts
+     his odds for success (and does so repeatedly in the set-up)."
+     File: models.py lines 328-332
+     Fix: Add rule: "Setup must repeatedly show others discounting the
+     Fool's chances."
+
+  5. Insider gets brunt of slapstick / consequences
+     Verdict: MISSING  [MEDIUM]
+     Book describes this as a key structural dynamic -- the insider is
+     "the guy at the end of the Rube Goldberg chain of events the Fool
+     sets into motion, who ultimately gets the pie in the face."
+     File: models.py lines 328-332
+     Fix: Add rule or convention about the insider's role as recipient
+     of consequences.
+
+  6. Fool wins through "luck and pluck"
+     Verdict: MISSING  [LOW]
+     Book: "who triumph by luck and pluck and the specialness that comes
+     from not giving up despite the odds."
+     File: models.py lines 328-332
+
+  7. Insider's crime = proximity to the idiot
+     Verdict: MISSING  [LOW]
+     Specific dynamic not captured.
+     File: models.py lines 328-332
+
+  8. Dramatic fools (not just comedic)
+     Verdict: MISSING  [LOW]
+     Book explicitly includes Charly and Awakenings. No note that this
+     genre spans comedy and drama.
+     File: models.py lines 328-332
+
+
+--------------------------------------------------------------------------------
+GENRE 9: INSTITUTIONALIZED
+Engine: models.py lines 333-337
+--------------------------------------------------------------------------------
+
+BOOK REQUIREMENTS:
+  1. Stories about GROUPS, INSTITUTIONS, and "FAMILIES."
+  2. BREAKOUT CHARACTER whose role is to EXPOSE the group goal as a fraud
+     (Jack Nicholson, Kevin Spacey, Donald Sutherland, Al Pacino).
+  3. Often told from POV of a NEWCOMER who is being brought in by someone
+     MORE EXPERIENCED.
+  4. Newcomer = "us" -- a virgin new to the group.
+  5. Newcomer can literally ask "How does that work?" to relay exposition.
+  6. Central question: "Who's crazier, me or them?"
+  7. Theme: sacrificing oneself for the group can be insane.
+  8. These stories both HONOR the institution AND expose the problems of
+     losing identity to it.
+  9. "When we put on a uniform... we give up who we are to a certain
+     extent."
+
+ENGINE HAS:
+  working_parts: ["group", "newcomer", "cost_of_belonging"]
+  core_question: "What is crazier, me or the institution?"
+  core_rule: "Explores identity loss; asks what it costs to belong"
+
+ELEMENT-BY-ELEMENT:
+
+  1. Group
+     Verdict: MATCH
+     "group" present (line 334).
+
+  2. Newcomer
+     Verdict: MATCH
+     "newcomer" present (line 334).
+
+  3. Cost of belonging
+     Verdict: MATCH
+     "cost_of_belonging" present (line 334).
+
+  4. "Who's crazier, me or them?"
+     Verdict: MATCH
+     In core_question (line 335).
+
+  5. Breakout character who exposes the fraud
+     Verdict: MISSING  [CRITICAL]
+     Book: "Each has a breakout character whose role it is to expose the
+     group goal as a fraud." This is a DISTINCT structural role from the
+     newcomer. Nicholson in Cuckoo's Nest, Spacey in American Beauty,
+     Sutherland in MASH, Pacino in Godfather. The breakout character
+     drives the plot's thematic revelation.
+     File: models.py lines 333-337
+     Fix: Add working part "breakout_character" -- the person who
+     exposes the group's fraudulent purpose.
+
+  6. Experienced insider who guides the newcomer
+     Verdict: MISSING  [HIGH]
+     Book: newcomer "is being brought into [the group] by someone who
+     is more experienced." This GUIDE role is distinct from the newcomer
+     and the breakout character.
+     File: models.py lines 333-337
+     Fix: Add working part or convention about the experienced guide.
+
+  7. Newcomer as exposition relay
+     Verdict: MISSING  [MEDIUM]
+     Book: newcomer characters "can literally ask 'How does that work?'
+     and allow you to explain the importance to everybody." This is a
+     specific narrative function.
+     File: models.py lines 333-337
+
+  8. Both honors AND exposes the institution
+     Verdict: MISSING  [HIGH]
+     Book: "These stories are special because they both honor the
+     institution and expose the problems of losing one's identity to
+     it." The engine only models the "cost of belonging" (the exposure
+     side), missing the DUAL nature of these stories.
+     File: models.py lines 333-337
+     Fix: Add rule: "Story must simultaneously honor the institution's
+     value and expose its cost to the individual."
+
+  9. Herd mentality / group madness theme
+     Verdict: MISSING  [MEDIUM]
+     Book: "'Suicide is painless'... isn't so much about the insanity
+     of war as the insanity of the herd mentality."
+     File: models.py lines 333-337
+
+  10. "Suicide for the group" -- Al Pacino's face ending
+      Verdict: MISSING  [MEDIUM]
+      Book describes the recurring ending where the character who
+      sacrificed for the group is left destroyed. Pacino in Godfather 2,
+      Spacey in American Beauty, Nicholson in Cuckoo's Nest.
+      File: models.py lines 333-337
+
+
+--------------------------------------------------------------------------------
+GENRE 10: SUPERHERO
+Engine: models.py lines 338-343
+--------------------------------------------------------------------------------
+
+BOOK REQUIREMENTS:
+  1. EXACT OPPOSITE of "Dude With A Problem": "An extraordinary person
+     finds himself in an ordinary world."
+  2. Goes beyond capes and tights: includes Gladiator, A Beautiful Mind,
+     Frankenstein, Dracula, X-Men.
+  3. All superhero tales are about BEING "DIFFERENT."
+  4. Surrounded by TINY MINDS, JEALOUS of the hero's uniqueness.
+  5. Sympathy problem solved by stressing the PAIN of having advantages.
+  6. CREATION MYTH in first film stresses sympathy. Sequels fail when
+     they forget to recreate this sympathy.
+  7. "We will never truly understand the Superhero. Our identification
+     must come from sympathy for the plight of being misunderstood."
+  8. Gulliver tied to the beach by Lilliputians as archetype.
+  9. Born into a world he did not create, the Superhero must deal with
+     those who are jealous.
+
+ENGINE HAS:
+  working_parts: ["extraordinary_being", "ordinary_world"]
+  core_question: "What is the burden of being different?"
+  core_rule: "Must stress the PAIN and BURDEN of being different"
+
+ELEMENT-BY-ELEMENT:
+
+  1. Extraordinary being
+     Verdict: MATCH
+     "extraordinary_being" present (line 339).
+
+  2. Ordinary world
+     Verdict: MATCH
+     "ordinary_world" present (line 339).
+
+  3. Pain and burden of being different
+     Verdict: MATCH
+     In core_rule (line 341).
+
+  4. Exact opposite of Dude with a Problem
+     Verdict: MISSING  [MEDIUM]
+     Book explicitly defines Superhero as an INVERSION of Dude with a
+     Problem. This structural relationship could help with classification.
+     File: models.py lines 338-343
+     Fix: Add note or cross-reference to the inversion relationship.
+
+  5. Nemesis = tiny/jealous minds
+     Verdict: MISSING  [HIGH]
+     Book: "it is the tiny minds that surround the hero that are the real
+     problem." The antagonistic force in this genre is specifically the
+     JEALOUSY and SMALL-MINDEDNESS of those around the hero, not a
+     traditional villain.
+     File: models.py lines 338-343
+     Fix: Add working part "jealous_mediocrity" or rule: "The antagonist
+     is the mediocrity/jealousy of ordinary people around the hero."
+
+  6. Sympathy via creation myth
+     Verdict: MISSING  [HIGH]
+     Book: "The creation myth that begins each Superhero franchise
+     stresses sympathy for the Superhero's plight. Once established,
+     filmmakers forget to re-create that sympathy."
+     File: models.py lines 338-343
+     Fix: Add rule: "Story must establish sympathy for the hero's
+     extraordinary burden (creation myth)."
+
+  7. "Misunderstood" as the core identification mechanism
+     Verdict: MISSING  [MEDIUM]
+     Book: "Our identification must come from sympathy for the plight of
+     being misunderstood."
+     File: models.py lines 338-343
+     Fix: Add to core_question or rules.
+
+  8. Beyond literal superheroes
+     Verdict: MISSING  [LOW]
+     Book explicitly says this genre includes Gladiator, A Beautiful
+     Mind, Frankenstein, Dracula. No note about the breadth of this
+     genre in the definition.
+     File: models.py lines 338-343
+
+  9. "Born into a world he did not create"
+     Verdict: MISSING  [LOW]
+     Archetypal framing from the book. Not captured.
+     File: models.py lines 338-343
+
+
+================================================================================
+SECTION C: STRUCTURAL / PIPELINE-LEVEL ISSUES
+================================================================================
+
+--------------------------------------------------------------------------------
+C1. EMPTY example_films IN ALL GENRE_DEFINITIONS
+Severity: [HIGH]
+Status: MISSING
+--------------------------------------------------------------------------------
+
+The GenreDefinition Pydantic model (models.py line 83) includes an
+example_films field:
+
+    example_films: List[str] = Field(default_factory=list)
+
+But the GENRE_DEFINITIONS dictionary (models.py lines 292-343) provides
+ZERO example films for any of the 10 genres. Every genre definition dict
+has only three keys: working_parts, core_question, core_rule.
+
+Snyder mentions dozens of canonical films throughout Chapter 2:
+
+  Monster in the House: Jaws, The Exorcist, Alien, Fatal Attraction,
+    Jurassic Park, Tremors, Arachnophobia (bad example)
+  Golden Fleece: Star Wars, Wizard of Oz, Planes Trains and Automobiles,
+    Back to the Future, Ocean's Eleven, The Dirty Dozen
+  Out of the Bottle: Bruce Almighty, The Mask, Liar Liar, Blank Check,
+    The Love Bug, Love Potion #9, Flubber, Freaky Friday, Groundhog Day
+  Dude with a Problem: Die Hard, Schindler's List, The Terminator,
+    Titanic, Breakdown
+  Rites of Passage: 10, Ordinary People, Days of Wine and Roses, 28 Days,
+    Lost Weekend
+  Buddy Love: Butch Cassidy and the Sundance Kid, 48 Hours, Thelma &
+    Louise, Finding Nemo, Rain Man, Lethal Weapon, E.T.
+  Whydunit: Chinatown, Citizen Kane, China Syndrome, All The President's
+    Men, JFK, The Insider
+  Fool Triumphant: Dave, Being There, Amadeus, Forrest Gump, The Jerk,
+    Charly, Awakenings, The Pink Panther
+  Institutionalized: One Flew Over the Cuckoo's Nest, American Beauty,
+    MASH, The Godfather, 9 to 5, Animal House
+  Superhero: Superman, Batman, Gladiator, A Beautiful Mind, Frankenstein,
+    Dracula, X-Men
+
+Fix: Populate example_films for all 10 genres using Snyder's cited films.
+This will help the AI make better genre classifications.
+
+
+--------------------------------------------------------------------------------
+C2. NO SUB-TYPE OR VARIANT MODELING
+Severity: [CRITICAL]
+Status: MISSING
+--------------------------------------------------------------------------------
+
+Several genres have distinct sub-types with DIFFERENT rules:
+
+  Out of the Bottle:
+    - Wish-fulfillment (Cinderella underdog gets wish granted)
+    - Comeuppance (jerk gets cursed, learns from it)
+    THESE HAVE OPPOSITE SETUPS AND OPPOSITE RULES.
+
+  Buddy Love:
+    - Standard buddy (both change)
+    - Catalyst buddy (one changes, one catalyzes and may leave)
+
+  Golden Fleece:
+    - Road movie (hero on a journey)
+    - Heist movie (group on a mission)
+
+  Fool Triumphant:
+    - Comedic fool (Dave, Forrest Gump)
+    - Dramatic fool (Charly, Awakenings)
+
+The engine treats each genre as monolithic with a single set of working
+parts and rules. For Out of the Bottle in particular, this is CRITICAL
+because applying "cinderella_setup" to a comeuppance tale is actively
+wrong.
+
+Fix: Add sub_type field to GenreDefinition. Define separate working parts
+and rules per sub-type for at least Out of the Bottle and Buddy Love.
+File: models.py lines 77-86, 292-343
+
+
+--------------------------------------------------------------------------------
+C3. NO GENRE INTERRELATIONSHIP / "OPPOSITE" MAPPING
+Severity: [MEDIUM]
+Status: MISSING
+--------------------------------------------------------------------------------
+
+Snyder explicitly defines Superhero as "the exact opposite of Dude With
+A Problem":
+  - Dude with a Problem: ordinary person, extraordinary circumstances
+  - Superhero: extraordinary person, ordinary circumstances
+
+This structural symmetry is not captured anywhere. Genre relationships
+could improve classification accuracy (if the AI is torn between the two,
+checking which formulation fits the protagonist would disambiguate).
+
+Fix: Add opposite_genre or related_genres field to GenreDefinition.
+File: models.py lines 77-86
+
+
+--------------------------------------------------------------------------------
+C4. NO "PRIMAL" / "PITCH TO A CAVEMAN" TEST
+Severity: [MEDIUM]
+Status: MISSING
+--------------------------------------------------------------------------------
+
+Snyder repeatedly emphasizes that the best genres are "primal" -- "you can
+pitch to a caveman." He uses this as a quality test for:
+  - Monster in the House ("Don't...Get...Eaten!")
+  - Dude with a Problem ("an ordinary guy" we all identify with)
+  - Buddy Love ("stories of 'me and my best friend'")
+
+The engine has no mechanism to evaluate whether a genre classification
+results in a "primal" (universal, easy to understand) premise.
+
+Fix: Add primality_test field or convention to relevant genres.
+File: models.py lines 292-343
+
+
+--------------------------------------------------------------------------------
+C5. VALIDATOR CHECKS ARE STRUCTURAL, NOT SEMANTIC
+Severity: [HIGH]
+Status: PARTIAL
+--------------------------------------------------------------------------------
+
+The Step2Validator (step_2_validator.py lines 19-130) performs these checks:
+
+  1. Genre is one of 10 valid values (line 41-48)          -- Good
+  2. Working parts list has >= 2 items (line 51-60)         -- Good
+  3. Rules list is non-empty (line 63-69)                   -- Good
+  4. Core question exists and is non-empty (line 72-76)     -- Good
+  5. Cross-references working parts with genre def (79-114) -- Good
+  6. Twist is non-empty (line 117-121)                      -- Good
+  7. Conventions list exists (line 124-128)                  -- Good
+
+ALL string fields pass validation as long as they are NON-EMPTY. The
+validator performs ZERO semantic validation:
+
+  - Does the "twist" actually describe something genuinely different?
+  - Do the "rules" match Snyder's actual rules for this genre?
+  - Are the working parts substantively described (not just named)?
+  - Is the genre justification logically sound?
+  - Is the core_question genre-appropriate?
+
+A response with "twist": "it is different" and "rules": ["a rule"]
+would pass validation.
+
+Fix: Add minimum-length checks for string fields. Add keyword matching
+against the genre's core_rule. Consider adding semantic similarity checks
+or at least pattern matching for genre-specific requirements.
+File: step_2_validator.py lines 19-130
+
+
+--------------------------------------------------------------------------------
+C6. genre_justification FIELD NOT VALIDATED
+Severity: [HIGH]
+Status: MISSING
+--------------------------------------------------------------------------------
+
+The prompt template (step_2_prompt.py line 75) asks for:
+
+    "genre_justification": "<1-2 sentences explaining why this genre fits best>"
+
+But the validator (step_2_validator.py) does NOT check for its presence
+at ALL. This field can be returned empty, null, or missing entirely and
+the artifact will still pass validation.
+
+Furthermore, the GenreDefinition Pydantic model (models.py lines 77-86)
+does not include a genre_justification field.
+
+Fix: Either add genre_justification to the GenreDefinition model and
+validate it, or add a validation check in Step2Validator for this field.
+File: step_2_validator.py (add check); models.py line 77 (add field)
+
+
+--------------------------------------------------------------------------------
+C7. NO ALTERNATIVE-GENRE ELIMINATION / RUNNER-UP GENRES
+Severity: [MEDIUM]
+Status: MISSING
+--------------------------------------------------------------------------------
+
+Snyder's summary section specifically discusses borderline cases:
+  - "What about Breakfast Club? Is that Rites of Passage or
+    Institutionalized?" (Answer: Rites of Passage)
+  - "What about Rain Man? Is that a Golden Fleece or a Buddy Love movie?"
+    (Answer: Buddy Love)
+  - "What about Zoolander?" (Answer: Superhero)
+
+Resolving ambiguity between genres is a core skill the book teaches.
+
+The engine:
+  - Asks the AI to classify into "exactly ONE" genre (prompt line 46)
+  - Does NOT ask for runner-up genres
+  - Does NOT require the AI to explain why it eliminated close alternatives
+  - The validator does not check for this reasoning
+
+This means if the AI picks the wrong genre from a borderline case, there
+is no way to detect or correct the error.
+
+Fix: Add "runner_up_genre" and "elimination_reasoning" fields to the
+prompt output format. Validate that runner_up is provided and that
+elimination reasoning is non-empty.
+File: step_2_prompt.py lines 57-76; step_2_validator.py
+
+
+--------------------------------------------------------------------------------
+C8. NO FILM HERITAGE / LINEAGE REQUIREMENT
+Severity: [MEDIUM]
+Status: MISSING
+--------------------------------------------------------------------------------
+
+Snyder says: "You have to go back, see the lineage of many types of
+movies, know what movie begat what in the line of succession, and how the
+art was advanced by each."
+
+The engine does not require or validate that the AI identifies:
+  - Comparable films in the genre's lineage
+  - How this story relates to prior films in the genre
+  - What "tradition" this story is pushing forward
+
+The prompt asks for "conventions" (audience expectations) which is
+related but not the same as genre lineage.
+
+Fix: Add "comparable_films" or "genre_lineage" field to prompt output.
+File: step_2_prompt.py lines 57-76
+
+
+--------------------------------------------------------------------------------
+C9. "GIVE ME THE SAME THING, ONLY DIFFERENT" NOT ENFORCED
+Severity: [MEDIUM]
+Status: PARTIAL
+--------------------------------------------------------------------------------
+
+The engine asks for a "twist" field (prompt line 70) and the prompt
+instructs the AI to identify what makes the story different (line 50).
+
+However, Snyder's core principle is more nuanced: you must know the ENTIRE
+TRADITION of your genre to break from cliche. The twist must:
+  - Acknowledge what is traditional/expected in the genre
+  - Identify what specific cliche is being avoided
+  - Explain how the story puts a "fresh spin" on the genre
+
+The current "twist" field is free-form with no minimum substance. A
+response like "the setting is unusual" would pass.
+
+Fix: Require the twist to reference at least one genre convention that
+is being subverted. Validate against the conventions list.
+File: step_2_prompt.py line 70; step_2_validator.py
+
+
+--------------------------------------------------------------------------------
+C10. PROMPT GENRE REFERENCE IS MINIMAL
+Severity: [HIGH]
+Status: PARTIAL
+--------------------------------------------------------------------------------
+
+The _build_genre_reference method (step_2_prompt.py lines 101-110) builds
+a reference that includes only:
+  - Genre value name
+  - Working parts (just names)
+  - Core question
+  - Core rule
+
+It does NOT include:
+  - Example films (the key to correct classification)
+  - Sub-type information
+  - Specific constraints per genre
+  - Key structural dynamics
+
+This means the AI making the classification has MINIMAL information about
+what each genre actually requires. It knows "monster_in_the_house" has
+"monster, confined_space, sin_transgression" but not that the confined
+space must be inescapable, the sin must create the monster, the monster
+must spare the redeemed, etc.
+
+Fix: Expand _build_genre_reference to include example films, sub-types,
+and at least the top 3 rules per genre from the book.
+File: step_2_prompt.py lines 101-110
+
+
+--------------------------------------------------------------------------------
+C11. SYSTEM PROMPT GENRE DESCRIPTIONS ARE OVERSIMPLIFIED
+Severity: [MEDIUM]
+Status: PARTIAL
+--------------------------------------------------------------------------------
+
+The SYSTEM_PROMPT (step_2_prompt.py lines 17-32) provides one-line
+descriptions of each genre:
+
+    "1. monster_in_the_house - Sin invites a monster into a confined space"
+    "2. golden_fleece - A road journey that produces internal growth"
+    ...
+
+These are accurate but extremely compressed. Many critical nuances are
+lost. For example:
+  - Out of the Bottle: "A wish/magic scenario with a moral lesson" --
+    does not mention the comeuppance sub-type at all.
+  - Buddy Love: "Two characters with chemistry who separate and reunite"
+    -- does not mention they must start by hating each other or that these
+    are "love stories in disguise."
+
+Fix: Expand system prompt descriptions to include at least the key
+structural requirement for each genre.
+File: step_2_prompt.py lines 17-32
+
+
+--------------------------------------------------------------------------------
+C12. NO CONVENTIONS VALIDATION BEYOND EXISTENCE CHECK
+Severity: [LOW]
+Status: PARTIAL
+--------------------------------------------------------------------------------
+
+The validator checks that "conventions" is a list (step_2_validator.py
+lines 124-128) but does not check:
+  - Minimum number of conventions
+  - Whether conventions are non-empty strings
+  - Whether conventions are relevant to the selected genre
+
+An empty list [] passes validation.
+
+Fix: Require at least 2-3 conventions and validate they are non-empty
+strings.
+File: step_2_validator.py lines 124-128
+
+
+================================================================================
+SECTION D: SUMMARY STATISTICS
+================================================================================
+
+ELEMENT-LEVEL VERDICTS ACROSS ALL 10 GENRES:
+
+  MATCH:    33 elements correctly implemented
+  PARTIAL:   8 elements partially implemented
+  MISSING:  42 elements not implemented at all
+  WRONG:     0 elements contradicting the book
+
+SEVERITY DISTRIBUTION OF GAPS (MISSING + PARTIAL = 50 gaps):
+
+  CRITICAL:  5 gaps
+  HIGH:     18 gaps
+  MEDIUM:   19 gaps
+  LOW:       8 gaps
+
+PIPELINE-LEVEL ISSUES:  12 findings (C1-C12)
+
+
+================================================================================
+SECTION E: CRITICAL GAPS (MUST FIX FIRST)
+================================================================================
+
+These 5 CRITICAL issues will cause structurally incorrect screenplays:
+
+1. OUT OF THE BOTTLE: No sub-type distinction (wish vs. comeuppance)
+   Severity: CRITICAL
+   Impact: Applying "cinderella_setup" to a comeuppance tale is WRONG.
+           Liar Liar, Groundhog Day, and Freaky Friday would get incorrect
+           structural guidance.
+   File: models.py lines 303-307
+   Fix: Add sub_type field. Define separate working parts per sub-type.
+
+2. BUDDY LOVE: Missing "start by hating each other"
+   Severity: CRITICAL
+   Impact: Without this starting condition, the genre's entire arc
+           (hate -> need -> conflict -> surrender) has no foundation.
+           The AI may generate buddy stories that start warm, leaving
+           nowhere to go.
+   File: models.py lines 318-322
+   Fix: Add rule: "Characters must begin in opposition/hatred."
+
+3. BUDDY LOVE: Missing "incomplete halves of a whole"
+   Severity: CRITICAL
+   Impact: This is WHY the two characters must be together. Without it,
+           the AI cannot enforce complementary character design. The
+           relationship has no structural inevitability.
+   File: models.py lines 318-322
+   Fix: Add working part or rule about complementary incompleteness.
+
+4. INSTITUTIONALIZED: Missing breakout character
+   Severity: CRITICAL
+   Impact: The character who exposes the group goal as a fraud drives the
+           thematic revelation. Without this role, Institutionalized
+           stories have no catalyst for their central question.
+   File: models.py lines 333-337
+   Fix: Add "breakout_character" to working_parts.
+
+5. MONSTER IN THE HOUSE: No-escape constraint not enforced
+   Severity: CRITICAL
+   Impact: Snyder's Arachnophobia example proves that without an
+           inescapable space, the genre fails. "confined_space" as a name
+           does not enforce the "no exit" quality.
+   File: models.py line 294
+   Fix: Add rule: "Characters must be unable to simply leave the space."
+
+
+================================================================================
+SECTION F: HIGH-PRIORITY GAPS (FIX IN SECOND PASS)
+================================================================================
+
+These 18 HIGH issues represent significant missing constraints:
+
+ 1. GENRE_DEFINITIONS: No example films populated (C1)
+    File: models.py lines 292-343
+
+ 2. No sub-type/variant modeling across all genres (C2)
+    File: models.py lines 77-86, 292-343
+
+ 3. genre_justification not validated (C6)
+    File: step_2_validator.py
+
+ 4. Prompt genre reference is minimal (C10)
+    File: step_2_prompt.py lines 101-110
+
+ 5. Validator checks are structural only, not semantic (C5)
+    File: step_2_validator.py lines 19-130
+
+ 6. MONSTER IN THE HOUSE: Monster potency not enforced
+    File: models.py line 294
+
+ 7. MONSTER IN THE HOUSE: Trapped victims not modeled
+    File: models.py line 294
+
+ 8. GOLDEN FLEECE: "Searches for one thing, discovers himself" missing
+    File: models.py lines 298-302
+
+ 9. GOLDEN FLEECE: Episodic-but-connected not enforced
+    File: models.py lines 298-302
+
+10. OUT OF THE BOTTLE: Comeuppance "Save the Cat" scene missing
+    File: models.py lines 303-307
+
+11. OUT OF THE BOTTLE: "Something redeemable in the jerk" missing
+    File: models.py lines 303-307
+
+12. DUDE WITH A PROBLEM: Hero wins via individuality missing
+    File: models.py lines 308-312
+
+13. RITES OF PASSAGE: Invisible/unnamed monster quality missing
+    File: models.py lines 313-317
+
+14. RITES OF PASSAGE: "Everyone knows except the hero" missing
+    File: models.py lines 313-317
+
+15. RITES OF PASSAGE: Kubler-Ross structure missing
+    File: models.py lines 313-317
+
+16. BUDDY LOVE: Ego surrender missing
+    File: models.py lines 318-322
+
+17. BUDDY LOVE: Catalyst buddy sub-type missing
+    File: models.py lines 318-322
+
+18. WHYDUNIT: Audience surrogate role missing
+    File: models.py lines 323-327
+
+19. SUPERHERO: Jealous mediocrity as nemesis missing
+    File: models.py lines 338-343
+
+20. SUPERHERO: Creation myth / sympathy mechanism missing
+    File: models.py lines 338-343
+
+21. INSTITUTIONALIZED: Experienced guide role missing
+    File: models.py lines 333-337
+
+22. INSTITUTIONALIZED: Dual honor-and-expose dynamic missing
+    File: models.py lines 333-337
+
+
+================================================================================
+SECTION G: RECOMMENDED FIX ORDER
+================================================================================
+
+Phase 1 -- CRITICAL (5 items, models.py only):
+  Fix all 5 CRITICAL items listed in Section E.
+  Estimated scope: Edit GENRE_DEFINITIONS dict, add sub_type support to
+  GenreDefinition model.
+
+Phase 2 -- HIGH DATA (populate definitions):
+  Populate example_films for all 10 genres.
+  Add missing working parts, rules, and sub-types to GENRE_DEFINITIONS.
+  Expand GenreDefinition model as needed.
+  Estimated scope: Heavy edits to models.py lines 292-343.
+
+Phase 3 -- HIGH VALIDATION:
+  Add genre_justification validation.
+  Add minimum-length and keyword checks to validator.
+  Add runner-up genre / elimination reasoning to prompt.
+  Estimated scope: Edits to step_2_validator.py and step_2_prompt.py.
+
+Phase 4 -- HIGH PROMPT:
+  Expand _build_genre_reference to include all new fields.
+  Expand SYSTEM_PROMPT genre descriptions.
+  Estimated scope: Edits to step_2_prompt.py.
+
+Phase 5 -- MEDIUM + LOW (19 + 8 items):
+  Address remaining nuance gaps per genre.
+  Add cross-genre relationships.
+  Add primality test.
+  Estimated scope: Incremental edits across all four files.
+
+
+================================================================================
+END OF AUDIT
+================================================================================
