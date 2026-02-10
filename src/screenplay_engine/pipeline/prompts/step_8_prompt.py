@@ -15,7 +15,7 @@ from typing import Dict, Any, List
 class Step8Prompt:
     """Prompt generator for Screenplay Engine Step 8: Screenplay Writing"""
 
-    VERSION = "3.0.0"
+    VERSION = "4.0.0"
 
     # ── Genre-specific scene writing guidance for all 10 Snyder genres ────
     GENRE_SCENE_TEMPLATES = {
@@ -415,6 +415,34 @@ from - to +."
     2-3 pages (120-180 seconds). Some scenes are shorter (Opening Image might be 30-60 seconds),
     some are longer (Finale sequences can be 5-10 pages).
 
+13. KEEP THE PRESS OUT (Snyder Ch.6 — Immutable Law #7):
+    Do NOT write any scene element that includes:
+    - TV news broadcasts playing in the background
+    - Radio news reports the characters overhear
+    - Journalists or reporters appearing as characters
+    - Press conferences or media scrums
+    - Social media posts, trending topics, or viral content about the story's events
+    - Any character watching/reading/hearing news coverage of what's happening
+    Snyder: "By keeping it contained among the family and on the block, the magic stayed
+    real." E.T. has a real alien and ZERO news crews. That's why it works.
+    BAD (press breaks containment):
+      [ACTION] A TV in the corner shows a news anchor reporting on the citywide blackout.
+      RAE glances at the screen, jaw tightening.
+    GOOD (information stays personal and contained):
+      [ACTION] A drunk at the end of the bar slams his glass down. "Third night in a row
+      the power's been cutting out. My wife thinks it's terrorists." Rae says nothing.
+      She knows the truth is worse.
+    EXCEPTION: Only if the story's premise is ABOUT media/journalism.
+
+14. POPE IN THE POOL (Snyder Ch.6 — Immutable Law #2):
+    Every scene that conveys backstory or plot information MUST have something visually
+    entertaining happening simultaneously. NEVER write a scene where a character stands at
+    a screen or sits at a desk and EXPLAINS things. Bury exposition in action, danger, or
+    visual spectacle.
+    BAD: A team leader briefs the squad on the situation while everyone listens.
+    GOOD: A team leader shouts situation details while the squad sprints through a collapsing
+    building — the audience absorbs the info because they're watching people dodge debris.
+
 PER-SCENE REQUIRED FIELDS:
 1. scene_number (int): Sequential starting from 1
 2. slugline (str): "INT./EXT. LOCATION - TIME" (e.g., "INT. COFFEE SHOP - NIGHT")
@@ -730,6 +758,15 @@ SCENE WRITING RULES (STRICT — violating any is a failure):
    dialogue exchanges, reactive action, visual exit.
 
 10. TIMING: 1 page = 60 seconds. Average scene is 2-3 pages (120-180 seconds).
+
+11. KEEP THE PRESS OUT: No TV news, radio reports, journalists, press conferences, social
+    media coverage, or characters watching/hearing news about the story's events. Keep the
+    story contained. Snyder: "the magic stayed real" by keeping it between the characters
+    and the audience. EXCEPTION: Only if the premise is ABOUT media/journalism.
+
+12. POPE IN THE POOL: If this scene must convey backstory or plot info, bury it in action.
+    Never have a character stand and explain things. Deliver exposition during danger,
+    physical activity, or visual spectacle so the audience absorbs info without noticing.
 
 OUTPUT FORMAT (single scene, valid JSON):
 {{
@@ -1209,6 +1246,15 @@ scene as a mini-movie."
 9. SCENE DENSITY: 5-15 elements per scene.
 
 10. TIMING: 1 page = 60 seconds. Average scene is 2-3 pages (120-180 seconds).
+
+11. KEEP THE PRESS OUT: No TV news, radio reports, journalists, press conferences, social
+    media coverage, or characters watching/hearing news about the story's events. Keep the
+    story contained between the characters and the audience. EXCEPTION: Only if the premise
+    is ABOUT media/journalism.
+
+12. POPE IN THE POOL: If a scene must convey backstory or plot info, bury it in physical
+    action. Never have a character stand and explain things. Deliver exposition during danger,
+    physical activity, or visual spectacle.
 
 PER-SCENE REQUIRED FIELDS:
 scene_number (int), slugline (str), int_ext (str), location (str), time_of_day (str),

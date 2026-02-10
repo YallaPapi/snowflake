@@ -15,7 +15,7 @@ from typing import Dict, Any
 class Step3Prompt:
     """Prompt generator for Screenplay Engine Step 3: Hero Construction"""
 
-    VERSION = "2.0.0"
+    VERSION = "3.0.0"
 
     SYSTEM_PROMPT = (
         "You are a Save the Cat! character architect. Build protagonists with "
@@ -179,13 +179,50 @@ PRIMAL RELATIONSHIPS: Snyder says audiences respond to these relationship types 
 
 22. MIRROR_PRINCIPLE: How the antagonist and hero are "two halves of the same person." They should want the same thing or face the same flaw expressed in opposite ways. Ideally they are COMPETING for the same prize.
 
+IMPORTANT — THE ANTAGONIST DOES NOT ARC:
+Snyder Ch.6: "Good guys accept change as a positive force. Bad guys refuse to change — that's
+why they lose." The antagonist is the SAME person at the end as at the beginning. They do not
+learn, they do not grow, they do not have an epiphany. Their refusal to change is what makes
+them the villain and what ultimately causes their defeat.
+
+Do NOT give the antagonist an opening_state/final_state — they have NONE. They are static.
+Jason Alexander in Pretty Woman "learns exactly zero" — that IS the point.
+
 === B-STORY CHARACTER ===
+
+Snyder Ch.6: "Every single character in your movie must change in the course of your story.
+The only characters who don't change are the Bad Guys." His Post-it note: "EVERYBODY arcs."
+
+Pretty Woman example: Richard Gere arcs (cold businessman → opens his heart), Julia Roberts
+arcs (lost woman → self-respecting person), Laura San Giacomo arcs (cynical friend → supportive
+ally), Hector Elizondo arcs (rule-following hotel manager → someone who bends rules for love).
+ONLY Jason Alexander (the villain) "learns exactly zero."
+
+The B-story character MUST have an arc. They change through their relationship with the hero.
+The B-story character starts the movie one way, and by the Final Image they are different.
 
 23. NAME: The B-story character's name
 
-24. RELATIONSHIP_TO_HERO: Must be a PRIMAL relationship. Snyder: "husbands and wives, fathers and daughters, mothers and sons, ex-boyfriends and girlfriends, brothers and sisters." NOT a colleague, mentor, or stranger. We respond to these because "you say 'father' and I see MY father."
+24. RELATIONSHIP_TO_HERO: Must be a PRIMAL relationship. Snyder: "husbands and wives, fathers
+    and daughters, mothers and sons, ex-boyfriends and girlfriends, brothers and sisters."
+    NOT a colleague, mentor, or stranger. We respond to these because "you say 'father' and
+    I see MY father."
 
-25. THEME_WISDOM: The specific lesson this character teaches that solves the A-story. The B-story carries the theme — the wisdom learned here is what the hero needs to win the A-story climax.
+25. THEME_WISDOM: The specific lesson this character teaches that solves the A-story. The
+    B-story carries the theme — the wisdom learned here is what the hero needs to win the
+    A-story climax.
+
+26. OPENING_STATE: Who the B-story character is when we first meet them. Be specific.
+    BAD: "She's distant." (Too vague — distant how? Why? What does it look like?)
+    GOOD: "Juno avoids eye contact with Rae, communicates only through one-word texts,
+    and has physically moved 3,000 miles away to avoid dealing with their father's death."
+
+27. FINAL_STATE: Who the B-story character becomes by the Final Image. MUST show clear
+    change from opening_state — they are NOT the same person.
+    BAD: "She's closer to Rae." (Vague, tells us nothing about HOW she changed.)
+    GOOD: "Juno initiates a hug with Rae for the first time in years, has moved back to
+    the same city, and openly talks about their father — the grief she was running from is
+    now something she faces with her sister."
 
 OUTPUT FORMAT (JSON):
 {{
@@ -225,7 +262,9 @@ OUTPUT FORMAT (JSON):
   "b_story_character": {{
     "name": "<B-story character name>",
     "relationship_to_hero": "<relationship>",
-    "theme_wisdom": "<the lesson that solves the A-story>"
+    "theme_wisdom": "<the lesson that solves the A-story>",
+    "opening_state": "<who they are when we first meet them — specific behaviors>",
+    "final_state": "<who they become by Final Image — MUST differ from opening_state>"
   }}
 }}"""
 
@@ -395,6 +434,8 @@ Mirror Principle: {antagonist.get('mirror_principle', 'MISSING')}
 CURRENT B-STORY CHARACTER:
 Name: {b_story.get('name', 'MISSING')}
 Theme Wisdom: {b_story.get('theme_wisdom', 'MISSING')}
+Opening State: {b_story.get('opening_state', 'MISSING')}
+Final State: {b_story.get('final_state', 'MISSING')}
 
 CONTEXT (Logline):
 Title: {step_1_artifact.get('title', 'MISSING')}
@@ -421,6 +462,8 @@ Remember:
 - demographic_appeal_justification must explain why this hero is demographically pleasing (10+ words)
 - antagonist power_level must say "equal" or "superior"
 - antagonist must have mirror_principle
+- b_story_character must have opening_state and final_state (they MUST differ — the character arcs)
+- antagonist does NOT have opening_state/final_state (villains don't change)
 
 OUTPUT FORMAT (JSON):
 {{{{
@@ -453,7 +496,9 @@ OUTPUT FORMAT (JSON):
   "b_story_character": {{{{
     "name": "<name>",
     "relationship_to_hero": "<relationship>",
-    "theme_wisdom": "<lesson that solves A-story>"
+    "theme_wisdom": "<lesson that solves A-story>",
+    "opening_state": "<who they are when we first meet them>",
+    "final_state": "<who they become by Final Image>"
   }}}}
 }}}}"""
 

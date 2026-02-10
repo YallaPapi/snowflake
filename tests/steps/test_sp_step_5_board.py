@@ -221,7 +221,7 @@ class TestVersionsAndConstants:
         assert Step5Validator.VERSION == "2.0.0"
 
     def test_prompt_version(self):
-        assert Step5Prompt.VERSION == "3.0.0"
+        assert Step5Prompt.VERSION == "4.0.0"
 
     def test_step_version(self):
         assert Step5Board.VERSION == "3.0.0"

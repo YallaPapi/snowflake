@@ -29,7 +29,7 @@ VALID_POWER_KEYWORDS = {
 class Step3Validator:
     """Validator for Screenplay Engine Step 3: Hero Construction (Save the Cat)"""
 
-    VERSION = "2.0.0"
+    VERSION = "3.0.0"
 
     def validate(self, artifact: Dict[str, Any]) -> Tuple[bool, List[str]]:
         """
@@ -225,6 +225,43 @@ class Step3Validator:
                     "relationship_to_hero defined"
                 )
 
+            # B-story opening_state (Covenant of the Arc — everybody arcs)
+            bs_opening = (b_story.get("opening_state") or "").strip()
+            if not bs_opening:
+                errors.append(
+                    "MISSING_B_STORY_OPENING_STATE: B-story character must have "
+                    "opening_state — who they are when we first meet them. "
+                    "Snyder Ch.6: 'Every single character must change.'"
+                )
+            elif len(bs_opening) < 20:
+                errors.append(
+                    f"VAGUE_B_STORY_OPENING_STATE: B-story opening_state is too "
+                    f"short ({len(bs_opening)} chars). Be specific: what do they "
+                    f"DO, avoid, believe?"
+                )
+
+            # B-story final_state
+            bs_final = (b_story.get("final_state") or "").strip()
+            if not bs_final:
+                errors.append(
+                    "MISSING_B_STORY_FINAL_STATE: B-story character must have "
+                    "final_state — who they become by the Final Image. "
+                    "Snyder Ch.6: 'Everybody arcs.'"
+                )
+            elif len(bs_final) < 20:
+                errors.append(
+                    f"VAGUE_B_STORY_FINAL_STATE: B-story final_state is too "
+                    f"short ({len(bs_final)} chars). Be specific: what changed?"
+                )
+
+            # B-story opening and final must differ
+            if bs_opening and bs_final and len(bs_opening) >= 20 and len(bs_final) >= 20:
+                if bs_opening.lower() == bs_final.lower():
+                    errors.append(
+                        "IDENTICAL_B_STORY_ARC: B-story opening_state and "
+                        "final_state are identical — the character MUST change."
+                    )
+
         # ── 10. Theme carrier is defined ────────────────────────────────
         theme_carrier = (hero.get("theme_carrier") or "").strip()
         if not theme_carrier:
@@ -385,6 +422,33 @@ class Step3Validator:
                 suggestions.append(
                     "Define relationship_to_hero for the B-story character "
                     "(e.g. 'love interest', 'mentor', 'estranged sibling')."
+                )
+            elif "MISSING_B_STORY_OPENING_STATE" in error:
+                suggestions.append(
+                    "Define opening_state for the B-story character: who they "
+                    "are when we first meet them. Snyder Ch.6: 'Every single "
+                    "character must change.' Be specific about behaviors."
+                )
+            elif "VAGUE_B_STORY_OPENING_STATE" in error:
+                suggestions.append(
+                    "Expand B-story opening_state to at least 20 characters. "
+                    "Describe specific behaviors, not vague adjectives."
+                )
+            elif "MISSING_B_STORY_FINAL_STATE" in error:
+                suggestions.append(
+                    "Define final_state for the B-story character: who they "
+                    "become by the Final Image. Must show clear change. "
+                    "Snyder Ch.6: 'Everybody arcs.'"
+                )
+            elif "VAGUE_B_STORY_FINAL_STATE" in error:
+                suggestions.append(
+                    "Expand B-story final_state to at least 20 characters. "
+                    "Describe specific changes in behavior."
+                )
+            elif "IDENTICAL_B_STORY_ARC" in error:
+                suggestions.append(
+                    "B-story opening_state and final_state must be different. "
+                    "The character must change through the story."
                 )
             elif "WEAK_DEMOGRAPHIC_APPEAL" in error:
                 suggestions.append(

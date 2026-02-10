@@ -15,7 +15,7 @@ from typing import Dict, Any, List
 class Step5Prompt:
     """Prompt generator for Screenplay Engine Step 5: The Board (40 Scene Cards)"""
 
-    VERSION = "3.0.0"
+    VERSION = "4.0.0"
 
     SYSTEM_PROMPT = (
         "You are a Save the Cat! Board architect. "
@@ -82,6 +82,79 @@ CARD CONTENT RULES:
   Snyder: "an emotional change like this must occur in every scene. And if you don't have it,
   you don't know what the scene is about." emotional_start and emotional_end MUST differ.
 - Characters present: at least one character on screen per scene
+
+POPE IN THE POOL RULE (Snyder Ch.6 — Immutable Law #2):
+Every scene that conveys backstory, exposition, or plot information MUST simultaneously
+have something visually entertaining, surprising, or distracting happening. The audience
+should be so distracted by what they SEE that they absorb the information without noticing
+they're being told things.
+
+The name comes from "The Plot to Kill the Pope" — vital backstory about the assassination
+plot is delivered while the Pope swims laps in a bathing suit at the Vatican pool. We aren't
+even listening to the exposition because we're watching the Pope in a Speedo.
+
+BAD CARD (pure exposition — this is what you must NEVER write):
+  Card 12: INT. SITUATION ROOM - DAY
+  "Rae's team leader briefs the squad on the blackout's origin, timeline, and infrastructure."
+  This is a character standing at a screen talking AT the audience. There is nothing visual
+  or entertaining happening. The audience will tune out.
+
+GOOD CARD (exposition buried in visual entertainment):
+  Card 12: EXT. ROOFTOP WATER TOWER - DAY
+  "Rae climbs a swaying water tower to manually reset a relay while her partner shouts
+  infrastructure details from below — the grid is failing in sectors, hospitals are next."
+  The exposition (grid sectors, hospital timeline) is delivered while we watch Rae dangling
+  from a water tower. The audience absorbs the info because they're worried she'll fall.
+
+GOOD CARD (exposition buried in conflict):
+  Card 12: INT. SERVER FARM - DAY
+  "Rae interrogates a captured technician about the blackout while the building's backup
+  generator sputters and dies around them, plunging sections into darkness one by one."
+  The exposition (blackout origin, timeline) is delivered while physical danger escalates.
+
+RULE: If a card's description contains ANY of these words — "briefs," "explains," "debriefs,"
+"informs," "reveals to the team," "goes over the plan," "lays out the situation" — the card
+is PROBABLY a Pope in the Pool violation. Rewrite it so the information is delivered during
+action, danger, comedy, or visual spectacle.
+
+ZERO TOLERANCE: Do NOT create any card where characters sit/stand and talk about the plot.
+Every card must have PHYSICAL ACTION happening alongside any information delivery.
+
+KEEP THE PRESS OUT (Snyder Ch.6 — Immutable Law #7):
+Do NOT design any card that includes news reporters, TV crews, press conferences, media
+coverage, social media going viral, or journalists covering the story's events. Snyder
+learned this from Steven Spielberg: "By keeping it contained among the family and on the
+block, by essentially keeping this secret between them and us, the audience, the magic
+stayed real." When you bring the press in, you "blow the reality of the premise."
+
+E.T. example: Spielberg catches a REAL ALIEN — no news crews show up. The story stays
+between Elliott, his family, and the alien. This containment is what makes it magical.
+
+Signs VIOLATES this: CNN coverage of worldwide alien landings makes the Hess family's
+private crisis feel less desperate. The global scope dilutes the personal stakes.
+
+BAD CARD:
+  Card 35: INT. NEWS STUDIO - NIGHT
+  "A CNN anchor reports on the citywide blackout as Rae watches from a bar TV."
+  This breaks containment. The audience now thinks "why doesn't the government/military
+  handle this?" The hero's personal stakes are diluted by institutional awareness.
+
+GOOD CARD:
+  Card 35: INT. DIVE BAR - NIGHT
+  "Rae overhears two strangers arguing about whether the blackout is a cyberattack or
+  a transformer failure. Nobody knows the truth except Rae — and she can't tell anyone."
+  The information about public perception is conveyed through CHARACTERS, not media.
+  The containment stays intact — the audience knows what Rae knows, and the secret stays
+  between Rae and us.
+
+EXCEPTION: If the logline's premise IS about media/journalism (e.g., the hero is a
+reporter, the story is about a media scandal), then press scenes are part of the premise
+and this rule does not apply. For ALL other stories: zero news/media/press cards.
+
+BANNED WORDS in card descriptions: "news," "reporter," "broadcast," "coverage," "press
+conference," "media," "journalist," "anchor," "breaking news," "goes viral," "trending."
+If your card contains any of these words, DELETE the card and replace it with a scene
+that conveys the same information through personal, contained interactions.
 
 STRUCTURAL RULES:
 - EXACTLY 40 cards total. Snyder: "Forty cards. That's all I'm going to give you for your
@@ -661,6 +734,12 @@ ROW 4 (Act Three) -- THE CURSE BECOMES THE GIFT:
                 f"  B-STORY: {b_char.get('name')} -- {b_char.get('relationship_to_hero', '')}"
             )
             lines.append(f"    Theme wisdom: {b_char.get('theme_wisdom', '')}")
+            b_opening = b_char.get("opening_state", "")
+            b_final = b_char.get("final_state", "")
+            if b_opening:
+                lines.append(f"    Opening State: {b_opening}")
+            if b_final:
+                lines.append(f"    Final State: {b_final}")
 
         return "\n".join(lines)
 

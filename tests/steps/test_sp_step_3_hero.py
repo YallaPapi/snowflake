@@ -2,8 +2,8 @@
 Test Suite for Screenplay Engine Step 3: Hero Construction (Save the Cat Ch.3)
 Tests validator, prompt generation, and step execution.
 
-VERSION 2.0.0 — Adds demographic criterion (R9c/R10), surface-to-primal
-connection (R12), fixes Step 1 field references, corrects buggy 5/7-item tests.
+VERSION 3.0.0 — Adds B-story arc fields (opening_state/final_state) for
+Covenant of the Arc, updates version checks to 3.0.0 for validator and prompt.
 """
 
 import unittest
@@ -20,7 +20,7 @@ from src.screenplay_engine.pipeline.prompts.step_3_prompt import Step3Prompt
 # ── Shared Fixtures ───────────────────────────────────────────────────
 
 def _valid_artifact():
-    """Return a fully valid Save the Cat hero construction artifact (v2.0.0)."""
+    """Return a fully valid Save the Cat hero construction artifact (v3.0.0)."""
     return {
         "hero": {
             "name": "Kai Nakamura",
@@ -91,6 +91,14 @@ def _valid_artifact():
                 "Trust is not about guarantees — it is about choosing to be vulnerable "
                 "even when you know you might get hurt. That is what makes us human, not "
                 "the machinery we hide behind."
+            ),
+            "opening_state": (
+                "A by-the-book medic who keeps everyone at arm's length, hiding behind "
+                "clinical detachment to avoid forming attachments on a mission she expects to fail"
+            ),
+            "final_state": (
+                "A fierce advocate who risks her career to testify against the corporation, "
+                "choosing loyalty to the crew over self-preservation"
             ),
         },
     }
@@ -164,7 +172,7 @@ def _snowflake_artifacts():
 # ── Validator Tests ───────────────────────────────────────────────────
 
 class TestStep3Validator(unittest.TestCase):
-    """Test Save the Cat hero construction validation rules (v2.0.0)."""
+    """Test Save the Cat hero construction validation rules (v3.0.0)."""
 
     def setUp(self):
         self.validator = Step3Validator()
@@ -507,6 +515,71 @@ class TestStep3Validator(unittest.TestCase):
         self.assertFalse(is_valid)
         self.assertTrue(any("MISSING_B_STORY_RELATIONSHIP" in e for e in errors))
 
+    # -- 9b. B-story arc fields (Covenant of the Arc — everybody arcs) --
+
+    def test_b_story_with_arc_fields_passes(self):
+        artifact = _valid_artifact()
+        is_valid, errors = self.validator.validate(artifact)
+        self.assertFalse(any("B_STORY_OPENING_STATE" in e for e in errors))
+        self.assertFalse(any("B_STORY_FINAL_STATE" in e for e in errors))
+        self.assertFalse(any("IDENTICAL_B_STORY_ARC" in e for e in errors))
+
+    def test_missing_b_story_opening_state_fails(self):
+        artifact = _valid_artifact()
+        artifact["b_story_character"]["opening_state"] = ""
+        is_valid, errors = self.validator.validate(artifact)
+        self.assertFalse(is_valid)
+        self.assertTrue(any("MISSING_B_STORY_OPENING_STATE" in e for e in errors))
+
+    def test_missing_b_story_opening_state_key_fails(self):
+        artifact = _valid_artifact()
+        del artifact["b_story_character"]["opening_state"]
+        is_valid, errors = self.validator.validate(artifact)
+        self.assertFalse(is_valid)
+        self.assertTrue(any("MISSING_B_STORY_OPENING_STATE" in e for e in errors))
+
+    def test_vague_b_story_opening_state_fails(self):
+        artifact = _valid_artifact()
+        artifact["b_story_character"]["opening_state"] = "She is shy"
+        is_valid, errors = self.validator.validate(artifact)
+        self.assertTrue(any("VAGUE_B_STORY_OPENING_STATE" in e for e in errors))
+
+    def test_missing_b_story_final_state_fails(self):
+        artifact = _valid_artifact()
+        artifact["b_story_character"]["final_state"] = ""
+        is_valid, errors = self.validator.validate(artifact)
+        self.assertFalse(is_valid)
+        self.assertTrue(any("MISSING_B_STORY_FINAL_STATE" in e for e in errors))
+
+    def test_missing_b_story_final_state_key_fails(self):
+        artifact = _valid_artifact()
+        del artifact["b_story_character"]["final_state"]
+        is_valid, errors = self.validator.validate(artifact)
+        self.assertFalse(is_valid)
+        self.assertTrue(any("MISSING_B_STORY_FINAL_STATE" in e for e in errors))
+
+    def test_vague_b_story_final_state_fails(self):
+        artifact = _valid_artifact()
+        artifact["b_story_character"]["final_state"] = "She is brave"
+        is_valid, errors = self.validator.validate(artifact)
+        self.assertTrue(any("VAGUE_B_STORY_FINAL_STATE" in e for e in errors))
+
+    def test_identical_b_story_arc_fails(self):
+        artifact = _valid_artifact()
+        artifact["b_story_character"]["opening_state"] = "A cautious medic who avoids personal connections"
+        artifact["b_story_character"]["final_state"] = "A cautious medic who avoids personal connections"
+        is_valid, errors = self.validator.validate(artifact)
+        self.assertFalse(is_valid)
+        self.assertTrue(any("IDENTICAL_B_STORY_ARC" in e for e in errors))
+
+    def test_identical_b_story_arc_case_insensitive_fails(self):
+        artifact = _valid_artifact()
+        artifact["b_story_character"]["opening_state"] = "A Cautious Medic Who Avoids Connections"
+        artifact["b_story_character"]["final_state"] = "a cautious medic who avoids connections"
+        is_valid, errors = self.validator.validate(artifact)
+        self.assertFalse(is_valid)
+        self.assertTrue(any("IDENTICAL_B_STORY_ARC" in e for e in errors))
+
     # -- 10. Theme carrier --
 
     def test_valid_theme_carrier_passes(self):
@@ -604,6 +677,11 @@ class TestStep3Validator(unittest.TestCase):
             "MISSING_B_STORY_RELATIONSHIP: x",
             "WEAK_DEMOGRAPHIC_APPEAL: x",
             "WEAK_SURFACE_TO_PRIMAL: x",
+            "MISSING_B_STORY_OPENING_STATE: x",
+            "VAGUE_B_STORY_OPENING_STATE: x",
+            "MISSING_B_STORY_FINAL_STATE: x",
+            "VAGUE_B_STORY_FINAL_STATE: x",
+            "IDENTICAL_B_STORY_ARC: x",
         ]
         suggestions = self.validator.fix_suggestions(error_types)
         self.assertEqual(len(suggestions), len(error_types))
@@ -642,7 +720,7 @@ class TestStep3Validator(unittest.TestCase):
 # ── Prompt Tests ──────────────────────────────────────────────────────
 
 class TestStep3Prompt(unittest.TestCase):
-    """Test Save the Cat hero construction prompt generation (v2.0.0)."""
+    """Test Save the Cat hero construction prompt generation (v3.0.0)."""
 
     def setUp(self):
         self.prompt_gen = Step3Prompt()
@@ -841,6 +919,27 @@ class TestStep3Prompt(unittest.TestCase):
         self.assertIn("Kai Nakamura", prompt_data["user"])
         self.assertIn("wounded_soldier", prompt_data["user"])
 
+    def test_revision_prompt_includes_b_story_arc_fields(self):
+        current = _valid_artifact()
+        prompt_data = self.prompt_gen.generate_revision_prompt(
+            current,
+            ["test error"],
+            _step_1_artifact(),
+            _step_2_artifact(),
+            _snowflake_artifacts(),
+        )
+        user = prompt_data["user"]
+        self.assertIn("Opening State:", user)
+        self.assertIn("Final State:", user)
+
+    def test_output_format_has_b_story_arc_fields(self):
+        prompt_data = self.prompt_gen.generate_prompt(
+            _step_1_artifact(), _step_2_artifact(), _snowflake_artifacts()
+        )
+        user = prompt_data["user"]
+        self.assertIn('"opening_state"', user)
+        self.assertIn('"final_state"', user)
+
     def test_revision_prompt_includes_logline_context(self):
         current = _valid_artifact()
         prompt_data = self.prompt_gen.generate_revision_prompt(
@@ -1008,10 +1107,10 @@ class TestStep3Execution(unittest.TestCase):
         self.assertEqual(Step3Hero.VERSION, "2.0.0")
 
     def test_validator_version_is_set(self):
-        self.assertEqual(Step3Validator.VERSION, "2.0.0")
+        self.assertEqual(Step3Validator.VERSION, "3.0.0")
 
     def test_prompt_version_is_set(self):
-        self.assertEqual(Step3Prompt.VERSION, "2.0.0")
+        self.assertEqual(Step3Prompt.VERSION, "3.0.0")
 
 
 if __name__ == "__main__":
