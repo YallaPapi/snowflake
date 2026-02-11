@@ -234,7 +234,7 @@ def step_5_artifact():
 
 class TestStep8Versions:
     def test_prompt_version(self, prompt_gen):
-        assert prompt_gen.VERSION == "7.0.0"
+        assert prompt_gen.VERSION == "8.0.0"
 
     def test_validator_version(self, validator):
         assert validator.VERSION == "2.0.0"
@@ -699,7 +699,7 @@ class TestStep8PromptGeneration:
         assert "user" in result
         assert "prompt_hash" in result
         assert "version" in result
-        assert result["version"] == "7.0.0"
+        assert result["version"] == "8.0.0"
 
     def test_prompt_hash_is_deterministic(self, prompt_gen, step_5_artifact,
                                            step_3_artifact, step_2_artifact,
@@ -1203,7 +1203,7 @@ class TestStep8SingleScenePrompt:
         assert "system" in result
         assert "user" in result
         assert "prompt_hash" in result
-        assert result["version"] == "7.0.0"
+        assert result["version"] == "8.0.0"
 
     def test_includes_board_card_details(self, prompt_gen):
         result = prompt_gen.generate_single_scene_prompt(
@@ -1603,3 +1603,313 @@ class TestStep8MilestoneChecks:
     def test_act_2b_checks_step_back(self):
         from src.screenplay_engine.pipeline.steps.step_8_screenplay import MILESTONE_CHECKS
         assert "TAKE A STEP BACK" in MILESTONE_CHECKS["Act 2B"]
+
+
+# ===========================================================================
+# v8.0.0 TESTS — CHARACTER ARC FIXES
+# ===========================================================================
+
+class TestCovenantOfArcFailureWhy:
+    """Tests for _get_failure_why entry for Covenant of the Arc."""
+
+    def test_covenant_of_arc_has_entry(self, prompt_gen):
+        result = prompt_gen._get_failure_why("Covenant of the Arc")
+        # Should NOT be the generic fallback
+        assert "structural writing problem" not in result
+        # Should contain specific arc guidance
+        assert "behavioral change" in result.lower() or "behavior" in result.lower()
+
+    def test_covenant_entry_mentions_almost_arc(self, prompt_gen):
+        result = prompt_gen._get_failure_why("Covenant of the Arc")
+        assert "almost-arc" in result.lower() or "ALMOST-ARC" in result
+
+    def test_covenant_entry_has_examples(self, prompt_gen):
+        result = prompt_gen._get_failure_why("Covenant of the Arc")
+        assert "BEFORE" in result
+        assert "AFTER" in result
+
+    def test_covenant_entry_mentions_board_card(self, prompt_gen):
+        result = prompt_gen._get_failure_why("Covenant of the Arc")
+        assert "board card" in result.lower() or "character_arcs" in result
+
+    def test_other_checks_still_work(self, prompt_gen):
+        """Existing entries should not be broken."""
+        assert "passive" in prompt_gen._get_failure_why("The Hero Leads").lower()
+        assert "exposition" in prompt_gen._get_failure_why("Talking The Plot").lower()
+        assert "primitive" in prompt_gen._get_failure_why("Is It Primal").lower()
+
+
+class TestFullPreviousActsText:
+    """Tests for _build_full_previous_acts_text helper."""
+
+    def test_empty_scenes_returns_first_act_message(self, prompt_gen):
+        result = prompt_gen._build_full_previous_acts_text([])
+        assert "first act" in result.lower()
+
+    def test_includes_scene_elements(self, prompt_gen):
+        scenes = [_make_scene(
+            scene_number=1,
+            slugline="INT. OFFICE - DAY",
+            beat="Set-Up",
+            elements=[
+                {"element_type": "slugline", "content": "INT. OFFICE - DAY"},
+                {"element_type": "action", "content": "Hero enters the room."},
+                {"element_type": "character", "content": "HERO"},
+                {"element_type": "dialogue", "content": "I need answers."},
+            ],
+        )]
+        result = prompt_gen._build_full_previous_acts_text(scenes)
+        assert "SCENE 1" in result
+        assert "Set-Up" in result
+        assert "Hero enters the room." in result
+        assert "HERO" in result
+        assert "I need answers." in result
+
+    def test_includes_emotional_arc(self, prompt_gen):
+        scenes = [_make_scene(scene_number=1, emotional_start="+", emotional_end="-")]
+        result = prompt_gen._build_full_previous_acts_text(scenes)
+        assert "+" in result
+        assert "-" in result
+
+    def test_includes_characters_list(self, prompt_gen):
+        scenes = [_make_scene(scene_number=1, characters_present=["Hero", "Villain"])]
+        result = prompt_gen._build_full_previous_acts_text(scenes)
+        assert "Hero" in result
+        assert "Villain" in result
+
+    def test_multiple_scenes(self, prompt_gen):
+        scenes = [
+            _make_scene(scene_number=1, slugline="INT. OFFICE - DAY"),
+            _make_scene(scene_number=2, slugline="EXT. STREET - NIGHT"),
+        ]
+        result = prompt_gen._build_full_previous_acts_text(scenes)
+        assert "SCENE 1" in result
+        assert "SCENE 2" in result
+
+
+class TestActPromptFullContext:
+    """Tests that generate_act_prompt uses full screenplay text."""
+
+    def test_act_prompt_includes_full_text_of_previous(self, prompt_gen):
+        prev_scenes = [_make_scene(
+            scene_number=1,
+            elements=[
+                {"element_type": "slugline", "content": "INT. OFFICE - DAY"},
+                {"element_type": "action", "content": "Hero kicks down the door."},
+                {"element_type": "character", "content": "HERO"},
+                {"element_type": "dialogue", "content": "Nobody move."},
+            ],
+        )]
+        act_cards = [{"card_number": 11, "row": 2, "scene_heading": "INT. LAB - DAY",
+                       "description": "Test", "beat": "Fun and Games",
+                       "emotional_start": "+", "emotional_end": "-",
+                       "conflict": "A vs B", "storyline_color": "A",
+                       "characters_present": ["Hero"]}]
+        result = prompt_gen.generate_act_prompt(
+            act_cards=act_cards,
+            hero_summary="Name: Hero",
+            characters_summary="Hero: Hero",
+            genre="dude_with_a_problem",
+            logline="A test.",
+            title="Test",
+            previous_scenes=prev_scenes,
+            character_identifiers="- Hero: scar",
+            act_label="Act 2A",
+            start_scene_number=11,
+        )
+        user = result["user"]
+        # Should contain full dialogue and action, not just a 1-line summary
+        assert "Hero kicks down the door." in user
+        assert "Nobody move." in user
+
+    def test_act_prompt_first_act_no_previous(self, prompt_gen):
+        act_cards = [{"card_number": 1, "row": 1, "scene_heading": "INT. OFFICE - DAY",
+                       "description": "Test", "beat": "Opening Image",
+                       "emotional_start": "+", "emotional_end": "-",
+                       "conflict": "A vs B", "storyline_color": "A",
+                       "characters_present": ["Hero"]}]
+        result = prompt_gen.generate_act_prompt(
+            act_cards=act_cards,
+            hero_summary="Name: Hero",
+            characters_summary="Hero: Hero",
+            genre="dude_with_a_problem",
+            logline="A test.",
+            title="Test",
+            previous_scenes=[],
+            character_identifiers="- Hero: scar",
+            act_label="Act 1",
+            start_scene_number=1,
+        )
+        assert "first act" in result["user"].lower()
+
+    def test_character_casting_rule_in_prompt(self, prompt_gen):
+        """The board card characters only instruction should be in the template."""
+        act_cards = [{"card_number": 1, "row": 1, "scene_heading": "INT. OFFICE - DAY",
+                       "description": "Test", "beat": "Opening Image",
+                       "emotional_start": "+", "emotional_end": "-",
+                       "conflict": "A vs B", "storyline_color": "A",
+                       "characters_present": ["Hero"]}]
+        result = prompt_gen.generate_act_prompt(
+            act_cards=act_cards,
+            hero_summary="Name: Hero",
+            characters_summary="Hero: Hero",
+            genre="dude_with_a_problem",
+            logline="A test.",
+            title="Test",
+            previous_scenes=[],
+            character_identifiers="- Hero: scar",
+            act_label="Act 1",
+            start_scene_number=1,
+        )
+        user = result["user"]
+        assert "CHARACTER CASTING RULE" in user
+        assert "do not invent new named characters" in user.lower().replace("\n", " ")
+
+
+class TestActDiagnosticFullContext:
+    """Tests that generate_act_diagnostic_prompt uses full screenplay text."""
+
+    def test_diagnostic_includes_full_previous_text(self, prompt_gen):
+        prev_scenes = [_make_scene(
+            scene_number=1,
+            elements=[
+                {"element_type": "slugline", "content": "INT. OFFICE - DAY"},
+                {"element_type": "action", "content": "Unique action line for testing."},
+                {"element_type": "character", "content": "DETECTIVE"},
+                {"element_type": "dialogue", "content": "Unique dialogue for testing."},
+            ],
+        )]
+        act_scenes = [_make_scene(scene_number=11)]
+        result = prompt_gen.generate_act_diagnostic_prompt(
+            act_scenes=act_scenes,
+            hero_name="Hero",
+            antagonist_name="Villain",
+            characters_summary="Hero: Hero",
+            character_identifiers="- Hero: scar",
+            act_label="Act 2A",
+            previous_scenes=prev_scenes,
+        )
+        user = result["user"]
+        assert "Unique action line for testing." in user
+        assert "Unique dialogue for testing." in user
+
+
+class TestActRevisionArcGuidance:
+    """Tests that revision prompt includes arc guidance for Covenant failures."""
+
+    def _make_failures(self, include_covenant=True):
+        failures = [
+            {"check_name": "The Hero Leads", "passed": False,
+             "failing_scene_numbers": [1], "fix_per_scene": {"1": "Make hero active"},
+             "problem_details": "Hero is passive"},
+        ]
+        if include_covenant:
+            failures.append({
+                "check_name": "Covenant of the Arc", "passed": False,
+                "failing_scene_numbers": [2], "fix_per_scene": {"2": "Guard needs arc"},
+                "problem_details": "Guard is static"
+            })
+        return failures
+
+    def test_revision_includes_arc_guidance_when_covenant_fails(self, prompt_gen):
+        act_scenes = [_make_scene(scene_number=1), _make_scene(scene_number=2)]
+        act_cards = [
+            {"card_number": 1, "characters_present": ["Hero"], "beat": "Set-Up"},
+            {"card_number": 2, "characters_present": ["Hero", "Guard"], "beat": "Set-Up"},
+        ]
+        result = prompt_gen.generate_act_revision_prompt(
+            act_scenes=act_scenes,
+            failures=self._make_failures(include_covenant=True),
+            act_cards=act_cards,
+            hero_summary="Name: Hero",
+            characters_summary="Hero: Hero",
+            character_identifiers="- Hero: scar",
+            previous_scenes=[],
+            act_label="Act 1",
+            title="Test", logline="A test.", genre="dude_with_a_problem",
+            revision_round=1,
+        )
+        user = result["user"]
+        assert "ARC REVISION GUIDANCE" in user
+        assert "almost-arc" in user.lower() or "ALMOST-ARC" in user
+
+    def test_revision_no_arc_guidance_without_covenant(self, prompt_gen):
+        act_scenes = [_make_scene(scene_number=1)]
+        act_cards = [{"card_number": 1, "characters_present": ["Hero"], "beat": "Set-Up"}]
+        result = prompt_gen.generate_act_revision_prompt(
+            act_scenes=act_scenes,
+            failures=self._make_failures(include_covenant=False),
+            act_cards=act_cards,
+            hero_summary="Name: Hero",
+            characters_summary="Hero: Hero",
+            character_identifiers="- Hero: scar",
+            previous_scenes=[],
+            act_label="Act 1",
+            title="Test", logline="A test.", genre="dude_with_a_problem",
+            revision_round=1,
+        )
+        user = result["user"]
+        assert "ARC REVISION GUIDANCE" not in user
+
+    def test_revision_full_previous_acts_text(self, prompt_gen):
+        prev_scenes = [_make_scene(
+            scene_number=1,
+            elements=[
+                {"element_type": "slugline", "content": "INT. DINER - NIGHT"},
+                {"element_type": "action", "content": "Unique revision context marker."},
+            ],
+        )]
+        act_scenes = [_make_scene(scene_number=11)]
+        act_cards = [{"card_number": 11, "characters_present": ["Hero"], "beat": "B Story"}]
+        result = prompt_gen.generate_act_revision_prompt(
+            act_scenes=act_scenes,
+            failures=[{"check_name": "The Hero Leads", "passed": False,
+                       "failing_scene_numbers": [11],
+                       "fix_per_scene": {"11": "Fix hero"},
+                       "problem_details": "Hero passive"}],
+            act_cards=act_cards,
+            hero_summary="Name: Hero",
+            characters_summary="Hero: Hero",
+            character_identifiers="- Hero: scar",
+            previous_scenes=prev_scenes,
+            act_label="Act 2A",
+            title="Test", logline="A test.", genre="dude_with_a_problem",
+            revision_round=1,
+        )
+        user = result["user"]
+        assert "Unique revision context marker." in user
+
+
+class TestRule15Expansion:
+    """Tests that Rule 15 in ACT_GENERATION_TEMPLATE is expanded."""
+
+    def test_rule_15_has_positive_examples(self, prompt_gen):
+        """Rule 15 should have at least 3 positive examples."""
+        template = prompt_gen.ACT_GENERATION_TEMPLATE
+        assert "POSITIVE EXAMPLE 1" in template
+        assert "POSITIVE EXAMPLE 2" in template
+        assert "POSITIVE EXAMPLE 3" in template
+
+    def test_rule_15_mentions_everybody_arcs(self, prompt_gen):
+        template = prompt_gen.ACT_GENERATION_TEMPLATE
+        assert "EVERYBODY ARCS" in template
+
+    def test_rule_15_explains_almost_arc(self, prompt_gen):
+        template = prompt_gen.ACT_GENERATION_TEMPLATE
+        assert "ALMOST-ARC" in template or "almost-arc" in template
+
+    def test_rule_15_references_board_card_arcs(self, prompt_gen):
+        template = prompt_gen.ACT_GENERATION_TEMPLATE
+        assert "character_arcs" in template
+
+    def test_rule_15_substantial_length(self, prompt_gen):
+        """Rule 15 section should be at least 100 lines (was ~26, target ~150)."""
+        template = prompt_gen.ACT_GENERATION_TEMPLATE
+        # Find the Rule 15 section
+        start = template.find("15. COVENANT OF THE ARC")
+        end = template.find("PER-SCENE REQUIRED FIELDS:")
+        assert start > 0, "Rule 15 section not found"
+        assert end > start, "PER-SCENE section not found after Rule 15"
+        rule_15_text = template[start:end]
+        line_count = rule_15_text.count("\n")
+        assert line_count >= 80, f"Rule 15 only has {line_count} lines, expected 80+"

@@ -221,7 +221,7 @@ class TestVersionsAndConstants:
         assert Step5Validator.VERSION == "2.0.0"
 
     def test_prompt_version(self):
-        assert Step5Prompt.VERSION == "4.0.0"
+        assert Step5Prompt.VERSION == "5.0.0"
 
     def test_step_version(self):
         assert Step5Board.VERSION == "3.0.0"
@@ -588,6 +588,90 @@ class TestCharactersPresent:
         board["row_1_act_one"][0]["characters_present"] = "Hero"
         _, errors = v.validate(board)
         assert any("NO_CHARACTERS" in e for e in errors)
+
+
+# ══════════════════════════════════════════════════════════════════════════
+# SECTION 8b: CHARACTER ARCS VALIDATION (Covenant of the Arc planning)
+# ══════════════════════════════════════════════════════════════════════════
+
+class TestCharacterArcsValidation:
+    """Test character_arcs field validation on board cards."""
+
+    def test_valid_character_arcs_passes(self):
+        v = Step5Validator()
+        board = _make_valid_board()
+        board["row_1_act_one"][0]["character_arcs"] = {
+            "Hero": "Enters confident → humbled by failure → asks for help"
+        }
+        is_valid, errors = v.validate(board)
+        assert not any("CHARACTER_ARCS" in e or "ARC_CHARACTER" in e or "EMPTY_ARC" in e for e in errors)
+
+    def test_character_arcs_not_dict_fails(self):
+        v = Step5Validator()
+        board = _make_valid_board()
+        board["row_1_act_one"][0]["character_arcs"] = "not a dict"
+        _, errors = v.validate(board)
+        assert any("INVALID_CHARACTER_ARCS" in e for e in errors)
+
+    def test_arc_character_not_in_characters_present(self):
+        v = Step5Validator()
+        board = _make_valid_board()
+        board["row_1_act_one"][0]["characters_present"] = ["Hero"]
+        board["row_1_act_one"][0]["character_arcs"] = {
+            "Ghost": "Enters invisible → becomes visible"
+        }
+        _, errors = v.validate(board)
+        assert any("ARC_CHARACTER_MISMATCH" in e and "Ghost" in e for e in errors)
+
+    def test_empty_arc_description_fails(self):
+        v = Step5Validator()
+        board = _make_valid_board()
+        board["row_1_act_one"][0]["character_arcs"] = {"Hero": ""}
+        _, errors = v.validate(board)
+        assert any("EMPTY_ARC_DESCRIPTION" in e for e in errors)
+
+    def test_arc_description_whitespace_only_fails(self):
+        v = Step5Validator()
+        board = _make_valid_board()
+        board["row_1_act_one"][0]["character_arcs"] = {"Hero": "   "}
+        _, errors = v.validate(board)
+        assert any("EMPTY_ARC_DESCRIPTION" in e for e in errors)
+
+    def test_missing_character_arcs_no_error(self):
+        """Cards without character_arcs should not fail (backwards compatible)."""
+        v = Step5Validator()
+        board = _make_valid_board()
+        # Default _make_card doesn't have character_arcs
+        is_valid, errors = v.validate(board)
+        assert not any("CHARACTER_ARCS" in e or "ARC_CHARACTER" in e or "EMPTY_ARC" in e for e in errors)
+
+    def test_multiple_characters_all_valid(self):
+        v = Step5Validator()
+        board = _make_valid_board()
+        board["row_1_act_one"][0]["characters_present"] = ["Hero", "Villain"]
+        board["row_1_act_one"][0]["character_arcs"] = {
+            "Hero": "Confident → humbled",
+            "Villain": "Calm → aggressive"
+        }
+        is_valid, errors = v.validate(board)
+        assert not any("ARC_CHARACTER" in e or "EMPTY_ARC" in e for e in errors)
+
+    def test_fix_suggestion_for_invalid_arcs(self):
+        v = Step5Validator()
+        board = _make_valid_board()
+        board["row_1_act_one"][0]["character_arcs"] = "not a dict"
+        _, errors = v.validate(board)
+        suggestions = v.fix_suggestions(errors)
+        assert any("character_arcs must be a dict" in s for s in suggestions)
+
+    def test_fix_suggestion_for_arc_mismatch(self):
+        v = Step5Validator()
+        board = _make_valid_board()
+        board["row_1_act_one"][0]["characters_present"] = ["Hero"]
+        board["row_1_act_one"][0]["character_arcs"] = {"Ghost": "Appears → vanishes"}
+        _, errors = v.validate(board)
+        suggestions = v.fix_suggestions(errors)
+        assert any("characters_present" in s for s in suggestions)
 
 
 # ══════════════════════════════════════════════════════════════════════════

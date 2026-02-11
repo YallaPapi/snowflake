@@ -231,6 +231,28 @@ class Step5Validator:
                     f"in 'characters_present'"
                 )
 
+            # 12b. Character arcs (Covenant of the Arc planning)
+            char_arcs = card.get("character_arcs")
+            if char_arcs is not None:
+                if not isinstance(char_arcs, dict):
+                    errors.append(
+                        f"INVALID_CHARACTER_ARCS: {prefix} 'character_arcs' must be "
+                        f"a dict mapping character names to arc descriptions"
+                    )
+                else:
+                    chars_set = set(chars) if isinstance(chars, list) else set()
+                    for arc_char, arc_desc in char_arcs.items():
+                        if arc_char not in chars_set:
+                            errors.append(
+                                f"ARC_CHARACTER_MISMATCH: {prefix} character_arcs "
+                                f"contains '{arc_char}' who is not in characters_present"
+                            )
+                        if not isinstance(arc_desc, str) or not arc_desc.strip():
+                            errors.append(
+                                f"EMPTY_ARC_DESCRIPTION: {prefix} character_arcs "
+                                f"for '{arc_char}' must be a non-empty string"
+                            )
+
             # 13. Beat name matches canonical BEAT_NAMES (fuzzy: beat value
             #     may start with the canonical name, e.g. "Midpoint (False Victory)")
             beat_name = (card.get("beat") or "").strip()
@@ -495,6 +517,22 @@ class Step5Validator:
                 suggestions.append(
                     "Add at least one character name to 'characters_present'. "
                     "Every scene must have someone on screen."
+                )
+            elif "INVALID_CHARACTER_ARCS" in error:
+                suggestions.append(
+                    "character_arcs must be a dict mapping each character name "
+                    "to an arc description string, e.g. "
+                    "{'Rae': 'Enters suspicious → leaves trusting'}."
+                )
+            elif "ARC_CHARACTER_MISMATCH" in error:
+                suggestions.append(
+                    "Every key in character_arcs must also appear in "
+                    "characters_present for that card."
+                )
+            elif "EMPTY_ARC_DESCRIPTION" in error:
+                suggestions.append(
+                    "Each character arc description must be a non-empty string "
+                    "describing the behavioral shift for that character in the scene."
                 )
             elif "INVALID_BEAT" in error:
                 suggestions.append(

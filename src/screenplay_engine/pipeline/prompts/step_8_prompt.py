@@ -1,6 +1,16 @@
 """
 Step 8 Prompt Template: Screenplay Writing (Save the Cat end of Ch.5)
 
+v8.0.0 -- Major character arc overhaul:
+  - Rule 15 (Covenant of the Arc) expanded from ~30 to ~150 lines with 3 positive examples
+  - Full screenplay text of previous acts fed to GPT (generation, revision) and Grok (diagnostic)
+    instead of 1-line summaries — enables cross-act character arc continuity
+  - Added _get_failure_why entry for "Covenant of the Arc" with almost-arc anti-pattern guidance
+  - Arc revision guidance appended to revision prompt when Covenant of Arc fails
+  - Board card character_arcs field referenced in generation and revision prompts
+  - "Only board card characters" instruction added to generation template
+  - Cross-act coherence check added to Grok diagnostic for Acts 3+
+
 v7.0.0 -- Grok max_tokens bumped from 8000 to 25000 to prevent JSON truncation
 when evaluating 10 checks with detailed fix instructions. No prompt content changes
 from v6.0.0 — this is a configuration fix only.
@@ -16,7 +26,7 @@ from typing import Dict, Any, List
 class Step8Prompt:
     """Prompt generator for Screenplay Engine Step 8: Screenplay Writing"""
 
-    VERSION = "7.0.0"
+    VERSION = "8.0.0"
 
     # ── Genre-specific scene writing guidance for all 10 Snyder genres ────
     GENRE_SCENE_TEMPLATES = {
@@ -1437,6 +1447,13 @@ GENRE-SPECIFIC SCENE WRITING GUIDANCE ({genre}):
 BOARD CARDS TO EXPAND (this act only):
 {act_cards_json}
 
+CHARACTER CASTING RULE: Use ONLY the characters listed in the board cards above. Do NOT
+invent new named characters. Unnamed background extras ("a passerby," "the bartender") are
+fine for atmosphere, but any character who speaks dialogue or takes a significant action MUST
+come from the board cards. If a scene needs an interaction not covered by the cards, use an
+existing board card character in that role. The board cards also include `character_arcs`
+for each character — follow these planned arcs when writing the scene.
+
 {previous_acts_context}
 
 BEAT PAGE TARGETS (for pacing — 1 page = 60 seconds):
@@ -1589,31 +1606,147 @@ from - to +."
       the plan by watching it unfold, not by hearing it explained.
 
 15. COVENANT OF THE ARC (Snyder Ch.6 — Immutable Law #6):
-    Snyder: "Every single character in your movie must change in the course of your story.
-    EVERYONE. Good guys accept change as a positive force. Bad guys refuse to change — that's
-    why they lose."
-    This means EVERY character who appears on screen — including minor, one-scene walk-on
-    characters — must show some observable behavioral shift between their first moment and
-    their last moment in the scene. The shift can be tiny but it MUST be visible:
-    - A hostile stranger who softens (hostility → reluctant help)
-    - A fearful bystander who finds courage (fear → small brave act)
-    - A suspicious guard who looks the other way (duty → mercy)
-    - A selfish clerk who gives something away (selfishness → generosity)
-    - An obedient worker who hesitates or questions (obedience → doubt)
-    NO CHARACTER should enter and exit a scene in the same emotional/behavioral state.
-    The ONLY exception is the antagonist, who refuses to change — that's why they lose.
-    BAD (static minor character):
-      GAS CLERK rings up the purchase. Doesn't look up.
-      GAS CLERK: Pump three. (hands receipt)
-      Rae leaves. Gas Clerk goes back to the register.
-    GOOD (minor character arcs):
-      GAS CLERK rings up the purchase. Eyes the WANTED notification on the register screen.
-      GAS CLERK: Pump three. (slides receipt across) You should know — two guys in a black
-      truck have been parked across the street for an hour. (beat) I didn't see you.
-      Gas Clerk deliberately turns away and wipes the counter.
-    The minor character went from obedient/passive → making a choice to help. That's an arc.
-    Even a single beat of change counts: a flinch, a handed-over key, a lie told to protect
-    the hero, a refusal to comply. The world around the hero must REACT AND CHANGE.
+    Blake Snyder: "Every single character in your movie must change in the course of your
+    story. EVERYONE. And I mean everyone." He kept a Post-it note above his desk that said
+    "EVERYBODY ARCS!" Good guys accept change as a positive force. Bad guys refuse to change
+    — and that's why they lose. The antagonist is the ONLY character exempt from this rule.
+
+    Snyder: "Before I sit down to write, I make notes on how all my characters are going to
+    arc by charting their stories as they are laid out on The Board, with the milestones of
+    change noted as each character progresses through the story."
+
+    THE BOARD CARDS FOR THIS ACT include a `character_arcs` field for each character. This
+    tells you the PLANNED behavioral shift for every character in every scene. Follow these
+    arc plans when writing. Each character must enter the scene in one behavioral state and
+    exit in a visibly different one, as described in the board card's character_arcs field.
+
+    === WHAT A COMPLETE MINI-ARC LOOKS LIKE ===
+
+    A mini-arc has three parts:
+    (a) ENTRY BEHAVIOR: How the character acts when we first see them in the scene.
+    (b) CATALYST: Something happens IN the scene that causes the character to reconsider.
+    (c) EXIT BEHAVIOR: The character takes a DIFFERENT ACTION than they would have at the
+        start. Not a different feeling — a different ACTION. The audience must SEE the change.
+
+    The arc can be tiny — a single beat of changed behavior is enough. But the behavior must
+    actually change. A character who FEELS bad but ACTS the same has not arced.
+
+    === CRITICAL DISTINCTION: ALMOST-ARC vs. REAL ARC ===
+
+    The most common failure is the "almost-arc" — a character who shows doubt or discomfort
+    but ultimately does the same thing they would have done anyway. This is NOT an arc.
+
+    ALMOST-ARC (WRONG — character has not changed):
+      GUARD frowns at the order. Shifts his weight. Looks at the civilian.
+      GUARD: This doesn't feel right.
+      SQUAD LEADER: Breach.
+      GUARD takes a breath. Breaches the door.
+      [Guard FELT bad but his BEHAVIOR is identical — he followed the order. No arc.]
+
+    REAL ARC (RIGHT — character's behavior changes):
+      GUARD frowns at the order. Shifts his weight. Looks at the civilian.
+      GUARD: This doesn't feel right.
+      SQUAD LEADER: Breach.
+      Guard looks at the door. Looks at the civilian. Sets down the breaching tool.
+      GUARD: Do it yourself.
+      [Guard's behavior CHANGED from obedient to refusing. Something broke his compliance.
+      The audience can SEE the change — he puts down the tool and walks away.]
+
+    === POSITIVE EXAMPLE 1: ONE-SHOT AUTHORITY FIGURE ===
+
+    Setup: Hero enters a precinct to report a crime. The DESK SERGEANT is dismissive.
+
+      DESK SERGEANT doesn't look up from his crossword.
+      DESK SERGEANT: Take a number.
+      RAE: There's no time for —
+      DESK SERGEANT: Take. A number.
+      Rae slams a SECURITY BADGE on the counter. Department of Energy seal.
+      The Desk Sergeant looks at the badge. Looks at Rae. Puts down his crossword.
+      He picks up the desk phone. Dials.
+      DESK SERGEANT: Captain? You're gonna want to come down here.
+
+    The Desk Sergeant went from DISMISSIVE (doesn't look up, brushes her off) to TAKING
+    ACTION (picks up the phone, calls the Captain). The badge was the catalyst — it gave
+    him a reason to change. One scene, three lines, complete arc.
+
+    === POSITIVE EXAMPLE 2: RECURRING MINOR CHARACTER ===
+
+    A NIGHT JANITOR appears in three scenes across the screenplay. His arc builds across
+    all three appearances:
+
+    Scene 14 (first appearance — INDIFFERENT):
+      Night Janitor mops the hallway. Rae runs past.
+      RAE: Did you see anyone come through here?
+      NIGHT JANITOR: (doesn't stop mopping) Ain't my business who comes through.
+      [Initial state: detached, wants no involvement.]
+
+    Scene 22 (second appearance — CONFLICTED):
+      Night Janitor is mopping the same hallway. Sees blood drops on the floor.
+      Stops mopping. Looks both ways. Keeps mopping — mops OVER the blood drops.
+      [Middle state: he noticed something wrong, chose to cover it up. Still not helping
+      directly, but his behavior has shifted from pure indifference to active concealment.
+      He's being pulled into the situation against his will.]
+
+    Scene 34 (third appearance — COMMITS):
+      Night Janitor finds Rae hiding in a supply closet, bleeding.
+      NIGHT JANITOR: You again. (beat) They're checking this floor in ten minutes.
+      He reaches into his cart. Pulls out a janitor's uniform. Drops it on her lap.
+      NIGHT JANITOR: Freight elevator's around the corner. Code's 4-4-1-9.
+      Turns and leaves. Goes back to mopping.
+      [Final state: actively helping at personal risk. He went from "ain't my business" to
+      giving her an escape route. The arc completed across three scenes.]
+
+    === POSITIVE EXAMPLE 3: ANTAGONIST'S SUBORDINATE ===
+
+    A CONTRACTOR works for the antagonist's security team. He follows orders.
+
+    Scene 18 (first appearance — OBEDIENT):
+      Contractor adjusts his wedding ring. Checks his tablet. Breaches the door.
+      Clean, efficient, no hesitation. A professional doing his job.
+
+    Scene 26 (second appearance — SEEDS OF DOUBT):
+      Contractor adjusts his wedding ring. The door he breached reveals a family huddled
+      inside. A child is crying. Contractor stares. His hand goes to his wedding ring.
+      SQUAD LEADER: Clear it.
+      Contractor clears the room. But his hand stays on the ring the whole time.
+      [He still follows orders, but the ring-touching has shifted from habit to
+      emotional anchor — he's thinking about his own family. Doubt is building.]
+
+    Scene 33 (third appearance — BREAKS):
+      Contractor adjusts his wedding ring. Squad leader signals the next door.
+      Behind it: muffled voices. Children.
+      Contractor lowers his breaching tool.
+      SQUAD LEADER: Breach.
+      CONTRACTOR: (quietly) No.
+      He sets the tool on the ground. Walks away. Doesn't look back.
+      [He went from unquestioning obedience to refusal. The accumulated weight of
+      what he's seen — combined with his family connection (the ring) — broke his
+      compliance. The audience has been watching this arc build across three scenes.]
+
+    === RULES FOR WRITING CHARACTER ARCS ===
+
+    1. Follow the board card's `character_arcs` field for each character. It tells you the
+       planned entry and exit behavior. Write the scene so the character starts in the entry
+       state and ends in the exit state.
+
+    2. ONE-SHOT characters (appear in only 1 scene): their arc must complete within that
+       single scene. Entry behavior → catalyst moment → exit behavior. All three in one scene.
+
+    3. RECURRING characters (appear in 2+ scenes): their arc builds across appearances.
+       Each scene advances them one step. Earlier scenes plant the seed; later scenes pay it
+       off. The character's behavior in Scene N should be visibly different from Scene N-1.
+
+    4. Use ONLY the characters listed in the board cards. Do not invent new named characters.
+       Unnamed background extras (e.g., "a passerby," "the bartender") are fine for atmosphere,
+       but any character with dialogue or a significant action must come from the board cards.
+
+    5. The arc must be visible in ACTION, not just in internal state. A character who thinks
+       "I should help" but doesn't is static. A character who slides a keycard under the door
+       has arced. Show the change through what the character DOES or SAYS — something the
+       camera can capture and the audience can see.
+
+    6. The antagonist is the ONLY exception. The antagonist refuses to change — that's why
+       they lose. Every other character must show behavioral change.
 
 PER-SCENE REQUIRED FIELDS:
 1. scene_number (int): Sequential starting from {start_scene_number}
@@ -1970,23 +2103,16 @@ character cues) to fix the problems. Full scenes, not outlines."""
         """Generate prompt to write all scenes for one act."""
         act_cards_json = json.dumps(act_cards, indent=2, ensure_ascii=False)
 
-        # Build previous acts context
+        # Build previous acts context — full screenplay text for continuity
+        prev_text = self._build_full_previous_acts_text(previous_scenes)
         if previous_scenes:
-            prev_parts = []
-            for s in previous_scenes:
-                num = s.get("scene_number", "?")
-                slug = s.get("slugline", "?")
-                beat = s.get("beat", "?")
-                conflict = s.get("conflict", "?")[:100]
-                e_start = s.get("emotional_start", "?")
-                e_end = s.get("emotional_end", "?")
-                prev_parts.append(f"Scene {num} [{beat}] {slug} | {e_start}->{e_end} | {conflict}")
             previous_acts_context = (
-                "PREVIOUS ACTS (already written — do NOT repeat, maintain continuity):\n"
-                + "\n".join(prev_parts)
+                "PREVIOUS ACTS (already written — read the full screenplay below to maintain "
+                "character voice, callbacks, and arc continuity. Do NOT repeat these scenes):\n"
+                + prev_text
             )
         else:
-            previous_acts_context = "(This is the first act — no previous scenes.)"
+            previous_acts_context = prev_text
 
         genre_scene_guidance = self._build_genre_scene_guidance(genre)
         genre_emotion_note = self._build_genre_emotion_note(genre)
@@ -2061,15 +2187,31 @@ character cues) to fix the problems. Full scenes, not outlines."""
 
         act_scenes_text = "\n".join(act_text_parts)
 
-        # Previous acts note
+        # Previous acts — full screenplay text so Grok can evaluate cross-act coherence
+        prev_text = self._build_full_previous_acts_text(previous_scenes)
         if previous_scenes:
-            prev_summary = []
-            for s in previous_scenes:
-                prev_summary.append(
-                    f"Scene {s.get('scene_number', '?')} [{s.get('beat', '?')}] "
-                    f"{s.get('slugline', '?')} | {s.get('emotional_start', '?')}->{s.get('emotional_end', '?')}"
+            previous_acts_note = (
+                "PREVIOUS ACTS (full screenplay text — use for cross-act character arc coherence):\n"
+                + prev_text
+            )
+            # For Act 3+ add a coherence check instruction
+            act_num = 0
+            if "Act 2B" in act_label or "Act Three" in act_label or "Act 3" in act_label:
+                act_num = 3
+            elif "Act 4" in act_label:
+                act_num = 4
+            if act_num >= 3:
+                previous_acts_note += (
+                    "\n\n## FULL SCREENPLAY COHERENCE CHECK\n"
+                    "Now that you have all previous acts plus the current act, evaluate the "
+                    "ENTIRE screenplay so far for cross-act coherence:\n"
+                    "- Does every recurring character show progression across their appearances?\n"
+                    "- Are one-shot characters arcing within their single scene?\n"
+                    "- Do character arcs planned in the board cards reach their intended endpoint?\n"
+                    "- Are there any characters who appeared in a previous act with a behavioral "
+                    "shift but reverted to their old behavior in the current act?\n"
+                    "Include any cross-act coherence failures in Check #10 (Covenant of the Arc)."
                 )
-            previous_acts_note = "PREVIOUS ACTS (for context):\n" + "\n".join(prev_summary)
         else:
             previous_acts_note = "(This is the first act.)"
 
@@ -2190,6 +2332,35 @@ character cues) to fix the problems. Full scenes, not outlines."""
         fix_checklist = "\n".join(fix_checklist_parts)
         broken_cards_json = json.dumps(broken_cards, indent=2, ensure_ascii=False)
 
+        # 2b. Add arc revision guidance if Covenant of the Arc is among failures
+        has_arc_failure = any(
+            f.get("check_name", "") == "Covenant of the Arc" for f in failures
+        )
+        if has_arc_failure:
+            fix_checklist += (
+                "\n\n═══════════════════════════════════════════════════════\n"
+                "ARC REVISION GUIDANCE (Covenant of the Arc)\n"
+                "═══════════════════════════════════════════════════════\n\n"
+                "The checker found characters who don't visibly change. To fix this:\n\n"
+                "For each flagged character, find their key moment and rewrite it so:\n"
+                "1. Their BEHAVIOR changes (not just their feelings)\n"
+                "2. Something in the scene CAUSES the change (a revelation, a choice, a consequence)\n"
+                "3. The change is visible in their actions or dialogue — the audience can SEE it\n\n"
+                "CRITICAL: The 'almost-arc' is the most common mistake. A character who expresses\n"
+                "doubt or discomfort but still does the same thing has NOT arced. The character must\n"
+                "take a DIFFERENT ACTION than they would have at the start.\n\n"
+                "EXAMPLE OF A FIXED ARC:\n"
+                "  BEFORE (no arc): Guard frowns, says 'I don't like this,' follows the order anyway.\n"
+                "  AFTER (arc): Guard frowns, says 'I don't like this,' sets down his weapon, walks away.\n"
+                "  The guard's behavior CHANGED from obedient to refusing.\n\n"
+                "EXAMPLE OF A FIXED ARC:\n"
+                "  BEFORE (no arc): Nurse patches up hero silently, hands them a bandage, leaves.\n"
+                "  AFTER (arc): Nurse patches up hero, then slips them a keycard. 'Side exit. Go.'\n"
+                "  The nurse's behavior CHANGED from dutiful to actively helping at personal risk.\n\n"
+                "Check the board card's character_arcs field for each character's planned change.\n"
+                "Do NOT add new characters. Only fix the arcs of existing board card characters."
+            )
+
         # 3. Urgency escalates
         if revision_round == 1:
             revision_urgency = "Fix each scene precisely as the script doctor described."
@@ -2206,15 +2377,13 @@ character cues) to fix the problems. Full scenes, not outlines."""
         else:
             revision_urgency = ""
 
-        # 4. Previous acts context
+        # 4. Previous acts context — full screenplay text for continuity
+        prev_text = self._build_full_previous_acts_text(previous_scenes)
         if previous_scenes:
-            prev_parts = []
-            for s in previous_scenes:
-                prev_parts.append(
-                    f"Scene {s.get('scene_number', '?')} [{s.get('beat', '?')}] "
-                    f"{s.get('slugline', '?')} | {s.get('conflict', '?')[:80]}"
-                )
-            previous_acts_context = "PREVIOUS ACTS (for continuity):\n" + "\n".join(prev_parts)
+            previous_acts_context = (
+                "PREVIOUS ACTS (full screenplay — maintain character voice and arc continuity):\n"
+                + prev_text
+            )
         else:
             previous_acts_context = "(First act.)"
 
@@ -2284,6 +2453,51 @@ character cues) to fix the problems. Full scenes, not outlines."""
         return cards
 
     @staticmethod
+    def _build_full_previous_acts_text(previous_scenes: List[Dict[str, Any]]) -> str:
+        """Build full screenplay-formatted text from previous acts' scenes.
+
+        Instead of 1-line summaries, includes the complete screenplay text for each
+        previous scene so GPT/Grok can see actual dialogue, action, character behavior,
+        and arc continuity.
+        """
+        if not previous_scenes:
+            return "(This is the first act — no previous scenes.)"
+
+        parts = []
+        for s in previous_scenes:
+            num = s.get("scene_number", "?")
+            slug = s.get("slugline", "?")
+            beat = s.get("beat", "?")
+            e_start = s.get("emotional_start", "?")
+            e_end = s.get("emotional_end", "?")
+            chars = ", ".join(s.get("characters_present", []))
+
+            parts.append(f"\n=== SCENE {num} — {beat} ===")
+            parts.append(f"{slug}")
+            parts.append(f"Emotional arc: {e_start} → {e_end}")
+            parts.append(f"Characters: {chars}")
+            parts.append("")
+
+            # Include full screenplay text from elements
+            for elem in s.get("elements", []):
+                etype = elem.get("element_type", "")
+                content = elem.get("content", "")
+                if etype == "slugline":
+                    parts.append(f"\n{content}\n")
+                elif etype == "action":
+                    parts.append(content)
+                elif etype == "character":
+                    parts.append(f"                    {content}")
+                elif etype == "parenthetical":
+                    parts.append(f"               ({content})")
+                elif etype == "dialogue":
+                    parts.append(f"          {content}\n")
+                elif etype == "transition":
+                    parts.append(f"                                        {content}\n")
+
+        return "\n".join(parts)
+
+    @staticmethod
     def _get_failure_why(check_name: str) -> str:
         """Return a WHY explanation for each diagnostic check failure."""
         why_map = {
@@ -2339,6 +2553,31 @@ character cues) to fix the problems. Full scenes, not outlines."""
                 "The story must tap into a UNIVERSAL, primitive instinct that a caveman would understand: "
                 "survival, protecting loved ones, fear of death, hunger, revenge. If the stakes feel "
                 "abstract or intellectual, the audience won't feel them in their gut."
+            ),
+            "Covenant of the Arc": (
+                "One or more characters go through their scene(s) without visible behavioral change. "
+                "Snyder: 'Every single character in your movie must change. EVERYONE.'\n\n"
+                "THE MOST COMMON FAILURE IS THE 'ALMOST-ARC': a character who shows doubt or "
+                "discomfort but still does the same thing they would have done anyway. A character "
+                "who FEELS bad but ACTS the same has NOT arced. The character must take a DIFFERENT "
+                "ACTION than they would have at the start of the scene.\n\n"
+                "HOW TO FIX — for each flagged character:\n"
+                "1. Find their final moment in the scene (their last action or line of dialogue).\n"
+                "2. Rewrite it so their BEHAVIOR changes, not just their feelings.\n"
+                "3. The change must be caused by something that happened IN the scene.\n"
+                "4. Check the board card's character_arcs field for what each character's planned "
+                "endpoint should be.\n\n"
+                "EXAMPLE FIX 1:\n"
+                "  BEFORE (no arc): Guard frowns, says 'I don't like this,' follows the order anyway.\n"
+                "  AFTER (arc): Guard frowns, says 'I don't like this,' sets down his weapon and "
+                "walks off the job. His behavior CHANGED from obedient to refusing.\n\n"
+                "EXAMPLE FIX 2:\n"
+                "  BEFORE (no arc): Nurse patches up the hero silently, hands them a bandage, leaves.\n"
+                "  AFTER (arc): Nurse patches up the hero, then quietly slips them a keycard. "
+                "'Go. Side exit. Now.' Her behavior CHANGED from dutiful to actively helping at risk.\n\n"
+                "For each flagged character, rewrite their final moment so their BEHAVIOR changes, "
+                "not just their internal state. Do NOT add new characters — only fix the arcs of "
+                "existing characters from the board cards."
             ),
         }
         return why_map.get(check_name, "This is a core Save the Cat quality check. Failing it means the screenplay has a structural writing problem that will weaken the final product.")

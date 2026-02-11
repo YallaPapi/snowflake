@@ -15,7 +15,7 @@ from typing import Dict, Any, List
 class Step5Prompt:
     """Prompt generator for Screenplay Engine Step 5: The Board (40 Scene Cards)"""
 
-    VERSION = "4.0.0"
+    VERSION = "5.0.0"
 
     SYSTEM_PROMPT = (
         "You are a Save the Cat! Board architect. "
@@ -82,6 +82,24 @@ CARD CONTENT RULES:
   Snyder: "an emotional change like this must occur in every scene. And if you don't have it,
   you don't know what the scene is about." emotional_start and emotional_end MUST differ.
 - Characters present: at least one character on screen per scene
+- Character arcs: For EACH character present, describe the behavioral shift that happens
+  to them in this scene. Snyder: "Before I sit down to write, I make notes on how all my
+  characters are going to arc by charting their stories as they are laid out on The Board,
+  with the milestones of change noted as each character progresses through the story."
+  Snyder: "Every single character in your movie must change. EVERYONE." This is the
+  Covenant of the Arc — plan each character's change ON the Board, before you write.
+
+  For ONE-SHOT characters (appear in only 1 card): the arc_moment describes their full
+  within-scene change. Example: "Starts dismissive of hero → shown evidence → makes a call
+  they wouldn't have made before."
+
+  For RECURRING characters (appear on 2+ cards): the arc_moment describes THIS SCENE's step
+  in their overall journey. Example: "Still guarded and evasive (from Card 12) → opens up
+  after hero shows genuine concern."
+
+  The arc_moment must describe a BEHAVIORAL change — not just a feeling. The character must
+  DO something different at the end of the scene than they would have done at the start.
+  "Feels bad but follows orders anyway" is NOT an arc. "Sets down weapon and walks away" IS.
 
 POPE IN THE POOL RULE (Snyder Ch.6 — Immutable Law #2):
 Every scene that conveys backstory, exposition, or plot information MUST simultaneously
@@ -200,7 +218,10 @@ OUTPUT FORMAT (JSON):
       "emotional_end": "-",
       "conflict": "Hero vs. Force over Issue; Force wins",
       "storyline_color": "A",
-      "characters_present": ["Character Name"]
+      "characters_present": ["Character Name"],
+      "character_arcs": {{
+        "Character Name": "Enters [initial behavior] → [event/cause] → exits [changed behavior]"
+      }}
     }}
   ],
   "row_2_act_two_a": [ ... ],
