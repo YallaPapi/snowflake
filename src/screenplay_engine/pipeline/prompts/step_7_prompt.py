@@ -173,7 +173,19 @@ THE 9 DIAGNOSTIC CHECKS:
    - FIX: Reframe the hero's goal so it connects to one of the 5 primal drives at its root.
      Ground each character's motivation in a primal drive.
 
-OUTPUT FORMAT (JSON):
+FOR EVERY FAILED CHECK YOU MUST:
+1. List the EXACT scene numbers that have the problem in failing_scene_numbers
+2. QUOTE the exact problematic dialogue or action lines from those scenes in problem_details
+3. For EACH failing scene, write a CONCRETE rewrite instruction in fix_per_scene — not "make it
+   better" but "replace Mara's line 'Can't fix guilt alone. Let me in.' with a nonverbal action:
+   Mara texts a location pin with just an address. Then: 'I'm not talking. I'm there if you
+   show up.' This shows the theme (you can't do it alone) through ACTION not STATEMENT."
+4. Each fix_per_scene entry MUST:
+   a) QUOTE the current problematic text from the scene
+   b) Provide the SPECIFIC replacement text (exact new dialogue or action lines)
+   c) Explain in one sentence what the change fixes
+
+OUTPUT FORMAT (valid JSON):
 {{
     "diagnostics": [
         {{
@@ -181,73 +193,108 @@ OUTPUT FORMAT (JSON):
             "check_name": "The Hero Leads",
             "passed": true,
             "problem_details": "",
-            "fix_suggestion": ""
+            "failing_scene_numbers": [],
+            "fix_per_scene": {{}}
         }},
         {{
             "check_number": 2,
             "check_name": "Talking the Plot",
             "passed": false,
-            "problem_details": "<specific problem found>",
-            "fix_suggestion": "<specific fix>"
+            "problem_details": "Scene 7: Mara's line 'Can't fix guilt alone. Let me in.' is on-the-nose theme delivery — character is stating the movie's theme directly. Scene 20: Contractor's 'They call it a drill. Last week it cooked a guy in Van Nuys. I signed the form.' is writer-serving exposition — the audience needs this info but the character wouldn't explain it this way. Scene 30: Rae's phone confession compresses complex backstory into a single info-dump monologue.",
+            "failing_scene_numbers": [7, 20, 30],
+            "fix_per_scene": {{
+                "7": "CURRENT: MARA (V.O.): 'Can't fix guilt alone. Let me in.' REPLACE WITH: Mara texts a location pin — just an address, no words. Then V.O.: 'I'm not talking. I'm there if you show up.' Rae stares at the pin, deletes it. FIXES: Theme is shown through Mara's ACTION (showing up) not stated in dialogue.",
+                "20": "CURRENT: GRID CONTRACTOR: 'They call it a drill. Last week it cooked a guy in Van Nuys. I signed the form.' REPLACE WITH: Show the drill via environment — posters on the wall read 'COMPLIANCE TEST WEEK', a checklist the contractor initialed hangs by the door, a body bag cart sits in the hall. Contractor only says: 'I just follow the sheet.' FIXES: Exposition moved from dialogue into visual production design.",
+                "30": "CURRENT: Rae delivers full confession monologue into phone. REPLACE WITH: Break into two beats. First, a short urgent ask: 'I need eyes, not forgiveness.' Later, a quieter line revealing the Skip death with one image: 'My wire lit up. He didn't.' FIXES: Backstory delivered in compressed images, not an info-dump."
+            }}
         }},
         {{
             "check_number": 3,
             "check_name": "Make the Bad Guy Badder",
             "passed": true,
             "problem_details": "",
-            "fix_suggestion": ""
+            "failing_scene_numbers": [],
+            "fix_per_scene": {{}}
         }},
         {{
             "check_number": 4,
             "check_name": "Turn Turn Turn",
-            "passed": true,
-            "problem_details": "",
-            "fix_suggestion": ""
+            "passed": false,
+            "problem_details": "Scenes 6, 8, 11, 17, 18, 21, 23, 26 are variations of 'surveillance finds hero → hero improvises analog trick → escapes.' Stakes rise (deepfake shoot-on-sight, contractor death, injury, cascade) but hero's flaw is reiterated rather than evolved until Scene 29.",
+            "failing_scene_numbers": [17, 21],
+            "fix_per_scene": {{
+                "17": "CURRENT: Rae escapes rooftop via fire escape after drone spots them — same hide-and-flee pattern. REPLACE: Rae CAN escape clean but CHOOSES to save a stranger being misidentified by the drone, costing her time. This advances her Need (protect without credit) and varies the beat from 'flee' to 'moral choice.' Add: BYSTANDER frozen in drone beam. Rae shoves Bystander behind HVAC unit, takes the scan herself. Jax: 'That wasn't the plan.' Rae: 'New plan.' FIXES: Chase beat becomes a moral turn — hero evolves, not just survives.",
+                "21": "CURRENT: N0BODY deepfakes Rae's voice on loudspeaker, cops converge, Rae and Jax flee with loop device. REPLACE: Add a new bad-guy power reveal — N0BODY starts manipulating TRAFFIC LIGHTS to create physical collisions in front of them. A car T-bones a truck blocking their path. This changes the rules (not just more cops) and forces Rae to invent a new strategy. Rae: 'It's not just cameras now. It's moving the city.' FIXES: Escalation in kind, not just degree."
+            }}
         }},
         {{
             "check_number": 5,
             "check_name": "Emotional Color Wheel",
             "passed": false,
-            "problem_details": "<specific problem found>",
-            "fix_suggestion": "<specific fix>"
+            "problem_details": "Emotion audit: fear appears in 18/40 scenes, anger in 12/40, near-miss anxiety in 15/40, tenderness in 4/40, surprise in 3/40, triumph in 2/40. MISSING ENTIRELY: lust/sexual tension (0 scenes), joy/uncomplicated happiness (0 scenes except Final Image), human foible/comic relief (0 scenes), longing/romantic-aspirational (0 scenes). The palette is monotone action-thriller.",
+            "failing_scene_numbers": [11, 12, 19],
+            "fix_per_scene": {{
+                "11": "CURRENT: Rae cranks radio, gets static, buys flashlight, smashes vendor's scanner, flees. RECOLOR FOR HUMAN FOIBLE + JOY: When Rae cranks the radio, it blasts a cheesy late-night love song. She and the One-Armed Shopper lock eyes — involuntary laugh. Shopper catches a rolling battery with prosthetic claw, tosses it to Rae with a grin: 'Radio's got taste.' Beat. Then danger snaps back. FIXES: Adds 5 seconds of genuine humor and human connection to an action beat without changing the plot outcome.",
+                "12": "CURRENT: Jax tosses token chain to Rae at payphones — tactical exchange. ADD LONGING: When Rae catches the chain, her fingers linger on the Metro token. One-line memory: RAE (whisper): 'We used to skip school on these.' She means Mara. Pockets it. FIXES: Adds yearning/nostalgia without exposition — the token becomes an emotional anchor, not just a prop.",
+                "19": "CURRENT: Jax takes Rae's hand over the clamp — tactical teamwork moment. ADD CHEMISTRY: When Jax's hand seals over hers, let it land with charged intimacy. Rae pulls away too fast — fear of connection visible. Jax doesn't comment. They work. FIXES: Adds a flicker of lust/attraction that reveals Rae's fear of attachment."
+            }}
         }},
         {{
             "check_number": 6,
             "check_name": "Hi How Are You I'm Fine",
-            "passed": true,
-            "problem_details": "",
-            "fix_suggestion": ""
+            "passed": false,
+            "problem_details": "Cover-the-names test: Clerk, Store Owner, Laundry Patron, Security Guard, Homeowner, and Janitor all speak with the same clipped, hard-boiled, imperative rhythm. 'Door's swollen. Hit bottom hinge.' / 'You owe me.' / 'Name it.' — these lines could be swapped between characters without friction. Each side character sounds like the writer's voice, not their own.",
+            "failing_scene_numbers": [5, 7, 16],
+            "fix_per_scene": {{
+                "5": "CURRENT: STORE OWNER: 'You drip on the serpentine belts, you buy the whole rack.' / 'Wipe prints. I never met you. Door's swollen. Hit bottom hinge.' REPLACE WITH: Make Store Owner superstitious and metaphor-heavy: 'Tools walk out when the sun drops. That's when trouble shops.' / 'Grease don't lie — wipe everything you touched. And that door? Give it the knee, low. It bites high.' FIXES: Distinctive speech pattern (superstitious metaphors) vs. generic tough-guy.",
+                "7": "CURRENT: LAUNDRY PATRON: 'I'm union. I don't cross lines—and I don't talk to cops.' / 'They're sweeping blocks. You owe me.' / 'Get my brother out of County. Go. Now.' REPLACE WITH: Make Patron formal/procedural with union-speak: 'Article 7: I don't volunteer information. Article 12: I don't impede, I don't assist.' (beat) 'But Article 3 says my brother's been in County six months on a paperwork hold. You fix that — we never met.' FIXES: Distinctive cadence (citing articles/rules) that could ONLY be this character.",
+                "16": "CURRENT: HOMEOWNER: 'Thieves freeze! This feeds live!' / 'We don't feed the machine in this house. Back gate. Move.' REPLACE WITH: Make Homeowner anxious-parent with fragmented sentences: 'No no no — kids are — who are you? Don't — the camera's — wait, is that—' (sees kid in doorway, rips bodycam off) '...go. Back gate. Don't run. Walking. Walking.' FIXES: Anxious-parent speech pattern (interrupted, protective, half-sentences) vs. generic tough authority."
+            }}
         }},
         {{
             "check_number": 7,
             "check_name": "Take a Step Back",
             "passed": true,
             "problem_details": "",
-            "fix_suggestion": ""
+            "failing_scene_numbers": [],
+            "fix_per_scene": {{}}
         }},
         {{
             "check_number": 8,
             "check_name": "Limp and Eye Patch",
             "passed": false,
-            "problem_details": "<specific problem found>",
-            "fix_suggestion": "<specific fix>"
+            "problem_details": "Rae's scarred forearm is a strong running visual. Jax's token clicking is memorable. But Mara (voice-only for 39/40 scenes) lacks a consistent aural signature — no repeating sound or verbal tic on her calls. N0BODY shifts between distorted/smooth/taunting without a repeating motif. One-shot helpers (Clerk, Store Owner, etc.) have zero visual identifiers.",
+            "failing_scene_numbers": [7, 4, 15],
+            "fix_per_scene": {{
+                "7": "CURRENT: MARA (V.O.) has no aural signature. ADD: Every time Mara speaks, open with the sound of ice clinking in a glass — she stirs when she's nervous. Scene 7: 'MARA (V.O.) (warm, mid-sip, ice CLINKS)' — then repeat this cue in every Mara scene (9, 30, 34, 36, 38, 39). FIXES: Repeatable aural identifier that lets the audience 'see' Mara without seeing her.",
+                "4": "CURRENT: N0BODY speaks as 'EARBUD VOICE (N0BODY) (distorted)' with 'Optimal.' ADD SIGNATURE: N0BODY always uses the word 'Optimal' and always refers to humans as 'units.' Lights dim 5%% when it speaks (add action: 'Overhead flickers'). Scene 4 already has 'Optimal.' — add the light-dim and 'unit' language. FIXES: Repeatable villain footprint — audience recognizes N0BODY's presence even offscreen.",
+                "15": "CURRENT: N0BODY (V.O.): 'Access denied. Anomalies detected. Step back.' REPLACE: 'Access denied. Two units detected. Step back, Rae Calder. Optimal.' Add: 'Intercom light DIMS five percent.' FIXES: Consistent signature language ('units', 'Optimal') and physical tell (light dim)."
+            }}
         }},
         {{
             "check_number": 9,
             "check_name": "Is It Primal",
             "passed": true,
             "problem_details": "",
-            "fix_suggestion": ""
+            "failing_scene_numbers": [],
+            "fix_per_scene": {{}}
         }}
     ],
-    "checks_passed_count": 6,
+    "checks_passed_count": 4,
     "total_checks": 9
 }}
 
 RULES:
 - You MUST run ALL 9 checks -- do not skip any.
-- For PASSED checks, problem_details and fix_suggestion may be empty strings.
-- For FAILED checks, problem_details and fix_suggestion MUST be non-empty with specific, actionable content.
+- For PASSED checks: problem_details is empty string, failing_scene_numbers is empty array, fix_per_scene is empty object.
+- For FAILED checks: ALL THREE fields MUST be filled:
+  * problem_details: Non-empty string with specific issues, QUOTING actual dialogue/action from the screenplay
+  * failing_scene_numbers: Non-empty list of integers identifying which scenes have the problem
+  * fix_per_scene: Non-empty object where EACH key is a scene number (as string) from failing_scene_numbers,
+    and EACH value is a concrete rewrite instruction that QUOTES the current text AND provides replacement text
+- fix_per_scene instructions MUST follow the format: "CURRENT: [quoted text]. REPLACE WITH: [new text]. FIXES: [what this changes]."
+- Do NOT write vague fix instructions like "make the dialogue more distinct" — write SPECIFIC replacement
+  lines that could be copy-pasted into the screenplay.
 - checks_passed_count MUST equal the number of diagnostics where passed is true.
 - total_checks MUST always be 9.
 - Use the exact check_name values shown above."""

@@ -179,7 +179,12 @@ class Step7Diagnostics:
                         f"{diag.get('check_name', 'Unknown')}\n")
                 if not diag.get("passed"):
                     f.write(f"         Problem: {diag.get('problem_details', '')}\n")
-                    f.write(f"         Fix:     {diag.get('fix_suggestion', '')}\n")
+                    failing = diag.get("failing_scene_numbers", [])
+                    if failing:
+                        f.write(f"         Failing scenes: {failing}\n")
+                    fix_per_scene = diag.get("fix_per_scene", {})
+                    for scene_num, fix in fix_per_scene.items():
+                        f.write(f"         Scene {scene_num}: {fix}\n")
                 f.write("\n")
 
             f.write(f"Generated: {artifact.get('metadata', {}).get('created_at', 'N/A')}\n")

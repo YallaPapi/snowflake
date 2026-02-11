@@ -25,15 +25,15 @@ def _valid_artifact():
     """All 9 checks passing."""
     return {
         "diagnostics": [
-            {"check_number": 1, "check_name": "The Hero Leads", "passed": True, "problem_details": "", "fix_suggestion": ""},
-            {"check_number": 2, "check_name": "Talking the Plot", "passed": True, "problem_details": "", "fix_suggestion": ""},
-            {"check_number": 3, "check_name": "Make the Bad Guy Badder", "passed": True, "problem_details": "", "fix_suggestion": ""},
-            {"check_number": 4, "check_name": "Turn Turn Turn", "passed": True, "problem_details": "", "fix_suggestion": ""},
-            {"check_number": 5, "check_name": "Emotional Color Wheel", "passed": True, "problem_details": "", "fix_suggestion": ""},
-            {"check_number": 6, "check_name": "Hi How Are You I'm Fine", "passed": True, "problem_details": "", "fix_suggestion": ""},
-            {"check_number": 7, "check_name": "Take a Step Back", "passed": True, "problem_details": "", "fix_suggestion": ""},
-            {"check_number": 8, "check_name": "Limp and Eye Patch", "passed": True, "problem_details": "", "fix_suggestion": ""},
-            {"check_number": 9, "check_name": "Is It Primal", "passed": True, "problem_details": "", "fix_suggestion": ""},
+            {"check_number": 1, "check_name": "The Hero Leads", "passed": True, "problem_details": "", "failing_scene_numbers": [], "fix_per_scene": {}},
+            {"check_number": 2, "check_name": "Talking the Plot", "passed": True, "problem_details": "", "failing_scene_numbers": [], "fix_per_scene": {}},
+            {"check_number": 3, "check_name": "Make the Bad Guy Badder", "passed": True, "problem_details": "", "failing_scene_numbers": [], "fix_per_scene": {}},
+            {"check_number": 4, "check_name": "Turn Turn Turn", "passed": True, "problem_details": "", "failing_scene_numbers": [], "fix_per_scene": {}},
+            {"check_number": 5, "check_name": "Emotional Color Wheel", "passed": True, "problem_details": "", "failing_scene_numbers": [], "fix_per_scene": {}},
+            {"check_number": 6, "check_name": "Hi How Are You I'm Fine", "passed": True, "problem_details": "", "failing_scene_numbers": [], "fix_per_scene": {}},
+            {"check_number": 7, "check_name": "Take a Step Back", "passed": True, "problem_details": "", "failing_scene_numbers": [], "fix_per_scene": {}},
+            {"check_number": 8, "check_name": "Limp and Eye Patch", "passed": True, "problem_details": "", "failing_scene_numbers": [], "fix_per_scene": {}},
+            {"check_number": 9, "check_name": "Is It Primal", "passed": True, "problem_details": "", "failing_scene_numbers": [], "fix_per_scene": {}},
         ],
         "checks_passed_count": 9,
         "total_checks": 9,
@@ -41,24 +41,27 @@ def _valid_artifact():
 
 
 def _failed_artifact():
-    """Some checks failing with semantically correct problem_details."""
+    """Some checks failing with semantically correct problem_details and scene-level fixes."""
     return {
         "diagnostics": [
             {"check_number": 1, "check_name": "The Hero Leads", "passed": False,
              "problem_details": "The hero is passive and reactive — dragged through the story without a clear goal.",
-             "fix_suggestion": "State the hero's goal in the set-up and make the hero pursue it actively."},
-            {"check_number": 2, "check_name": "Talking the Plot", "passed": True, "problem_details": "", "fix_suggestion": ""},
+             "failing_scene_numbers": [1, 5],
+             "fix_per_scene": {"1": "CURRENT: Hero asks questions. REPLACE WITH: Hero demands action. FIXES: Makes hero proactive.", "5": "CURRENT: Hero waits. REPLACE WITH: Hero drives. FIXES: Active goal pursuit."}},
+            {"check_number": 2, "check_name": "Talking the Plot", "passed": True, "problem_details": "", "failing_scene_numbers": [], "fix_per_scene": {}},
             {"check_number": 3, "check_name": "Make the Bad Guy Badder", "passed": False,
              "problem_details": "The antagonist is weaker than the hero and not a mirror — no real threat.",
-             "fix_suggestion": "Ratchet up the villain's power to match the hero."},
-            {"check_number": 4, "check_name": "Turn Turn Turn", "passed": True, "problem_details": "", "fix_suggestion": ""},
-            {"check_number": 5, "check_name": "Emotional Color Wheel", "passed": True, "problem_details": "", "fix_suggestion": ""},
-            {"check_number": 6, "check_name": "Hi How Are You I'm Fine", "passed": True, "problem_details": "", "fix_suggestion": ""},
-            {"check_number": 7, "check_name": "Take a Step Back", "passed": True, "problem_details": "", "fix_suggestion": ""},
-            {"check_number": 8, "check_name": "Limp and Eye Patch", "passed": True, "problem_details": "", "fix_suggestion": ""},
+             "failing_scene_numbers": [10],
+             "fix_per_scene": {"10": "CURRENT: Villain retreats. REPLACE WITH: Villain escalates. FIXES: Raises threat."}},
+            {"check_number": 4, "check_name": "Turn Turn Turn", "passed": True, "problem_details": "", "failing_scene_numbers": [], "fix_per_scene": {}},
+            {"check_number": 5, "check_name": "Emotional Color Wheel", "passed": True, "problem_details": "", "failing_scene_numbers": [], "fix_per_scene": {}},
+            {"check_number": 6, "check_name": "Hi How Are You I'm Fine", "passed": True, "problem_details": "", "failing_scene_numbers": [], "fix_per_scene": {}},
+            {"check_number": 7, "check_name": "Take a Step Back", "passed": True, "problem_details": "", "failing_scene_numbers": [], "fix_per_scene": {}},
+            {"check_number": 8, "check_name": "Limp and Eye Patch", "passed": True, "problem_details": "", "failing_scene_numbers": [], "fix_per_scene": {}},
             {"check_number": 9, "check_name": "Is It Primal", "passed": False,
              "problem_details": "The hero's motivation is intellectual — no primal survival drive.",
-             "fix_suggestion": "Ground the hero's goal in one of the 5 primal drives."},
+             "failing_scene_numbers": [1, 20],
+             "fix_per_scene": {"1": "CURRENT: Hero debates philosophy. REPLACE WITH: Hero fights for survival. FIXES: Primal drive.", "20": "CURRENT: Abstract goal. REPLACE WITH: Life-or-death stakes. FIXES: Caveman resonance."}},
         ],
         "checks_passed_count": 6,
         "total_checks": 9,
@@ -159,7 +162,7 @@ class TestStep8Versions(unittest.TestCase):
     """Version constants and structural checks."""
 
     def test_validator_version(self):
-        self.assertEqual(Step7Validator.VERSION, "2.0.0")
+        self.assertEqual(Step7Validator.VERSION, "3.0.0")
 
     def test_prompt_version(self):
         self.assertEqual(Step7Prompt.VERSION, "2.0.0")
@@ -229,7 +232,7 @@ class TestStep8ValidatorDiagnosticsStructure(unittest.TestCase):
     def test_wrong_count_too_many(self):
         artifact = _valid_artifact()
         artifact["diagnostics"].append(
-            {"check_number": 10, "check_name": "Extra", "passed": True, "problem_details": "", "fix_suggestion": ""}
+            {"check_number": 10, "check_name": "Extra", "passed": True, "problem_details": "", "failing_scene_numbers": [], "fix_per_scene": {}}
         )
         is_valid, errors = self.validator.validate(artifact)
         self.assertFalse(is_valid)
@@ -326,7 +329,8 @@ class TestStep8ValidatorProblemDetails(unittest.TestCase):
         artifact = _valid_artifact()
         artifact["diagnostics"][0]["passed"] = False
         artifact["diagnostics"][0]["problem_details"] = ""
-        artifact["diagnostics"][0]["fix_suggestion"] = "Some fix"
+        artifact["diagnostics"][0]["failing_scene_numbers"] = [1]
+        artifact["diagnostics"][0]["fix_per_scene"] = {"1": "CURRENT: x. REPLACE WITH: y. FIXES: z."}
         artifact["checks_passed_count"] = 8
         is_valid, errors = self.validator.validate(artifact)
         self.assertFalse(is_valid)
@@ -336,26 +340,88 @@ class TestStep8ValidatorProblemDetails(unittest.TestCase):
         artifact = _valid_artifact()
         artifact["diagnostics"][0]["passed"] = False
         artifact["diagnostics"][0]["problem_details"] = "   "
-        artifact["diagnostics"][0]["fix_suggestion"] = "Some fix"
+        artifact["diagnostics"][0]["failing_scene_numbers"] = [1]
+        artifact["diagnostics"][0]["fix_per_scene"] = {"1": "CURRENT: x. REPLACE WITH: y. FIXES: z."}
         artifact["checks_passed_count"] = 8
         is_valid, errors = self.validator.validate(artifact)
         self.assertFalse(is_valid)
         self.assertTrue(any("MISSING_PROBLEM_DETAILS" in e for e in errors))
 
 
-class TestStep8ValidatorFixSuggestion(unittest.TestCase):
+class TestStep8ValidatorFailingScenes(unittest.TestCase):
+    """Validation of failing_scene_numbers and fix_per_scene for failed checks."""
     def setUp(self):
         self.validator = Step7Validator()
 
-    def test_failed_check_empty_fix_suggestion(self):
+    def test_failed_check_missing_failing_scenes(self):
         artifact = _valid_artifact()
         artifact["diagnostics"][0]["passed"] = False
         artifact["diagnostics"][0]["problem_details"] = "The hero is passive and reactive."
-        artifact["diagnostics"][0]["fix_suggestion"] = ""
+        # No failing_scene_numbers at all
         artifact["checks_passed_count"] = 8
         is_valid, errors = self.validator.validate(artifact)
         self.assertFalse(is_valid)
-        self.assertTrue(any("MISSING_FIX_SUGGESTION" in e for e in errors))
+        self.assertTrue(any("MISSING_FAILING_SCENES" in e for e in errors))
+
+    def test_failed_check_empty_failing_scenes(self):
+        artifact = _valid_artifact()
+        artifact["diagnostics"][0]["passed"] = False
+        artifact["diagnostics"][0]["problem_details"] = "The hero is passive and reactive."
+        artifact["diagnostics"][0]["failing_scene_numbers"] = []
+        artifact["diagnostics"][0]["fix_per_scene"] = {}
+        artifact["checks_passed_count"] = 8
+        is_valid, errors = self.validator.validate(artifact)
+        self.assertFalse(is_valid)
+        self.assertTrue(any("MISSING_FAILING_SCENES" in e for e in errors))
+
+    def test_failed_check_invalid_failing_scenes_type(self):
+        artifact = _valid_artifact()
+        artifact["diagnostics"][0]["passed"] = False
+        artifact["diagnostics"][0]["problem_details"] = "The hero is passive and reactive."
+        artifact["diagnostics"][0]["failing_scene_numbers"] = "1, 5"
+        artifact["diagnostics"][0]["fix_per_scene"] = {"1": "fix", "5": "fix"}
+        artifact["checks_passed_count"] = 8
+        is_valid, errors = self.validator.validate(artifact)
+        self.assertFalse(is_valid)
+        self.assertTrue(any("INVALID_FAILING_SCENES" in e for e in errors))
+
+    def test_failed_check_missing_fix_per_scene(self):
+        artifact = _valid_artifact()
+        artifact["diagnostics"][0]["passed"] = False
+        artifact["diagnostics"][0]["problem_details"] = "The hero is passive and reactive."
+        artifact["diagnostics"][0]["failing_scene_numbers"] = [1, 5]
+        # No fix_per_scene
+        artifact["checks_passed_count"] = 8
+        is_valid, errors = self.validator.validate(artifact)
+        self.assertFalse(is_valid)
+        self.assertTrue(any("MISSING_FIX_PER_SCENE" in e for e in errors))
+
+    def test_failed_check_incomplete_fix_per_scene(self):
+        artifact = _valid_artifact()
+        artifact["diagnostics"][0]["passed"] = False
+        artifact["diagnostics"][0]["problem_details"] = "The hero is passive and reactive."
+        artifact["diagnostics"][0]["failing_scene_numbers"] = [1, 5]
+        artifact["diagnostics"][0]["fix_per_scene"] = {"1": "CURRENT: x. REPLACE WITH: y. FIXES: z."}
+        # Missing scene 5
+        artifact["checks_passed_count"] = 8
+        is_valid, errors = self.validator.validate(artifact)
+        self.assertFalse(is_valid)
+        self.assertTrue(any("INCOMPLETE_FIX_PER_SCENE" in e for e in errors))
+
+    def test_failed_check_valid_fix_per_scene(self):
+        artifact = _valid_artifact()
+        artifact["diagnostics"][0]["passed"] = False
+        artifact["diagnostics"][0]["problem_details"] = "The hero is passive and reactive."
+        artifact["diagnostics"][0]["failing_scene_numbers"] = [1, 5]
+        artifact["diagnostics"][0]["fix_per_scene"] = {
+            "1": "CURRENT: Hero asks. REPLACE WITH: Hero demands. FIXES: Proactive.",
+            "5": "CURRENT: Hero waits. REPLACE WITH: Hero acts. FIXES: Active.",
+        }
+        artifact["checks_passed_count"] = 8
+        is_valid, errors = self.validator.validate(artifact)
+        # May still fail for other reasons (semantic) but not for fix_per_scene
+        fix_errors = [e for e in errors if "FIX_PER_SCENE" in e]
+        self.assertEqual(len(fix_errors), 0)
 
 
 class TestStep8ValidatorSemanticKeywords(unittest.TestCase):
@@ -368,7 +434,8 @@ class TestStep8ValidatorSemanticKeywords(unittest.TestCase):
         artifact = _valid_artifact()
         artifact["diagnostics"][check_number - 1]["passed"] = False
         artifact["diagnostics"][check_number - 1]["problem_details"] = problem_details
-        artifact["diagnostics"][check_number - 1]["fix_suggestion"] = "Fix it."
+        artifact["diagnostics"][check_number - 1]["failing_scene_numbers"] = [1]
+        artifact["diagnostics"][check_number - 1]["fix_per_scene"] = {"1": "CURRENT: x. REPLACE WITH: y. FIXES: z."}
         artifact["checks_passed_count"] = 8
         return artifact
 
@@ -493,7 +560,9 @@ class TestStep8ValidatorFixSuggestions(unittest.TestCase):
             "MISSING_DIAGNOSTICS", "INVALID_DIAGNOSTICS_TYPE", "WRONG_DIAGNOSTIC_COUNT",
             "INVALID_TYPE", "MISSING_CHECK_NUMBER", "INVALID_CHECK_NUMBER",
             "DUPLICATE_CHECK_NUMBER", "MISSING_CHECK_NAME", "MISSING_PASSED",
-            "INVALID_PASSED", "MISSING_PROBLEM_DETAILS", "MISSING_FIX_SUGGESTION",
+            "INVALID_PASSED", "MISSING_PROBLEM_DETAILS",
+            "MISSING_FAILING_SCENES", "INVALID_FAILING_SCENES", "INVALID_FAILING_SCENE_TYPE",
+            "MISSING_FIX_PER_SCENE", "INVALID_FIX_PER_SCENE", "INCOMPLETE_FIX_PER_SCENE",
             "MISSING_CHECKS_PASSED_COUNT", "INVALID_CHECKS_PASSED_COUNT",
             "MISMATCHED_CHECKS_PASSED_COUNT", "WEAK_PROBLEM_DETAILS",
             "MISSING_TOTAL_CHECKS", "WRONG_TOTAL_CHECKS", "MISSING_CHECK_NAMES",

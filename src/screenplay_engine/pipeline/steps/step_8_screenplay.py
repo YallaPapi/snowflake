@@ -351,34 +351,61 @@ class Step8Screenplay:
         # Split cards into acts
         acts = self._split_into_acts(board_cards)
 
-        # Writer model config — GPT for generation
-        writer_config = ctx["model_config"] or {
-            "model_name": "gpt-5.2-2025-12-11",
-            "temperature": 0.5,
-            "max_tokens": 32000,  # ~10 scenes per act
-            "seed": 42,
-        }
+        # Check for model swap: SCREENPLAY_SWAP_MODELS=1 → Grok writes, GPT reviews
+        import os
+        swap_models = os.getenv("SCREENPLAY_SWAP_MODELS", "").lower() in ("1", "true", "yes")
+
+        if swap_models:
+            logger.info("MODEL SWAP ENABLED: Grok writes, GPT reviews")
+            # Grok as writer
+            try:
+                writer = AIGenerator(provider="xai")
+            except Exception as e:
+                logger.error("Failed to init Grok writer: %s — aborting swap", e)
+                writer = self.generator
+            writer_config = ctx["model_config"] or {
+                "model_name": "grok-4-1-fast-reasoning",
+                "temperature": 0.5,
+                "max_tokens": 32000,
+            }
+            # GPT as checker
+            checker = self.generator  # already OpenAI
+            checker_config = {
+                "model_name": "gpt-5.2-2025-12-11",
+                "temperature": 0.0,
+                "max_tokens": 25000,
+            }
+        else:
+            logger.info("DEFAULT MODELS: GPT writes, Grok reviews")
+            writer = self.generator
+            # Writer model config — GPT for generation
+            writer_config = ctx["model_config"] or {
+                "model_name": "gpt-5.2-2025-12-11",
+                "temperature": 0.5,
+                "max_tokens": 32000,  # ~10 scenes per act
+                "seed": 42,
+            }
+            # Initialize Grok checker
+            try:
+                checker = AIGenerator(provider="xai")
+                checker_config = {
+                    "model_name": "grok-4-1-fast-reasoning",
+                    "temperature": 0.0,
+                    "max_tokens": 25000,
+                }
+                logger.info("Grok checker initialized (xAI)")
+            except Exception as e:
+                logger.error("Failed to initialize Grok checker: %s — falling back to GPT self-check", e)
+                checker = self.generator
+                checker_config = {
+                    "model_name": writer_config.get("model_name", "gpt-5.2-2025-12-11"),
+                    "temperature": 0.0,
+                    "max_tokens": 25000,
+                }
+
         # Ensure enough tokens for an act (~10 scenes)
         if writer_config.get("max_tokens", 0) < 32000:
             writer_config["max_tokens"] = 32000
-
-        # Initialize Grok checker
-        try:
-            checker = AIGenerator(provider="xai")
-            checker_config = {
-                "model_name": "grok-4-1-fast-reasoning",
-                "temperature": 0.0,
-                "max_tokens": 25000,
-            }
-            logger.info("Grok checker initialized (xAI)")
-        except Exception as e:
-            logger.error("Failed to initialize Grok checker: %s — falling back to GPT self-check", e)
-            checker = self.generator
-            checker_config = {
-                "model_name": writer_config.get("model_name", "gpt-5.2-2025-12-11"),
-                "temperature": 0.0,
-                "max_tokens": 25000,
-            }
 
         all_scenes: List[Dict[str, Any]] = []
         acts_revised = 0
@@ -406,8 +433,9 @@ class Step8Screenplay:
                 start_scene_number=start_scene,
             )
 
-            logger.info("Generating %s with GPT...", act_label)
-            raw = self.generator.generate(act_prompt, writer_config)
+            writer_label = "Grok" if swap_models else "GPT"
+            logger.info("Generating %s with %s...", act_label, writer_label)
+            raw = writer.generate(act_prompt, writer_config)
             act_scenes = self._parse_act_scenes(raw, start_scene)
 
             if not act_scenes:
@@ -500,7 +528,7 @@ class Step8Screenplay:
                 )
 
                 try:
-                    revised_raw = self.generator.generate(revision_prompt, revision_config)
+                    revised_raw = writer.generate(revision_prompt, revision_config)
                     revised_scenes = self._parse_act_scenes(revised_raw, start_scene)
 
                     if revised_scenes:

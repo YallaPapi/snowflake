@@ -1,17 +1,18 @@
 """
 Step 7 Validator: Diagnostic Checks (Save the Cat Ch.7)
 
-v2.0.0 -- Validates that all 9 diagnostic checks were executed and structured correctly.
+v3.0.0 -- Validates that all 9 diagnostic checks were executed and structured correctly.
 Checks performed:
   1. Artifact has "diagnostics" list with exactly 9 entries
   2. Each diagnostic has check_number (1-9), check_name, passed (bool)
-  3. Each failed diagnostic has non-empty problem_details
-  4. Each failed diagnostic has non-empty fix_suggestion
-  5. Semantic keyword check: failed diagnostics' problem_details must reference
+  3. Each failed diagnostic has non-empty problem_details with quoted scene text
+  4. Each failed diagnostic has non-empty failing_scene_numbers (list of ints)
+  5. Each failed diagnostic has non-empty fix_per_scene (dict with concrete rewrites)
+  6. Semantic keyword check: failed diagnostics' problem_details must reference
      the check's core concept (catches AI misapplications)
-  6. checks_passed_count field exists and matches actual count
-  7. total_checks field exists and equals 9
-  8. All 9 canonical check names are present
+  7. checks_passed_count field exists and matches actual count
+  8. total_checks field exists and equals 9
+  9. All 9 canonical check names are present
 
 Step 7 validation succeeds as long as all 9 checks were RUN (not necessarily
 all passed). The diagnostic results inform the user what to fix.
@@ -81,7 +82,7 @@ CHECK_SEMANTIC_KEYWORDS = {
 class Step7Validator:
     """Validator for Screenplay Engine Step 7: 9 Diagnostic Checks (Save the Cat Ch.7)"""
 
-    VERSION = "2.0.0"
+    VERSION = "3.0.0"
 
     def validate(self, artifact: Dict[str, Any]) -> Tuple[bool, List[str]]:
         """
@@ -91,9 +92,10 @@ class Step7Validator:
             1. Artifact has "diagnostics" list with exactly 9 entries
             2. Each diagnostic has check_number (1-9), check_name, passed (bool)
             3. Each failed diagnostic has non-empty problem_details
-            4. Each failed diagnostic has non-empty fix_suggestion
-            5. checks_passed_count field exists and matches actual count
-            6. All 9 check names are present
+            4. Each failed diagnostic has failing_scene_numbers (list of ints)
+            5. Each failed diagnostic has fix_per_scene (dict with rewrites)
+            6. checks_passed_count field exists and matches actual count
+            7. All 9 check names are present
 
         Step 7 validation succeeds as long as all 9 checks were RUN
         (not necessarily all passed). The diagnostic results inform the
@@ -185,17 +187,18 @@ class Step7Validator:
                 if passed:
                     actual_passed_count += 1
 
-                # -- 3 & 4. Failed checks need problem_details and fix_suggestion
+                # -- 3. Failed checks need problem_details with quoted text
                 if not passed:
                     problem_details = (diag.get("problem_details") or "").strip()
                     if not problem_details:
                         errors.append(
                             f"{prefix}_MISSING_PROBLEM_DETAILS: Failed diagnostic "
                             f"(check_number={check_number}) must have non-empty "
-                            f"'problem_details' describing the specific issue."
+                            f"'problem_details' describing the specific issue with "
+                            f"quoted dialogue/action from the screenplay."
                         )
 
-                    # -- 5. Semantic keyword check for failed diagnostics
+                    # -- 4. Semantic keyword check for failed diagnostics
                     if problem_details and check_name and check_name in CHECK_SEMANTIC_KEYWORDS:
                         details_lower = problem_details.lower()
                         keywords = CHECK_SEMANTIC_KEYWORDS[check_name]
@@ -206,13 +209,51 @@ class Step7Validator:
                                 f"address the check's core concept."
                             )
 
-                    fix_suggestion = (diag.get("fix_suggestion") or "").strip()
-                    if not fix_suggestion:
+                    # -- 5. Failed checks need failing_scene_numbers (list of ints)
+                    failing_scenes = diag.get("failing_scene_numbers")
+                    if failing_scenes is None or (isinstance(failing_scenes, list) and len(failing_scenes) == 0):
                         errors.append(
-                            f"{prefix}_MISSING_FIX_SUGGESTION: Failed diagnostic "
+                            f"{prefix}_MISSING_FAILING_SCENES: Failed diagnostic "
                             f"(check_number={check_number}) must have non-empty "
-                            f"'fix_suggestion' describing how to fix the issue."
+                            f"'failing_scene_numbers' listing which scenes have the problem."
                         )
+                    elif not isinstance(failing_scenes, list):
+                        errors.append(
+                            f"{prefix}_INVALID_FAILING_SCENES: 'failing_scene_numbers' must "
+                            f"be a list of integers, got {type(failing_scenes).__name__}."
+                        )
+                    elif not all(isinstance(s, int) for s in failing_scenes):
+                        errors.append(
+                            f"{prefix}_INVALID_FAILING_SCENE_TYPE: All entries in "
+                            f"'failing_scene_numbers' must be integers."
+                        )
+
+                    # -- 6. Failed checks need fix_per_scene (dict with concrete rewrites)
+                    fix_per_scene = diag.get("fix_per_scene")
+                    if fix_per_scene is None or (isinstance(fix_per_scene, dict) and len(fix_per_scene) == 0):
+                        errors.append(
+                            f"{prefix}_MISSING_FIX_PER_SCENE: Failed diagnostic "
+                            f"(check_number={check_number}) must have non-empty "
+                            f"'fix_per_scene' dict with concrete rewrite instructions "
+                            f"for each failing scene."
+                        )
+                    elif not isinstance(fix_per_scene, dict):
+                        errors.append(
+                            f"{prefix}_INVALID_FIX_PER_SCENE: 'fix_per_scene' must "
+                            f"be a dict mapping scene numbers to fix instructions, "
+                            f"got {type(fix_per_scene).__name__}."
+                        )
+                    elif isinstance(failing_scenes, list) and len(failing_scenes) > 0:
+                        # Verify keys match failing_scene_numbers
+                        fix_keys = set(str(k) for k in fix_per_scene.keys())
+                        scene_keys = set(str(s) for s in failing_scenes)
+                        missing = scene_keys - fix_keys
+                        if missing:
+                            errors.append(
+                                f"{prefix}_INCOMPLETE_FIX_PER_SCENE: 'fix_per_scene' "
+                                f"is missing entries for scene(s): {', '.join(sorted(missing))}. "
+                                f"Every scene in failing_scene_numbers must have a fix."
+                            )
 
         # -- 6. checks_passed_count exists and matches actual count ---------
         checks_passed_count = artifact.get("checks_passed_count")
@@ -318,12 +359,36 @@ class Step7Validator:
             elif "MISSING_PROBLEM_DETAILS" in error:
                 suggestions.append(
                     "Failed diagnostics (passed=false) must include 'problem_details' "
-                    "with a specific description of what is wrong."
+                    "with quoted dialogue/action from specific scenes."
                 )
-            elif "MISSING_FIX_SUGGESTION" in error:
+            elif "MISSING_FAILING_SCENES" in error:
                 suggestions.append(
-                    "Failed diagnostics (passed=false) must include 'fix_suggestion' "
-                    "with a specific, actionable recommendation to fix the problem."
+                    "Failed diagnostics must include 'failing_scene_numbers' — a list of "
+                    "integers identifying which scenes have the problem."
+                )
+            elif "INVALID_FAILING_SCENES" in error:
+                suggestions.append(
+                    "Set 'failing_scene_numbers' to a JSON array of integers, e.g. [7, 20, 30]."
+                )
+            elif "INVALID_FAILING_SCENE_TYPE" in error:
+                suggestions.append(
+                    "All entries in 'failing_scene_numbers' must be integers, not strings."
+                )
+            elif "MISSING_FIX_PER_SCENE" in error:
+                suggestions.append(
+                    "Failed diagnostics must include 'fix_per_scene' — a dict where each key "
+                    "is a scene number (as string) and each value is a concrete rewrite "
+                    "instruction following: 'CURRENT: [quote]. REPLACE WITH: [new text]. "
+                    "FIXES: [what this changes].'."
+                )
+            elif "INVALID_FIX_PER_SCENE" in error:
+                suggestions.append(
+                    "Set 'fix_per_scene' to a JSON object (dict), not a list or string."
+                )
+            elif "INCOMPLETE_FIX_PER_SCENE" in error:
+                suggestions.append(
+                    "Every scene number in 'failing_scene_numbers' must have a corresponding "
+                    "entry in 'fix_per_scene' with concrete rewrite instructions."
                 )
             elif "MISSING_CHECKS_PASSED_COUNT" in error:
                 suggestions.append(

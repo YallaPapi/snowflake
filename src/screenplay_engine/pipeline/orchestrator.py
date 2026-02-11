@@ -52,6 +52,7 @@ class ScreenplayPipeline:
         6: "Screenplay Writing",
         7: "Immutable Laws",
         8: "Diagnostics",
+        "8b": "Targeted Rewrite (Grok)",
         9: "Marketing Validation",
     }
 
@@ -103,6 +104,9 @@ class ScreenplayPipeline:
             elif step_num == 9:
                 from src.screenplay_engine.pipeline.steps.step_9_marketing import Step9Marketing
                 self._steps[9] = Step9Marketing(str(self.project_dir))
+            elif step_num == 85:  # 8b — targeted Grok rewrite
+                from src.screenplay_engine.pipeline.steps.step_8b_targeted_rewrite import Step8bTargetedRewrite
+                self._steps[85] = Step8bTargetedRewrite(str(self.project_dir))
         return self._steps.get(step_num)
 
     # ── Project Management ─────────────────────────────────────────────
@@ -477,6 +481,14 @@ class ScreenplayPipeline:
         step = self._get_step(7)  # Still uses Step7Diagnostics executor internally
         return self._run_step(8, "Diagnostics", lambda: step.execute(screenplay_artifact, step_5_artifact, step_4_artifact, step_3_artifact, self.current_project_id))
 
+    def execute_step_8b(self, screenplay_artifact: Dict[str, Any], diagnostics_artifact: Dict[str, Any], step_3_artifact: Dict[str, Any], step_1_artifact: Dict[str, Any]) -> Tuple[bool, Dict[str, Any], str]:
+        """Step 8b: Targeted Grok scene rewrite based on diagnostic failures."""
+        step = self._get_step(85)
+        return self._run_step("8b", "Targeted Rewrite (Grok)", lambda: step.execute(
+            screenplay_artifact, diagnostics_artifact, step_3_artifact, step_1_artifact,
+            self.current_project_id,
+        ))
+
     def execute_step_9(self, screenplay_artifact: Dict[str, Any], step_1_artifact: Dict[str, Any]) -> Tuple[bool, Dict[str, Any], str]:
         """Step 9: Marketing validation — logline still accurate?"""
         step = self._get_step(9)
@@ -518,8 +530,13 @@ class ScreenplayPipeline:
             # Step 8: Final diagnostics on finished screenplay — should find fewer failures
             # now that incremental checkpoints caught problems early
             (8, lambda: self.execute_step_8(artifacts[6], artifacts[5], artifacts[4], artifacts[3])),
-            (9, lambda: self.execute_step_9(artifacts[6], artifacts[1])),
         ]
+
+        # Step 8b: Targeted Grok scene rewrite (runs ONLY if Step 8 found failures)
+        step_8b = ("8b", lambda: self.execute_step_8b(artifacts[6], artifacts[8], artifacts[3], artifacts[1]))
+
+        # Step 9: Marketing validation (uses potentially rewritten screenplay)
+        step_9 = (9, lambda: self.execute_step_9(artifacts[6], artifacts[1]))
 
         pipeline_t0 = time.time()
         logger.info("=" * 60)
@@ -542,7 +559,7 @@ class ScreenplayPipeline:
             )
             artifacts[step_num] = artifact
 
-        # Run post-screenplay steps (7-9) — no checkpoints
+        # Run post-screenplay steps (7-8) — no checkpoints
         for step_num, executor in post_steps:
             success, artifact, message = executor()
             if not success:
@@ -551,6 +568,31 @@ class ScreenplayPipeline:
                             step_num, elapsed, message[:300])
                 return False, artifacts, f"Pipeline failed at Step {step_num} ({self.STEP_NAMES[step_num]}): {message}"
             artifacts[step_num] = artifact
+
+        # Step 8b: Targeted Grok rewrite (only if diagnostics found failures)
+        diag_passed = artifacts.get(8, {}).get("checks_passed_count", 9)
+        if diag_passed < 9:
+            logger.info("Step 8 found %d/9 failures — running Step 8b targeted rewrite", 9 - diag_passed)
+            step_num_8b, executor_8b = step_8b
+            success, artifact, message = executor_8b()
+            if success:
+                artifacts["8b"] = artifact
+                # Update the screenplay artifact for downstream steps
+                artifacts[6] = artifact
+                logger.info("Step 8b complete: %s", message)
+            else:
+                logger.warning("Step 8b failed (non-fatal): %s", message[:300])
+        else:
+            logger.info("All 9 diagnostics passed — skipping Step 8b")
+
+        # Step 9: Marketing validation (uses potentially rewritten screenplay)
+        step_num_9, executor_9 = step_9
+        success, artifact, message = executor_9()
+        if not success:
+            elapsed = time.time() - pipeline_t0
+            logger.error("PIPELINE FAILED at Step 9 after %.1fs: %s", elapsed, message[:300])
+            return False, artifacts, f"Pipeline failed at Step 9 (Marketing Validation): {message}"
+        artifacts[9] = artifact
 
         elapsed = time.time() - pipeline_t0
         logger.info("=" * 60)
