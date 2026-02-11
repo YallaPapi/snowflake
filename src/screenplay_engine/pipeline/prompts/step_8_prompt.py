@@ -1,10 +1,11 @@
 """
 Step 8 Prompt Template: Screenplay Writing (Save the Cat end of Ch.5)
 
-v3.0.0 -- Genre-specific scene writing guidance for all 10 Snyder genres.
-Concrete before/after examples for each writing rule.  Enhanced rules to fix
-the 5 persistent diagnostic failures: Hero Leads, Talking the Plot, Emotional
-Color Wheel, Hi How Are You, Limp and Eye Patch.
+v5.0.0 -- Massively expanded rules for Pope in the Pool (rule 14) and added
+Covenant of the Arc (rule 15) across ALL three generation templates (monolithic,
+act-by-act, scene-by-scene).  Every rule now has full Snyder quotes, origin
+stories, multiple BAD/GOOD examples, HIGH-RISK BEAT callouts with per-beat
+examples, and exhaustive minor-character arc guidance.
 """
 
 import hashlib
@@ -15,7 +16,7 @@ from typing import Dict, Any, List
 class Step8Prompt:
     """Prompt generator for Screenplay Engine Step 8: Screenplay Writing"""
 
-    VERSION = "4.0.0"
+    VERSION = "5.0.0"
 
     # ── Genre-specific scene writing guidance for all 10 Snyder genres ────
     GENRE_SCENE_TEMPLATES = {
@@ -435,13 +436,159 @@ from - to +."
     EXCEPTION: Only if the story's premise is ABOUT media/journalism.
 
 14. POPE IN THE POOL (Snyder Ch.6 — Immutable Law #2):
-    Every scene that conveys backstory or plot information MUST have something visually
-    entertaining happening simultaneously. NEVER write a scene where a character stands at
-    a screen or sits at a desk and EXPLAINS things. Bury exposition in action, danger, or
-    visual spectacle.
-    BAD: A team leader briefs the squad on the situation while everyone listens.
-    GOOD: A team leader shouts situation details while the squad sprints through a collapsing
-    building — the audience absorbs the info because they're watching people dodge debris.
+    Snyder: "Is there a way to bury the exposition? Can you put your 'pope' in a 'pool'?"
+    The name comes from the screenplay "The Plot to Kill the Pope." In that script, vital
+    backstory about the assassination conspiracy is delivered while the Pope swims laps in
+    a bathing suit at the Vatican pool. The audience barely listens to the exposition because
+    they're watching the Pope doing laps in a Speedo. THAT is how you deliver information.
+
+    THE RULE: Every scene that conveys backstory, plot mechanics, thematic statements, plans,
+    strategies, or any information the audience needs to absorb MUST have something visually
+    compelling and entertaining happening simultaneously that COMPETES for the audience's
+    attention. The visual action must be interesting enough that the audience would watch it
+    even with the sound off. If your scene would be boring on mute, it violates this rule.
+
+    NEVER WRITE:
+    - A character standing at a screen/whiteboard explaining the situation
+    - A character sitting in a car/coffee shop/office delivering thematic speeches
+    - A phone call where one character tells another character important information
+    - A briefing scene where everyone sits and listens to a plan
+    - A confession scene where two characters sit in a dark room and talk about the past
+    - Any scene where the primary visual is "two people talking while stationary"
+
+    BAD (static exposition):
+      EXT. PARKING LOT - NIGHT
+      Rae and Lena stand by the car.
+      LENA: The blackout wasn't random. MARA controls the grid. She's been testing
+      how long people can go without power before they comply.
+      RAE: How do you know this?
+      LENA: I worked the inside for two years.
+
+    GOOD (buried in action):
+      EXT. PARKING LOT - NIGHT
+      Rae pops the hood of a dead sedan. She strips wires by flashlight while Lena
+      holds a mirror to watch the street behind them.
+      LENA: The grid isn't down. It's controlled. (hands Rae a wire stripper)
+      RAE hot-wires the ignition. The engine coughs, dies. She tries again.
+      LENA: Two years on the inside. I watched her test neighborhoods — kill the power,
+      time how long before people line up to register.
+      The engine catches. Headlights flood the alley. Both women freeze — the light reveals
+      a surveillance camera they didn't see. Rae kills the lights instantly.
+
+    The audience absorbs Lena's exposition because they're watching Rae hot-wire a car
+    while checking for surveillance. The information lands BETWEEN moments of tension.
+
+    HIGH-RISK BEATS — these beats MOST OFTEN violate Pope in the Pool. Pay EXTREME
+    attention when writing any of these:
+
+    THEME STATED (page ~5): The theme of the story is spoken aloud by a character, usually
+    to the hero. This is PURE EXPOSITION — a character literally stating the movie's thesis.
+    It MUST be delivered during visually compelling physical action, NOT during a static
+    conversation, NOT during a phone call, NOT over coffee, NOT while sitting in a car.
+      BAD: Lena and Rae sit in a diner. Lena says "You can't save everyone by yourself."
+      BAD: Lena calls Rae on the phone. "The world doesn't need another lone wolf."
+      BAD: Rae drives while Lena talks from the passenger seat about independence vs trust.
+      GOOD: Rae is mid-chase on foot through a market — knocking over crates, vaulting a
+      counter. She answers Lena's call on speaker, jammed in her collar. Lena's theme line
+      ("You keep running alone and you'll die alone") hits RIGHT as Rae nearly gets caught
+      because she has no one watching her back. The theme is PROVEN by the action around it.
+      GOOD: Rae is suturing her own arm wound (one-handed, painful, failing) when Lena
+      arrives and takes the needle. "Let someone help for once." The physical struggle of
+      self-reliance IS the theme — Rae literally cannot do this alone.
+
+    DARK NIGHT OF THE SOUL (pages 75-85): The hero's lowest emotional point. Often involves
+    confessions, guilt, despair, or admitting failure. This is the #1 scene where writers
+    create two characters sitting in a dark room talking about feelings. NEVER DO THIS.
+    The confession/despair MUST be forced out by extreme physical circumstances — the
+    character is physically doing something desperate while the emotional truth spills out
+    in fragments between urgent actions.
+      BAD: Rae sits in a stairwell. She turns to her sister and says "I got someone killed.
+      I took a job, trusted a clean file, and delivered a man who didn't make it out."
+      BAD: Rae stands alone on a rooftop staring at the city. Voice-over of her guilt.
+      GOOD: Rae and her sister are barricaded in a utility room. Water is rising from a
+      burst pipe. Rae tries to seal it with duct tape — it keeps failing. Her sister holds
+      a flashlight that keeps flickering. Between attempts to stop the flood, Rae's guilt
+      spills out in fragments: "I delivered him." (rips tape) "Clean file, they said."
+      (shoves a rag into the pipe) "He didn't come back." (the rag blows out — water
+      sprays) The PHYSICAL FAILURE mirrors the emotional confession. The audience feels
+      the despair because they're watching Rae literally unable to stop things from falling
+      apart.
+
+    BREAK INTO THREE (page ~85): The hero conceives the plan for the finale. Writers
+    instinctively create a briefing scene — chalk maps, "here's what we'll do" speeches,
+    hand-signal instructions. NEVER write a briefing. Show the plan being EXECUTED in
+    real-time micro-steps as it's being conceived.
+      BAD: Rae draws a chalk map on a wall and explains each step of the plan.
+      BAD: Rae gathers the group and assigns roles: "You take the east door, you take the
+      roof, I'll go through the basement."
+      GOOD: Rae starts moving toward the target. She tests a door — locked. Signals her
+      partner to try the window. Her partner shakes her head — barred. Rae spots a vent
+      grate, pulls it open, looks at her partner: "Fit through that?" The plan is being
+      INVENTED and TESTED in the same moment. The audience learns the plan by watching
+      it form through trial and error, not by hearing it explained.
+
+15. COVENANT OF THE ARC (Snyder Ch.6 — Immutable Law #6):
+    Snyder: "Every single character in your movie must change in the course of your story.
+    EVERYONE. And I mean everyone. Good guys. Bad guys. Bystanders. It's a rule for ALL
+    characters who appear on screen. The only ones who DON'T change are the bad guys —
+    and that's why they lose."
+
+    THE RULE: Every character who appears in your screenplay — including minor, one-scene,
+    walk-on characters who only have 1-3 lines — MUST show some observable behavioral
+    shift between their first moment on screen and their last moment on screen. This means:
+
+    WHAT COUNTS AS AN ARC (even for tiny characters):
+    - Hostile → reluctant help (a suspicious clerk warns the hero about danger)
+    - Fearful → small brave act (a cowering bystander opens a door for the hero)
+    - Obedient → questioning (a guard hesitates instead of following orders)
+    - Selfish → small generosity (a vendor gives something away for free)
+    - Indifferent → caring (a stranger checks if someone is OK)
+    - Dutiful → merciful (a cop looks the other way)
+    - Aggressive → backing down (a bully realizes they're wrong)
+    A single beat of visible change counts: a flinch, a handed-over key, a deliberate
+    lie told to protect someone, a refusal to comply, a look away at the critical moment.
+
+    WHAT DOES NOT COUNT AS AN ARC:
+    - A character who enters as a cashier and exits as a cashier with no change
+    - A character who is hostile the whole time and stays hostile
+    - A character who is helpful the whole time with no initial resistance
+    - A character who serves a pure plot function (gives directions, sells a ticket)
+      without any emotional engagement with the situation
+    - A character who has no reaction to what's happening around them
+
+    BAD (static minor characters):
+      GAS CLERK rings up the purchase. Doesn't look up.
+      GAS CLERK: Pump three. (hands receipt)
+      Rae leaves. Gas Clerk goes back to the register.
+      [PROBLEM: Gas Clerk enters passive, exits passive. Zero change. Static prop.]
+
+    GOOD (minor character arcs in action):
+      GAS CLERK rings up the purchase. Eyes the WANTED notification glowing on the
+      register screen. Looks at Rae. Looks at the screen. Back at Rae.
+      GAS CLERK: Pump three. (slides receipt across, lowers voice) You should know —
+      two guys in a black truck been sitting across the street for an hour. (beat)
+      I didn't see you.
+      Gas Clerk deliberately turns away and wipes the counter. Doesn't watch Rae leave.
+      [The clerk went from OBEDIENT (sees the alert) to DEFIANT (warns Rae, lies by
+      omission). That's an arc. One scene. Three lines. Visible change.]
+
+    MORE EXAMPLES OF MINOR CHARACTER ARCS:
+      LAUNDROMAT CUSTOMER initially clutches her child and backs away from Rae (fear).
+      Later, when Rae helps her kid pick up dropped coins, the Customer gives Rae
+      a quarter for the dryer. Fear → small kindness.
+
+      CONTRACTOR follows orders robotically in Scene 27. After watching a colleague
+      die in Scene 28, Contractor hesitates before breaching the next door. Looks at
+      the squad leader. Doesn't move until pushed. Obedience → doubt.
+
+      ENCAMPMENT TEEN blocks Rae's path with crossed arms (hostility). After Rae
+      shares her water without being asked, Teen silently moves aside and points
+      to a gap in the fence. Hostility → grudging aid.
+
+    The world around the hero must REACT AND CHANGE in response to what's happening.
+    If the hero's journey doesn't ripple outward to affect even the smallest characters,
+    the story feels hollow. The antagonist is the ONLY character who refuses to change —
+    and that refusal is precisely why they lose.
 
 PER-SCENE REQUIRED FIELDS:
 1. scene_number (int): Sequential starting from 1
@@ -708,10 +855,10 @@ HERO:
 CHARACTERS:
 {characters_summary}
 
-CHARACTER VOICE GUIDE (every character MUST sound distinct):
+CHARACTER VOICE GUIDE (every character MUST sound distinct from every other):
 {character_identifiers}
 
-GENRE-SPECIFIC SCENE GUIDANCE ({genre}):
+GENRE-SPECIFIC SCENE WRITING GUIDANCE ({genre}):
 {genre_scene_guidance}
 
 BOARD CARD TO EXPAND:
@@ -720,53 +867,136 @@ BOARD CARD TO EXPAND:
 PREVIOUS SCENES (for continuity — do NOT repeat content):
 {previous_scenes_summary}
 {milestone_guidance}
-SCENE WRITING RULES (STRICT — violating any is a failure):
+SCENE WRITING RULES (STRICT — violating any of these is a failure):
 
-1. MINI-MOVIE: Beginning, middle, end. Something happens that changes the emotional tone
-   from {emotional_start} to {emotional_end}. Show this change through ACTION.
+This scene is a MINI-MOVIE with a beginning, middle, and end. Snyder (Ch.5): "Think of each
+scene as a mini-movie. It must have a beginning, middle and an end. And it must also have
+something happen that causes the emotional tone to change drastically either from + to - or
+from - to +." This scene changes from {emotional_start} to {emotional_end}. Show this change
+through ACTION, not narration.
 
-2. CONFLICT: "{conflict}" — build the entire scene around this single conflict.
+1. CONFLICT: "{conflict}" — build the entire scene around this single conflict. Snyder:
+   "Only one conflict per scene, please. One is plenty."
 
-3. THE HERO LEADS: The hero is PROACTIVE — makes statements, gives commands, drives action.
-   MAX 2 question marks from the hero in this scene. The hero SEEKS information through
-   action (searches, confronts, investigates), not by asking and being told.
-   BAD: "What happened?" / "Where should we go?"
-   GOOD: "Give me your belt. And that mirror. We have ninety seconds."
+2. THE HERO LEADS — The hero is PROACTIVE in this scene. The hero makes statements, gives
+   commands, and drives the action. The hero should have NO MORE THAN 2 question marks in
+   this scene. The hero SEEKS information — searches drawers, follows clues, confronts
+   people — rather than asking "What happened?" and being told.
+   Snyder (Ch.7): "A hero who asks questions is a passive hero."
+   BAD (passive hero):
+     DETECTIVE: What happened here?
+     OFFICER: We found the body at 3 AM.
+     DETECTIVE: Who discovered it?
+     OFFICER: The night guard.
+   GOOD (proactive hero):
+     DETECTIVE grabs the logbook from the desk. Flips to last night's entries.
+     DETECTIVE: The night guard signed out at 2:47. Body was found at 3. (points at the logbook)
+     Thirteen minutes. Where was he for thirteen minutes?
 
-4. SHOW, DON'T TELL: ZERO tolerance for exposition in dialogue. Characters NEVER explain
-   things the audience already knows. NEVER "as you know" or "let me explain." If the
-   audience needs information, SHOW it through a prop, a screen, a document, a reaction.
-   BAD: "As you know, the system controls all the cameras."
-   GOOD: A bank of monitors flickers. Every feed shows the same face.
+3. SHOW, DON'T TELL — ZERO tolerance for exposition in dialogue. Characters NEVER explain
+   things the audience already knows. Characters NEVER say "as you know" or "let me explain."
+   If the audience needs information, SHOW it: a newspaper headline, security footage, a
+   physical evidence piece, a visible reaction, a prop that tells the story.
+   BAD: "As you know, we've been tracking this target for six months."
+   GOOD: She opens a drawer. Six months of surveillance photos spill across the desk.
+   BAD: "He's dangerous because he controls the entire network."
+   GOOD: A bank of monitors shows feeds from every camera in the city. HIS face reflected in each.
+   Snyder: "Movies are stories told in pictures."
 
-5. NO INTERNAL MONOLOGUE: Everything must be visible or audible on screen.
-   BAD: "She felt nausea rising." / "He wondered if she was lying."
-   GOOD: "She grabs the table. Knuckles whiten." / "He stares. Jaw tightens."
+4. NO INTERNAL MONOLOGUE — everything must be visible or audible on screen.
+   BAD: "She felt nausea rising in her stomach."
+   GOOD: "She grabs the table edge. Her knuckles whiten."
+   BAD: "He wondered if she was telling the truth."
+   GOOD: "He stares at her. His jaw tightens. He pulls out his phone, scrolls to a photo."
+   Snyder (Ch.7): "Character is revealed by action taken not by words spoken."
 
-6. DISTINCT VOICES (Hi How Are You): Every character speaks differently. Different vocabulary,
-   sentence length, rhythm, verbal tics. Use the Character Voice Guide above. Cover the
-   character names — a reader MUST be able to tell who is speaking by voice alone.
+5. DISTINCT VOICES (Hi How Are You) — Snyder (Ch.7): "I was stunned. I couldn't tell one of
+   my characters from the others." EVERY character in this scene MUST speak differently:
+   - Different sentence lengths (one uses clipped fragments, another uses long clauses)
+   - Different vocabulary levels (one uses street slang, another uses technical jargon)
+   - Different verbal tics (one says "Look," to start sentences; another never uses contractions)
+   - If you cover the character names, a reader MUST be able to tell who is speaking
+   Use the Character Voice Guide above — it tells you HOW each character talks. Follow it.
 
-7. CHARACTER IDENTIFIERS (Limp and Eye Patch): Each recurring character has a visual/behavioral
-   signature from the Voice Guide. Reference it the FIRST TIME they appear in this scene.
-   A prop, gesture, habit, or physical trait that makes them unforgettable.
+6. CHARACTER IDENTIFIERS (Limp and Eye Patch) — Snyder (Ch.7): "Make sure every character
+   has 'A Limp and an Eyepatch' — something memorable." EVERY recurring character must display
+   their distinctive visual/behavioral identifier THE FIRST TIME they appear in this scene:
+   - A prop they always carry or touch
+   - A physical habit or gesture
+   - A piece of clothing or accessory
+   - A sound they make (clearing throat, cracking knuckles)
+   The Character Voice Guide above lists each character's identifier. USE IT.
 
-8. DIALOGUE: Sustained exchanges — at least 3 back-and-forth (character + dialogue pairs).
-   Dialogue serves the scene's CONFLICT, not the writer's need to explain.
+7. DIALOGUE must be SPOKEN, SUSTAINED, and CHARACTER-SPECIFIC.
+   Each dialogue exchange needs MULTIPLE back-and-forth (3-6 minimum).
+   Dialogue serves the scene's CONFLICT, not the writer's need to explain the plot.
+   BAD: "We need to go to the warehouse because that's where the evidence is."
+   GOOD: "The warehouse." "In this weather?" "You want the proof or not?"
 
-9. SCENE DENSITY: 5-15 elements. Slugline, establishing action, character introductions,
+8. SCENE DENSITY: 5-15 elements. Slugline, establishing action, character introductions,
    dialogue exchanges, reactive action, visual exit.
+
+9. VISUAL ENTRY AND EXIT: Open with a slugline and establishing action (what we SEE when
+   we arrive). End with a clear reason to cut — a door slam, a look, a revelation, a
+   question left hanging.
 
 10. TIMING: 1 page = 60 seconds. Average scene is 2-3 pages (120-180 seconds).
 
-11. KEEP THE PRESS OUT: No TV news, radio reports, journalists, press conferences, social
-    media coverage, or characters watching/hearing news about the story's events. Keep the
-    story contained. Snyder: "the magic stayed real" by keeping it between the characters
-    and the audience. EXCEPTION: Only if the premise is ABOUT media/journalism.
+11. KEEP THE PRESS OUT (Snyder Ch.6 — Immutable Law #7):
+    Do NOT write any scene element that includes:
+    - TV news broadcasts playing in the background
+    - Radio news reports the characters overhear
+    - Journalists or reporters appearing as characters
+    - Press conferences or media scrums
+    - Social media posts, trending topics, or viral content about the story's events
+    - Any character watching/reading/hearing news coverage of what's happening
+    Snyder: "By keeping it contained among the family and on the block, the magic stayed
+    real." E.T. has a real alien and ZERO news crews. That's why it works.
+    BAD (press breaks containment):
+      [ACTION] A TV in the corner shows a news anchor reporting on the citywide blackout.
+    GOOD (information stays personal and contained):
+      [ACTION] A drunk at the end of the bar slams his glass down. "Third night in a row
+      the power's been cutting out. My wife thinks it's terrorists."
+    EXCEPTION: Only if the story's premise is ABOUT media/journalism.
 
-12. POPE IN THE POOL: If this scene must convey backstory or plot info, bury it in action.
-    Never have a character stand and explain things. Deliver exposition during danger,
-    physical activity, or visual spectacle so the audience absorbs info without noticing.
+12. POPE IN THE POOL (Snyder Ch.6 — Immutable Law #2):
+    Every scene that conveys backstory or plot information MUST have something visually
+    entertaining happening simultaneously. NEVER write a scene where a character stands at
+    a screen or sits at a desk and EXPLAINS things. Bury exposition in action, danger, or
+    visual spectacle. The name comes from "The Plot to Kill the Pope" — vital backstory about
+    the assassination plot is delivered while the Pope swims laps at the Vatican pool. We
+    aren't even listening to the exposition because we're watching the Pope in a Speedo.
+    BAD: A team leader briefs the squad on the situation while everyone listens.
+    GOOD: A team leader shouts situation details while the squad sprints through a collapsing
+    building — the audience absorbs the info because they're watching people dodge debris.
+    HIGH-RISK BEATS — pay extreme attention if this scene is one of these:
+    - THEME STATED: Theme MUST be delivered during visually compelling action — NOT during
+      a static phone call, NOT over coffee, NOT while sitting in a car.
+    - DARK NIGHT OF THE SOUL: The hero's lowest point MUST NOT be a static confession.
+      No sitting and talking. The despair MUST be forced out by physical circumstances.
+    - BREAK INTO THREE: The plan MUST NOT be a briefing. Show it being EXECUTED in
+      micro-steps as it's conceived, not explained as a lecture.
+
+13. COVENANT OF THE ARC (Snyder Ch.6 — Immutable Law #6):
+    Snyder: "Every single character in your movie must change in the course of your story.
+    EVERYONE." This means EVERY character who appears in this scene — including minor,
+    one-scene walk-on characters — must show some observable behavioral shift between their
+    first moment and their last moment in the scene. The shift can be tiny but MUST be visible:
+    - A hostile stranger who softens (hostility → reluctant help)
+    - A fearful bystander who finds courage (fear → small brave act)
+    - A suspicious guard who looks the other way (duty → mercy)
+    - A selfish clerk who gives something away (selfishness → generosity)
+    NO CHARACTER should enter and exit this scene in the same emotional/behavioral state.
+    The ONLY exception is the antagonist, who refuses to change — that's why they lose.
+    BAD (static minor character):
+      GAS CLERK rings up the purchase. Doesn't look up.
+      GAS CLERK: Pump three. (hands receipt)
+      Rae leaves. Gas Clerk goes back to the register.
+    GOOD (minor character arcs):
+      GAS CLERK rings up the purchase. Eyes the WANTED notification on the register screen.
+      GAS CLERK: Pump three. (slides receipt across) You should know — two guys in a black
+      truck have been parked across the street for an hour. (beat) I didn't see you.
+      Gas Clerk deliberately turns away and wipes the counter.
 
 OUTPUT FORMAT (single scene, valid JSON):
 {{
@@ -777,12 +1007,15 @@ OUTPUT FORMAT (single scene, valid JSON):
   "time_of_day": "DAY|NIGHT|DAWN|DUSK|CONTINUOUS",
   "elements": [
     {{"element_type": "slugline", "content": "INT. LOCATION - TIME"}},
-    {{"element_type": "action", "content": "Establishing visual."}},
+    {{"element_type": "action", "content": "Establishing visual. What we see."}},
     {{"element_type": "character", "content": "CHARACTER A"}},
-    {{"element_type": "dialogue", "content": "Dialogue line."}},
+    {{"element_type": "dialogue", "content": "First line of dialogue."}},
     {{"element_type": "character", "content": "CHARACTER B"}},
-    {{"element_type": "dialogue", "content": "Response."}},
-    {{"element_type": "action", "content": "Visual exit."}}
+    {{"element_type": "dialogue", "content": "Response dialogue."}},
+    {{"element_type": "action", "content": "Reactive action between characters."}},
+    {{"element_type": "character", "content": "CHARACTER A"}},
+    {{"element_type": "dialogue", "content": "Continuation of exchange."}},
+    {{"element_type": "action", "content": "Visual exit — door slams shut."}}
   ],
   "estimated_duration_seconds": 150,
   "beat": "{beat}",
@@ -793,7 +1026,7 @@ OUTPUT FORMAT (single scene, valid JSON):
   "board_card_number": {card_number}
 }}
 
-Write the FULL scene now. Rich, cinematic, with distinct character voices."""
+Write the FULL scene now. Rich, cinematic, with distinct character voices and every character arcing."""
 
     SCENE_REVISION_TEMPLATE = """REVISION REQUIRED for Scene {scene_number}.
 
@@ -1177,7 +1410,13 @@ or "Give the antagonist a moment of overwhelming power in the next 5 scenes").""
         "You MUST respond with valid JSON only. No markdown fences, no commentary."
     )
 
-    ACT_GENERATION_TEMPLATE = """Write ALL scenes for {act_label} from the board cards below.
+    ACT_GENERATION_TEMPLATE = """You have completed the "Deep Sea Dive" checklist from Save the Cat Chapter 5.
+You have a killer title, a killer logline, homework on genre, the perfect hero, and 40 scene cards
+on The Board with emotional change (+/-) and conflict (><) on every card.
+
+Snyder: "You're ready to write FADE IN and begin."
+
+Now expand EVERY board card for {act_label} into a FULL screenplay scene.
 
 TITLE: {title}
 LOGLINE: {logline}
@@ -1189,10 +1428,10 @@ HERO:
 CHARACTERS:
 {characters_summary}
 
-CHARACTER VOICE GUIDE (every character MUST sound distinct):
+CHARACTER VOICE GUIDE (every character MUST sound distinct from every other):
 {character_identifiers}
 
-GENRE-SPECIFIC SCENE GUIDANCE ({genre}):
+GENRE-SPECIFIC SCENE WRITING GUIDANCE ({genre}):
 {genre_scene_guidance}
 
 BOARD CARDS TO EXPAND (this act only):
@@ -1208,58 +1447,196 @@ BEAT PAGE TARGETS (for pacing — 1 page = 60 seconds):
   Dark Night of the Soul: pages 75-85 | Break into Three: page 85
   Finale: pages 85-110 | Final Image: page 110
 
-SCENE WRITING RULES (STRICT — violating any is a failure):
+SCENE WRITING RULES (STRICT — violating any of these is a failure):
 
 Each scene is a MINI-MOVIE with a beginning, middle, and end. Snyder (Ch.5): "Think of each
-scene as a mini-movie."
+scene as a mini-movie. It must have a beginning, middle and an end. And it must also have
+something happen that causes the emotional tone to change drastically either from + to - or
+from - to +."
 
-1. THE HERO LEADS: The hero is PROACTIVE — makes statements, gives commands, drives action.
-   MAX 2 question marks from the hero per scene. The hero SEEKS information through action
-   (searches, confronts, investigates), not by asking and being told.
-   BAD: "What happened?" / "Where should we go?" / "Can you explain?"
-   GOOD: "Give me your belt. And that mirror. We have ninety seconds."
+1. THE HERO LEADS — The hero is PROACTIVE in every scene they appear in. The hero makes
+   statements, gives commands, and drives the action. The hero should have NO MORE THAN 2
+   question marks per scene. The hero SEEKS information — searches drawers, follows clues,
+   confronts people — rather than asking "What happened?" and being told.
+   Snyder (Ch.7): "A hero who asks questions is a passive hero."
+   BAD (passive hero):
+     DETECTIVE: What happened here?
+     OFFICER: We found the body at 3 AM.
+     DETECTIVE: Who discovered it?
+     OFFICER: The night guard.
+   GOOD (proactive hero):
+     DETECTIVE grabs the logbook from the desk. Flips to last night's entries.
+     DETECTIVE: The night guard signed out at 2:47. Body was found at 3. (points at the logbook)
+     Thirteen minutes. Where was he for thirteen minutes?
 
-2. EMOTIONAL CHANGE: Every scene starts at one emotional polarity and ENDS at the opposite.
-   The board card's emotional_start and emotional_end tell you the transition. Show through ACTION.
+2. CONFLICT (><): Snyder: "Only one conflict per scene, please. One is plenty." The board
+   card specifies who the opposing forces are, what the issue is, and who wins. Build the
+   scene around this single conflict.
 
-3. CONFLICT (><): One conflict per scene. The board card specifies opposing forces.
+3. EMOTIONAL CHANGE: Every scene starts at one emotional polarity and ENDS at the opposite.
+   The board card's emotional_start and emotional_end tell you the transition. Show this
+   change through ACTION, not narration. The audience should FEEL the shift.
 
-4. SHOW, DON'T TELL: ZERO tolerance for exposition. Characters NEVER explain what the
-   audience already knows. NEVER "as you know" or "let me explain." Show through props,
-   screens, documents, reactions, behavior.
-   BAD: "As you know, the system controls all the cameras."
-   GOOD: A bank of monitors flickers. Every feed shows the same face.
+4. NO INTERNAL MONOLOGUE — everything must be visible or audible on screen.
+   BAD: "She felt nausea rising in her stomach."
+   GOOD: "She grabs the table edge. Her knuckles whiten."
+   BAD: "He wondered if she was telling the truth."
+   GOOD: "He stares at her. His jaw tightens. He pulls out his phone, scrolls to a photo."
+   Snyder (Ch.7): "Character is revealed by action taken not by words spoken."
 
-5. NO INTERNAL MONOLOGUE — everything must be visible or audible on screen.
-   BAD: "She felt nausea rising." GOOD: "She grabs the table. Knuckles whiten."
+5. SHOW, DON'T TELL — ZERO tolerance for exposition in dialogue. Characters NEVER explain
+   things the audience already knows. Characters NEVER say "as you know" or "let me explain."
+   If the audience needs information, SHOW it: a newspaper headline, security footage, a
+   physical evidence piece, a visible reaction, a prop that tells the story.
+   BAD: "As you know, we've been tracking this target for six months."
+   GOOD: She opens a drawer. Six months of surveillance photos spill across the desk.
+   BAD: "He's dangerous because he controls the entire network."
+   GOOD: A bank of monitors shows feeds from every camera in the city. HIS face reflected in each.
+   Snyder: "Movies are stories told in pictures."
 
-6. DISTINCT VOICES (Hi How Are You): Every character speaks differently. Different vocabulary,
-   sentence length, rhythm, verbal tics. Use the Character Voice Guide above. Cover the
-   names — readers must tell who speaks by voice alone.
+6. DISTINCT VOICES (Hi How Are You) — Snyder (Ch.7): "I was stunned. I couldn't tell one of
+   my characters from the others." EVERY character MUST speak differently. Specific rules:
+   - Different sentence lengths (one character uses clipped fragments, another uses long clauses)
+   - Different vocabulary levels (one character uses street slang, another uses technical jargon)
+   - Different verbal tics (one says "Look," to start sentences; another never uses contractions)
+   - If you cover the character names, a reader MUST be able to tell who is speaking
+   Use the Character Voice Guide above — it tells you HOW each character talks. Follow it.
 
-7. CHARACTER IDENTIFIERS (Limp and Eye Patch): Each recurring character has a visual/behavioral
-   signature from the Voice Guide. Reference it the FIRST TIME they appear in each scene.
+7. CHARACTER IDENTIFIERS (Limp and Eye Patch) — Snyder (Ch.7): "Make sure every character
+   has 'A Limp and an Eyepatch' — something memorable." EVERY recurring character must display
+   their distinctive visual/behavioral identifier THE FIRST TIME they appear in a scene:
+   - A prop they always carry or touch
+   - A physical habit or gesture
+   - A piece of clothing or accessory
+   - A sound they make (clearing throat, cracking knuckles)
+   The Character Voice Guide above lists each character's identifier. USE IT.
 
-8. DIALOGUE: Sustained exchanges — at least 3 back-and-forth per dialogue scene.
-   Dialogue serves CONFLICT, not exposition.
+8. DIALOGUE must be SPOKEN, SUSTAINED, and CHARACTER-SPECIFIC.
+   Each dialogue scene needs MULTIPLE exchanges (3-6 back-and-forth minimum).
+   Dialogue serves the scene's CONFLICT, not the writer's need to explain the plot.
+   BAD: "We need to go to the warehouse because that's where the evidence is."
+   GOOD: "The warehouse." "In this weather?" "You want the proof or not?"
 
-9. SCENE DENSITY: 5-15 elements per scene.
+9. EMOTIONAL VARIETY (Emotional Color Wheel) — No two consecutive scenes should hit the
+   exact same primary emotion. Track your palette. Snyder wants a "roller coaster of emotion."
+   Available emotions: lust, fear, joy, hope, despair, anger, tenderness, surprise, longing,
+   regret, frustration, near-miss anxiety, triumph, human foible.
+   If you've written 3 fear scenes in a row, the next scene MUST hit something different.
+   {genre_emotion_note}
 
-10. TIMING: 1 page = 60 seconds. Average scene is 2-3 pages (120-180 seconds).
+10. VISUAL ENTRY AND EXIT: Every scene opens with a slugline and establishing action (what we
+    SEE when we arrive), and ends with a clear reason to cut — a door slam, a look, a revelation,
+    a question left hanging.
 
-11. KEEP THE PRESS OUT: No TV news, radio reports, journalists, press conferences, social
-    media coverage, or characters watching/hearing news about the story's events. Keep the
-    story contained between the characters and the audience. EXCEPTION: Only if the premise
-    is ABOUT media/journalism.
+11. SCENE DENSITY: Each scene should have 5-15 elements. A typical scene includes: slugline,
+    establishing action, character introductions, dialogue exchanges, reactive action, and either
+    a transition or a strong visual exit. Thin scenes (1-3 elements) are outlines, not screenplay.
 
-12. POPE IN THE POOL: If a scene must convey backstory or plot info, bury it in physical
-    action. Never have a character stand and explain things. Deliver exposition during danger,
-    physical activity, or visual spectacle.
+12. TIMING: 1 screenplay page = approximately 60 seconds of screen time. An average scene is
+    2-3 pages (120-180 seconds). Some scenes are shorter (Opening Image might be 30-60 seconds),
+    some are longer (Finale sequences can be 5-10 pages).
+
+13. KEEP THE PRESS OUT (Snyder Ch.6 — Immutable Law #7):
+    Do NOT write any scene element that includes:
+    - TV news broadcasts playing in the background
+    - Radio news reports the characters overhear
+    - Journalists or reporters appearing as characters
+    - Press conferences or media scrums
+    - Social media posts, trending topics, or viral content about the story's events
+    - Any character watching/reading/hearing news coverage of what's happening
+    Snyder: "By keeping it contained among the family and on the block, the magic stayed
+    real." E.T. has a real alien and ZERO news crews. That's why it works.
+    BAD (press breaks containment):
+      [ACTION] A TV in the corner shows a news anchor reporting on the citywide blackout.
+      RAE glances at the screen, jaw tightening.
+    GOOD (information stays personal and contained):
+      [ACTION] A drunk at the end of the bar slams his glass down. "Third night in a row
+      the power's been cutting out. My wife thinks it's terrorists." Rae says nothing.
+      She knows the truth is worse.
+    EXCEPTION: Only if the story's premise is ABOUT media/journalism.
+
+14. POPE IN THE POOL (Snyder Ch.6 — Immutable Law #2):
+    Every scene that conveys backstory or plot information MUST have something visually
+    entertaining happening simultaneously. NEVER write a scene where a character stands at
+    a screen or sits at a desk and EXPLAINS things. Bury exposition in action, danger, or
+    visual spectacle. The name comes from "The Plot to Kill the Pope" — vital backstory about
+    the assassination plot is delivered while the Pope swims laps in a bathing suit at the
+    Vatican pool. We aren't even listening to the exposition because we're watching the Pope
+    in a Speedo.
+    BAD: A team leader briefs the squad on the situation while everyone listens.
+    GOOD: A team leader shouts situation details while the squad sprints through a collapsing
+    building — the audience absorbs the info because they're watching people dodge debris.
+    HIGH-RISK BEATS — these are the beats that MOST OFTEN violate Pope in the Pool. Pay
+    extreme attention when writing these:
+    - THEME STATED (page ~5): The theme MUST be delivered during a visually compelling
+      activity — NOT during a static phone call, NOT over coffee, NOT while sitting in a car.
+      BAD: Lena states the theme during a phone call while Rae drives.
+      GOOD: Lena states the theme while Rae is physically dodging a threat, stitching a wound,
+      or dismantling a device — the theme lands between bursts of urgent physical action.
+    - DARK NIGHT OF THE SOUL (pages 75-85): The hero's lowest emotional point MUST NOT be
+      a static confession scene. No sitting in a stairwell talking. No standing in a dark room
+      explaining guilt. The confession/despair MUST be forced out by physical circumstances.
+      BAD: Rae sits in a stairwell and explains her past guilt to her sister.
+      GOOD: Rae and her sister are trapped — rae must physically work to escape (picking a lock,
+      applying pressure to a wound, hotwiring a panel) while the despair spills out in fragments
+      between desperate physical actions. The environment FORCES the truth out.
+    - BREAK INTO THREE (page ~85): The plan/strategy for the finale MUST NOT be a briefing
+      scene. No chalk maps. No "here's what we'll do" speeches. Show the plan being EXECUTED
+      in micro-steps while it's being conceived.
+      BAD: Rae draws a map on a wall and explains the plan step by step.
+      GOOD: Rae starts moving toward the target, improvising the plan in real time — she tests
+      a door, signals her partner, adapts when the first approach fails. The audience learns
+      the plan by watching it unfold, not by hearing it explained.
+
+15. COVENANT OF THE ARC (Snyder Ch.6 — Immutable Law #6):
+    Snyder: "Every single character in your movie must change in the course of your story.
+    EVERYONE. Good guys accept change as a positive force. Bad guys refuse to change — that's
+    why they lose."
+    This means EVERY character who appears on screen — including minor, one-scene walk-on
+    characters — must show some observable behavioral shift between their first moment and
+    their last moment in the scene. The shift can be tiny but it MUST be visible:
+    - A hostile stranger who softens (hostility → reluctant help)
+    - A fearful bystander who finds courage (fear → small brave act)
+    - A suspicious guard who looks the other way (duty → mercy)
+    - A selfish clerk who gives something away (selfishness → generosity)
+    - An obedient worker who hesitates or questions (obedience → doubt)
+    NO CHARACTER should enter and exit a scene in the same emotional/behavioral state.
+    The ONLY exception is the antagonist, who refuses to change — that's why they lose.
+    BAD (static minor character):
+      GAS CLERK rings up the purchase. Doesn't look up.
+      GAS CLERK: Pump three. (hands receipt)
+      Rae leaves. Gas Clerk goes back to the register.
+    GOOD (minor character arcs):
+      GAS CLERK rings up the purchase. Eyes the WANTED notification on the register screen.
+      GAS CLERK: Pump three. (slides receipt across) You should know — two guys in a black
+      truck have been parked across the street for an hour. (beat) I didn't see you.
+      Gas Clerk deliberately turns away and wipes the counter.
+    The minor character went from obedient/passive → making a choice to help. That's an arc.
+    Even a single beat of change counts: a flinch, a handed-over key, a lie told to protect
+    the hero, a refusal to comply. The world around the hero must REACT AND CHANGE.
 
 PER-SCENE REQUIRED FIELDS:
-scene_number (int), slugline (str), int_ext (str), location (str), time_of_day (str),
-elements (array), estimated_duration_seconds (int), beat (str), emotional_start (str),
-emotional_end (str), conflict (str), characters_present (array), board_card_number (int)
+1. scene_number (int): Sequential starting from {start_scene_number}
+2. slugline (str): "INT./EXT. LOCATION - TIME" (e.g., "INT. COFFEE SHOP - NIGHT")
+3. int_ext (str): "INT.", "EXT.", or "INT/EXT."
+4. location (str): Specific location name
+5. time_of_day (str): DAY, NIGHT, DAWN, DUSK, or CONTINUOUS
+6. elements (array): Scene elements, each with element_type and content
+7. estimated_duration_seconds (int): Scene duration (1 page = 60 seconds)
+8. beat (str): Which of the 15 beats this belongs to
+9. emotional_start (str): "+" or "-" — where the scene starts emotionally
+10. emotional_end (str): "+" or "-" — where the scene ends emotionally (should differ from start)
+11. conflict (str): Who wants what from whom; who wins
+12. characters_present (array): Character names in the scene
+13. board_card_number (int): Original board card number
+
+ELEMENT TYPES AND ORDERING:
+- "slugline": Scene heading (always first)
+- "action": What the camera sees (follows slugline, interspersed with dialogue)
+- "character": Character name in CAPS (precedes their dialogue)
+- "parenthetical": Brief acting direction between character and dialogue (use sparingly)
+- "dialogue": What the character says (follows their character element)
+- "transition": CUT TO:, SMASH CUT TO:, etc. (optional, at scene end)
 
 OUTPUT FORMAT (valid JSON — array of scenes):
 {{
@@ -1272,25 +1649,28 @@ OUTPUT FORMAT (valid JSON — array of scenes):
       "time_of_day": "DAY",
       "elements": [
         {{"element_type": "slugline", "content": "INT. LOCATION - TIME"}},
-        {{"element_type": "action", "content": "Establishing visual."}},
+        {{"element_type": "action", "content": "Establishing visual. What we see."}},
         {{"element_type": "character", "content": "CHARACTER A"}},
-        {{"element_type": "dialogue", "content": "Dialogue line."}},
+        {{"element_type": "dialogue", "content": "First line of dialogue."}},
         {{"element_type": "character", "content": "CHARACTER B"}},
-        {{"element_type": "dialogue", "content": "Response."}},
-        {{"element_type": "action", "content": "Visual exit."}}
+        {{"element_type": "dialogue", "content": "Response dialogue."}},
+        {{"element_type": "action", "content": "Reactive action between characters."}},
+        {{"element_type": "character", "content": "CHARACTER A"}},
+        {{"element_type": "dialogue", "content": "Continuation of exchange."}},
+        {{"element_type": "action", "content": "Visual exit — door slams shut."}}
       ],
       "estimated_duration_seconds": 150,
       "beat": "Set-Up",
       "emotional_start": "+",
       "emotional_end": "-",
-      "conflict": "Who wants what from whom",
+      "conflict": "Who wants what from whom; who wins",
       "characters_present": ["Character A", "Character B"],
       "board_card_number": 1
     }}
   ]
 }}
 
-Write ALL {num_cards} scenes for {act_label}. Full scenes, not outlines."""
+Write ALL {num_cards} scenes for {act_label}. Full scenes with rich detail, not outlines."""
 
     ACT_DIAGNOSTIC_SYSTEM = (
         "You are an independent script doctor hired to evaluate a screenplay. You did NOT write "
@@ -1479,6 +1859,7 @@ character cues) to fix the problems. Full scenes, not outlines."""
             previous_acts_context = "(This is the first act — no previous scenes.)"
 
         genre_scene_guidance = self._build_genre_scene_guidance(genre)
+        genre_emotion_note = self._build_genre_emotion_note(genre)
 
         user_prompt = self.ACT_GENERATION_TEMPLATE.format(
             act_label=act_label,
@@ -1489,6 +1870,7 @@ character cues) to fix the problems. Full scenes, not outlines."""
             characters_summary=characters_summary,
             character_identifiers=character_identifiers,
             genre_scene_guidance=genre_scene_guidance,
+            genre_emotion_note=genre_emotion_note,
             act_cards_json=act_cards_json,
             previous_acts_context=previous_acts_context,
             start_scene_number=start_scene_number,
