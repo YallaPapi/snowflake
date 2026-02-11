@@ -368,7 +368,7 @@ class Step8Screenplay:
             checker_config = {
                 "model_name": "grok-4-1-fast-reasoning",
                 "temperature": 0.0,
-                "max_tokens": 8000,
+                "max_tokens": 25000,
             }
             logger.info("Grok checker initialized (xAI)")
         except Exception as e:
@@ -377,7 +377,7 @@ class Step8Screenplay:
             checker_config = {
                 "model_name": writer_config.get("model_name", "gpt-5.2-2025-12-11"),
                 "temperature": 0.0,
-                "max_tokens": 8000,
+                "max_tokens": 25000,
             }
 
         all_scenes: List[Dict[str, Any]] = []

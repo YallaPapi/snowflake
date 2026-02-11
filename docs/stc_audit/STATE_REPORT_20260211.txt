@@ -1,0 +1,226 @@
+SAVE THE CAT SCREENPLAY ENGINE — STATE REPORT
+================================================
+Date: 2026-02-11
+Project: sp_rae_blackout_20260210_124014
+Pipeline version: v7.0.0 (prompt) / v5.0.0 (step executor) / v2.0.0 (validator)
+Model: GPT 5.2 (writer) + Grok 4.1 Fast Reasoning (checker)
+Tests: 1040 passing
+
+STORY: "WANTED: NO BODY"
+Genre: Dude With a Problem
+Logline: A guilt-ridden bounty hunter must capture a target with no body — a rogue
+AI in L.A.'s power grid — before dawn, as it weaponizes surveillance to turn the
+entire city into her posse.
+Result: 40 scenes, 113.5 pages, ~114 min runtime
+
+================================================================
+PIPELINE RESULTS (v6.0.0 run, latest E2E)
+================================================================
+
+STEP 6 — SCREENPLAY WRITING
+  Act-by-act generation with Grok checker (4 acts)
+  - Act 1: 10/10 Grok checks (after 3 revisions)
+  - Act 2A: 10/10 Grok checks (first try)
+  - Act 2B: 9/10 → JSON TRUNCATED at 7110 chars (max_tokens=8000 too small)
+            Falsely "approved" because parser couldn't read truncated JSON
+  - Act 3: 10/10 Grok checks (after 1 revision)
+  Total: 4 acts revised, 6 total Grok failures caught and fixed
+
+  BUG FOUND: Grok max_tokens=8000 insufficient for 10 checks.
+  FIX APPLIED: Bumped to 25000 in v7.0.0.
+
+STEP 7 — IMMUTABLE LAWS (7 checks)
+  PASS: 1. Save the Cat
+  PASS: 2. Pope in the Pool
+  PASS: 3. Double Mumbo Jumbo
+  FAIL: 4. Black Vet (Too Much Marzipan)
+  PASS: 5. Watch Out for That Glacier
+  FAIL: 6. Covenant of the Arc
+  PASS: 7. Keep the Press Out
+  Result: 5/7
+
+STEP 8 — DIAGNOSTICS (9 checks) — not yet run on this version
+
+STEP 9 — MARKETING — not yet run on this version
+
+================================================================
+DETAILED ANALYSIS OF FAILURES
+================================================================
+
+FAILURE 1: BLACK VET (Law #4)
+-----------------------------
+Evaluator says: "The finished screenplay reads like several different high-concept
+movies braided together" — lists 5 competing engines:
+  1. Gritty bounty-hunter procedural (Scenes 1-3)
+  2. Rogue AI infrastructure horror (Scenes 4+)
+  3. Surveillance-state social-control story (Scenes 9, 20-23, 25)
+  4. Analog-vs-digital sister partnership caper (Scenes 15-19, 24, 30-34)
+  5. Quasi-supernatural trauma-loop guilt clip (Scenes 1-2, 28, 36, 40)
+
+ASSESSMENT: FALSE POSITIVE. After reading all 40 scenes:
+  - #1 is character backstory/setup (Act 1 only)
+  - #2 is the actual plot (the one movie)
+  - #3 is the villain's weapon (MARA's tool, not a separate concept)
+  - #4 is the B-story (every STC movie has one)
+  - #5 is the character wound (internal conflict)
+Every thriller has these layers. The evaluator is treating thematic depth as
+concept stacking. The story reads as ONE coherent movie, not five competing ones.
+
+The only mild concern: Scenes 1-3 spend a bit long on bounty-world mechanics
+(skip capture, client fee negotiation, app interface) before the real story kicks
+in. But this is standard "setup world" and is within Act 1's page budget.
+
+RECOMMENDATION: No prompt changes needed. The evaluator is too strict.
+
+FAILURE 2: COVENANT OF THE ARC (Law #6)
+-----------------------------------------
+Evaluator says: "Repeatedly seeded but uncompleted supporting-character arcs."
+
+Lists 3 specific patterns:
+  A. Contractors (#1 "She's clean..." in Sc.27, #2 "This ain't right" in Sc.35)
+     — show doubt but never make a different choice
+  B. Private Security Guard #2 ("Kid looks scared..." in Sc.21) — mercy flicker,
+     immediately hardens, no later consequence
+  C. One-off civilians (Gas Clerk in Sc.7, Older Woman in Sc.9, Encampment
+     residents in Sc.23) — strong micro-choices but never echoed later
+
+ASSESSMENT: PARTIALLY VALID.
+
+What the screenplay DOES do correctly:
+  - Gas Clerk (Sc.7): Passive → actively hides Rae's cash. "I didn't see that."
+  - Older Woman (Sc.9): Bystander → covers the camera. "Not tonight."
+  - Resident #2 (Sc.23): Hostile → takes cash, points to escape alley.
+  - Desperate Client (Sc.3): Begging → keeps carbon copy, shows resolve.
+  These ARE within-scene arcs per Snyder's rule.
+
+What the screenplay does NOT do:
+  - None of these characters reappear in later acts.
+  - Contractor #1 says "She's clean..." then swallows it — almost-arc, not arc.
+  - Contractor #2 says "This ain't right" then follows orders — same.
+  - Guard #2 says "Kid looks scared..." then hardens — same.
+  These three characters show FLICKERS of doubt but don't complete a change.
+  The evaluator reads these as "promises the script doesn't keep."
+
+ROOT CAUSE: Each act is generated independently. GPT in Act 3 doesn't know the
+Gas Clerk existed in Act 1, so it can't bring anyone back. And for within-scene
+characters like Contractor #2, the "almost-arc" writing pattern (show doubt →
+immediately suppress it) is a GPT tendency — it creates dramatic tension but
+doesn't commit to actual behavioral change.
+
+TWO POSSIBLE FIXES:
+  Fix A — Make within-scene arcs COMPLETE:
+    Instead of "She's clean..." → swallows it → follows orders (no arc),
+    write: "She's clean..." → hesitates → deliberately misreports the ping
+    (actual arc within the scene). This means the character doesn't need to
+    reappear — their arc is self-contained. This is a prompt fix: tell GPT
+    that "almost-arcs" (doubt → suppression) DON'T count.
+
+  Fix B — Cross-act arc tracking:
+    After each act, extract which minor characters showed micro-changes.
+    Feed that list into later acts with instruction: "Bring back [character]
+    and have them complete their change." This is more architecturally complex
+    and requires Grok to identify specific micro-changes, not just character
+    names. Risk: GPT might force awkward reappearances.
+
+  Fix C — Hybrid:
+    Make ALL within-scene arcs complete (Fix A) so the evaluator has nothing
+    to flag as "seeded but incomplete." AND bring back 1-2 characters in Act 3
+    for dramatic payoff (Fix B, lighter version). This satisfies both the letter
+    of the law (everyone changes) and the spirit (payoff feels earned).
+
+RECOMMENDATION: Fix A is the safest and most impactful. The root problem is that
+GPT writes "almost-arcs" — characters who show a flicker of doubt then suppress
+it. Telling GPT that this pattern FAILS the Covenant (with concrete BAD/GOOD
+examples) would fix most cases. Fix B can be layered on later.
+
+================================================================
+WRITING QUALITY ASSESSMENT (manual read of all 40 scenes)
+================================================================
+
+STRENGTHS:
+  - Action writing is cinematic and tactile. Rich physical detail. You can
+    picture the geography of every scene.
+  - Rae is genuinely proactive throughout. Clipped commands, not questions.
+    "Hands on the wheel. Window down. Slow." / "Out. Now. Follow my hands."
+  - MARA is a genuinely creepy villain. Speaks through strobes, conduit
+    vibrations, dead bus speakers. Weaponizes infrastructure.
+  - Sister relationship (Rae/Lena) lands emotionally. Distinct voices.
+    Rae = clipped orders. Lena = warm challenges.
+  - Scene 29 (Dark Night of Soul) is the best scene — Rae confessing about
+    the kid while Lena bandages her wrists. Earned emotional payoff.
+  - Scene 40 (Final Image) genuinely moves — deleting the guilt clip,
+    Lena handing over the keychain charm, reaching for a hand not a phone.
+  - Character identifiers are consistent across 40 scenes: Rae's cuffs
+    (thumb clicking hinge), Lena's keychain charm, Lena's beanie.
+  - Analog vs. digital theme is woven throughout without being heavy-handed.
+
+WEAKNESSES:
+  - Minor character "almost-arcs" (described above under Covenant of Arc).
+  - Some scenes in Act 2A (11-14) are very similar: Rae alone in substation,
+    evading drones/traps. Could use more emotional variety.
+  - MARA's dialogue occasionally veers toward generic AI villain ("I can
+    optimize the pain out of you") when the more physical/environmental
+    voice is stronger ("I speak in bones").
+  - Scene 29 has a Pope in Pool issue: while the action of cutting zip ties
+    is happening, the backstory dump is still somewhat static. The action
+    could be more intense to better bury the exposition.
+
+OVERALL: The writing quality is genuinely good. The prompt overhaul (v5.0.0+)
+clearly worked. The remaining issues are structural (cross-act continuity) and
+stylistic (GPT's "almost-arc" tendency), not fundamental quality problems.
+
+================================================================
+KNOWN BUGS
+================================================================
+
+1. [FIXED v7.0.0] Grok max_tokens=8000 too small for 10 checks
+   - Caused Act 2B JSON truncation and false approval
+   - Fixed: bumped to 25000
+
+2. [OPEN] Scene 29 contains literal text "Pope in the Pool:" in action
+   element — this is a prompt artifact leaking into the screenplay.
+   Line: "Pope in the Pool: Lena works the restraints while Rae fights
+   to breathe." Should be an action description, not a labeled technique.
+   This would be caught by a validator check for meta-commentary.
+
+3. [OPEN] Step 6 validation failure: "in her head" internal monologue
+   detected in Scene 4 (from previous run). May or may not recur.
+
+================================================================
+CONFIGURATION
+================================================================
+
+Grok checker: grok-4-1-fast-reasoning, temp=0.0, max_tokens=25000
+GPT writer: gpt-5.2-2025-12-11, temp=0.5, max_tokens=32000 per act
+Revision config: max_tokens=16000 (targeted scene rewrites only)
+MAX_REVISIONS per act: 5
+Act splits: Act 1 (cards 1-10), Act 2A (11-20), Act 2B (21-30), Act 3 (31-40)
+Generation mode: act_by_act (v4.0.0+)
+
+================================================================
+NEXT STEPS
+================================================================
+
+1. Run 3 concurrent E2E pipelines to see if failures are consistent
+   (same 2 Laws failing every time, or varies by seed/generation)
+2. Based on consistency analysis, decide on fix approach:
+   - If Covenant of Arc fails consistently: implement Fix A (complete arcs)
+   - If Black Vet fails consistently: investigate further
+   - If failures vary: may be evaluator noise, not generation problem
+3. Consider adding validator check for meta-commentary leaking into
+   screenplay text (e.g., "Pope in the Pool:" label in action)
+
+================================================================
+VERSION HISTORY (Step 8 only)
+================================================================
+
+v1.0.0 — Monolithic generation (one 128K token call for all 40 scenes)
+v2.0.0 — Full STC audit, 970 tests, emotional polarity, mini-movie
+v3.0.0 — Scene-by-scene generation (WORSE: 3/9 diagnostics, 63 min)
+v4.0.0 — Act-by-act with Grok checker (SAME: 4/9 diagnostics, 27 min)
+v5.0.0 — Complete prompt overhaul: Pope in Pool + Covenant of Arc rules
+          with massive detail. Result: 6/7 Laws (Pope in Pool FIXED).
+v6.0.0 — Added Covenant of Arc as Grok check #10 (10 checks total).
+          Result: 5/7 Laws (Black Vet regressed, Covenant still failing).
+v7.0.0 — Grok max_tokens 8000→25000 (fix JSON truncation). No prompt changes.
+          Pending: 3-run consistency analysis before further changes.

@@ -1,11 +1,11 @@
 """
 Step 8 Prompt Template: Screenplay Writing (Save the Cat end of Ch.5)
 
-v6.0.0 -- Added Covenant of the Arc as CHECK #10 in ACT_DIAGNOSTIC_TEMPLATE
-(the Grok evaluation prompt). This means Grok now catches static minor characters
-DURING the act-by-act revision loop, before the screenplay is assembled. Previously
-Covenant of the Arc was only checked in the final Immutable Laws pass (Step 7),
-which was too late to fix individual scenes.
+v7.0.0 -- Grok max_tokens bumped from 8000 to 25000 to prevent JSON truncation
+when evaluating 10 checks with detailed fix instructions. No prompt content changes
+from v6.0.0 — this is a configuration fix only.
+
+v6.0.0 -- Added Covenant of the Arc as CHECK #10 in ACT_DIAGNOSTIC_TEMPLATE.
 """
 
 import hashlib
@@ -16,7 +16,7 @@ from typing import Dict, Any, List
 class Step8Prompt:
     """Prompt generator for Screenplay Engine Step 8: Screenplay Writing"""
 
-    VERSION = "6.0.0"
+    VERSION = "7.0.0"
 
     # ── Genre-specific scene writing guidance for all 10 Snyder genres ────
     GENRE_SCENE_TEMPLATES = {
@@ -1839,6 +1839,8 @@ RUN ALL 10 CHECKS:
     For each one, state their first behavior and last behavior. If they're the same = FAIL.
     List the failing characters and their scenes in failing_scene_numbers and fix_per_scene.
 
+{seeded_arcs_diagnostic_note}
+
     The fix instruction for each failing scene MUST describe:
     1. Which character is static
     2. What their current first/last behavior is
@@ -2079,6 +2081,7 @@ character cues) to fix the problems. Full scenes, not outlines."""
             characters_summary=characters_summary,
             character_identifiers=character_identifiers,
             previous_acts_note=previous_acts_note,
+            seeded_arcs_diagnostic_note="",
         )
 
         prompt_content = f"{self.ACT_DIAGNOSTIC_SYSTEM}{user_prompt}{self.VERSION}"
