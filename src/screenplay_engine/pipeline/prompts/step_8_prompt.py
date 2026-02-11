@@ -1,11 +1,11 @@
 """
 Step 8 Prompt Template: Screenplay Writing (Save the Cat end of Ch.5)
 
-v5.0.0 -- Massively expanded rules for Pope in the Pool (rule 14) and added
-Covenant of the Arc (rule 15) across ALL three generation templates (monolithic,
-act-by-act, scene-by-scene).  Every rule now has full Snyder quotes, origin
-stories, multiple BAD/GOOD examples, HIGH-RISK BEAT callouts with per-beat
-examples, and exhaustive minor-character arc guidance.
+v6.0.0 -- Added Covenant of the Arc as CHECK #10 in ACT_DIAGNOSTIC_TEMPLATE
+(the Grok evaluation prompt). This means Grok now catches static minor characters
+DURING the act-by-act revision loop, before the screenplay is assembled. Previously
+Covenant of the Arc was only checked in the final Immutable Laws pass (Step 7),
+which was too late to fix individual scenes.
 """
 
 import hashlib
@@ -16,7 +16,7 @@ from typing import Dict, Any, List
 class Step8Prompt:
     """Prompt generator for Screenplay Engine Step 8: Screenplay Writing"""
 
-    VERSION = "5.0.0"
+    VERSION = "6.0.0"
 
     # ── Genre-specific scene writing guidance for all 10 Snyder genres ────
     GENRE_SCENE_TEMPLATES = {
@@ -1676,11 +1676,11 @@ Write ALL {num_cards} scenes for {act_label}. Full scenes with rich detail, not 
         "You are an independent script doctor hired to evaluate a screenplay. You did NOT write "
         "this screenplay — you are reading it with completely fresh eyes. Your job is to be "
         "brutally honest about quality problems. You evaluate against Blake Snyder's Save the Cat "
-        "Chapter 7 diagnostic checks.\n\n"
+        "Chapter 7 diagnostic checks AND the Chapter 6 Immutable Law 'Covenant of the Arc.'\n\n"
         "You MUST respond with valid JSON only. No markdown fences, no commentary, no thinking out loud."
     )
 
-    ACT_DIAGNOSTIC_TEMPLATE = """Read this act of a screenplay with FRESH EYES and evaluate it against ALL 9 Save the Cat diagnostic checks.
+    ACT_DIAGNOSTIC_TEMPLATE = """Read this act of a screenplay with FRESH EYES and evaluate it against ALL 10 Save the Cat checks (9 Ch.7 diagnostics + 1 Ch.6 Immutable Law).
 
 You are NOT the writer. You are an independent evaluator. Be brutally honest.
 
@@ -1694,7 +1694,7 @@ CHARACTER VOICE GUIDE: {character_identifiers}
 
 {previous_acts_note}
 
-RUN ALL 9 DIAGNOSTIC CHECKS:
+RUN ALL 10 CHECKS:
 
 1. THE HERO LEADS — Is the hero proactive? Does the hero make decisions and take action, or
    just react and ask questions? Count the hero's question marks across all scenes. Does the
@@ -1732,7 +1732,121 @@ RUN ALL 9 DIAGNOSTIC CHECKS:
 9. IS IT PRIMAL? — Does the story tap into a universal, primitive instinct (survival, hunger,
    sex, protection of loved ones, fear of death)? Would a caveman understand the stakes?
 
-FOR EVERY FAILED CHECK YOU MUST:
+10. COVENANT OF THE ARC (Snyder Ch.6 — Immutable Law #6):
+    Snyder: "Every single character in your movie must change in the course of your story.
+    EVERYONE. And I mean everyone. Good guys. Bad guys. Bystanders. It's a rule for ALL
+    characters. The only ones who DON'T change are the bad guys — and that's why they lose."
+
+    THIS IS THE MOST COMMONLY FAILED CHECK. Read it carefully.
+
+    THE RULE: Every character who appears in this act — including minor, one-scene, walk-on
+    characters with 1-3 lines of dialogue — MUST show a visible behavioral shift between
+    their FIRST moment on screen and their LAST moment on screen within the same scene.
+
+    HOW TO EVALUATE: For EVERY named or speaking character in this act who is NOT the hero
+    or antagonist, answer these two questions:
+      (a) What is their attitude/behavior when they FIRST appear in their scene?
+      (b) What is their attitude/behavior when they LAST appear in their scene?
+    If the answer to (a) and (b) is the same — they have NOT arced. That is a FAIL.
+
+    WHAT COUNTS AS AN ARC (even for characters with only 1-3 lines):
+    - Hostile → reluctant help (stranger warns the hero about danger)
+    - Fearful → small brave act (bystander opens a door, blocks a pursuer)
+    - Obedient → questioning (guard hesitates, lowers weapon, asks "Are you sure?")
+    - Selfish → small generosity (vendor gives something for free, clerk slides over a tool)
+    - Indifferent → caring (stranger checks if someone is OK, offers water)
+    - Dutiful → merciful (cop looks the other way, soldier "doesn't see" the hero escape)
+    - Aggressive → backing down (bully realizes they picked the wrong target)
+    - Resigned → defiant (someone who "follows the rules" breaks one)
+    Even a SINGLE BEAT of visible change counts: a flinch, a handed-over key, a deliberate
+    lie told to protect someone, a refusal to comply, a look-away at the critical moment,
+    a whispered warning. One line of dialogue can show an arc if it reveals a change from
+    the character's initial behavior.
+
+    WHAT DOES NOT COUNT AS AN ARC:
+    - A character who enters hostile and exits hostile (static)
+    - A character who enters helpful and stays helpful (already there — no change)
+    - A character who enters as a cashier and exits as a cashier with no engagement
+    - A character who serves a pure plot function (gives directions, scans a badge,
+      sells a ticket) with zero emotional engagement with the situation
+    - A character who has NO reaction to the extraordinary events happening around them
+    - A character who has a memorable visual identifier (tattoo, limp, prop) but whose
+      BEHAVIOR does not change — having a cool look is NOT the same as having an arc
+
+    CRITICAL DISTINCTION — IDENTIFIER vs. ARC:
+    Having "a limp and an eye patch" (Check #8) makes a character MEMORABLE.
+    Having a behavioral CHANGE makes a character ARC.
+    These are DIFFERENT checks. A character can PASS Check #8 (has a distinctive tattoo)
+    but FAIL Check #10 (enters resigned, exits resigned — no behavioral change).
+    You MUST evaluate these separately. Do NOT assume that a character with a memorable
+    identifier also has an arc. Read their actual behavior from first to last moment.
+
+    BAD (static minor character — FAILS this check):
+      GAS CLERK rings up the purchase. Doesn't look up.
+      GAS CLERK: Pump three. (hands receipt)
+      Rae leaves. Gas Clerk goes back to the register.
+      [PROBLEM: Clerk enters passive, exits passive. Attitude unchanged. No arc.]
+
+    BAD (has identifier but NO arc — FAILS this check):
+      CONTRACTOR adjusts his wedding ring. Checks his tablet. Breaches the door.
+      Three scenes later, CONTRACTOR adjusts his wedding ring. Checks his tablet. Breaches
+      the next door. He has a memorable identifier (wedding ring) but his BEHAVIOR is
+      identical — obedient procedure from start to finish. No change. FAILS.
+
+    GOOD (minor character arcs — PASSES this check):
+      GAS CLERK rings up the purchase. Eyes the WANTED notification on the register screen.
+      Looks at Rae. Looks at the screen. Back at Rae.
+      GAS CLERK: Pump three. (slides receipt, lowers voice) You should know — two guys in
+      a black truck been sitting across the street for an hour. (beat) I didn't see you.
+      Gas Clerk deliberately turns away and wipes the counter.
+      [Clerk went from OBEDIENT (sees the alert, follows procedure) to DEFIANT (warns Rae,
+      lies by omission). That's an arc. Three lines. Visible change in behavior.]
+
+    GOOD (contractor with identifier AND arc — PASSES both #8 and #10):
+      CONTRACTOR adjusts his wedding ring. Checks his tablet. Breaches the door.
+      [Later] The door crushes a bystander. Contractor stares. His hand goes to his
+      wedding ring again — but this time he doesn't move. Squad leader signals the next
+      door. Contractor doesn't move. Squad leader: "Breach." Contractor lowers his
+      breaching tool. Quietly: "Do it yourself."
+      [Contractor went from OBEDIENT (breaches without question) to REFUSING (guilt over
+      the death makes him stop). Wedding ring is the identifier; the behavioral refusal
+      is the arc. Both checks pass.]
+
+    MORE EXAMPLES OF FAILING vs. PASSING:
+
+    FAIL: Desperate Client enters desperate, asks for help, gets refused, exits desperate.
+      No change. Same emotional state in = same emotional state out.
+    PASS: Desperate Client enters desperate, begs for help, gets refused — then sees
+      Rae in trouble and pushes a fire door open for her. Desperation → solidarity.
+
+    FAIL: Laundromat Customer enters scared, backs away from Rae, stays scared.
+      No change. Fear in = fear out.
+    PASS: Laundromat Customer enters scared, backs away — but when Rae helps her kid
+      pick up dropped coins, Customer slides a dryer quarter across. Fear → small kindness.
+
+    FAIL: Young Driver drives the car, drops them off, drives away.
+      Functional tool. Zero engagement. No arc.
+    PASS: Young Driver drives the car, hands shaking on the wheel. At drop-off, Rae says
+      "Go home." Driver hesitates, then pops the trunk: "There's a blanket and water in
+      there. Take it." Reluctance → chosen generosity.
+
+    FAIL: Encampment Teen blocks the path, stays hostile, never moves.
+      Static obstacle. No change.
+    PASS: Encampment Teen blocks the path. Rae shares her water without being asked.
+      Teen silently steps aside and points to a gap in the fence. Hostility → grudging aid.
+
+    FOR EACH SCENE IN THIS ACT: List every named/speaking non-hero, non-antagonist character.
+    For each one, state their first behavior and last behavior. If they're the same = FAIL.
+    List the failing characters and their scenes in failing_scene_numbers and fix_per_scene.
+
+    The fix instruction for each failing scene MUST describe:
+    1. Which character is static
+    2. What their current first/last behavior is
+    3. A SPECIFIC rewrite showing the behavioral shift — what new action/dialogue to add
+       that shows the character changing. The fix should be 1-3 lines of new content that
+       can be inserted into the existing scene, not a full scene rewrite.
+
+FOR EVERY FAILED CHECK (all 10) YOU MUST:
 1. List the EXACT scene numbers that have the problem
 2. QUOTE the exact problematic dialogue or action lines from those scenes
 3. For EACH failing scene, write a CONCRETE rewrite instruction — not "make it better" but
@@ -1761,15 +1875,26 @@ OUTPUT FORMAT (valid JSON):
         "37": "Delete Rae's backstory speech entirely. Replace with visual: Rae pulls up the doctored surveillance footage on the billboard. The timestamps and doctored frames speak for themselves. Her only line: 'Look at the timestamp.' The crowd looks up. Silence.",
         "39": "Cut the radio exposition. Instead SHOW the clinic: lights flicker on, a nurse checks an IV drip, patients blink in the glow. No one explains it — we SEE it working."
       }}
+    }},
+    {{
+      "check_number": 10,
+      "check_name": "Covenant of the Arc",
+      "passed": false,
+      "problem_details": "Scene 7: Gas Clerk enters resigned, scans the item, hands receipt, stays resigned. No behavioral change. Scene 25: Young Driver enters nervous, drives the car, exits nervous. No behavioral change.",
+      "failing_scene_numbers": [7, 25],
+      "fix_per_scene": {{
+        "7": "After Gas Clerk scans the item and sees the WANTED alert on the register, add: Gas Clerk hesitates. Glances at the door. Then quietly: 'Black truck across the street. Been there an hour.' Turns away. Wipes the counter. This changes Clerk from resigned/obedient to making a choice to warn Rae.",
+        "25": "After Young Driver drops them off, add: Driver pops the trunk. 'There's a blanket in there. And water.' Hands shaking, but holds the trunk open. This changes Driver from reluctant/functional to choosing to help."
+      }}
     }}
   ],
   "checks_passed_count": 0,
-  "total_checks": 9,
+  "total_checks": 10,
   "overall_notes": "<1-2 sentence summary>"
 }}
 
 RULES:
-- Run ALL 9 checks.
+- Run ALL 10 checks. Do NOT skip any. Check #10 (Covenant of the Arc) is MANDATORY.
 - For PASSED checks: failing_scene_numbers is empty array, fix_per_scene is empty object.
 - For FAILED checks: failing_scene_numbers MUST list every scene number with the problem.
   fix_per_scene MUST have an entry for EACH failing scene number with a CONCRETE rewrite
@@ -1777,6 +1902,9 @@ RULES:
   Do NOT write vague instructions like "make the hero more proactive" — write SPECIFIC
   replacement content like "Replace hero's question 'What do we do?' with hero grabbing the
   fire extinguisher and saying 'Cover the east door. I'll take the roof.'"
+- For Check #10 specifically: the fix_per_scene instruction MUST name the static character,
+  state what their current unchanged behavior is, and provide 1-3 lines of NEW action/dialogue
+  that shows the character's behavior CHANGING from their first moment to their last moment.
 - CITE SPECIFIC DIALOGUE from the scenes. QUOTE the exact words.
 - Be HARSH. The goal is to catch every problem before the next draft."""
 

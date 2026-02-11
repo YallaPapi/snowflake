@@ -342,7 +342,7 @@ class Step8Screenplay:
 
         For each act (~10 scenes):
           1. GPT writes all scenes for the act in one call
-          2. Grok evaluates the act with fresh eyes (all 9 Ch.7 checks)
+          2. Grok evaluates the act with fresh eyes (9 Ch.7 checks + Covenant of the Arc)
           3. If Grok finds problems, GPT rewrites based on Grok's specific feedback
           4. Move to next act with completed acts as context
         """
