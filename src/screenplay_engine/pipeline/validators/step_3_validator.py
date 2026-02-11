@@ -29,7 +29,7 @@ VALID_POWER_KEYWORDS = {
 class Step3Validator:
     """Validator for Screenplay Engine Step 3: Hero Construction (Save the Cat)"""
 
-    VERSION = "3.0.0"
+    VERSION = "4.0.0"
 
     def validate(self, artifact: Dict[str, Any]) -> Tuple[bool, List[str]]:
         """
@@ -73,6 +73,7 @@ class Step3Validator:
             "save_the_cat_moment",
             "opening_state",
             "final_state",
+            "character_biography",
         ]
         missing_fields = [
             f for f in required_hero_fields
@@ -270,7 +271,43 @@ class Step3Validator:
                 "how the protagonist embodies the central question"
             )
 
-        # ── 11. Demographic appeal justification is substantive ──────
+        # ── 11. Character biographies must be substantive prose ───────
+        hero_bio = (hero.get("character_biography") or "").strip()
+        if hero_bio and len(hero_bio.split()) < 100:
+            errors.append(
+                f"THIN_HERO_BIOGRAPHY: Hero character_biography has only "
+                f"{len(hero_bio.split())} words — needs at least 100 words. "
+                f"Write a full prose backstory covering physiology, sociology, "
+                f"psychology, and voice."
+            )
+
+        if antagonist:
+            antag_bio = (antagonist.get("character_biography") or "").strip()
+            if not antag_bio:
+                errors.append(
+                    "MISSING_ANTAGONIST_BIOGRAPHY: Antagonist must have a "
+                    "character_biography — a full prose backstory (200-400 words)."
+                )
+            elif len(antag_bio.split()) < 75:
+                errors.append(
+                    f"THIN_ANTAGONIST_BIOGRAPHY: Antagonist character_biography "
+                    f"has only {len(antag_bio.split())} words — needs at least 75."
+                )
+
+        if b_story:
+            bs_bio = (b_story.get("character_biography") or "").strip()
+            if not bs_bio:
+                errors.append(
+                    "MISSING_B_STORY_BIOGRAPHY: B-story character must have a "
+                    "character_biography — a full prose backstory (200-400 words)."
+                )
+            elif len(bs_bio.split()) < 75:
+                errors.append(
+                    f"THIN_B_STORY_BIOGRAPHY: B-story character_biography has "
+                    f"only {len(bs_bio.split())} words — needs at least 75."
+                )
+
+        # ── 13. Demographic appeal justification is substantive ──────
         demo_appeal = (hero.get("demographic_appeal_justification") or "").strip()
         if demo_appeal and len(demo_appeal.split()) < 10:
             errors.append(
@@ -280,7 +317,7 @@ class Step3Validator:
                 f"audience (Snyder's 3rd criterion)."
             )
 
-        # ── 12. Surface-to-primal connection is substantive ──────────
+        # ── 14. Surface-to-primal connection is substantive ──────────
         surface_primal = (hero.get("surface_to_primal_connection") or "").strip()
         if surface_primal and len(surface_primal.split()) < 10:
             errors.append(
@@ -462,6 +499,30 @@ class Step3Validator:
                     "Explain how the hero's stated goal connects to primal stakes. "
                     "Snyder: 'if it's a promotion at work, it better damn well be "
                     "related to winning the hand of X's beloved.'"
+                )
+            elif "THIN_HERO_BIOGRAPHY" in error:
+                suggestions.append(
+                    "Expand the hero's character_biography to at least 100 words. "
+                    "Write flowing prose covering: childhood/background, the wound, "
+                    "emotional defaults, speech patterns, physical mannerisms."
+                )
+            elif "MISSING_ANTAGONIST_BIOGRAPHY" in error:
+                suggestions.append(
+                    "Add a character_biography for the antagonist (200-400 words). "
+                    "Cover their background, twisted worldview, speech patterns."
+                )
+            elif "THIN_ANTAGONIST_BIOGRAPHY" in error:
+                suggestions.append(
+                    "Expand antagonist character_biography to at least 75 words."
+                )
+            elif "MISSING_B_STORY_BIOGRAPHY" in error:
+                suggestions.append(
+                    "Add a character_biography for the B-story character (200-400 words). "
+                    "Cover their background, relationship to the hero, speech patterns."
+                )
+            elif "THIN_B_STORY_BIOGRAPHY" in error:
+                suggestions.append(
+                    "Expand B-story character_biography to at least 75 words."
                 )
             else:
                 suggestions.append("Review and fix the indicated issue.")

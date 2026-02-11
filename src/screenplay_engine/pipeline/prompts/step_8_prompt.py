@@ -26,7 +26,7 @@ from typing import Dict, Any, List
 class Step8Prompt:
     """Prompt generator for Screenplay Engine Step 8: Screenplay Writing"""
 
-    VERSION = "8.0.0"
+    VERSION = "9.0.0"
 
     # ── Genre-specific scene writing guidance for all 10 Snyder genres ────
     GENRE_SCENE_TEMPLATES = {
@@ -599,6 +599,37 @@ from - to +."
     If the hero's journey doesn't ripple outward to affect even the smallest characters,
     the story feels hollow. The antagonist is the ONLY character who refuses to change —
     and that refusal is precisely why they lose.
+
+16. WRITE A SCREENPLAY, NOT A NOVEL — This is a script. The camera cannot read minds.
+    Every single line must describe something the audience can SEE or HEAR. Nothing else.
+
+    BANNED PATTERNS (if you write any of these, the scene FAILS):
+    - "Behavior change:" or "Arc moment:" or any label annotating a character's growth.
+      WRONG: "Behavior change: she refuses to be hidden."
+      RIGHT: She steps out from behind the door. Plants her feet in the hallway.
+    - "Old [Name] would have..." or "[Name] makes a choice" or "Something shifts in [Name]."
+      WRONG: "Old Cami would shut it down. But she doesn't."
+      RIGHT: Cami opens her mouth to object. Stops. Sits back down.
+    - Narrator psychology: "He wondered if..." / "She felt a surge of..." / "Part of him knew..."
+      WRONG: "Part of Marcus knew this was a mistake."
+      RIGHT: Marcus's hand hovers over the button. He pulls it back. Reaches again. Presses it.
+    - Metaphors and similes in action lines: "like a," "as if," "seemed to," "as though."
+      WRONG: "She moved through the crowd like a ghost slipping between tombstones."
+      RIGHT: She weaves through the crowd. Nobody looks at her.
+      WRONG: "His voice cut through the silence like a blade."
+      RIGHT: His voice fills the empty room.
+    - Editorializing: "ironically," "symbolically," "in a moment that would change everything."
+      The camera doesn't editorialize. Describe what happens. The audience assigns meaning.
+
+    USE LITERAL, CONCRETE LANGUAGE:
+    - Describe physical actions, not emotional states
+    - Name specific objects, not categories ("grabs the fire extinguisher" not "grabs a weapon")
+    - Use active verbs ("slams," "yanks," "whispers") not passive constructions
+    - When a character feels something, show the PHYSICAL MANIFESTATION:
+      Fear = hands shake, breath quickens, eyes dart
+      Anger = jaw clenches, fists ball, voice drops
+      Sadness = shoulders drop, eyes go to the floor, voice thins
+      Don't TELL us the emotion. SHOW us the body.
 
 PER-SCENE REQUIRED FIELDS:
 1. scene_number (int): Sequential starting from 1
@@ -1748,6 +1779,37 @@ from - to +."
     6. The antagonist is the ONLY exception. The antagonist refuses to change — that's why
        they lose. Every other character must show behavioral change.
 
+16. WRITE A SCREENPLAY, NOT A NOVEL — This is a script. The camera cannot read minds.
+    Every single line must describe something the audience can SEE or HEAR. Nothing else.
+
+    BANNED PATTERNS (if you write any of these, the scene FAILS):
+    - "Behavior change:" or "Arc moment:" or any label annotating a character's growth.
+      WRONG: "Behavior change: she refuses to be hidden."
+      RIGHT: She steps out from behind the door. Plants her feet in the hallway.
+    - "Old [Name] would have..." or "[Name] makes a choice" or "Something shifts in [Name]."
+      WRONG: "Old Cami would shut it down. But she doesn't."
+      RIGHT: Cami opens her mouth to object. Stops. Sits back down.
+    - Narrator psychology: "He wondered if..." / "She felt a surge of..." / "Part of him knew..."
+      WRONG: "Part of Marcus knew this was a mistake."
+      RIGHT: Marcus's hand hovers over the button. He pulls it back. Reaches again. Presses it.
+    - Metaphors and similes in action lines: "like a," "as if," "seemed to," "as though."
+      WRONG: "She moved through the crowd like a ghost slipping between tombstones."
+      RIGHT: She weaves through the crowd. Nobody looks at her.
+      WRONG: "His voice cut through the silence like a blade."
+      RIGHT: His voice fills the empty room.
+    - Editorializing: "ironically," "symbolically," "in a moment that would change everything."
+      The camera doesn't editorialize. Describe what happens. The audience assigns meaning.
+
+    USE LITERAL, CONCRETE LANGUAGE:
+    - Describe physical actions, not emotional states
+    - Name specific objects, not categories ("grabs the fire extinguisher" not "grabs a weapon")
+    - Use active verbs ("slams," "yanks," "whispers") not passive constructions
+    - When a character feels something, show the PHYSICAL MANIFESTATION:
+      Fear = hands shake, breath quickens, eyes dart
+      Anger = jaw clenches, fists ball, voice drops
+      Sadness = shoulders drop, eyes go to the floor, voice thins
+      Don't TELL us the emotion. SHOW us the body.
+
 PER-SCENE REQUIRED FIELDS:
 1. scene_number (int): Sequential starting from {start_scene_number}
 2. slugline (str): "INT./EXT. LOCATION - TIME" (e.g., "INT. COFFEE SHOP - NIGHT")
@@ -2632,53 +2694,73 @@ character cues) to fix the problems. Full scenes, not outlines."""
 
     def _build_character_identifiers(self, step_3_artifact: Dict[str, Any]) -> str:
         """
-        Build character voice guide / identifier string from step 3 artifact.
-        Each character gets a distinctive trait (Limp and Eye Patch) and voice
-        description (Hi How Are You).
+        Build character voice guide from step 3 artifact, using full prose
+        character biographies when available.
 
         Args:
             step_3_artifact: Hero/characters artifact from Step 3
 
         Returns:
-            Formatted multi-line string with one entry per character
+            Formatted multi-line string with character bios and voice guidance
         """
-        lines = []
+        sections = []
         hero = step_3_artifact.get("hero", step_3_artifact.get("hero_profile", {}))
         hero_name = hero.get("name", "HERO")
 
-        # Hero identifiers
-        hero_trait = hero.get("limp_and_eye_patch", hero.get("distinctive_trait", ""))
-        hero_voice = hero.get("speech_pattern", hero.get("verbal_tic", ""))
+        # Hero
+        hero_bio = (hero.get("character_biography") or "").strip()
         hero_archetype = hero.get("archetype", "")
-        lines.append(
-            f"- {hero_name} (HERO): "
-            f"Identifier: {hero_trait or 'establish a recurring visual habit or prop'}. "
-            f"Voice: {hero_voice or 'direct, declarative, commands not questions'}. "
-            f"Archetype: {hero_archetype}."
-        )
+        if hero_bio:
+            sections.append(
+                f"=== {hero_name} (HERO — {hero_archetype}) ===\n"
+                f"{hero_bio}\n"
+                f"Arc: {hero.get('opening_state', '?')} → {hero.get('final_state', '?')}"
+            )
+        else:
+            sections.append(
+                f"=== {hero_name} (HERO — {hero_archetype}) ===\n"
+                f"Goal: {hero.get('stated_goal', '?')}\n"
+                f"Need: {hero.get('actual_need', '?')}\n"
+                f"Arc: {hero.get('opening_state', '?')} → {hero.get('final_state', '?')}"
+            )
 
-        # Antagonist identifiers
+        # Antagonist
         antagonist = step_3_artifact.get("antagonist", step_3_artifact.get("antagonist_profile", {}))
         if antagonist and antagonist.get("name"):
             antag_name = antagonist["name"]
-            antag_trait = antagonist.get("limp_and_eye_patch", antagonist.get("distinctive_trait", ""))
+            antag_bio = (antagonist.get("character_biography") or "").strip()
             antag_adj = antagonist.get("adjective_descriptor", "")
-            lines.append(
-                f"- {antag_name} (ANTAGONIST): "
-                f"Identifier: {antag_trait or 'establish a recurring visual signature or sound'}. "
-                f"Voice: {antag_adj + ' tone' if antag_adj else 'distinct from hero — opposite cadence'}."
-            )
+            if antag_bio:
+                sections.append(
+                    f"=== {antag_name} (ANTAGONIST — {antag_adj}) ===\n"
+                    f"{antag_bio}\n"
+                    f"Does NOT arc. Refuses to change — that's why they lose."
+                )
+            else:
+                sections.append(
+                    f"=== {antag_name} (ANTAGONIST — {antag_adj}) ===\n"
+                    f"Mirror: {antagonist.get('mirror_principle', '?')}\n"
+                    f"Moral line: {antagonist.get('moral_difference', '?')}\n"
+                    f"Does NOT arc. Refuses to change."
+                )
 
-        # B-story identifiers
+        # B-story
         b_story = step_3_artifact.get("b_story_character", step_3_artifact.get("b_story", {}))
         if b_story and b_story.get("name"):
             b_name = b_story["name"]
-            b_trait = b_story.get("limp_and_eye_patch", b_story.get("distinctive_trait", ""))
+            b_bio = (b_story.get("character_biography") or "").strip()
             b_rel = b_story.get("relationship_to_hero", "")
-            lines.append(
-                f"- {b_name} (B-STORY, {b_rel}): "
-                f"Identifier: {b_trait or 'establish a recurring physical habit or prop'}. "
-                f"Voice: warm but distinct from hero."
-            )
+            if b_bio:
+                sections.append(
+                    f"=== {b_name} (B-STORY — {b_rel}) ===\n"
+                    f"{b_bio}\n"
+                    f"Arc: {b_story.get('opening_state', '?')} → {b_story.get('final_state', '?')}"
+                )
+            else:
+                sections.append(
+                    f"=== {b_name} (B-STORY — {b_rel}) ===\n"
+                    f"Theme wisdom: {b_story.get('theme_wisdom', '?')}\n"
+                    f"Arc: {b_story.get('opening_state', '?')} → {b_story.get('final_state', '?')}"
+                )
 
-        return "\n".join(lines) if lines else "(No character identifiers available.)"
+        return "\n\n".join(sections) if sections else "(No character data available.)"

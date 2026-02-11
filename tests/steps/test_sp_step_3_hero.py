@@ -20,9 +20,30 @@ from src.screenplay_engine.pipeline.prompts.step_3_prompt import Step3Prompt
 # ── Shared Fixtures ───────────────────────────────────────────────────
 
 def _valid_artifact():
-    """Return a fully valid Save the Cat hero construction artifact (v3.0.0)."""
+    """Return a fully valid Save the Cat hero construction artifact (v4.0.0)."""
     return {
         "hero": {
+            "character_biography": (
+                "Kai Nakamura grew up in the shadow of his father's fishing boat in Hokkaido, "
+                "a quiet kid who spent more time staring at the sky than at the ocean. He was the "
+                "first in his family to go to university, and the first to leave Japan for NASA's "
+                "astronaut program. He was brilliant — top of his class, coolest head in the sim "
+                "room — but he carried a bone-deep loneliness that came from always being the "
+                "outsider. His copilot, Rivera, was the closest thing he had to a brother. When "
+                "Rivera died in the Cygnus-4 accident — an accident Kai believes he could have "
+                "prevented — Kai shut down. He quit the program, moved to a one-room apartment "
+                "in Albuquerque, and spent three years drinking Sapporo and watching launch "
+                "footage on mute. Physically, he is lean and wiry, with a scar across his left "
+                "palm from the Cygnus hatch. He fidgets with that scar when he is nervous — "
+                "rubbing his thumb across it like a worry stone. He speaks in short, clipped "
+                "sentences, never wastes a word, and has a habit of answering questions with "
+                "questions. When angry, he goes quieter, not louder. His voice drops to almost "
+                "a whisper and his eyes go flat. He never says 'I'm sorry' — instead he fixes "
+                "things silently. He would die before admitting he is scared, but his hands "
+                "shake when he is near an airlock. He believes the lie that caring about people "
+                "gets them killed. He keeps Rivera's flight patch in his pocket and touches it "
+                "when he thinks no one is looking."
+            ),
             "name": "Kai Nakamura",
             "adjective_descriptor": "reluctant astronaut",
             "age_range": "early 30s",
@@ -73,6 +94,20 @@ def _valid_artifact():
             ),
         },
         "antagonist": {
+            "character_biography": (
+                "Elara Voss was raised in Connecticut by a single mother who cleaned offices at "
+                "night and told Elara every morning that the world belonged to people who never "
+                "stopped climbing. Elara internalized this as gospel. She clawed her way through "
+                "MIT on scholarships, then into corporate aerospace, then into the director's "
+                "chair at Helios Corp by age 38. She is tall, always in tailored suits, and "
+                "never sits in a chair without first adjusting it to be higher than everyone "
+                "else's. She speaks in measured, complete sentences — never contractions, never "
+                "slang. When she lies, her voice gets warmer, more maternal. When she tells the "
+                "truth, it comes out cold and clipped. She sees the crew as assets on a balance "
+                "sheet. She is willing to sacrifice them because she genuinely believes the "
+                "mission's success — and her career — serves a greater good. She keeps a photo "
+                "of her mother on her desk but never mentions her."
+            ),
             "name": "Director Elara Voss",
             "adjective_descriptor": "calculating corporate saboteur",
             "power_level": "Superior — she controls the mission parameters, crew assignments, and communication relay",
@@ -85,6 +120,19 @@ def _valid_artifact():
             ),
         },
         "b_story_character": {
+            "character_biography": (
+                "Maren Okafor grew up in Lagos, the middle child of five, in a house where "
+                "everyone talked over everyone else and privacy meant locking yourself in the "
+                "bathroom. She became a doctor because it was the one profession where people "
+                "had to shut up and let her work. She is compact, precise in her movements, and "
+                "has a habit of tapping her pen against her thigh when she is thinking. She "
+                "speaks in medical metaphors even in casual conversation — 'that idea has no "
+                "pulse,' 'we need to triage this problem.' She hides behind clinical detachment "
+                "because she once lost a patient she got too close to, a young pilot who reminded "
+                "her of her younger brother. She expects this mission to fail and has already "
+                "written letters to her family, sealed in her footlocker. She never cries in "
+                "front of anyone. When she is upset, she reorganizes her medical kit."
+            ),
             "name": "Dr. Maren Okafor",
             "relationship_to_hero": "Ship's medic and unlikely confidante who reminds Kai of his estranged daughter",
             "theme_wisdom": (
@@ -1107,10 +1155,10 @@ class TestStep3Execution(unittest.TestCase):
         self.assertEqual(Step3Hero.VERSION, "2.0.0")
 
     def test_validator_version_is_set(self):
-        self.assertEqual(Step3Validator.VERSION, "3.0.0")
+        self.assertEqual(Step3Validator.VERSION, "4.0.0")
 
     def test_prompt_version_is_set(self):
-        self.assertEqual(Step3Prompt.VERSION, "3.0.0")
+        self.assertEqual(Step3Prompt.VERSION, "4.0.0")
 
 
 if __name__ == "__main__":

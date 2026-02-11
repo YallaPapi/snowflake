@@ -484,7 +484,7 @@ class Step8Screenplay:
                 failures = []
 
             # 3. Revision loop: Grok found problems → GPT rewrites ONLY broken scenes → Grok re-checks
-            MAX_REVISIONS = 5
+            MAX_REVISIONS = 3
             revision_round = 0
 
             # Use smaller token limit for targeted scene revisions (not full act)
@@ -706,49 +706,70 @@ class Step8Screenplay:
 
     def _build_character_identifiers(self, step_3_artifact: Dict[str, Any]) -> str:
         """
-        Build character voice guide / identifier string from step 3 artifact.
-        Each character gets a distinctive trait for Limp and Eye Patch + voice for Hi How Are You.
+        Build character voice guide from step 3 artifact, using full prose
+        character biographies when available.
         """
-        lines = []
+        sections = []
         hero = step_3_artifact.get("hero", step_3_artifact.get("hero_profile", {}))
         hero_name = hero.get("name", "HERO")
 
-        # Hero identifiers
-        hero_trait = hero.get("limp_and_eye_patch", hero.get("distinctive_trait", ""))
-        hero_voice = hero.get("speech_pattern", hero.get("verbal_tic", ""))
+        # Hero
+        hero_bio = (hero.get("character_biography") or "").strip()
         hero_archetype = hero.get("archetype", "")
-        lines.append(
-            f"- {hero_name} (HERO): "
-            f"Identifier: {hero_trait or 'establish a recurring visual habit or prop'}. "
-            f"Voice: {hero_voice or 'direct, declarative, commands not questions'}. "
-            f"Archetype: {hero_archetype}."
-        )
+        if hero_bio:
+            sections.append(
+                f"=== {hero_name} (HERO — {hero_archetype}) ===\n"
+                f"{hero_bio}\n"
+                f"Arc: {hero.get('opening_state', '?')} → {hero.get('final_state', '?')}"
+            )
+        else:
+            sections.append(
+                f"=== {hero_name} (HERO — {hero_archetype}) ===\n"
+                f"Goal: {hero.get('stated_goal', '?')}\n"
+                f"Need: {hero.get('actual_need', '?')}\n"
+                f"Arc: {hero.get('opening_state', '?')} → {hero.get('final_state', '?')}"
+            )
 
-        # Antagonist identifiers
+        # Antagonist
         antagonist = step_3_artifact.get("antagonist", step_3_artifact.get("antagonist_profile", {}))
         if antagonist and antagonist.get("name"):
             antag_name = antagonist["name"]
-            antag_trait = antagonist.get("limp_and_eye_patch", antagonist.get("distinctive_trait", ""))
+            antag_bio = (antagonist.get("character_biography") or "").strip()
             antag_adj = antagonist.get("adjective_descriptor", "")
-            lines.append(
-                f"- {antag_name} (ANTAGONIST): "
-                f"Identifier: {antag_trait or 'establish a recurring visual signature or sound'}. "
-                f"Voice: {antag_adj + ' tone' if antag_adj else 'distinct from hero — opposite cadence'}."
-            )
+            if antag_bio:
+                sections.append(
+                    f"=== {antag_name} (ANTAGONIST — {antag_adj}) ===\n"
+                    f"{antag_bio}\n"
+                    f"Does NOT arc. Refuses to change — that's why they lose."
+                )
+            else:
+                sections.append(
+                    f"=== {antag_name} (ANTAGONIST — {antag_adj}) ===\n"
+                    f"Mirror: {antagonist.get('mirror_principle', '?')}\n"
+                    f"Moral line: {antagonist.get('moral_difference', '?')}\n"
+                    f"Does NOT arc. Refuses to change."
+                )
 
-        # B-story identifiers
+        # B-story
         b_story = step_3_artifact.get("b_story_character", step_3_artifact.get("b_story", {}))
         if b_story and b_story.get("name"):
             b_name = b_story["name"]
-            b_trait = b_story.get("limp_and_eye_patch", b_story.get("distinctive_trait", ""))
+            b_bio = (b_story.get("character_biography") or "").strip()
             b_rel = b_story.get("relationship_to_hero", "")
-            lines.append(
-                f"- {b_name} (B-STORY, {b_rel}): "
-                f"Identifier: {b_trait or 'establish a recurring physical habit or prop'}. "
-                f"Voice: warm but distinct from hero."
-            )
+            if b_bio:
+                sections.append(
+                    f"=== {b_name} (B-STORY — {b_rel}) ===\n"
+                    f"{b_bio}\n"
+                    f"Arc: {b_story.get('opening_state', '?')} → {b_story.get('final_state', '?')}"
+                )
+            else:
+                sections.append(
+                    f"=== {b_name} (B-STORY — {b_rel}) ===\n"
+                    f"Theme wisdom: {b_story.get('theme_wisdom', '?')}\n"
+                    f"Arc: {b_story.get('opening_state', '?')} → {b_story.get('final_state', '?')}"
+                )
 
-        return "\n".join(lines) if lines else "(No character identifiers available.)"
+        return "\n\n".join(sections) if sections else "(No character data available.)"
 
     def _build_previous_summary(self, last_n_scenes: List[Dict[str, Any]]) -> str:
         """Build continuity summary from last N scenes (slugline + conflict + emotional arc)."""

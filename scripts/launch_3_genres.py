@@ -1,11 +1,10 @@
 """
 Launch 3 E2E pipeline runs in parallel — one per genre seed:
-  - buddy_love: Comedy/Romance (Maya & Diego food truck)
-  - monster_house: Horror/Thriller (Elena vs the Victorian house)
-  - fool_triumphant: Comedy/Drama (Terrence the janitor-professor)
+  - rites_of_passage: Drama (Sienna — pregnant valedictorian)
+  - out_of_the_bottle: Comedy/Fantasy (Marcus — lawyer cursed to tell truth)
+  - golden_fleece: Adventure/Drama (Josie — hospice nurse road trip)
 
-All use GPT as writer, Grok as checker (default mode).
-Each now includes Step 8b: targeted Grok scene rewrite after diagnostics.
+v10.0.0: Character bios, anti-novelist rules, max 3 revisions per act.
 
 Usage:
     python scripts/launch_3_genres.py
@@ -23,9 +22,9 @@ ARTIFACTS_DIR = os.path.join(os.path.dirname(__file__), "..", "artifacts")
 
 # (label, swap_models, snowflake_project_folder)
 RUNS = [
-    ("buddy_love", "0", "seed_buddy_love"),
-    ("monster_house", "0", "seed_monster_house"),
-    ("fool_triumphant", "0", "seed_fool_triumphant"),
+    ("rites_of_passage", "0", "seed_rites_of_passage"),
+    ("out_of_the_bottle", "0", "seed_out_of_the_bottle"),
+    ("golden_fleece", "0", "seed_golden_fleece"),
 ]
 
 

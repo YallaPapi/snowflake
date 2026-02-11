@@ -234,7 +234,7 @@ def step_5_artifact():
 
 class TestStep8Versions:
     def test_prompt_version(self, prompt_gen):
-        assert prompt_gen.VERSION == "8.0.0"
+        assert prompt_gen.VERSION == "9.0.0"
 
     def test_validator_version(self, validator):
         assert validator.VERSION == "2.0.0"
@@ -699,7 +699,7 @@ class TestStep8PromptGeneration:
         assert "user" in result
         assert "prompt_hash" in result
         assert "version" in result
-        assert result["version"] == "8.0.0"
+        assert result["version"] == "9.0.0"
 
     def test_prompt_hash_is_deterministic(self, prompt_gen, step_5_artifact,
                                            step_3_artifact, step_2_artifact,
@@ -1203,7 +1203,7 @@ class TestStep8SingleScenePrompt:
         assert "system" in result
         assert "user" in result
         assert "prompt_hash" in result
-        assert result["version"] == "8.0.0"
+        assert result["version"] == "9.0.0"
 
     def test_includes_board_card_details(self, prompt_gen):
         result = prompt_gen.generate_single_scene_prompt(

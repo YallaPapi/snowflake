@@ -3,8 +3,10 @@ Step 3 Prompt Template: Hero Construction (Save the Cat Ch.3)
 Generates prompts for building the protagonist, antagonist, and B-story character
 from logline, genre classification, and Snowflake character data.
 
-VERSION 2.0.0 — Adds demographic criterion (R9c/R10), surface-to-primal connection
-(R12), fixes Step 1 field references (villain_adjective/primal_goal removed).
+VERSION 4.0.0 — Adds full prose character biographies. Each character gets a one-page
+prose bio covering Egri's 3 dimensions (physiology, sociology, psychology) BEFORE
+the structured JSON fields. Voice, speech patterns, and behavioral traits are derived
+from the biography, not invented as standalone fields.
 """
 
 import json
@@ -15,7 +17,7 @@ from typing import Dict, Any
 class Step3Prompt:
     """Prompt generator for Screenplay Engine Step 3: Hero Construction"""
 
-    VERSION = "3.0.0"
+    VERSION = "4.0.0"
 
     SYSTEM_PROMPT = (
         "You are a Save the Cat! character architect. Build protagonists with "
@@ -61,6 +63,60 @@ SNOWFLAKE CHARACTER DATA:
 {snowflake_character_data}
 
 {genre_hero_constraints}
+
+=== CHARACTER BIOGRAPHIES (WRITE THESE FIRST) ===
+
+Before building the structured JSON profile, write a FULL PROSE CHARACTER BIOGRAPHY for
+each character (hero, antagonist, and B-story character). This is the single most important
+part of this step. The biography is what makes each character a distinct human being instead
+of a plot placeholder.
+
+A real screenwriter knows their characters inside and out BEFORE they write a single line of
+dialogue. The biography is how you get there. It is written in natural prose — like a
+novelist describing a person they know intimately.
+
+Each biography should answer these questions (not as a Q&A list — weave the answers into
+flowing prose):
+
+PHYSIOLOGY (the body — what the camera sees):
+- What is the first thing people notice about them physically?
+- Do they have any scars, tattoos, physical habits, or distinguishing marks?
+- How do they carry themselves — do they take up space or try to disappear?
+- What do they wear? Is it deliberate or careless?
+
+SOCIOLOGY (the world — how they got here):
+- Where did they grow up? What was their childhood like?
+- What is their economic class — and do they feel comfortable in it or are they faking?
+- What is their education level? Did they finish? Why or why not?
+- What is their job and how do they feel about it?
+- Where do they fit in their community — leader, outcast, invisible, feared, pitied?
+- What is the one relationship (family, romantic, friendship) that shaped them the most?
+
+PSYCHOLOGY (the mind — what drives them):
+- What is the wound? What happened to them that they still carry?
+- What lie do they believe about themselves or the world because of that wound?
+- What is their emotional default under stress? (anger, withdrawal, humor, control, panic)
+- How do they make decisions — head or heart? Cautious or impulsive?
+- What would they die to protect? What line would they never cross?
+- What is their secret — the thing they hide from everyone?
+
+VOICE (how they talk — this determines ALL their dialogue):
+- What is their speech register? (formal, casual, academic, street, technical, folksy)
+- What is their sentence rhythm? (short punchy fragments, long winding clauses, measured and deliberate)
+- Do they have verbal tics, catchphrases, or filler words?
+- What topics do they avoid talking about? What words do they refuse to use?
+- Do they speak to fill silence or only when necessary?
+- How do they sound when angry vs. scared vs. lying?
+- What is one sentence ONLY this character would say — that no other character in the story would?
+
+Write each biography as a single flowing passage — 300-500 words. It should read like a
+character dossier written by someone who knows this person deeply. NOT a bullet list. NOT
+a fill-in-the-blank form. A living, breathing description of a human being.
+
+The biography goes in the "character_biography" field. ALL other structured fields (archetype,
+stated_goal, etc.) should be CONSISTENT with and DERIVED FROM the biography. If your
+biography says the character is a quiet, methodical thinker, don't then make their archetype
+"court_jester." The biography is the source of truth.
 
 REQUIREMENTS (FOLLOW EXACTLY):
 
@@ -227,6 +283,7 @@ The B-story character starts the movie one way, and by the Final Image they are 
 OUTPUT FORMAT (JSON):
 {{
   "hero": {{
+    "character_biography": "<FULL PROSE BIOGRAPHY — 300-500 words covering physiology, sociology, psychology, and voice. Written in flowing natural prose, NOT bullet points. This is the source of truth for all other fields. Include: childhood/background, the wound, emotional defaults, speech patterns, physical mannerisms, what makes them uniquely THEM. This biography will be carried through every step of the screenplay pipeline and given to the AI writer for every scene this character appears in.>",
     "name": "<full name>",
     "adjective_descriptor": "<for logline>",
     "age_range": "<approximate age e.g. 'late 20s'>",
@@ -253,6 +310,7 @@ OUTPUT FORMAT (JSON):
     "theme_carrier": "<how protagonist embodies the central question>"
   }},
   "antagonist": {{
+    "character_biography": "<FULL PROSE BIOGRAPHY — 200-400 words. The antagonist is a fully realized person, not a cardboard villain. Cover their background, what twisted their worldview, how they justify their actions to themselves, their speech patterns and physical presence. Remember: the antagonist does NOT arc — they refuse to change. But they must feel REAL. Their refusal to change should feel like a tragic choice, not a plot convenience.>",
     "name": "<antagonist name>",
     "adjective_descriptor": "<short descriptor>",
     "power_level": "<equal or superior — explain>",
@@ -260,6 +318,7 @@ OUTPUT FORMAT (JSON):
     "mirror_principle": "<how they are two halves of the same person>"
   }},
   "b_story_character": {{
+    "character_biography": "<FULL PROSE BIOGRAPHY — 200-400 words. The B-story character carries the theme. Cover their background, why they see the world differently from the hero, how their relationship with the hero works, their speech patterns and behavioral habits. They MUST arc — they change through the story. The biography should make clear who they are at the start and hint at who they could become.>",
     "name": "<B-story character name>",
     "relationship_to_hero": "<relationship>",
     "theme_wisdom": "<the lesson that solves the A-story>",
@@ -465,9 +524,14 @@ Remember:
 - b_story_character must have opening_state and final_state (they MUST differ — the character arcs)
 - antagonist does NOT have opening_state/final_state (villains don't change)
 
+IMPORTANT: Include a full prose "character_biography" field (300-500 words for hero,
+200-400 for antagonist and B-story) for each character. The biography covers physiology,
+sociology, psychology, and voice. It is the source of truth for all other fields.
+
 OUTPUT FORMAT (JSON):
 {{{{
   "hero": {{{{
+    "character_biography": "<full prose biography — 300-500 words>",
     "name": "<full name>",
     "adjective_descriptor": "<for logline>",
     "age_range": "<approximate age>",
@@ -487,6 +551,7 @@ OUTPUT FORMAT (JSON):
     "theme_carrier": "<how protagonist embodies the central question>"
   }}}},
   "antagonist": {{{{
+    "character_biography": "<full prose biography — 200-400 words>",
     "name": "<name>",
     "adjective_descriptor": "<descriptor>",
     "power_level": "<equal or superior>",
@@ -494,6 +559,7 @@ OUTPUT FORMAT (JSON):
     "mirror_principle": "<two halves of the same person>"
   }}}},
   "b_story_character": {{{{
+    "character_biography": "<full prose biography — 200-400 words>",
     "name": "<name>",
     "relationship_to_hero": "<relationship>",
     "theme_wisdom": "<lesson that solves A-story>",
