@@ -23,6 +23,13 @@ SNOWFLAKE_PROJECT = "jsontest_20260207_085604"
 ARTIFACTS_DIR = os.path.join(os.path.dirname(__file__), "..", "artifacts")
 
 
+def configure_utf8_io():
+    """Force UTF-8 console output so Unicode diagnostics do not crash runs on Windows."""
+    for stream in (sys.stdout, sys.stderr):
+        if hasattr(stream, "reconfigure"):
+            stream.reconfigure(encoding="utf-8", errors="replace")
+
+
 def setup_logging():
     log_dir = ARTIFACTS_DIR
     os.makedirs(log_dir, exist_ok=True)
@@ -62,6 +69,7 @@ def load_snowflake_artifacts():
 
 
 def main():
+    configure_utf8_io()
     setup_logging()
 
     print("Loading Snowflake artifacts...")

@@ -1,7 +1,7 @@
 """
 Step 5 Validator: The Board -- 40 Scene Cards (Save the Cat Ch.5)
 
-v2.0.0 -- Rewritten against Ch.5 ("Building The Perfect Beast") of Save the Cat! (2005).
+v3.0.0 -- Rewritten against Ch.5 ("Building The Perfect Beast") of Save the Cat! (2005).
 Corrected landmark positions (All Is Lost ~card 28, Break into Three ~card 30).
 Tightened storyline gap limits (A/B: 3, C/D/E: 6). Added beat name validation against
 canonical BEAT_NAMES, scene heading format check (INT./EXT.), description word count,
@@ -33,12 +33,11 @@ LANDMARK_TOLERANCE = 5
 # Valid storyline colors (A-E)
 VALID_STORYLINE_COLORS = {"A", "B", "C", "D", "E"}
 
-# Maximum consecutive cards without a storyline color appearing
-# A = main plot (should be in nearly every scene, but B-story runs may skip A)
-# B = theme/B-story (appears regularly but concentrated around B Story/DNOTSF beats)
-# C/D/E = subplots — no gap limit; Row 4 payoff check (19) ensures resolution
-MAX_STORYLINE_GAP_A = 6
-MAX_STORYLINE_GAP_B = 10
+# Maximum consecutive cards without a storyline color appearing.
+# Tight interleaving to avoid long storyline disappearance.
+MAX_STORYLINE_GAP_A = 3
+MAX_STORYLINE_GAP_B = 3
+MAX_STORYLINE_GAP_SECONDARY = 6
 
 # Valid scene heading prefixes (standard screenplay format)
 VALID_HEADING_PREFIXES = ("INT.", "EXT.", "INT./EXT.", "I/E.")
@@ -53,7 +52,7 @@ MAX_DESCRIPTION_WORDS = 50
 class Step5Validator:
     """Validator for Screenplay Engine Step 5: The Board (40 Scene Cards)"""
 
-    VERSION = "2.0.0"
+    VERSION = "3.0.0"
 
     def validate(self, artifact: Dict[str, Any]) -> Tuple[bool, List[str]]:
         """
@@ -75,11 +74,12 @@ class Step5Validator:
             13. Beat name matches one of the 15 canonical BS2 beats
             14. Description is brief (max 50 words, fits on an index card)
             15. Card numbers are unique across the board
-            16. No A storyline disappears for more than 6 consecutive cards
-            17. B storyline not absent for 10+ cards (C/D/E checked via Row 4 payoff only)
-            18. Midpoint and All Is Lost have opposite polarity
-            19. Every storyline used in Acts 1-2 appears in Row 4 (payoff)
-            20. 5 landmark beats present at approximately correct positions
+            16. No A storyline disappears for more than 3 consecutive cards
+            17. No B storyline disappears for more than 3 consecutive cards
+            18. No C/D/E storyline disappears for more than 6 consecutive cards
+            19. Midpoint and All Is Lost have opposite polarity
+            20. Every storyline used in Acts 1-2 appears in Row 4 (payoff)
+            21. 5 landmark beats present at approximately correct positions
 
         Returns:
             Tuple of (is_valid, list_of_errors)
@@ -293,7 +293,7 @@ class Step5Validator:
                     )
                 seen_card_numbers.add(card_num)
 
-        # ── 16-17. Storyline gap checks ──────────────────────────────────
+        # ── 16-18. Storyline gap checks ──────────────────────────────────
         if all_cards:
             # Collect all used storyline colors
             used_colors: Set[str] = set()
@@ -319,13 +319,15 @@ class Step5Validator:
                         gap += 1
                         if gap > max_gap:
                             max_gap = gap
-                # Per-storyline gap limits (C/D/E skip — Row 4 payoff check is enough)
+                # Per-storyline gap limits
                 if color == "A":
                     gap_limit = MAX_STORYLINE_GAP_A
                 elif color == "B":
                     gap_limit = MAX_STORYLINE_GAP_B
+                elif color in {"C", "D", "E"}:
+                    gap_limit = MAX_STORYLINE_GAP_SECONDARY
                 else:
-                    continue  # no gap limit for secondary subplots
+                    continue
                 if max_gap > gap_limit:
                     errors.append(
                         f"STORYLINE_GAP: Storyline '{color}' disappears for "
@@ -562,7 +564,7 @@ class Step5Validator:
                 suggestions.append(
                     "Interleave storyline scenes more evenly. A storyline "
                     f"must not be absent for more than {MAX_STORYLINE_GAP_A} "
-                    f"consecutive cards; B for more than {MAX_STORYLINE_GAP_B}."
+                    f"consecutive cards; B for more than {MAX_STORYLINE_GAP_B}; C/D/E for more than {MAX_STORYLINE_GAP_SECONDARY}."
                 )
             elif "MIDPOINT_AIS_SAME_POLARITY" in error:
                 suggestions.append(
@@ -595,3 +597,4 @@ class Step5Validator:
                 )
 
         return suggestions
+

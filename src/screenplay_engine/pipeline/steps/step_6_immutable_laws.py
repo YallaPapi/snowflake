@@ -77,7 +77,8 @@ class Step6ImmutableLaws:
         if not model_config:
             model_config = {
                 "model_name": "gpt-5.2-2025-12-11",
-                "temperature": 0.3,
+                "temperature": 0.0,
+                "max_tokens": 12000,
                 "seed": 42,
             }
 

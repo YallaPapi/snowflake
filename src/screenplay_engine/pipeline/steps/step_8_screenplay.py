@@ -9,6 +9,7 @@ Three generation modes:
 """
 
 import json
+import os
 import re
 import uuid
 import hashlib
@@ -74,6 +75,14 @@ class Step8Screenplay:
 
     # Max revision attempts per scene (structural + diagnostic)
     MAX_SCENE_REVISIONS = 1
+
+    # Act-by-act generation defaults (can be overridden by env vars)
+    DEFAULT_WRITER_TEMPERATURE = 0.2
+    DEFAULT_WRITER_MAX_TOKENS = 64000
+    DEFAULT_CHECKER_MAX_TOKENS = 32000
+    DEFAULT_REVISION_MAX_TOKENS = 24000
+    DEFAULT_MAX_REVISIONS = 4
+    DEFAULT_CHECKER_RETRIES = 2
 
     def __init__(self, project_dir: str = "artifacts"):
         self.project_dir = Path(project_dir)
@@ -162,7 +171,7 @@ class Step8Screenplay:
 
         model_config = ctx["model_config"] or {
             "model_name": "gpt-5.2-2025-12-11",
-            "temperature": 0.5,
+            "temperature": self.DEFAULT_WRITER_TEMPERATURE,
             "max_tokens": 128000,
             "seed": 42,
         }
@@ -205,7 +214,7 @@ class Step8Screenplay:
         board_cards = ctx["board_cards"]
         scene_model_config = ctx["model_config"] or {
             "model_name": "gpt-5.2-2025-12-11",
-            "temperature": 0.5,
+            "temperature": self.DEFAULT_WRITER_TEMPERATURE,
             "max_tokens": 8000,
             "seed": 42,
         }
@@ -351,8 +360,31 @@ class Step8Screenplay:
         # Split cards into acts
         acts = self._split_into_acts(board_cards)
 
-        # Check for model swap: SCREENPLAY_SWAP_MODELS=1 → Grok writes, GPT reviews
-        import os
+        # Runtime controls (override with env vars)
+        # These are intentionally high by default to prioritize completion quality.
+        writer_temp = self._env_float("SCREENPLAY_WRITER_TEMP", self.DEFAULT_WRITER_TEMPERATURE)
+        writer_min_tokens = self._env_int(
+            "SCREENPLAY_WRITER_MAX_TOKENS",
+            self.DEFAULT_WRITER_MAX_TOKENS,
+            minimum=32000,
+        )
+        checker_tokens = self._env_int(
+            "SCREENPLAY_CHECKER_MAX_TOKENS",
+            self.DEFAULT_CHECKER_MAX_TOKENS,
+            minimum=8000,
+        )
+        revision_tokens = self._env_int(
+            "SCREENPLAY_REVISION_MAX_TOKENS",
+            self.DEFAULT_REVISION_MAX_TOKENS,
+            minimum=8000,
+        )
+        max_revisions = self._env_int(
+            "SCREENPLAY_MAX_REVISIONS",
+            self.DEFAULT_MAX_REVISIONS,
+            minimum=1,
+        )
+
+        # Check for model swap: SCREENPLAY_SWAP_MODELS=1 -> Grok writes, GPT reviews
         swap_models = os.getenv("SCREENPLAY_SWAP_MODELS", "").lower() in ("1", "true", "yes")
 
         if swap_models:
@@ -363,35 +395,35 @@ class Step8Screenplay:
             except Exception as e:
                 logger.error("Failed to init Grok writer: %s — aborting swap", e)
                 writer = self.generator
-            writer_config = ctx["model_config"] or {
+            writer_config = dict(ctx["model_config"] or {
                 "model_name": "grok-4-1-fast-reasoning",
-                "temperature": 0.5,
-                "max_tokens": 32000,
-            }
+                "temperature": writer_temp,
+                "max_tokens": writer_min_tokens,
+            })
             # GPT as checker
             checker = self.generator  # already OpenAI
             checker_config = {
                 "model_name": "gpt-5.2-2025-12-11",
                 "temperature": 0.0,
-                "max_tokens": 25000,
+                "max_tokens": checker_tokens,
             }
         else:
             logger.info("DEFAULT MODELS: GPT writes, Grok reviews")
             writer = self.generator
             # Writer model config — GPT for generation
-            writer_config = ctx["model_config"] or {
+            writer_config = dict(ctx["model_config"] or {
                 "model_name": "gpt-5.2-2025-12-11",
-                "temperature": 0.5,
-                "max_tokens": 32000,  # ~10 scenes per act
+                "temperature": writer_temp,
+                "max_tokens": writer_min_tokens,  # ~10 scenes per act with full context
                 "seed": 42,
-            }
+            })
             # Initialize Grok checker
             try:
                 checker = AIGenerator(provider="xai")
                 checker_config = {
                     "model_name": "grok-4-1-fast-reasoning",
                     "temperature": 0.0,
-                    "max_tokens": 25000,
+                    "max_tokens": checker_tokens,
                 }
                 logger.info("Grok checker initialized (xAI)")
             except Exception as e:
@@ -400,12 +432,16 @@ class Step8Screenplay:
                 checker_config = {
                     "model_name": writer_config.get("model_name", "gpt-5.2-2025-12-11"),
                     "temperature": 0.0,
-                    "max_tokens": 25000,
+                    "max_tokens": checker_tokens,
                 }
 
-        # Ensure enough tokens for an act (~10 scenes)
-        if writer_config.get("max_tokens", 0) < 32000:
-            writer_config["max_tokens"] = 32000
+        # Apply defaults/overrides regardless of branch
+        if "temperature" not in writer_config:
+            writer_config["temperature"] = writer_temp
+        if writer_config.get("max_tokens", 0) < writer_min_tokens:
+            writer_config["max_tokens"] = writer_min_tokens
+        if checker_config.get("max_tokens", 0) < checker_tokens:
+            checker_config["max_tokens"] = checker_tokens
 
         all_scenes: List[Dict[str, Any]] = []
         acts_revised = 0
@@ -434,7 +470,14 @@ class Step8Screenplay:
             )
 
             writer_label = "Grok" if swap_models else "GPT"
-            logger.info("Generating %s with %s...", act_label, writer_label)
+            logger.info(
+                "Generating %s with %s (temp=%.2f, writer_tokens=%d, checker_tokens=%d)...",
+                act_label,
+                writer_label,
+                float(writer_config.get("temperature", 0.0)),
+                int(writer_config.get("max_tokens", 0)),
+                int(checker_config.get("max_tokens", 0)),
+            )
             raw = writer.generate(act_prompt, writer_config)
             act_scenes = self._parse_act_scenes(raw, start_scene)
 
@@ -442,7 +485,7 @@ class Step8Screenplay:
                 logger.error("%s: GPT returned no parseable scenes!", act_label)
                 continue
 
-            logger.info("%s: GPT generated %d scenes", act_label, len(act_scenes))
+            logger.info("%s: %s generated %d scenes", act_label, writer_label, len(act_scenes))
 
             # Structural validation on each scene
             for i, scene in enumerate(act_scenes):
@@ -464,12 +507,13 @@ class Step8Screenplay:
             )
 
             try:
-                diag_raw = checker.generate(diag_prompt, checker_config)
-                logger.debug("Grok raw response (%d chars): %s", len(diag_raw), diag_raw[:500])
-                diag_result = self._parse_json_response(diag_raw)
-                diagnostics = diag_result.get("diagnostics", [])
-                if not diagnostics:
-                    logger.warning("Grok returned 0 diagnostics — raw first 500 chars: %s", diag_raw[:500])
+                diagnostics = self._run_act_checker_with_retry(
+                    checker=checker,
+                    checker_config=checker_config,
+                    diag_prompt=diag_prompt,
+                    act_label=act_label,
+                    phase="initial check",
+                )
                 failures = [d for d in diagnostics if not d.get("passed", True)]
                 passed = sum(1 for d in diagnostics if d.get("passed", True))
 
@@ -480,16 +524,19 @@ class Step8Screenplay:
                     total_grok_failures += 1
 
             except Exception as e:
-                logger.error("Grok diagnostic failed for %s: %s", act_label, e)
-                failures = []
+                logger.error("Checker diagnostic failed for %s: %s", act_label, e)
+                return False, {}, (
+                    f"Checker diagnostic failed for {act_label}: {e}. "
+                    "Refusing to continue with unverified act output."
+                )
 
             # 3. Revision loop: Grok found problems → GPT rewrites ONLY broken scenes → Grok re-checks
-            MAX_REVISIONS = 3
+            MAX_REVISIONS = max_revisions
             revision_round = 0
 
             # Use smaller token limit for targeted scene revisions (not full act)
             revision_config = dict(writer_config)
-            revision_config["max_tokens"] = 16000  # Only rewriting 1-4 scenes, not 10
+            revision_config["max_tokens"] = revision_tokens  # Targeted rewrites only
 
             while failures and revision_round < MAX_REVISIONS:
                 revision_round += 1
@@ -564,12 +611,13 @@ class Step8Screenplay:
                 )
 
                 try:
-                    diag_raw = checker.generate(diag_prompt, checker_config)
-                    logger.debug("Grok re-check raw (%d chars): %s", len(diag_raw), diag_raw[:500])
-                    diag_result = self._parse_json_response(diag_raw)
-                    diagnostics = diag_result.get("diagnostics", [])
-                    if not diagnostics:
-                        logger.warning("Grok re-check returned 0 diagnostics — raw first 500: %s", diag_raw[:500])
+                    diagnostics = self._run_act_checker_with_retry(
+                        checker=checker,
+                        checker_config=checker_config,
+                        diag_prompt=diag_prompt,
+                        act_label=act_label,
+                        phase=f"revision {revision_round} re-check",
+                    )
                     failures = [d for d in diagnostics if not d.get("passed", True)]
                     passed = sum(1 for d in diagnostics if d.get("passed", True))
 
@@ -586,8 +634,11 @@ class Step8Screenplay:
                         logger.info("%s: Grok approved after %d revision(s)", act_label, revision_round)
 
                 except Exception as e:
-                    logger.error("Grok re-check failed for %s round %d: %s", act_label, revision_round, e)
-                    failures = []  # Stop loop on Grok error
+                    logger.error("Checker re-check failed for %s round %d: %s", act_label, revision_round, e)
+                    return False, {}, (
+                        f"Checker re-check failed for {act_label} round {revision_round}: {e}. "
+                        "Refusing to continue with unverified act output."
+                    )
 
             if not failures and revision_round == 0:
                 logger.info("%s: Grok approved — no revision needed", act_label)
@@ -645,6 +696,128 @@ class Step8Screenplay:
                 acts.append((label, act_cards))
         return acts
 
+    @staticmethod
+    def _env_int(name: str, default: int, minimum: Optional[int] = None) -> int:
+        raw = os.getenv(name, "").strip()
+        if not raw:
+            value = default
+        else:
+            try:
+                value = int(raw)
+            except ValueError:
+                logger.warning("Invalid %s=%r; using default %d", name, raw, default)
+                value = default
+        if minimum is not None and value < minimum:
+            value = minimum
+        return value
+
+    @staticmethod
+    def _env_float(name: str, default: float) -> float:
+        raw = os.getenv(name, "").strip()
+        if not raw:
+            return default
+        try:
+            return float(raw)
+        except ValueError:
+            logger.warning("Invalid %s=%r; using default %.3f", name, raw, default)
+            return default
+
+    def _run_act_checker_with_retry(
+        self,
+        checker: AIGenerator,
+        checker_config: Dict[str, Any],
+        diag_prompt: Dict[str, str],
+        act_label: str,
+        phase: str,
+    ) -> List[Dict[str, Any]]:
+        """
+        Run act-level diagnostics with retry and strict schema validation.
+
+        This prevents silent acceptance of malformed/partial checker output.
+        """
+        retries = self._env_int(
+            "SCREENPLAY_CHECKER_RETRIES",
+            self.DEFAULT_CHECKER_RETRIES,
+            minimum=1,
+        )
+        last_error: Optional[Exception] = None
+
+        for attempt in range(1, retries + 1):
+            try:
+                diag_raw = checker.generate(diag_prompt, checker_config)
+                logger.debug(
+                    "Grok %s raw attempt %d/%d (%d chars): %s",
+                    phase, attempt, retries, len(diag_raw), diag_raw[:500],
+                )
+                diagnostics = self._extract_diagnostics_from_raw(diag_raw, act_label)
+                return diagnostics
+            except Exception as exc:
+                last_error = exc
+                if attempt < retries:
+                    logger.warning(
+                        "Checker %s failed for %s (attempt %d/%d): %s; retrying",
+                        phase, act_label, attempt, retries, exc,
+                    )
+                else:
+                    logger.error(
+                        "Checker %s failed for %s after %d/%d attempts: %s",
+                        phase, act_label, attempt, retries, exc,
+                    )
+
+        raise last_error or RuntimeError(
+            f"Checker {phase} failed for {act_label} with unknown error"
+        )
+
+    def _extract_diagnostics_from_raw(
+        self,
+        raw_content: str,
+        act_label: str,
+    ) -> List[Dict[str, Any]]:
+        """Parse checker raw output and validate diagnostics schema."""
+        parsed = self._parse_json_response(raw_content)
+
+        diagnostics: Any = []
+        if isinstance(parsed, dict):
+            diagnostics = parsed.get("diagnostics", [])
+            if not diagnostics and isinstance(parsed.get("_list"), list):
+                diagnostics = parsed.get("_list")
+
+        # Some models return a bare list instead of an object.
+        if not diagnostics:
+            stripped = (raw_content or "").strip()
+            if stripped.startswith("["):
+                try:
+                    arr = json.loads(stripped)
+                    if isinstance(arr, list):
+                        diagnostics = arr
+                except Exception:
+                    pass
+
+        if not isinstance(diagnostics, list):
+            raise ValueError(
+                f"Checker output for {act_label} has non-list diagnostics payload: {type(diagnostics).__name__}"
+            )
+
+        dict_diagnostics = [d for d in diagnostics if isinstance(d, dict)]
+        if len(dict_diagnostics) != len(diagnostics):
+            raise ValueError(
+                f"Checker output for {act_label} contains non-object diagnostics entries"
+            )
+        if len(dict_diagnostics) < 10:
+            raise ValueError(
+                f"Checker output for {act_label} is incomplete: {len(dict_diagnostics)} checks (expected 10)"
+            )
+
+        required_keys = {"check_number", "check_name", "passed"}
+        for idx, diag in enumerate(dict_diagnostics):
+            missing = required_keys - set(diag.keys())
+            if missing:
+                raise ValueError(
+                    f"Checker diagnostic #{idx + 1} for {act_label} missing keys: {sorted(missing)}"
+                )
+
+        return dict_diagnostics
+
     def _parse_act_scenes(self, raw_content: str, start_scene: int) -> List[Dict[str, Any]]:
         """Parse GPT output containing multiple scenes for one act."""
         if not raw_content:
@@ -701,6 +874,25 @@ class Step8Screenplay:
         b_story = step_3_artifact.get("b_story_character", step_3_artifact.get("b_story", {}))
         if b_story:
             parts.append(f"B-Story: {b_story.get('name', 'MISSING')} - {b_story.get('relationship_to_hero', '')}")
+
+        supporting_chars = step_3_artifact.get("supporting_characters")
+        if not isinstance(supporting_chars, list):
+            supporting_cast = step_3_artifact.get("supporting_cast", {})
+            if isinstance(supporting_cast, dict):
+                supporting_chars = supporting_cast.get("characters", [])
+
+        if isinstance(supporting_chars, list) and supporting_chars:
+            labels = []
+            for char in supporting_chars:
+                if not isinstance(char, dict):
+                    continue
+                name = (char.get("name") or "").strip()
+                if not name:
+                    continue
+                role = (char.get("role") or "").strip()
+                labels.append(f"{name} ({role})" if role else name)
+            if labels:
+                parts.append("Supporting Cast: " + ", ".join(labels))
 
         return "\n".join(parts)
 
@@ -768,6 +960,50 @@ class Step8Screenplay:
                     f"Theme wisdom: {b_story.get('theme_wisdom', '?')}\n"
                     f"Arc: {b_story.get('opening_state', '?')} → {b_story.get('final_state', '?')}"
                 )
+
+        # Supporting cast (Step 3b, merged by orchestrator into step_3_artifact)
+        supporting_chars = step_3_artifact.get("supporting_characters")
+        if not isinstance(supporting_chars, list):
+            supporting_cast = step_3_artifact.get("supporting_cast", {})
+            if isinstance(supporting_cast, dict):
+                supporting_chars = supporting_cast.get("characters", [])
+
+        if isinstance(supporting_chars, list):
+            for char in supporting_chars:
+                if not isinstance(char, dict):
+                    continue
+                name = (char.get("name") or "").strip()
+                if not name:
+                    continue
+                role = (char.get("role") or "").strip()
+                rel = (char.get("relationship_to_hero") or "").strip()
+                trait = (char.get("distinctive_trait") or "").strip()
+                voice = (char.get("voice_profile") or "").strip()
+                arc = (char.get("arc_summary") or "").strip()
+                bio = (char.get("character_biography") or "").strip()
+
+                heading = f"=== {name} (SUPPORTING"
+                if role:
+                    heading += f" — {role}"
+                heading += ") ==="
+
+                if bio:
+                    block_lines = [
+                        heading,
+                        bio,
+                    ]
+                else:
+                    block_lines = [heading]
+                    if rel:
+                        block_lines.append(f"Relationship to hero: {rel}")
+                    if trait:
+                        block_lines.append(f"Distinctive trait: {trait}")
+                    if voice:
+                        block_lines.append(f"Voice profile: {voice}")
+                    if arc:
+                        block_lines.append(f"Arc summary: {arc}")
+
+                sections.append("\n".join(block_lines))
 
         return "\n\n".join(sections) if sections else "(No character data available.)"
 
@@ -929,6 +1165,8 @@ class Step8Screenplay:
 
         # Strip <think>...</think> blocks from reasoning models
         cleaned = re.sub(r"<think>.*?</think>", "", raw_content, flags=re.DOTALL).strip()
+        cleaned = cleaned.replace("\x00", "")
+        decoder = json.JSONDecoder()
 
         # 1. Try code-fenced JSON
         try:
@@ -943,10 +1181,27 @@ class Step8Screenplay:
             stripped = cleaned.strip()
             if stripped.startswith("{"):
                 return json.loads(stripped)
+            if stripped.startswith("["):
+                parsed = json.loads(stripped)
+                if isinstance(parsed, list):
+                    return {"_list": parsed}
         except json.JSONDecodeError:
             pass
 
-        # 3. Find outermost { ... } using bracket counting (handles reasoning text before JSON)
+        # 3. Parse first JSON object from the first '{' using raw_decode.
+        # This handles trailing prose after valid JSON, which is common with reasoning models.
+        for match in re.finditer(r"\{", cleaned):
+            start = match.start()
+            try:
+                parsed, _ = decoder.raw_decode(cleaned[start:])
+                if isinstance(parsed, dict):
+                    return parsed
+                if isinstance(parsed, list):
+                    return {"_list": parsed}
+            except json.JSONDecodeError:
+                continue
+
+        # 4. Find outermost { ... } using bracket counting (legacy fallback).
         try:
             # Search backwards from end to find the main JSON object
             depth = 0
@@ -969,14 +1224,20 @@ class Step8Screenplay:
                 result = json.loads(candidate)
                 if isinstance(result, dict):
                     return result
+                if isinstance(result, list):
+                    return {"_list": result}
         except (json.JSONDecodeError, ValueError):
             pass
 
-        # 4. Last resort: find first { to last } (old approach)
+        # 5. Last resort: find first { to last } (old approach)
         try:
             start = cleaned.index("{")
             end = cleaned.rindex("}") + 1
-            return json.loads(cleaned[start:end])
+            result = json.loads(cleaned[start:end])
+            if isinstance(result, dict):
+                return result
+            if isinstance(result, list):
+                return {"_list": result}
         except (json.JSONDecodeError, ValueError):
             pass
 
@@ -1194,7 +1455,7 @@ class Step8Screenplay:
         if not model_config:
             model_config = {
                 "model_name": "gpt-5.2-2025-12-11",
-                "temperature": 0.5,
+                "temperature": self.DEFAULT_WRITER_TEMPERATURE,
                 "max_tokens": 128000,
             }
 
@@ -1216,7 +1477,10 @@ class Step8Screenplay:
             artifact_content,
             project_id,
             prompt_data["prompt_hash"],
-            model_config or {"model_name": "gpt-5.2-2025-12-11", "temperature": 0.5},
+            model_config or {
+                "model_name": "gpt-5.2-2025-12-11",
+                "temperature": self.DEFAULT_WRITER_TEMPERATURE,
+            },
         )
         artifact["metadata"]["version"] = new_version
         artifact["metadata"]["revision_reason"] = revision_reason
@@ -1258,7 +1522,7 @@ class Step8Screenplay:
             "version": self.VERSION,
             "created_at": datetime.utcnow().isoformat(),
             "model_name": model_config.get("model_name", "unknown"),
-            "temperature": model_config.get("temperature", 0.5),
+            "temperature": model_config.get("temperature", self.DEFAULT_WRITER_TEMPERATURE),
             "seed": model_config.get("seed"),
             "prompt_hash": prompt_hash,
             "validator_version": self.validator.VERSION,

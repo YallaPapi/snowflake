@@ -270,13 +270,13 @@ The B-story character starts the movie one way, and by the Final Image they are 
 
 26. OPENING_STATE: Who the B-story character is when we first meet them. Be specific.
     BAD: "She's distant." (Too vague — distant how? Why? What does it look like?)
-    GOOD: "Juno avoids eye contact with Rae, communicates only through one-word texts,
+    GOOD: "Ally avoids eye contact with Hero, communicates only through one-word texts,
     and has physically moved 3,000 miles away to avoid dealing with their father's death."
 
 27. FINAL_STATE: Who the B-story character becomes by the Final Image. MUST show clear
     change from opening_state — they are NOT the same person.
-    BAD: "She's closer to Rae." (Vague, tells us nothing about HOW she changed.)
-    GOOD: "Juno initiates a hug with Rae for the first time in years, has moved back to
+    BAD: "She's closer to Hero." (Vague, tells us nothing about HOW she changed.)
+    GOOD: "Ally initiates a hug with Hero for the first time in years, has moved back to
     the same city, and openly talks about their father — the grief she was running from is
     now something she faces with her sister."
 
@@ -811,3 +811,4 @@ Examples: Superman (alien isolated by his powers), Gladiator (extraordinary warr
         }
 
         return constraints.get(genre, "")
+

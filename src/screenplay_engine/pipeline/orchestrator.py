@@ -86,6 +86,9 @@ class ScreenplayPipeline:
             elif step_num == 3:
                 from src.screenplay_engine.pipeline.steps.step_3_hero import Step3Hero
                 self._steps[3] = Step3Hero(str(self.project_dir))
+            elif step_num == 31:
+                from src.screenplay_engine.pipeline.steps.step_3b_supporting_cast import Step3bSupportingCast
+                self._steps[31] = Step3bSupportingCast(str(self.project_dir))
             elif step_num == 4:
                 from src.screenplay_engine.pipeline.steps.step_4_beat_sheet import Step4BeatSheet
                 self._steps[4] = Step4BeatSheet(str(self.project_dir))
@@ -170,13 +173,20 @@ class ScreenplayPipeline:
         status = "PASS" if success else "FAIL"
         logger.info("STEP %s: %s — %s (%.1fs)", step_num, step_name, status, elapsed)
         if not success:
-            logger.error("STEP %s failure details: %s", step_num, message[:500])
+            safe_message = self._safe_log_text(message, 500)
+            logger.error("STEP %s failure details: %s", step_num, safe_message)
         else:
             # Log artifact summary
             self._log_artifact_summary(step_num, artifact)
         if success:
             self._update_project_state(step_num, artifact)
         return success, artifact, message
+
+    @staticmethod
+    def _safe_log_text(text: Any, limit: int = 300) -> str:
+        """Return ASCII-safe log text to avoid console encoding crashes on Windows."""
+        preview = str(text)[:limit]
+        return preview.encode("ascii", "replace").decode()
 
     def _log_artifact_summary(self, step_num, artifact: Dict[str, Any]):
         """Log a concise summary of the artifact produced by a step."""
@@ -452,6 +462,27 @@ class ScreenplayPipeline:
         step = self._get_step(3)
         return self._run_step(3, "Hero Construction", lambda: step.execute(step_1_artifact, step_2_artifact, snowflake_artifacts, self.current_project_id))
 
+    def execute_step_3b(
+        self,
+        step_1_artifact: Dict[str, Any],
+        step_2_artifact: Dict[str, Any],
+        step_3_artifact: Dict[str, Any],
+        snowflake_artifacts: Dict[str, Any],
+    ) -> Tuple[bool, Dict[str, Any], str]:
+        """Step 3b: Build supporting cast profiles used by downstream steps."""
+        step = self._get_step(31)
+        return self._run_step(
+            "3b",
+            "Supporting Cast",
+            lambda: step.execute(
+                step_1_artifact,
+                step_2_artifact,
+                step_3_artifact,
+                snowflake_artifacts,
+                self.current_project_id,
+            ),
+        )
+
     def execute_step_4(self, step_1_artifact: Dict[str, Any], step_2_artifact: Dict[str, Any], step_3_artifact: Dict[str, Any], snowflake_artifacts: Dict[str, Any]) -> Tuple[bool, Dict[str, Any], str]:
         """Step 4: Generate 15-beat BS2."""
         step = self._get_step(4)
@@ -494,6 +525,25 @@ class ScreenplayPipeline:
         step = self._get_step(9)
         return self._run_step(9, "Marketing Validation", lambda: step.execute(screenplay_artifact, step_1_artifact, self.current_project_id))
 
+    def _merge_character_context(
+        self,
+        step_3_artifact: Dict[str, Any],
+        step_3b_artifact: Dict[str, Any],
+    ) -> Dict[str, Any]:
+        """
+        Merge Step 3 (hero/antagonist/B-story) and Step 3b (supporting cast)
+        into a single context object consumed by downstream prompts.
+        """
+        merged = dict(step_3_artifact or {})
+        supporting_chars = []
+        if isinstance(step_3b_artifact, dict):
+            supporting_chars = step_3b_artifact.get("characters", [])
+
+        if isinstance(supporting_chars, list):
+            merged["supporting_characters"] = supporting_chars
+        merged["supporting_cast"] = step_3b_artifact or {}
+        return merged
+
     # ── Full Pipeline ──────────────────────────────────────────────────
 
     def run_full_pipeline(self, snowflake_artifacts: Dict[str, Any]) -> Tuple[bool, Dict[str, Any], str]:
@@ -512,11 +562,15 @@ class ScreenplayPipeline:
         """
         artifacts: Dict[Any, Dict[str, Any]] = {}
 
-        # Steps 1-6: Generation + diagnostic checkpoint after each
-        checkpointed_steps = [
+        # Steps 1-3: Generation + diagnostic checkpoint
+        pre_cast_steps = [
             (1, lambda: self.execute_step_1(snowflake_artifacts)),
             (2, lambda: self.execute_step_2(artifacts[1], snowflake_artifacts)),
             (3, lambda: self.execute_step_3(artifacts[1], artifacts[2], snowflake_artifacts)),
+        ]
+
+        # Steps 4-6: use merged Step 3 + Step 3b character context
+        post_cast_steps = [
             (4, lambda: self.execute_step_4(artifacts[1], artifacts[2], artifacts[3], snowflake_artifacts)),
             (5, lambda: self.execute_step_5(artifacts[4], artifacts[3], artifacts[1], artifacts[2])),
             # Step 6: Write screenplay FIRST (book order: write, then diagnose)
@@ -544,16 +598,54 @@ class ScreenplayPipeline:
                     self.current_project_id)
         logger.info("=" * 60)
 
-        # Run checkpointed steps (1-6)
-        for step_num, executor in checkpointed_steps:
+        # Run checkpointed pre-cast steps (1-3)
+        for step_num, executor in pre_cast_steps:
             success, artifact, message = executor()
             if not success:
                 elapsed = time.time() - pipeline_t0
-                logger.error("PIPELINE FAILED at Step %s after %.1fs: %s",
-                            step_num, elapsed, message[:300])
+                logger.error(
+                    "PIPELINE FAILED at Step %s after %.1fs: %s",
+                    step_num,
+                    elapsed,
+                    self._safe_log_text(message),
+                )
                 return False, artifacts, f"Pipeline failed at Step {step_num} ({self.STEP_NAMES[step_num]}): {message}"
 
             # Run diagnostic checkpoint and possibly revise
+            artifact = self._run_checkpoint_and_revise(
+                step_num, artifact, artifacts, snowflake_artifacts,
+            )
+            artifacts[step_num] = artifact
+
+        # Run Step 3b (supporting cast) without checkpoint.
+        success, step_3b_artifact, message = self.execute_step_3b(
+            artifacts[1], artifacts[2], artifacts[3], snowflake_artifacts,
+        )
+        if not success:
+            elapsed = time.time() - pipeline_t0
+            logger.error(
+                "PIPELINE FAILED at Step 3b after %.1fs: %s",
+                elapsed,
+                self._safe_log_text(message),
+            )
+            return False, artifacts, f"Pipeline failed at Step 3b ({self.STEP_NAMES['3b']}): {message}"
+
+        artifacts["3b"] = step_3b_artifact
+        artifacts[3] = self._merge_character_context(artifacts[3], step_3b_artifact)
+
+        # Run checkpointed post-cast steps (4-6)
+        for step_num, executor in post_cast_steps:
+            success, artifact, message = executor()
+            if not success:
+                elapsed = time.time() - pipeline_t0
+                logger.error(
+                    "PIPELINE FAILED at Step %s after %.1fs: %s",
+                    step_num,
+                    elapsed,
+                    self._safe_log_text(message),
+                )
+                return False, artifacts, f"Pipeline failed at Step {step_num} ({self.STEP_NAMES[step_num]}): {message}"
+
             artifact = self._run_checkpoint_and_revise(
                 step_num, artifact, artifacts, snowflake_artifacts,
             )
@@ -564,8 +656,12 @@ class ScreenplayPipeline:
             success, artifact, message = executor()
             if not success:
                 elapsed = time.time() - pipeline_t0
-                logger.error("PIPELINE FAILED at Step %s after %.1fs: %s",
-                            step_num, elapsed, message[:300])
+                logger.error(
+                    "PIPELINE FAILED at Step %s after %.1fs: %s",
+                    step_num,
+                    elapsed,
+                    self._safe_log_text(message),
+                )
                 return False, artifacts, f"Pipeline failed at Step {step_num} ({self.STEP_NAMES[step_num]}): {message}"
             artifacts[step_num] = artifact
 
@@ -581,7 +677,10 @@ class ScreenplayPipeline:
                 artifacts[6] = artifact
                 logger.info("Step 8b complete: %s", message)
             else:
-                logger.warning("Step 8b failed (non-fatal): %s", message[:300])
+                logger.warning(
+                    "Step 8b failed (non-fatal): %s",
+                    self._safe_log_text(message),
+                )
         else:
             logger.info("All 9 diagnostics passed — skipping Step 8b")
 
@@ -590,7 +689,11 @@ class ScreenplayPipeline:
         success, artifact, message = executor_9()
         if not success:
             elapsed = time.time() - pipeline_t0
-            logger.error("PIPELINE FAILED at Step 9 after %.1fs: %s", elapsed, message[:300])
+            logger.error(
+                "PIPELINE FAILED at Step 9 after %.1fs: %s",
+                elapsed,
+                self._safe_log_text(message),
+            )
             return False, artifacts, f"Pipeline failed at Step 9 (Marketing Validation): {message}"
         artifacts[9] = artifact
 
@@ -643,6 +746,7 @@ class ScreenplayPipeline:
             1: "sp_step_1_logline.json",
             2: "sp_step_2_genre.json",
             3: "sp_step_3_hero.json",
+            31: "sp_step_3b_supporting_cast.json",
 
             4: "sp_step_4_beat_sheet.json",
             5: "sp_step_5_board.json",
@@ -671,6 +775,7 @@ class ScreenplayPipeline:
             1: "sp_step_1_logline.json",
             2: "sp_step_2_genre.json",
             3: "sp_step_3_hero.json",
+            31: "sp_step_3b_supporting_cast.json",
 
             4: "sp_step_4_beat_sheet.json",
             5: "sp_step_5_board.json",

@@ -226,3 +226,55 @@ class TestCallStepRevise:
 
         result = pipeline._call_step_revise(1, "reason", {}, {})
         assert result is None
+
+
+class TestSupportingCastIntegration:
+    """Tests for Step 3b wiring and merged character context."""
+
+    def test_merge_character_context_adds_supporting_cast(self, tmp_path):
+        pipeline = ScreenplayPipeline(str(tmp_path))
+        step_3 = {"hero": {"name": "Alex"}}
+        step_3b = {
+            "characters": [
+                {"name": "Rory", "role": "ally"},
+                {"name": "Judge Talbot", "role": "authority"},
+            ],
+            "total_speaking_roles": 2,
+            "total_non_speaking": 0,
+        }
+
+        merged = pipeline._merge_character_context(step_3, step_3b)
+        assert "supporting_cast" in merged
+        assert "supporting_characters" in merged
+        assert len(merged["supporting_characters"]) == 2
+        assert merged["supporting_characters"][0]["name"] == "Rory"
+
+    def test_run_full_pipeline_executes_step_3b(self, tmp_path):
+        pipeline = ScreenplayPipeline(str(tmp_path))
+        pipeline.current_project_id = "test"
+
+        # Stub all step methods; run_full_pipeline should still perform orchestration.
+        pipeline.execute_step_1 = MagicMock(return_value=(True, {"title": "T", "logline": "L"}, "ok"))
+        pipeline.execute_step_2 = MagicMock(return_value=(True, {"genre": "dude_with_a_problem"}, "ok"))
+        pipeline.execute_step_3 = MagicMock(return_value=(True, {"hero": {"name": "Alex"}}, "ok"))
+        pipeline.execute_step_3b = MagicMock(return_value=(
+            True,
+            {"characters": [{"name": "Rory", "role": "ally"}], "total_speaking_roles": 1, "total_non_speaking": 0},
+            "ok",
+        ))
+        pipeline.execute_step_4 = MagicMock(return_value=(True, {"beats": []}, "ok"))
+        pipeline.execute_step_5 = MagicMock(return_value=(True, {"row_1_act_one": []}, "ok"))
+        pipeline.execute_step_6 = MagicMock(return_value=(True, {"scenes": [], "total_pages": 1}, "ok"))
+        pipeline.execute_step_7 = MagicMock(return_value=(True, {"laws": [], "all_passed": True}, "ok"))
+        pipeline.execute_step_8 = MagicMock(return_value=(True, {"diagnostics": [], "checks_passed_count": 9}, "ok"))
+        pipeline.execute_step_9 = MagicMock(return_value=(True, {"logline_still_accurate": True}, "ok"))
+
+        # No-op checkpoint revise to keep artifacts unchanged.
+        pipeline._run_checkpoint_and_revise = MagicMock(side_effect=lambda step_num, artifact, *_: artifact)
+
+        success, artifacts, _ = pipeline.run_full_pipeline({"step_0": {}})
+        assert success is True
+        pipeline.execute_step_3b.assert_called_once()
+        assert "3b" in artifacts
+        assert "supporting_characters" in artifacts[3]
+        assert artifacts[3]["supporting_characters"][0]["name"] == "Rory"

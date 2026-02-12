@@ -112,6 +112,10 @@ class HeroProfile(BaseModel):
     """Fully defined protagonist (Ch.3)"""
     name: str
     adjective_descriptor: str = Field(..., description="For logline: 'ordinary cop', 'reluctant hero'")
+    character_biography: str = Field(
+        default="",
+        description="Full prose character biography used as voice/behavior source of truth",
+    )
     age_range: str = Field(default="", description="Character's approximate age range e.g. 'late 20s'")
     gender: str = Field(default="", description="Character's gender")
     archetype: ActorArchetype
@@ -139,6 +143,10 @@ class AntagonistProfile(BaseModel):
     """Antagonist constructed to mirror hero (Ch.3 + Ch.7)"""
     name: str
     adjective_descriptor: str
+    character_biography: str = Field(
+        default="",
+        description="Full prose antagonist biography; antagonist remains static (no arc).",
+    )
     power_level: str = Field(..., description="Equal or slightly superior to hero")
     moral_difference: str = Field(..., description="Willing to do things hero won't")
     mirror_principle: str = Field(..., description="How they are two halves of same person")
@@ -147,8 +155,20 @@ class AntagonistProfile(BaseModel):
 class BStoryCharacter(BaseModel):
     """B-story character carrying the theme (Ch.4 beat 7)"""
     name: str
+    character_biography: str = Field(
+        default="",
+        description="Full prose biography with voice and behavior traits",
+    )
     relationship_to_hero: str
     theme_wisdom: str = Field(..., description="The lesson they teach that solves A-story")
+    opening_state: str = Field(
+        default="",
+        description="Who this character is when first introduced",
+    )
+    final_state: str = Field(
+        default="",
+        description="Who this character becomes by the Final Image (must differ from opening_state)",
+    )
 
 
 # ── Step 3b: Supporting Cast ──────────────────────────────────────────────

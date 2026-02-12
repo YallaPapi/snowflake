@@ -438,10 +438,10 @@ from - to +."
     real." E.T. has a real alien and ZERO news crews. That's why it works.
     BAD (press breaks containment):
       [ACTION] A TV in the corner shows a news anchor reporting on the citywide blackout.
-      RAE glances at the screen, jaw tightening.
+      Hero glances at the screen, jaw tightening.
     GOOD (information stays personal and contained):
       [ACTION] A drunk at the end of the bar slams his glass down. "Third night in a row
-      the power's been cutting out. My wife thinks it's terrorists." Rae says nothing.
+      the power's been cutting out. My wife thinks it's terrorists." Hero says nothing.
       She knows the truth is worse.
     EXCEPTION: Only if the story's premise is ABOUT media/journalism.
 
@@ -468,24 +468,24 @@ from - to +."
 
     BAD (static exposition):
       EXT. PARKING LOT - NIGHT
-      Rae and Lena stand by the car.
-      LENA: The blackout wasn't random. MARA controls the grid. She's been testing
+      Hero and ALLY stand by the car.
+      ALLY: The blackout wasn't random. ANTAGONIST controls the grid. She's been testing
       how long people can go without power before they comply.
-      RAE: How do you know this?
-      LENA: I worked the inside for two years.
+      Hero: How do you know this?
+      ALLY: I worked the inside for two years.
 
     GOOD (buried in action):
       EXT. PARKING LOT - NIGHT
-      Rae pops the hood of a dead sedan. She strips wires by flashlight while Lena
+      Hero pops the hood of a dead sedan. She strips wires by flashlight while ALLY
       holds a mirror to watch the street behind them.
-      LENA: The grid isn't down. It's controlled. (hands Rae a wire stripper)
-      RAE hot-wires the ignition. The engine coughs, dies. She tries again.
-      LENA: Two years on the inside. I watched her test neighborhoods — kill the power,
+      ALLY: The grid isn't down. It's controlled. (hands Hero a wire stripper)
+      Hero hot-wires the ignition. The engine coughs, dies. She tries again.
+      ALLY: Two years on the inside. I watched her test neighborhoods — kill the power,
       time how long before people line up to register.
       The engine catches. Headlights flood the alley. Both women freeze — the light reveals
-      a surveillance camera they didn't see. Rae kills the lights instantly.
+      a surveillance camera they didn't see. Hero kills the lights instantly.
 
-    The audience absorbs Lena's exposition because they're watching Rae hot-wire a car
+    The audience absorbs ALLY's exposition because they're watching Hero hot-wire a car
     while checking for surveillance. The information lands BETWEEN moments of tension.
 
     HIGH-RISK BEATS — these beats MOST OFTEN violate Pope in the Pool. Pay EXTREME
@@ -495,16 +495,16 @@ from - to +."
     to the hero. This is PURE EXPOSITION — a character literally stating the movie's thesis.
     It MUST be delivered during visually compelling physical action, NOT during a static
     conversation, NOT during a phone call, NOT over coffee, NOT while sitting in a car.
-      BAD: Lena and Rae sit in a diner. Lena says "You can't save everyone by yourself."
-      BAD: Lena calls Rae on the phone. "The world doesn't need another lone wolf."
-      BAD: Rae drives while Lena talks from the passenger seat about independence vs trust.
-      GOOD: Rae is mid-chase on foot through a market — knocking over crates, vaulting a
-      counter. She answers Lena's call on speaker, jammed in her collar. Lena's theme line
-      ("You keep running alone and you'll die alone") hits RIGHT as Rae nearly gets caught
+      BAD: ALLY and Hero sit in a diner. ALLY says "You can't save everyone by yourself."
+      BAD: ALLY calls Hero on the phone. "The world doesn't need another lone wolf."
+      BAD: Hero drives while ALLY talks from the passenger seat about independence vs trust.
+      GOOD: Hero is mid-chase on foot through a market — knocking over crates, vaulting a
+      counter. She answers ALLY's call on speaker, jammed in her collar. ALLY's theme line
+      ("You keep running alone and you'll die alone") hits RIGHT as Hero nearly gets caught
       because she has no one watching her back. The theme is PROVEN by the action around it.
-      GOOD: Rae is suturing her own arm wound (one-handed, painful, failing) when Lena
+      GOOD: Hero is suturing her own arm wound (one-handed, painful, failing) when ALLY
       arrives and takes the needle. "Let someone help for once." The physical struggle of
-      self-reliance IS the theme — Rae literally cannot do this alone.
+      self-reliance IS the theme — Hero literally cannot do this alone.
 
     DARK NIGHT OF THE SOUL (pages 75-85): The hero's lowest emotional point. Often involves
     confessions, guilt, despair, or admitting failure. This is the #1 scene where writers
@@ -512,27 +512,27 @@ from - to +."
     The confession/despair MUST be forced out by extreme physical circumstances — the
     character is physically doing something desperate while the emotional truth spills out
     in fragments between urgent actions.
-      BAD: Rae sits in a stairwell. She turns to her sister and says "I got someone killed.
+      BAD: Hero sits in a stairwell. She turns to her sister and says "I got someone killed.
       I took a job, trusted a clean file, and delivered a man who didn't make it out."
-      BAD: Rae stands alone on a rooftop staring at the city. Voice-over of her guilt.
-      GOOD: Rae and her sister are barricaded in a utility room. Water is rising from a
-      burst pipe. Rae tries to seal it with duct tape — it keeps failing. Her sister holds
-      a flashlight that keeps flickering. Between attempts to stop the flood, Rae's guilt
+      BAD: Hero stands alone on a rooftop staring at the city. Voice-over of her guilt.
+      GOOD: Hero and her sister are barricaded in a utility room. Water is rising from a
+      burst pipe. Hero tries to seal it with duct tape — it keeps failing. Her sister holds
+      a flashlight that keeps flickering. Between attempts to stop the flood, Hero's guilt
       spills out in fragments: "I delivered him." (rips tape) "Clean file, they said."
       (shoves a rag into the pipe) "He didn't come back." (the rag blows out — water
       sprays) The PHYSICAL FAILURE mirrors the emotional confession. The audience feels
-      the despair because they're watching Rae literally unable to stop things from falling
+      the despair because they're watching Hero literally unable to stop things from falling
       apart.
 
     BREAK INTO THREE (page ~85): The hero conceives the plan for the finale. Writers
     instinctively create a briefing scene — chalk maps, "here's what we'll do" speeches,
     hand-signal instructions. NEVER write a briefing. Show the plan being EXECUTED in
     real-time micro-steps as it's being conceived.
-      BAD: Rae draws a chalk map on a wall and explains each step of the plan.
-      BAD: Rae gathers the group and assigns roles: "You take the east door, you take the
+      BAD: Hero draws a chalk map on a wall and explains each step of the plan.
+      BAD: Hero gathers the group and assigns roles: "You take the east door, you take the
       roof, I'll go through the basement."
-      GOOD: Rae starts moving toward the target. She tests a door — locked. Signals her
-      partner to try the window. Her partner shakes her head — barred. Rae spots a vent
+      GOOD: Hero starts moving toward the target. She tests a door — locked. Signals her
+      partner to try the window. Her partner shakes her head — barred. Hero spots a vent
       grate, pulls it open, looks at her partner: "Fit through that?" The plan is being
       INVENTED and TESTED in the same moment. The audience learns the plan by watching
       it form through trial and error, not by hearing it explained.
@@ -569,29 +569,29 @@ from - to +."
     BAD (static minor characters):
       GAS CLERK rings up the purchase. Doesn't look up.
       GAS CLERK: Pump three. (hands receipt)
-      Rae leaves. Gas Clerk goes back to the register.
+      Hero leaves. Gas Clerk goes back to the register.
       [PROBLEM: Gas Clerk enters passive, exits passive. Zero change. Static prop.]
 
     GOOD (minor character arcs in action):
       GAS CLERK rings up the purchase. Eyes the WANTED notification glowing on the
-      register screen. Looks at Rae. Looks at the screen. Back at Rae.
+      register screen. Looks at Hero. Looks at the screen. Back at Hero.
       GAS CLERK: Pump three. (slides receipt across, lowers voice) You should know —
       two guys in a black truck been sitting across the street for an hour. (beat)
       I didn't see you.
-      Gas Clerk deliberately turns away and wipes the counter. Doesn't watch Rae leave.
-      [The clerk went from OBEDIENT (sees the alert) to DEFIANT (warns Rae, lies by
+      Gas Clerk deliberately turns away and wipes the counter. Doesn't watch Hero leave.
+      [The clerk went from OBEDIENT (sees the alert) to DEFIANT (warns Hero, lies by
       omission). That's an arc. One scene. Three lines. Visible change.]
 
     MORE EXAMPLES OF MINOR CHARACTER ARCS:
-      LAUNDROMAT CUSTOMER initially clutches her child and backs away from Rae (fear).
-      Later, when Rae helps her kid pick up dropped coins, the Customer gives Rae
+      LAUNDROMAT CUSTOMER initially clutches her child and backs away from Hero (fear).
+      Later, when Hero helps her kid pick up dropped coins, the Customer gives Hero
       a quarter for the dryer. Fear → small kindness.
 
       CONTRACTOR follows orders robotically in Scene 27. After watching a colleague
       die in Scene 28, Contractor hesitates before breaching the next door. Looks at
       the squad leader. Doesn't move until pushed. Obedience → doubt.
 
-      ENCAMPMENT TEEN blocks Rae's path with crossed arms (hostility). After Rae
+      ENCAMPMENT TEEN blocks Hero's path with crossed arms (hostility). After Hero
       shares her water without being asked, Teen silently moves aside and points
       to a gap in the fence. Hostility → grudging aid.
 
@@ -599,6 +599,14 @@ from - to +."
     If the hero's journey doesn't ripple outward to affect even the smallest characters,
     the story feels hollow. The antagonist is the ONLY character who refuses to change —
     and that refusal is precisely why they lose.
+
+    RECURRING-CHARACTER ARC ENFORCEMENT:
+    - Any non-antagonist character who appears in 2+ scenes MUST show a clear "before vs after"
+      behavioral change across those appearances.
+    - "Same stance, different location" is NOT an arc. A character who keeps doing the same
+      helpful/protective/hostile behavior all movie fails this rule.
+    - If a character gets humanizing details (guilt tell, family prop, hesitation habit),
+      those details must PAY OFF in a changed decision later.
 
 16. WRITE A SCREENPLAY, NOT A NOVEL — This is a script. The camera cannot read minds.
     Every single line must describe something the audience can SEE or HEAR. Nothing else.
@@ -630,6 +638,34 @@ from - to +."
       Anger = jaw clenches, fists ball, voice drops
       Sadness = shoulders drop, eyes go to the floor, voice thins
       Don't TELL us the emotion. SHOW us the body.
+
+17. SINGLE MUMBO JUMBO (HARD RULE):
+    This story gets ONE speculative engine defined by the premise. Every
+    "impossible" beat must come from that single mechanism.
+
+    ALLOWED:
+    - Effects that clearly derive from the established engine and its shown limits.
+    - Consequences that extend already-demonstrated rules (no new rule-set).
+
+    FORBIDDEN:
+    - New unrelated powers introduced late.
+    - Off-screen miracles with no visible, established mechanism.
+    - Contradicting previously stated constraints without an on-screen cause.
+
+    If one device/channel is destroyed, continuation must happen only through
+    another visible, previously-established channel in the same scene.
+
+18. POPE IN THE POOL (HARD RULE):
+    Theme and plot-critical info must land while urgent physical action is active.
+    Never pause action for explanatory speeches.
+
+    FORBIDDEN SCENE SHAPE:
+    - Two characters mostly standing/sitting while one explains rules/stakes/theme.
+
+    REQUIRED SCENE SHAPE:
+    - Characters solve a live physical problem under pressure while info lands
+      in short conflict beats.
+    - Villain exposition is minimal and tactical; no long monologues.
 
 PER-SCENE REQUIRED FIELDS:
 1. scene_number (int): Sequential starting from 1
@@ -1032,7 +1068,7 @@ through ACTION, not narration.
     BAD (static minor character):
       GAS CLERK rings up the purchase. Doesn't look up.
       GAS CLERK: Pump three. (hands receipt)
-      Rae leaves. Gas Clerk goes back to the register.
+      Hero leaves. Gas Clerk goes back to the register.
     GOOD (minor character arcs):
       GAS CLERK rings up the purchase. Eyes the WANTED notification on the register screen.
       GAS CLERK: Pump three. (slides receipt across) You should know — two guys in a black
@@ -1596,10 +1632,10 @@ from - to +."
     real." E.T. has a real alien and ZERO news crews. That's why it works.
     BAD (press breaks containment):
       [ACTION] A TV in the corner shows a news anchor reporting on the citywide blackout.
-      RAE glances at the screen, jaw tightening.
+      Hero glances at the screen, jaw tightening.
     GOOD (information stays personal and contained):
       [ACTION] A drunk at the end of the bar slams his glass down. "Third night in a row
-      the power's been cutting out. My wife thinks it's terrorists." Rae says nothing.
+      the power's been cutting out. My wife thinks it's terrorists." Hero says nothing.
       She knows the truth is worse.
     EXCEPTION: Only if the story's premise is ABOUT media/journalism.
 
@@ -1618,21 +1654,21 @@ from - to +."
     extreme attention when writing these:
     - THEME STATED (page ~5): The theme MUST be delivered during a visually compelling
       activity — NOT during a static phone call, NOT over coffee, NOT while sitting in a car.
-      BAD: Lena states the theme during a phone call while Rae drives.
-      GOOD: Lena states the theme while Rae is physically dodging a threat, stitching a wound,
+      BAD: ALLY states the theme during a phone call while Hero drives.
+      GOOD: ALLY states the theme while Hero is physically dodging a threat, stitching a wound,
       or dismantling a device — the theme lands between bursts of urgent physical action.
     - DARK NIGHT OF THE SOUL (pages 75-85): The hero's lowest emotional point MUST NOT be
       a static confession scene. No sitting in a stairwell talking. No standing in a dark room
       explaining guilt. The confession/despair MUST be forced out by physical circumstances.
-      BAD: Rae sits in a stairwell and explains her past guilt to her sister.
-      GOOD: Rae and her sister are trapped — rae must physically work to escape (picking a lock,
+      BAD: Hero sits in a stairwell and explains her past guilt to her sister.
+      GOOD: Hero and her sister are trapped — Hero must physically work to escape (picking a lock,
       applying pressure to a wound, hotwiring a panel) while the despair spills out in fragments
       between desperate physical actions. The environment FORCES the truth out.
     - BREAK INTO THREE (page ~85): The plan/strategy for the finale MUST NOT be a briefing
       scene. No chalk maps. No "here's what we'll do" speeches. Show the plan being EXECUTED
       in micro-steps while it's being conceived.
-      BAD: Rae draws a map on a wall and explains the plan step by step.
-      GOOD: Rae starts moving toward the target, improvising the plan in real time — she tests
+      BAD: Hero draws a map on a wall and explains the plan step by step.
+      GOOD: Hero starts moving toward the target, improvising the plan in real time — she tests
       a door, signals her partner, adapts when the first approach fails. The audience learns
       the plan by watching it unfold, not by hearing it explained.
 
@@ -1689,10 +1725,10 @@ from - to +."
 
       DESK SERGEANT doesn't look up from his crossword.
       DESK SERGEANT: Take a number.
-      RAE: There's no time for —
+      Hero: There's no time for —
       DESK SERGEANT: Take. A number.
-      Rae slams a SECURITY BADGE on the counter. Department of Energy seal.
-      The Desk Sergeant looks at the badge. Looks at Rae. Puts down his crossword.
+      Hero slams a SECURITY BADGE on the counter. Department of Energy seal.
+      The Desk Sergeant looks at the badge. Looks at Hero. Puts down his crossword.
       He picks up the desk phone. Dials.
       DESK SERGEANT: Captain? You're gonna want to come down here.
 
@@ -1706,8 +1742,8 @@ from - to +."
     all three appearances:
 
     Scene 14 (first appearance — INDIFFERENT):
-      Night Janitor mops the hallway. Rae runs past.
-      RAE: Did you see anyone come through here?
+      Night Janitor mops the hallway. Hero runs past.
+      Hero: Did you see anyone come through here?
       NIGHT JANITOR: (doesn't stop mopping) Ain't my business who comes through.
       [Initial state: detached, wants no involvement.]
 
@@ -1719,7 +1755,7 @@ from - to +."
       He's being pulled into the situation against his will.]
 
     Scene 34 (third appearance — COMMITS):
-      Night Janitor finds Rae hiding in a supply closet, bleeding.
+      Night Janitor finds Hero hiding in a supply closet, bleeding.
       NIGHT JANITOR: You again. (beat) They're checking this floor in ten minutes.
       He reaches into his cart. Pulls out a janitor's uniform. Drops it on her lap.
       NIGHT JANITOR: Freight elevator's around the corner. Code's 4-4-1-9.
@@ -1779,6 +1815,14 @@ from - to +."
     6. The antagonist is the ONLY exception. The antagonist refuses to change — that's why
        they lose. Every other character must show behavioral change.
 
+    RECURRING-CHARACTER ARC ENFORCEMENT:
+    - Any non-antagonist character who appears in 2+ scenes MUST show a clear "before vs after"
+      behavioral change across those appearances.
+    - "Same stance, different location" is NOT an arc. A character who keeps doing the same
+      helpful/protective/hostile behavior all movie fails this rule.
+    - If a character gets humanizing details (guilt tell, family prop, hesitation habit),
+      those details must PAY OFF in a changed decision later.
+
 16. WRITE A SCREENPLAY, NOT A NOVEL — This is a script. The camera cannot read minds.
     Every single line must describe something the audience can SEE or HEAR. Nothing else.
 
@@ -1809,6 +1853,34 @@ from - to +."
       Anger = jaw clenches, fists ball, voice drops
       Sadness = shoulders drop, eyes go to the floor, voice thins
       Don't TELL us the emotion. SHOW us the body.
+
+17. SINGLE MUMBO JUMBO (HARD RULE):
+    This story gets ONE speculative engine defined by the premise. Every
+    "impossible" beat must come from that single mechanism.
+
+    ALLOWED:
+    - Effects that clearly derive from the established engine and its shown limits.
+    - Consequences that extend already-demonstrated rules (no new rule-set).
+
+    FORBIDDEN:
+    - New unrelated powers introduced late.
+    - Off-screen miracles with no visible, established mechanism.
+    - Contradicting previously stated constraints without an on-screen cause.
+
+    If one device/channel is destroyed, continuation must happen only through
+    another visible, previously-established channel in the same scene.
+
+18. POPE IN THE POOL (HARD RULE):
+    Theme and plot-critical info must land while urgent physical action is active.
+    Never pause action for explanatory speeches.
+
+    FORBIDDEN SCENE SHAPE:
+    - Two characters mostly standing/sitting while one explains rules/stakes/theme.
+
+    REQUIRED SCENE SHAPE:
+    - Characters solve a live physical problem under pressure while info lands
+      in short conflict beats.
+    - Villain exposition is minimal and tactical; no long monologues.
 
 PER-SCENE REQUIRED FIELDS:
 1. scene_number (int): Sequential starting from {start_scene_number}
@@ -1979,7 +2051,7 @@ RUN ALL 10 CHECKS:
     BAD (static minor character — FAILS this check):
       GAS CLERK rings up the purchase. Doesn't look up.
       GAS CLERK: Pump three. (hands receipt)
-      Rae leaves. Gas Clerk goes back to the register.
+      Hero leaves. Gas Clerk goes back to the register.
       [PROBLEM: Clerk enters passive, exits passive. Attitude unchanged. No arc.]
 
     BAD (has identifier but NO arc — FAILS this check):
@@ -1990,11 +2062,11 @@ RUN ALL 10 CHECKS:
 
     GOOD (minor character arcs — PASSES this check):
       GAS CLERK rings up the purchase. Eyes the WANTED notification on the register screen.
-      Looks at Rae. Looks at the screen. Back at Rae.
+      Looks at Hero. Looks at the screen. Back at Hero.
       GAS CLERK: Pump three. (slides receipt, lowers voice) You should know — two guys in
       a black truck been sitting across the street for an hour. (beat) I didn't see you.
       Gas Clerk deliberately turns away and wipes the counter.
-      [Clerk went from OBEDIENT (sees the alert, follows procedure) to DEFIANT (warns Rae,
+      [Clerk went from OBEDIENT (sees the alert, follows procedure) to DEFIANT (warns Hero,
       lies by omission). That's an arc. Three lines. Visible change in behavior.]
 
     GOOD (contractor with identifier AND arc — PASSES both #8 and #10):
@@ -2012,22 +2084,22 @@ RUN ALL 10 CHECKS:
     FAIL: Desperate Client enters desperate, asks for help, gets refused, exits desperate.
       No change. Same emotional state in = same emotional state out.
     PASS: Desperate Client enters desperate, begs for help, gets refused — then sees
-      Rae in trouble and pushes a fire door open for her. Desperation → solidarity.
+      Hero in trouble and pushes a fire door open for her. Desperation → solidarity.
 
-    FAIL: Laundromat Customer enters scared, backs away from Rae, stays scared.
+    FAIL: Laundromat Customer enters scared, backs away from Hero, stays scared.
       No change. Fear in = fear out.
-    PASS: Laundromat Customer enters scared, backs away — but when Rae helps her kid
+    PASS: Laundromat Customer enters scared, backs away — but when Hero helps her kid
       pick up dropped coins, Customer slides a dryer quarter across. Fear → small kindness.
 
     FAIL: Young Driver drives the car, drops them off, drives away.
       Functional tool. Zero engagement. No arc.
-    PASS: Young Driver drives the car, hands shaking on the wheel. At drop-off, Rae says
+    PASS: Young Driver drives the car, hands shaking on the wheel. At drop-off, Hero says
       "Go home." Driver hesitates, then pops the trunk: "There's a blanket and water in
       there. Take it." Reluctance → chosen generosity.
 
     FAIL: Encampment Teen blocks the path, stays hostile, never moves.
       Static obstacle. No change.
-    PASS: Encampment Teen blocks the path. Rae shares her water without being asked.
+    PASS: Encampment Teen blocks the path. Hero shares her water without being asked.
       Teen silently steps aside and points to a gap in the fence. Hostility → grudging aid.
 
     FOR EACH SCENE IN THIS ACT: List every named/speaking non-hero, non-antagonist character.
@@ -2047,7 +2119,7 @@ FOR EVERY FAILED CHECK (all 10) YOU MUST:
 1. List the EXACT scene numbers that have the problem
 2. QUOTE the exact problematic dialogue or action lines from those scenes
 3. For EACH failing scene, write a CONCRETE rewrite instruction — not "make it better" but
-   "replace Rae's line 'I took a job. I trusted a clean file.' with a visual action: Rae
+   "replace Hero's line 'I took a job. I trusted a clean file.' with a visual action: Hero
    pulls up the doctored surveillance footage on the billboard. The timestamps flicker.
    Her only words: 'Look at the timestamp.'"
 
@@ -2066,10 +2138,10 @@ OUTPUT FORMAT (valid JSON):
       "check_number": 2,
       "check_name": "Talking the Plot",
       "passed": false,
-      "problem_details": "Scene 37: Rae's speech 'I took a job. I trusted a clean file. I delivered a man who didn't make it out.' is a backstory dump — audience already knows this from Act 1. Scene 39: Radio voices explain plot: 'Clinic on Alameda. We've got patients alive because she pulled heat off us.'",
+      "problem_details": "Scene 37: Hero's speech 'I took a job. I trusted a clean file. I delivered a man who didn't make it out.' is a backstory dump — audience already knows this from Act 1. Scene 39: Radio voices explain plot: 'Clinic on Alameda. We've got patients alive because she pulled heat off us.'",
       "failing_scene_numbers": [37, 39],
       "fix_per_scene": {{
-        "37": "Delete Rae's backstory speech entirely. Replace with visual: Rae pulls up the doctored surveillance footage on the billboard. The timestamps and doctored frames speak for themselves. Her only line: 'Look at the timestamp.' The crowd looks up. Silence.",
+        "37": "Delete Hero's backstory speech entirely. Replace with visual: Hero pulls up the doctored surveillance footage on the billboard. The timestamps and doctored frames speak for themselves. Her only line: 'Look at the timestamp.' The crowd looks up. Silence.",
         "39": "Cut the radio exposition. Instead SHOW the clinic: lights flicker on, a nurse checks an IV drip, patients blink in the glow. No one explains it — we SEE it working."
       }}
     }},
@@ -2080,7 +2152,7 @@ OUTPUT FORMAT (valid JSON):
       "problem_details": "Scene 7: Gas Clerk enters resigned, scans the item, hands receipt, stays resigned. No behavioral change. Scene 25: Young Driver enters nervous, drives the car, exits nervous. No behavioral change.",
       "failing_scene_numbers": [7, 25],
       "fix_per_scene": {{
-        "7": "After Gas Clerk scans the item and sees the WANTED alert on the register, add: Gas Clerk hesitates. Glances at the door. Then quietly: 'Black truck across the street. Been there an hour.' Turns away. Wipes the counter. This changes Clerk from resigned/obedient to making a choice to warn Rae.",
+        "7": "After Gas Clerk scans the item and sees the WANTED alert on the register, add: Gas Clerk hesitates. Glances at the door. Then quietly: 'Black truck across the street. Been there an hour.' Turns away. Wipes the counter. This changes Clerk from resigned/obedient to making a choice to warn Hero.",
         "25": "After Young Driver drops them off, add: Driver pops the trunk. 'There's a blanket in there. And water.' Hands shaking, but holds the trunk open. This changes Driver from reluctant/functional to choosing to help."
       }}
     }}
@@ -2763,4 +2835,48 @@ character cues) to fix the problems. Full scenes, not outlines."""
                     f"Arc: {b_story.get('opening_state', '?')} → {b_story.get('final_state', '?')}"
                 )
 
+        # Supporting cast (Step 3b, merged by orchestrator into step_3_artifact)
+        supporting_chars = step_3_artifact.get("supporting_characters")
+        if not isinstance(supporting_chars, list):
+            supporting_cast = step_3_artifact.get("supporting_cast", {})
+            if isinstance(supporting_cast, dict):
+                supporting_chars = supporting_cast.get("characters", [])
+
+        if isinstance(supporting_chars, list):
+            for char in supporting_chars:
+                if not isinstance(char, dict):
+                    continue
+                name = (char.get("name") or "").strip()
+                if not name:
+                    continue
+
+                role = (char.get("role") or "").strip()
+                rel = (char.get("relationship_to_hero") or "").strip()
+                trait = (char.get("distinctive_trait") or "").strip()
+                voice = (char.get("voice_profile") or "").strip()
+                arc = (char.get("arc_summary") or "").strip()
+                bio = (char.get("character_biography") or "").strip()
+
+                heading = f"=== {name} (SUPPORTING"
+                if role:
+                    heading += f" — {role}"
+                heading += ") ==="
+
+                if bio:
+                    block_lines = [heading, bio]
+                else:
+                    block_lines = [heading]
+                    if rel:
+                        block_lines.append(f"Relationship to hero: {rel}")
+                    if trait:
+                        block_lines.append(f"Distinctive trait: {trait}")
+                    if voice:
+                        block_lines.append(f"Voice profile: {voice}")
+                    if arc:
+                        block_lines.append(f"Arc summary: {arc}")
+
+                sections.append("\n".join(block_lines))
+
         return "\n\n".join(sections) if sections else "(No character data available.)"
+
+

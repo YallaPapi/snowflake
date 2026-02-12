@@ -22,6 +22,13 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 from dotenv import load_dotenv
 load_dotenv()
 
+
+def configure_utf8_io():
+    """Force UTF-8 console output so Unicode diagnostics do not crash runs on Windows."""
+    for stream in (sys.stdout, sys.stderr):
+        if hasattr(stream, "reconfigure"):
+            stream.reconfigure(encoding="utf-8", errors="replace")
+
 # ── Logging setup ────────────────────────────────────────────────────
 # Logs to both console (INFO) and file (DEBUG) inside the project artifacts folder
 def setup_logging(project_id: str = ""):
@@ -83,7 +90,11 @@ def run_step(step_num, description):
 def report(success, artifact, message, start):
     elapsed = time.time() - start
     status = "PASS" if success else "FAIL"
-    print(f"\n  [{status}] ({elapsed:.1f}s) {message[:200]}")
+    try:
+        print(f"\n  [{status}] ({elapsed:.1f}s) {message[:200]}")
+    except UnicodeEncodeError:
+        safe_message = str(message[:200]).encode("ascii", "replace").decode()
+        print(f"\n  [{status}] ({elapsed:.1f}s) {safe_message}")
     if success and artifact:
         for k, v in artifact.items():
             if k == "metadata":
@@ -96,7 +107,11 @@ def report(success, artifact, message, start):
             except UnicodeEncodeError:
                 print(f"    {k}: {val_str.encode('ascii', 'replace').decode()}")
     elif not success and artifact:
-        print(f"  ERRORS in artifact: {json.dumps(artifact, indent=2, ensure_ascii=False)[:500]}")
+        try:
+            print(f"  ERRORS in artifact: {json.dumps(artifact, indent=2, ensure_ascii=False)[:500]}")
+        except UnicodeEncodeError:
+            fallback = json.dumps(artifact, indent=2, ensure_ascii=True)[:500]
+            print(f"  ERRORS in artifact: {fallback}")
     return success
 
 
@@ -129,6 +144,8 @@ STEP_ORDER = ["1", "2", "3", "4", "5", "6", "7", "8", "9"]
 
 
 def main():
+    configure_utf8_io()
+
     start_from = sys.argv[1] if len(sys.argv) > 1 else "1"
     resume_project = sys.argv[2] if len(sys.argv) > 2 else None
     # Screenplay generation mode: monolithic | scene_by_scene | act_by_act

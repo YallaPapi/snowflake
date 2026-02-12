@@ -287,7 +287,8 @@ class AIGenerator:
             logger.warning("Validation FAILED attempt %d/%d: %d errors",
                           attempt + 1, max_attempts, len(errors))
             for i, err in enumerate(errors[:5]):
-                logger.warning("  error[%d]: %s", i, err)
+                safe_err = str(err).encode("ascii", "replace").decode()
+                logger.warning("  error[%d]: %s", i, safe_err)
 
             if attempt < max_attempts - 1:
                 try:

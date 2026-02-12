@@ -28,6 +28,7 @@ from src.screenplay_engine.pipeline.validators.step_5_validator import (
     VALID_STORYLINE_COLORS,
     MAX_STORYLINE_GAP_A,
     MAX_STORYLINE_GAP_B,
+    MAX_STORYLINE_GAP_SECONDARY,
     VALID_HEADING_PREFIXES,
     KNOWN_BEAT_NAMES_LOWER,
     MAX_DESCRIPTION_WORDS,
@@ -184,6 +185,26 @@ def _make_step_3_artifact():
             "relationship_to_hero": "Love interest",
             "theme_wisdom": "You can't find treasure alone",
         },
+        "supporting_characters": [
+            {
+                "name": "Rory Pike",
+                "role": "ally",
+                "relationship_to_hero": "Former partner",
+                "distinctive_trait": "Cracked aviator sunglasses",
+                "voice_profile": "Dry sarcasm, clipped sentences",
+                "arc_summary": "Stops self-preserving lies and backs Alex publicly",
+                "first_appearance_beat": "Set-Up",
+            },
+            {
+                "name": "Judge Talbot",
+                "role": "authority",
+                "relationship_to_hero": "Court supervisor",
+                "distinctive_trait": "Always taps a silver pen twice before speaking",
+                "voice_profile": "Formal legal diction, no contractions",
+                "arc_summary": "",
+                "first_appearance_beat": "Debate",
+            },
+        ],
     }
 
 
@@ -218,10 +239,10 @@ class TestVersionsAndConstants:
     """Test that versions and constants are correct."""
 
     def test_validator_version(self):
-        assert Step5Validator.VERSION == "2.0.0"
+        assert Step5Validator.VERSION == "3.0.0"
 
     def test_prompt_version(self):
-        assert Step5Prompt.VERSION == "5.0.0"
+        assert Step5Prompt.VERSION == "6.0.0"
 
     def test_step_version(self):
         assert Step5Board.VERSION == "3.0.0"
@@ -250,18 +271,16 @@ class TestVersionsAndConstants:
         assert LANDMARK_TOLERANCE == 5
 
     def test_max_storyline_gap_a(self):
-        """A storyline max gap is 6 consecutive cards."""
-        assert MAX_STORYLINE_GAP_A == 6
+        """A storyline max gap is 3 consecutive cards."""
+        assert MAX_STORYLINE_GAP_A == 3
 
     def test_max_storyline_gap_b(self):
-        """B storyline max gap is 10 consecutive cards."""
-        assert MAX_STORYLINE_GAP_B == 10
+        """B storyline max gap is 3 consecutive cards."""
+        assert MAX_STORYLINE_GAP_B == 3
 
-    def test_secondary_storylines_no_gap_limit(self):
-        """C/D/E subplots have no gap limit -- Row 4 payoff check is enough."""
-        # Verify the constant was removed (secondary subplots skip gap checking)
-        import src.screenplay_engine.pipeline.validators.step_5_validator as mod
-        assert not hasattr(mod, "MAX_STORYLINE_GAP_SECONDARY")
+    def test_secondary_storylines_gap_limit(self):
+        """C/D/E subplots have a max gap of 6 cards."""
+        assert MAX_STORYLINE_GAP_SECONDARY == 6
 
     def test_valid_storyline_colors(self):
         assert VALID_STORYLINE_COLORS == {"A", "B", "C", "D", "E"}
@@ -776,11 +795,11 @@ class TestStorylineGap:
     """Test storyline interleaving checks."""
 
     def test_a_storyline_gap_exceeds_limit(self):
-        """A storyline absent for more than 6 consecutive cards triggers error."""
+        """A storyline absent for more than 3 consecutive cards triggers error."""
         v = Step5Validator()
         board = _make_valid_board()
-        # Make first 8 cards all B (A absent for 8 consecutive = exceeds limit of 6)
-        for i in range(min(8, len(board["row_1_act_one"]))):
+        # Make first 5 cards all B (A absent for 5 consecutive = exceeds limit of 3)
+        for i in range(min(5, len(board["row_1_act_one"]))):
             board["row_1_act_one"][i]["storyline_color"] = "B"
         # Ensure A exists later
         board["row_2_act_two_a"][0]["storyline_color"] = "A"
@@ -788,10 +807,10 @@ class TestStorylineGap:
         board["row_4_act_three"][0]["storyline_color"] = "A"
         _, errors = v.validate(board)
         gap_errors = [e for e in errors if "STORYLINE_GAP" in e and "'A'" in e]
-        assert len(gap_errors) > 0, "A storyline gap of 8 should exceed limit of 6"
+        assert len(gap_errors) > 0, "A storyline gap of 5 should exceed limit of 3"
 
     def test_b_storyline_gap_within_limit(self):
-        """B storyline can be absent for up to 8 consecutive cards."""
+        """Default board keeps B gaps within the strict limit."""
         v = Step5Validator()
         board = _make_valid_board()
         # B appears in the default well-interleaved board
@@ -799,13 +818,20 @@ class TestStorylineGap:
         b_gap_errors = [e for e in errors if "STORYLINE_GAP" in e and "'B'" in e]
         assert len(b_gap_errors) == 0, f"B storyline gaps should be within limit: {b_gap_errors}"
 
-    def test_secondary_storyline_gap_never_checked(self):
-        """C/D/E subplots should never trigger gap errors (no gap limit)."""
+    def test_secondary_storyline_gap_exceeds_limit(self):
+        """C/D/E subplots also enforce a max absence of 6 cards."""
         v = Step5Validator()
         board = _make_valid_board()
+        # Move all C cards into Act 3 so C is absent for long stretches.
+        for row_key in ["row_1_act_one", "row_2_act_two_a", "row_3_act_two_b", "row_4_act_three"]:
+            for card in board[row_key]:
+                if card["storyline_color"] == "C":
+                    card["storyline_color"] = "A"
+        board["row_4_act_three"][0]["storyline_color"] = "C"
+        board["row_4_act_three"][1]["storyline_color"] = "C"
         _, errors = v.validate(board)
         cde_gap_errors = [e for e in errors if "STORYLINE_GAP" in e and any(f"'{c}'" in e for c in "CDE")]
-        assert len(cde_gap_errors) == 0, f"C/D/E should never get gap errors: {cde_gap_errors}"
+        assert len(cde_gap_errors) > 0, "C storyline gap should be enforced"
 
     def test_no_gap_error_for_well_interleaved_board(self):
         v = Step5Validator()
@@ -1177,6 +1203,14 @@ class TestCharacterSummary:
         prompt_gen = Step5Prompt()
         summary = prompt_gen._summarize_characters(_make_step_3_artifact())
         assert "treasure alone" in summary
+
+    def test_supporting_cast_is_included(self):
+        prompt_gen = Step5Prompt()
+        summary = prompt_gen._summarize_characters(_make_step_3_artifact())
+        assert "SUPPORTING CAST" in summary
+        assert "Rory Pike" in summary
+        assert "Cracked aviator sunglasses" in summary
+        assert "Dry sarcasm" in summary
 
     def test_no_character_data(self):
         prompt_gen = Step5Prompt()

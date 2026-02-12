@@ -164,21 +164,25 @@ class Step4Validator:
         """
         Validate the beat sheet artifact against Ch.4 of Save the Cat!
 
-        Checks (28 total):
+        Structural checks (fatal — block pipeline):
             1.  Exactly 15 beats present
             2.  All beat names match expected names in order
             3.  Each beat has a non-empty description of 1-2 sentences
             4.  midpoint_polarity is "up" or "down"
             5.  all_is_lost_polarity is opposite of midpoint
-            6.  Beat 6 (Break into Two) implies hero's proactive choice
-            7.  Beat 11 (All Is Lost) contains whiff of death
             8.  Beat 1 and Beat 15 both exist
-            9.  Beat 14 (Finale) references lessons applied / hero action
             10. Each beat has target_page and target_percentage fields
             11. target_page matches BEAT_PAGE_TARGETS
             12. target_percentage matches BEAT_PAGE_TARGETS
             13. emotional_direction is "up", "down", or "neutral"
             14. Opening/Final Image emotional_direction differ
+            23. act_label is one of thesis/antithesis/synthesis
+            24. act_label matches expected value for beat number
+
+        Content hints (non-fatal — reported as HINT: prefix, don't block pipeline):
+            6.  Beat 6 (Break into Two) implies hero's proactive choice
+            7.  Beat 11 (All Is Lost) contains whiff of death
+            9.  Beat 14 (Finale) references lessons applied / hero action
             15. Beat 2 (Theme Stated) references thematic statement
             16. Beat 4 (Catalyst) describes an external event
             17. Beat 5 (Debate) poses a question
@@ -187,13 +191,13 @@ class Step4Validator:
             20. Beat 10 (BGCI) has BOTH internal AND external elements
             21. Beat 12 (Dark Night) shows despair/defeat
             22. Beat 13 (Break into Three) shows A+B merger
-            23. act_label is one of thesis/antithesis/synthesis
-            24. act_label matches expected value for beat number
 
         Returns:
             (is_valid, list_of_errors)
+            Content hints are prefixed with "HINT:" and do NOT affect is_valid.
         """
         errors: List[str] = []
+        hints: List[str] = []
 
         # -- Check beats list exists --
         beats = artifact.get("beats")
@@ -311,7 +315,10 @@ class Step4Validator:
                     f"Expected '{expected_opposite}'"
                 )
 
-        # ── Per-beat content checks ────────────────────────────────────
+        # ── Per-beat content hints (non-fatal) ────────────────────────
+        # These keyword checks guide revision prompts but do NOT block
+        # the pipeline. LLM-generated beat descriptions vary too widely
+        # for keyword matching to be reliable as a gate.
 
         # 15. Beat 2 (Theme Stated): thematic statement by non-protagonist
         beat_2 = beats_by_number.get(2) or beats_by_name.get("Theme Stated")
@@ -321,20 +328,17 @@ class Step4Validator:
             theme_kw = ["theme", "question", "truth", "lesson", "message",
                         "stated", "says", "asks", "tells", "argues",
                         "wisdom", "premise", "moral", "about", "meaning",
-                        # Speaking verbs GPT uses for thematic dialogue
                         "texts", "mutters", "whispers", "remarks", "comments",
                         "offers", "notes", "blurts", "confides", "warns",
                         "observes", "reminds", "challenges", "declares",
                         "quips", "replies", "responds", "voices", "mentions",
-                        # Thematic content words
                         "earn", "forgiveness", "real", "choice", "trust",
                         "show up", "showing up"]
-            # Also pass if description contains a quoted phrase (someone speaking)
             has_quote = ('"' in desc_raw or '\u201c' in desc_raw or
                          '\u2018' in desc_raw or "'" in desc_raw)
             if not has_quote and not any(kw in desc_lower for kw in theme_kw):
-                errors.append(
-                    "BEAT_2_NO_THEME: Theme Stated description should reference a thematic "
+                hints.append(
+                    "HINT: BEAT_2_NO_THEME: Theme Stated description should reference a thematic "
                     "statement, question, or message spoken by a non-protagonist character."
                 )
 
@@ -343,8 +347,8 @@ class Step4Validator:
         if beat_4:
             desc_lower = beat_4.get("description", "").lower()
             if not any(kw in desc_lower for kw in self.CATALYST_KEYWORDS):
-                errors.append(
-                    "BEAT_4_NO_EVENT: Catalyst description must describe a single external "
+                hints.append(
+                    "HINT: BEAT_4_NO_EVENT: Catalyst description should describe a single external "
                     "event (e.g., 'arrives', 'discovers', 'receives news', 'learns')."
                 )
 
@@ -354,8 +358,8 @@ class Step4Validator:
             desc = beat_5.get("description", "")
             desc_lower = desc.lower()
             if not any(kw in desc_lower for kw in self.DEBATE_KEYWORDS):
-                errors.append(
-                    "BEAT_5_NO_QUESTION: Debate description must pose a question or reference "
+                hints.append(
+                    "HINT: BEAT_5_NO_QUESTION: Debate description should pose a question or reference "
                     "hesitation/doubt. Snyder: 'the Debate section must ask a question of some kind.'"
                 )
 
@@ -364,8 +368,8 @@ class Step4Validator:
         if beat_6:
             desc_lower = beat_6.get("description", "").lower()
             if not any(kw in desc_lower for kw in self.PROACTIVE_KEYWORDS):
-                errors.append(
-                    "BEAT_6_NO_CHOICE: Break into Two description must imply hero's "
+                hints.append(
+                    "HINT: BEAT_6_NO_CHOICE: Break into Two description should imply hero's "
                     "proactive choice (use words like 'chooses', 'decides', 'commits'). "
                     "Snyder: 'The Hero cannot be lured, tricked or drift into Act Two.'"
                 )
@@ -375,8 +379,8 @@ class Step4Validator:
         if beat_7:
             desc_lower = beat_7.get("description", "").lower()
             if not any(kw in desc_lower for kw in self.B_STORY_KEYWORDS):
-                errors.append(
-                    "BEAT_7_NO_CHARACTER: B Story description should reference a new character "
+                hints.append(
+                    "HINT: BEAT_7_NO_CHARACTER: B Story description should reference a new character "
                     "or relationship that carries the theme."
                 )
 
@@ -385,8 +389,8 @@ class Step4Validator:
         if beat_8:
             desc_lower = beat_8.get("description", "").lower()
             if not any(kw in desc_lower for kw in self.FUN_AND_GAMES_KEYWORDS):
-                errors.append(
-                    "BEAT_8_NO_PREMISE: Fun and Games description should reference the "
+                hints.append(
+                    "HINT: BEAT_8_NO_PREMISE: Fun and Games description should reference the "
                     "premise, concept, or the 'promise of the premise.'"
                 )
 
@@ -395,8 +399,8 @@ class Step4Validator:
         if beat_11:
             desc_lower = beat_11.get("description", "").lower()
             if not any(kw in desc_lower for kw in self.WHIFF_OF_DEATH_KEYWORDS):
-                errors.append(
-                    "BEAT_11_NO_DEATH: All Is Lost description must reference "
+                hints.append(
+                    "HINT: BEAT_11_NO_DEATH: All Is Lost description should reference "
                     "'whiff of death' or mortality. Snyder: 'stick in something, anything "
                     "that involves a death.'"
                 )
@@ -408,19 +412,19 @@ class Step4Validator:
             has_external = any(kw in desc_lower for kw in self.BGCI_EXTERNAL_KEYWORDS)
             has_internal = any(kw in desc_lower for kw in self.BGCI_INTERNAL_KEYWORDS)
             if not has_external and not has_internal:
-                errors.append(
-                    "BEAT_10_NO_THREATS: Bad Guys Close In must reference both external "
+                hints.append(
+                    "HINT: BEAT_10_NO_THREATS: Bad Guys Close In should reference both external "
                     "threats AND internal problems. Snyder: 'internal dissent, doubt and "
                     "jealousy begin to disintegrate the Hero's team.'"
                 )
             elif not has_external:
-                errors.append(
-                    "BEAT_10_NO_EXTERNAL: Bad Guys Close In must reference external threats "
+                hints.append(
+                    "HINT: BEAT_10_NO_EXTERNAL: Bad Guys Close In should reference external threats "
                     "(bad guys, enemies, forces closing in)."
                 )
             elif not has_internal:
-                errors.append(
-                    "BEAT_10_NO_INTERNAL: Bad Guys Close In must reference internal problems "
+                hints.append(
+                    "HINT: BEAT_10_NO_INTERNAL: Bad Guys Close In should reference internal problems "
                     "(doubt, dissent, team fracture, isolation)."
                 )
 
@@ -429,8 +433,8 @@ class Step4Validator:
         if beat_12:
             desc_lower = beat_12.get("description", "").lower()
             if not any(kw in desc_lower for kw in self.DARK_NIGHT_KEYWORDS):
-                errors.append(
-                    "BEAT_12_NO_DESPAIR: Dark Night of the Soul must show the hero's "
+                hints.append(
+                    "HINT: BEAT_12_NO_DESPAIR: Dark Night of the Soul should show the hero's "
                     "despair, defeat, or hopelessness. Snyder: 'the darkness right before the dawn.'"
                 )
 
@@ -439,11 +443,13 @@ class Step4Validator:
         if beat_13:
             desc_lower = beat_13.get("description", "").lower()
             if not any(kw in desc_lower for kw in self.BREAK_INTO_THREE_KEYWORDS):
-                errors.append(
-                    "BEAT_13_NO_MERGER: Break into Three description must reference A+B story "
+                hints.append(
+                    "HINT: BEAT_13_NO_MERGER: Break into Three description should reference A+B story "
                     "merger, realization, or the key insight. Snyder: 'Both in the external "
                     "story and the internal story which now meet and intertwine.'"
                 )
+
+        # ── Structural checks (fatal) ────────────────────────────────────
 
         # 8. Beat 1 (Opening Image) and Beat 15 (Final Image) both exist
         beat_1 = beats_by_number.get(1) or beats_by_name.get("Opening Image")
@@ -469,13 +475,15 @@ class Step4Validator:
         if beat_14:
             desc_lower = beat_14.get("description", "").lower()
             if not any(kw in desc_lower for kw in self.FINALE_KEYWORDS):
-                errors.append(
-                    "BEAT_14_NO_RESOLUTION: Finale must reference lessons applied, hero "
+                hints.append(
+                    "HINT: BEAT_14_NO_RESOLUTION: Finale should reference lessons applied, hero "
                     "taking action, or a new world order. Snyder: 'the lessons learned are "
                     "applied... the Hero must change the world.'"
                 )
 
-        return len(errors) == 0, errors
+        # Combine: errors are fatal, hints are informational
+        all_messages = errors + hints
+        return len(errors) == 0, all_messages
 
     def _check_sentence_count(
         self, description: str, beat_num: Any, beat_name: str

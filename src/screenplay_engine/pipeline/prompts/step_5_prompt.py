@@ -15,7 +15,7 @@ from typing import Dict, Any, List
 class Step5Prompt:
     """Prompt generator for Screenplay Engine Step 5: The Board (40 Scene Cards)"""
 
-    VERSION = "5.0.0"
+    VERSION = "6.0.0"
 
     SYSTEM_PROMPT = (
         "You are a Save the Cat! Board architect. "
@@ -113,20 +113,20 @@ even listening to the exposition because we're watching the Pope in a Speedo.
 
 BAD CARD (pure exposition — this is what you must NEVER write):
   Card 12: INT. SITUATION ROOM - DAY
-  "Rae's team leader briefs the squad on the blackout's origin, timeline, and infrastructure."
+  "Hero's team leader briefs the squad on the blackout's origin, timeline, and infrastructure."
   This is a character standing at a screen talking AT the audience. There is nothing visual
   or entertaining happening. The audience will tune out.
 
 GOOD CARD (exposition buried in visual entertainment):
   Card 12: EXT. ROOFTOP WATER TOWER - DAY
-  "Rae climbs a swaying water tower to manually reset a relay while her partner shouts
+  "Hero climbs a swaying water tower to manually reset a relay while her partner shouts
   infrastructure details from below — the grid is failing in sectors, hospitals are next."
-  The exposition (grid sectors, hospital timeline) is delivered while we watch Rae dangling
+  The exposition (grid sectors, hospital timeline) is delivered while we watch Hero dangling
   from a water tower. The audience absorbs the info because they're worried she'll fall.
 
 GOOD CARD (exposition buried in conflict):
   Card 12: INT. SERVER FARM - DAY
-  "Rae interrogates a captured technician about the blackout while the building's backup
+  "Hero interrogates a captured technician about the blackout while the building's backup
   generator sputters and dies around them, plunging sections into darkness one by one."
   The exposition (blackout origin, timeline) is delivered while physical danger escalates.
 
@@ -153,17 +153,17 @@ private crisis feel less desperate. The global scope dilutes the personal stakes
 
 BAD CARD:
   Card 35: INT. NEWS STUDIO - NIGHT
-  "A CNN anchor reports on the citywide blackout as Rae watches from a bar TV."
+  "A CNN anchor reports on the citywide blackout as Hero watches from a bar TV."
   This breaks containment. The audience now thinks "why doesn't the government/military
   handle this?" The hero's personal stakes are diluted by institutional awareness.
 
 GOOD CARD:
   Card 35: INT. DIVE BAR - NIGHT
-  "Rae overhears two strangers arguing about whether the blackout is a cyberattack or
-  a transformer failure. Nobody knows the truth except Rae — and she can't tell anyone."
+  "Hero overhears two strangers arguing about whether the blackout is a cyberattack or
+  a transformer failure. Nobody knows the truth except Hero — and she can't tell anyone."
   The information about public perception is conveyed through CHARACTERS, not media.
-  The containment stays intact — the audience knows what Rae knows, and the secret stays
-  between Rae and us.
+  The containment stays intact — the audience knows what Hero knows, and the secret stays
+  between Hero and us.
 
 EXCEPTION: If the logline's premise IS about media/journalism (e.g., the hero is a
 reporter, the story is about a media scandal), then press scenes are part of the premise
@@ -731,6 +731,9 @@ ROW 4 (Act Three) -- THE CURSE BECOMES THE GIFT:
         lines.append(f"    Save the Cat moment: {hero.get('save_the_cat_moment', '')}")
         lines.append(f"    Opening State: {hero.get('opening_state', '')}")
         lines.append(f"    Final State: {hero.get('final_state', '')}")
+        hero_bio = (hero.get("character_biography") or "").strip()
+        if hero_bio:
+            lines.append(f"    Character biography: {hero_bio}")
 
         six_things = hero.get("six_things_that_need_fixing", [])
         if isinstance(six_things, list) and six_things:
@@ -747,6 +750,9 @@ ROW 4 (Act Three) -- THE CURSE BECOMES THE GIFT:
             lines.append(f"    Power: {antag.get('power_level', '')}")
             lines.append(f"    Moral difference: {antag.get('moral_difference', '')}")
             lines.append(f"    Mirror: {antag.get('mirror_principle', '')}")
+            antag_bio = (antag.get("character_biography") or "").strip()
+            if antag_bio:
+                lines.append(f"    Character biography: {antag_bio}")
 
         # B-story character
         b_char = step_3_artifact.get("b_story_character")
@@ -761,6 +767,44 @@ ROW 4 (Act Three) -- THE CURSE BECOMES THE GIFT:
                 lines.append(f"    Opening State: {b_opening}")
             if b_final:
                 lines.append(f"    Final State: {b_final}")
+            b_bio = (b_char.get("character_biography") or "").strip()
+            if b_bio:
+                lines.append(f"    Character biography: {b_bio}")
+
+        # Supporting cast (Step 3b) merged into Step 3 context by the orchestrator
+        supporting_chars = step_3_artifact.get("supporting_characters")
+        if not isinstance(supporting_chars, list):
+            supporting_cast = step_3_artifact.get("supporting_cast", {})
+            if isinstance(supporting_cast, dict):
+                supporting_chars = supporting_cast.get("characters", [])
+
+        if isinstance(supporting_chars, list) and supporting_chars:
+            lines.append("  SUPPORTING CAST:")
+            for idx, char in enumerate(supporting_chars, 1):
+                if not isinstance(char, dict):
+                    continue
+                name = (char.get("name") or "").strip()
+                if not name:
+                    continue
+                role = char.get("role", "")
+                rel = char.get("relationship_to_hero", "")
+                lines.append(f"    {idx}. {name} ({role}) -- {rel}")
+
+                trait = (char.get("distinctive_trait") or "").strip()
+                if trait:
+                    lines.append(f"       Distinctive trait: {trait}")
+
+                voice = (char.get("voice_profile") or "").strip()
+                if voice:
+                    lines.append(f"       Voice profile: {voice}")
+
+                arc = (char.get("arc_summary") or "").strip()
+                if arc:
+                    lines.append(f"       Arc summary: {arc}")
+
+                first_beat = (char.get("first_appearance_beat") or "").strip()
+                if first_beat:
+                    lines.append(f"       First appearance beat: {first_beat}")
 
         return "\n".join(lines)
 
@@ -921,3 +965,4 @@ ROW 4 (Act Three) -- THE CURSE BECOMES THE GIFT:
             "version": self.VERSION,
             "revision": True,
         }
+
