@@ -81,7 +81,10 @@ class Step7Diagnostics:
                 "model_name": "gpt-5.2-2025-12-11",
                 "temperature": 0.3,
                 "seed": 42,
+                "max_tokens": 16000,
             }
+        elif "max_tokens" not in model_config:
+            model_config["max_tokens"] = 16000
 
         # Generate prompt from upstream artifacts (screenplay is primary evaluation target)
         prompt_data = self.prompt_generator.generate_prompt(
@@ -118,11 +121,13 @@ class Step7Diagnostics:
         save_path = self.save_artifact(artifact, project_id)
 
         # Build summary message
-        checks_passed = artifact.get("checks_passed_count", 0)
+        total_rough = sum(
+            len(d.get("rough_spots", [])) for d in artifact.get("diagnostics", [])
+        )
         total_checks = artifact.get("total_checks", 9)
         message = (
             f"Screenplay Step 7 diagnostics saved to {save_path} "
-            f"({checks_passed}/{total_checks} checks passed)"
+            f"({total_checks} checks analyzed, {total_rough} rough spots)"
         )
 
         return True, artifact, message
@@ -168,23 +173,31 @@ class Step7Diagnostics:
             f.write("SCREENPLAY STEP 7: DIAGNOSTIC CHECKS (Save the Cat Ch.7)\n")
             f.write("=" * 60 + "\n\n")
 
-            checks_passed = artifact.get("checks_passed_count", 0)
+            total_rough = sum(
+                len(d.get("rough_spots", [])) for d in artifact.get("diagnostics", [])
+            )
             total_checks = artifact.get("total_checks", 9)
-            f.write(f"Result: {checks_passed}/{total_checks} checks passed\n\n")
+            f.write(f"Result: {total_checks} checks analyzed, {total_rough} rough spots\n\n")
 
             diagnostics = artifact.get("diagnostics", [])
             for diag in diagnostics:
-                status = "PASS" if diag.get("passed") else "FAIL"
-                f.write(f"  [{status}] {diag.get('check_number', '?')}. "
-                        f"{diag.get('check_name', 'Unknown')}\n")
-                if not diag.get("passed"):
-                    f.write(f"         Problem: {diag.get('problem_details', '')}\n")
-                    failing = diag.get("failing_scene_numbers", [])
-                    if failing:
-                        f.write(f"         Failing scenes: {failing}\n")
-                    fix_per_scene = diag.get("fix_per_scene", {})
-                    for scene_num, fix in fix_per_scene.items():
-                        f.write(f"         Scene {scene_num}: {fix}\n")
+                check_num = diag.get('check_number', '?')
+                check_name = diag.get('check_name', 'Unknown')
+                f.write(f"  {check_num}. {check_name}\n")
+                observations = diag.get('observations', '')
+                if observations:
+                    f.write(f"     Observations: {observations}\n")
+                rough_spots = diag.get('rough_spots', [])
+                if rough_spots:
+                    for spot in rough_spots:
+                        scene = spot.get('scene', '?')
+                        issue = spot.get('issue', '')
+                        f.write(f"     Rough spot: Scene {scene} — {issue}\n")
+                    rewrite_suggestions = diag.get('rewrite_suggestions', {})
+                    for scene_num, rewrite in rewrite_suggestions.items():
+                        f.write(f"     Rewrite: Scene {scene_num} — {rewrite}\n")
+                else:
+                    f.write("     (no rough spots)\n")
                 f.write("\n")
 
             f.write(f"Generated: {artifact.get('metadata', {}).get('created_at', 'N/A')}\n")

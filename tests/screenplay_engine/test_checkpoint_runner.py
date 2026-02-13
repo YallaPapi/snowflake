@@ -1,5 +1,6 @@
 """
 Tests for checkpoint runner: mocked AI calls, result parsing, save/load.
+Supports both old (passed) and new (rough_spots) diagnostic formats.
 """
 
 import json
@@ -18,7 +19,7 @@ from src.screenplay_engine.pipeline.checkpoint.checkpoint_config import (
 
 
 def _make_ai_response_all_pass(step_number: int) -> str:
-    """Generate a mock AI response where all applicable checks pass."""
+    """Generate a mock AI response where all applicable checks pass (old format)."""
     checks = get_applicable_checks(step_number)
     diagnostics = []
     for num in checks:
@@ -36,8 +37,26 @@ def _make_ai_response_all_pass(step_number: int) -> str:
     })
 
 
+def _make_ai_response_all_clean_new_format(step_number: int) -> str:
+    """Generate a mock AI response where all checks are clean (new observational format)."""
+    checks = get_applicable_checks(step_number)
+    diagnostics = []
+    for num in checks:
+        diagnostics.append({
+            "check_number": num,
+            "check_name": get_check_name(num),
+            "observations": f"Check {num} observations — no issues found.",
+            "rough_spots": [],
+            "rewrite_suggestions": {},
+        })
+    return json.dumps({
+        "diagnostics": diagnostics,
+        "total_checks": len(checks),
+    })
+
+
 def _make_ai_response_some_fail(step_number: int, fail_indices: list) -> str:
-    """Generate a mock AI response where specified check indices fail."""
+    """Generate a mock AI response where specified check indices fail (old format)."""
     checks = get_applicable_checks(step_number)
     diagnostics = []
     for i, num in enumerate(checks):
@@ -53,6 +72,29 @@ def _make_ai_response_some_fail(step_number: int, fail_indices: list) -> str:
     return json.dumps({
         "diagnostics": diagnostics,
         "checks_passed_count": passed_count,
+        "total_checks": len(checks),
+    })
+
+
+def _make_ai_response_some_rough_spots(step_number: int, rough_indices: list) -> str:
+    """Generate a mock AI response where specified indices have rough spots (new format)."""
+    checks = get_applicable_checks(step_number)
+    diagnostics = []
+    for i, num in enumerate(checks):
+        has_spots = i in rough_indices
+        diag = {
+            "check_number": num,
+            "check_name": get_check_name(num),
+            "observations": f"Observations for check {num}.",
+            "rough_spots": [],
+            "rewrite_suggestions": {},
+        }
+        if has_spots:
+            diag["rough_spots"] = [{"scene": 1, "issue": f"Issue in check {num}", "current_text": "text"}]
+            diag["rewrite_suggestions"] = {"1": f"Fix for check {num}"}
+        diagnostics.append(diag)
+    return json.dumps({
+        "diagnostics": diagnostics,
         "total_checks": len(checks),
     })
 
@@ -99,7 +141,7 @@ class TestCheckpointResult:
 
 
 class TestCheckpointRunnerAllPass:
-    """Tests for checkpoint runner when all checks pass."""
+    """Tests for checkpoint runner when all checks pass (old format)."""
 
     @patch.object(CheckpointRunner, '__init__', lambda self, *a, **kw: None)
     def test_all_pass_step_1(self, tmp_path):
@@ -145,8 +187,57 @@ class TestCheckpointRunnerAllPass:
         assert result.checks_passed == 9
 
 
+class TestCheckpointRunnerNewFormat:
+    """Tests for checkpoint runner with new observational format."""
+
+    @patch.object(CheckpointRunner, '__init__', lambda self, *a, **kw: None)
+    def test_all_clean_new_format(self, tmp_path):
+        runner = CheckpointRunner.__new__(CheckpointRunner)
+        runner.project_dir = tmp_path
+        runner.prompt_generator = MagicMock()
+        runner.prompt_generator.generate_prompt.return_value = {
+            "system": "test", "user": "test", "prompt_hash": "abc123",
+        }
+        runner.generator = MagicMock()
+        runner.generator.generate.return_value = _make_ai_response_all_clean_new_format(1)
+
+        artifacts = _make_artifacts_for_step(1)
+        project_id = "test_project"
+        (tmp_path / project_id).mkdir()
+
+        result = runner.run_checkpoint(1, artifacts, project_id)
+
+        assert result.passed is True
+        assert result.checks_run == 2
+        assert result.checks_passed == 2
+        assert result.failures == []
+
+    @patch.object(CheckpointRunner, '__init__', lambda self, *a, **kw: None)
+    def test_some_rough_spots_new_format(self, tmp_path):
+        runner = CheckpointRunner.__new__(CheckpointRunner)
+        runner.project_dir = tmp_path
+        runner.prompt_generator = MagicMock()
+        runner.prompt_generator.generate_prompt.return_value = {
+            "system": "test", "user": "test", "prompt_hash": "abc123",
+        }
+        runner.generator = MagicMock()
+        # First check has rough spots
+        runner.generator.generate.return_value = _make_ai_response_some_rough_spots(3, [0])
+
+        artifacts = _make_artifacts_for_step(3)
+        project_id = "test_project"
+        (tmp_path / project_id).mkdir()
+
+        result = runner.run_checkpoint(3, artifacts, project_id)
+
+        assert result.passed is False
+        assert result.checks_run == 5
+        assert result.checks_passed == 4
+        assert len(result.failures) == 1
+
+
 class TestCheckpointRunnerSomeFail:
-    """Tests for checkpoint runner when some checks fail."""
+    """Tests for checkpoint runner when some checks fail (old format)."""
 
     @patch.object(CheckpointRunner, '__init__', lambda self, *a, **kw: None)
     def test_some_fail(self, tmp_path):
@@ -292,7 +383,7 @@ class TestCheckpointRunnerParsing:
 
         result = runner.run_checkpoint(1, artifacts, project_id)
         assert result.passed is False
-        assert result.checks_run == 0  # Unparseable response — no checks returned
+        assert result.checks_run == 0  # Unparseable response -- no checks returned
         assert result.checks_passed == 0
 
 

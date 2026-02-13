@@ -3,10 +3,11 @@ Step 3 Prompt Template: Hero Construction (Save the Cat Ch.3)
 Generates prompts for building the protagonist, antagonist, and B-story character
 from logline, genre classification, and Snowflake character data.
 
-VERSION 4.0.0 — Adds full prose character biographies. Each character gets a one-page
-prose bio covering Egri's 3 dimensions (physiology, sociology, psychology) BEFORE
-the structured JSON fields. Voice, speech patterns, and behavioral traits are derived
-from the biography, not invented as standalone fields.
+VERSION 6.0.0 — Adds signature_identifier field (Limp and Eye Patch — Ch.7) for every
+character. Each character gets a planned visual/behavioral/verbal trait at creation time
+so the screenplay writer can use it from scene one. Also includes structured
+physical_appearance fields for T2I image generation (v5.0.0) and full prose
+character biographies (v4.0.0) covering Egri's 3 dimensions.
 """
 
 import json
@@ -17,7 +18,7 @@ from typing import Dict, Any
 class Step3Prompt:
     """Prompt generator for Screenplay Engine Step 3: Hero Construction"""
 
-    VERSION = "4.0.0"
+    VERSION = "6.0.0"
 
     SYSTEM_PROMPT = (
         "You are a Save the Cat! character architect. Build protagonists with "
@@ -280,6 +281,43 @@ The B-story character starts the movie one way, and by the Final Image they are 
     the same city, and openly talks about their father — the grief she was running from is
     now something she faces with her sister."
 
+=== PHYSICAL APPEARANCE (T2I IMAGE GENERATION) ===
+
+Each character MUST include a "physical_appearance" object with structured fields. These fields
+are used DIRECTLY for text-to-image (T2I) generation downstream. Be specific and visual.
+Do NOT use personality traits — only physical, visible characteristics that a camera would capture.
+
+GOOD: "build": "lean, wiry-strong" / "hair": "dark, pinned tight" / "default_wardrobe": "dark jacket with hidden pockets, scuffed boots"
+BAD: "build": "determined" / "hair": "rebellious" / "default_wardrobe": "practical" (these are personality, not visual)
+
+=== SIGNATURE IDENTIFIER (Limp and Eye Patch — Ch.7) ===
+
+Snyder Ch.7: "Make sure every character has 'A Limp and an Eyepatch.' The reader has to
+have a visual clue, often a running visual reminder, that makes remembering them easier."
+Every character needs "something memorable that will stick them in the reader's mind."
+
+The boy in Deadly Mean Girls "didn't know what we'd done but the character of the boy
+really popped for him now. The boy jumped off the page." They just gave him a black
+t-shirt and wispy soul-patch.
+
+Each character MUST have ONE signature identifier — a specific physical trait, prop,
+behavioral habit, or verbal tic that appears EVERY TIME they are on screen. Plan it NOW
+so the screenplay writer has it in the character sheet.
+
+Examples:
+  - Always flips a coin across his knuckles (behavioral)
+  - Wears one red glove, the other hand bare (physical/prop)
+  - Taps her ring finger where a wedding band used to be (behavioral)
+  - Speaks with one word CAPITALIZED per sentence (verbal)
+  - Drags his left foot, the shoe sole worn flat on that side (physical)
+  - Chews a toothpick, replaces it with a fresh one when nervous (behavioral)
+
+Be SPECIFIC — not "has a limp" but "drags his left foot, the shoe sole worn flat on
+that side." The identifier should be VISUAL or AURAL so it can appear in action lines
+or parentheticals.
+
+Put this in the "signature_identifier" field for each character.
+
 OUTPUT FORMAT (JSON):
 {{
   "hero": {{
@@ -288,6 +326,16 @@ OUTPUT FORMAT (JSON):
     "adjective_descriptor": "<for logline>",
     "age_range": "<approximate age e.g. 'late 20s'>",
     "gender": "<gender>",
+    "physical_appearance": {{
+      "age_range": "<visible age e.g. '30s'>",
+      "gender": "<visual gender presentation>",
+      "height": "<relative height e.g. 'tall', 'average', 'short'>",
+      "build": "<body type e.g. 'lean, wiry-strong'>",
+      "hair": "<color, length, style e.g. 'dark, pinned tight'>",
+      "skin_tone": "<skin tone e.g. 'olive'>",
+      "default_wardrobe": "<typical clothing e.g. 'dark jacket with hidden pockets, scuffed boots'>",
+      "distinguishing_marks": "<scars, tattoos, birthmarks e.g. 'thin scar at collarbone'>"
+    }},
     "archetype": "<one of 10 ActorArchetype values>",
     "primal_motivation": "<one of 5 PrimalUrge values>",
     "stated_goal": "<what hero says they want>",
@@ -307,23 +355,46 @@ OUTPUT FORMAT (JSON):
     ],
     "opening_state": "<who hero is at Opening Image>",
     "final_state": "<who hero is at Final Image — OPPOSITE of opening_state>",
-    "theme_carrier": "<how protagonist embodies the central question>"
+    "theme_carrier": "<how protagonist embodies the central question>",
+    "signature_identifier": "<one specific, repeatable visual/behavioral/verbal trait>"
   }},
   "antagonist": {{
     "character_biography": "<FULL PROSE BIOGRAPHY — 200-400 words. The antagonist is a fully realized person, not a cardboard villain. Cover their background, what twisted their worldview, how they justify their actions to themselves, their speech patterns and physical presence. Remember: the antagonist does NOT arc — they refuse to change. But they must feel REAL. Their refusal to change should feel like a tragic choice, not a plot convenience.>",
     "name": "<antagonist name>",
     "adjective_descriptor": "<short descriptor>",
+    "physical_appearance": {{
+      "age_range": "<visible age>",
+      "gender": "<visual gender presentation>",
+      "height": "<relative height>",
+      "build": "<body type>",
+      "hair": "<color, length, style>",
+      "skin_tone": "<skin tone>",
+      "default_wardrobe": "<typical clothing>",
+      "distinguishing_marks": "<scars, tattoos, birthmarks>"
+    }},
     "power_level": "<equal or superior — explain>",
     "moral_difference": "<what they'll do that hero won't>",
-    "mirror_principle": "<how they are two halves of the same person>"
+    "mirror_principle": "<how they are two halves of the same person>",
+    "signature_identifier": "<one specific, repeatable visual/behavioral/verbal trait>"
   }},
   "b_story_character": {{
     "character_biography": "<FULL PROSE BIOGRAPHY — 200-400 words. The B-story character carries the theme. Cover their background, why they see the world differently from the hero, how their relationship with the hero works, their speech patterns and behavioral habits. They MUST arc — they change through the story. The biography should make clear who they are at the start and hint at who they could become.>",
     "name": "<B-story character name>",
+    "physical_appearance": {{
+      "age_range": "<visible age>",
+      "gender": "<visual gender presentation>",
+      "height": "<relative height>",
+      "build": "<body type>",
+      "hair": "<color, length, style>",
+      "skin_tone": "<skin tone>",
+      "default_wardrobe": "<typical clothing>",
+      "distinguishing_marks": "<scars, tattoos, birthmarks>"
+    }},
     "relationship_to_hero": "<relationship>",
     "theme_wisdom": "<the lesson that solves the A-story>",
     "opening_state": "<who they are when we first meet them — specific behaviors>",
-    "final_state": "<who they become by Final Image — MUST differ from opening_state>"
+    "final_state": "<who they become by Final Image — MUST differ from opening_state>",
+    "signature_identifier": "<one specific, repeatable visual/behavioral/verbal trait>"
   }}
 }}"""
 
@@ -483,6 +554,7 @@ Save the Cat Moment: {hero.get('save_the_cat_moment', 'MISSING')}
 Opening State: {hero.get('opening_state', 'MISSING')}
 Final State: {hero.get('final_state', 'MISSING')}
 Theme Carrier: {hero.get('theme_carrier', 'MISSING')}
+Signature Identifier: {hero.get('signature_identifier', 'MISSING')}
 Six Things: {json.dumps(hero.get('six_things_that_need_fixing', []))}
 
 CURRENT ANTAGONIST:
@@ -523,10 +595,15 @@ Remember:
 - antagonist must have mirror_principle
 - b_story_character must have opening_state and final_state (they MUST differ — the character arcs)
 - antagonist does NOT have opening_state/final_state (villains don't change)
+- signature_identifier: one memorable visual/behavioral/verbal trait (10+ chars)
 
 IMPORTANT: Include a full prose "character_biography" field (300-500 words for hero,
 200-400 for antagonist and B-story) for each character. The biography covers physiology,
 sociology, psychology, and voice. It is the source of truth for all other fields.
+
+IMPORTANT: Include a "physical_appearance" object for each character with structured fields
+for T2I image generation. Use only physical, visible characteristics — no personality traits.
+Required sub-fields: build, hair, default_wardrobe. Optional: age_range, gender, height, skin_tone, distinguishing_marks.
 
 OUTPUT FORMAT (JSON):
 {{{{
@@ -536,6 +613,16 @@ OUTPUT FORMAT (JSON):
     "adjective_descriptor": "<for logline>",
     "age_range": "<approximate age>",
     "gender": "<gender>",
+    "physical_appearance": {{{{
+      "age_range": "<visible age>",
+      "gender": "<visual gender presentation>",
+      "height": "<relative height>",
+      "build": "<body type>",
+      "hair": "<color, length, style>",
+      "skin_tone": "<skin tone>",
+      "default_wardrobe": "<typical clothing>",
+      "distinguishing_marks": "<scars, tattoos, birthmarks>"
+    }}}},
     "archetype": "<one of 10 ActorArchetype values>",
     "primal_motivation": "<one of 5 PrimalUrge values>",
     "stated_goal": "<what hero says they want>",
@@ -548,23 +635,46 @@ OUTPUT FORMAT (JSON):
     "six_things_that_need_fixing": ["<1>", "<2>", "<3>", "<4>", "<5>", "<6>"],
     "opening_state": "<who hero is at Opening Image>",
     "final_state": "<who hero is at Final Image — OPPOSITE>",
-    "theme_carrier": "<how protagonist embodies the central question>"
+    "theme_carrier": "<how protagonist embodies the central question>",
+    "signature_identifier": "<one specific, repeatable visual/behavioral/verbal trait>"
   }}}},
   "antagonist": {{{{
     "character_biography": "<full prose biography — 200-400 words>",
     "name": "<name>",
     "adjective_descriptor": "<descriptor>",
+    "physical_appearance": {{{{
+      "age_range": "<visible age>",
+      "gender": "<visual gender presentation>",
+      "height": "<relative height>",
+      "build": "<body type>",
+      "hair": "<color, length, style>",
+      "skin_tone": "<skin tone>",
+      "default_wardrobe": "<typical clothing>",
+      "distinguishing_marks": "<scars, tattoos, birthmarks>"
+    }}}},
     "power_level": "<equal or superior>",
     "moral_difference": "<what they'll do that hero won't>",
-    "mirror_principle": "<two halves of the same person>"
+    "mirror_principle": "<two halves of the same person>",
+    "signature_identifier": "<one specific, repeatable visual/behavioral/verbal trait>"
   }}}},
   "b_story_character": {{{{
     "character_biography": "<full prose biography — 200-400 words>",
     "name": "<name>",
+    "physical_appearance": {{{{
+      "age_range": "<visible age>",
+      "gender": "<visual gender presentation>",
+      "height": "<relative height>",
+      "build": "<body type>",
+      "hair": "<color, length, style>",
+      "skin_tone": "<skin tone>",
+      "default_wardrobe": "<typical clothing>",
+      "distinguishing_marks": "<scars, tattoos, birthmarks>"
+    }}}},
     "relationship_to_hero": "<relationship>",
     "theme_wisdom": "<lesson that solves A-story>",
     "opening_state": "<who they are when we first meet them>",
-    "final_state": "<who they become by Final Image>"
+    "final_state": "<who they become by Final Image>",
+    "signature_identifier": "<one specific, repeatable visual/behavioral/verbal trait>"
   }}}}
 }}}}"""
 

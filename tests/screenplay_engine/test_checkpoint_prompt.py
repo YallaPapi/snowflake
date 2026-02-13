@@ -140,7 +140,7 @@ class TestCheckpointPromptGeneration:
         artifacts = {"step_1": _make_logline_artifact()}
         result = prompt_gen.generate_prompt(1, artifacts)
         assert "system" in result
-        assert "script doctor" in result["system"]
+        assert "script analyst" in result["system"]
 
     def test_prompt_has_hash(self, prompt_gen):
         """All prompts should have a prompt_hash for tracking."""

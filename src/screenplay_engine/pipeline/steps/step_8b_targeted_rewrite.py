@@ -182,31 +182,61 @@ class Step8bTargetedRewrite:
         """
         Parse diagnostic output into a per-scene task map.
 
+        Supports both old format (passed/failing_scene_numbers/fix_per_scene)
+        and new observational format (rough_spots/rewrite_suggestions).
+
         Returns dict mapping scene_number -> list of tasks, where each task has:
-          - check_name: which diagnostic check failed
-          - fix_instruction: the concrete rewrite instruction from fix_per_scene
+          - check_name: which diagnostic check identified the issue
+          - fix_instruction: the concrete rewrite instruction
         """
         scene_tasks: Dict[int, List[Dict[str, Any]]] = {}
 
         diagnostics = diagnostics_artifact.get("diagnostics", [])
         for diag in diagnostics:
+            check_name = diag.get("check_name", "Unknown")
+
+            # New observational format: rough_spots + rewrite_suggestions
+            rough_spots = diag.get("rough_spots", [])
+            rewrite_suggestions = diag.get("rewrite_suggestions", {})
+
+            if rough_spots:
+                for spot in rough_spots:
+                    scene_num = int(spot.get("scene", 0))
+                    if scene_num == 0:
+                        continue
+
+                    # Get the rewrite for this scene if available
+                    fix_instruction = rewrite_suggestions.get(str(scene_num), "")
+                    if not fix_instruction:
+                        fix_instruction = rewrite_suggestions.get(scene_num, "")
+                    if not fix_instruction:
+                        # Fall back to the rough spot issue description
+                        current = spot.get("current_text", "")
+                        fix_instruction = f"Issue: {spot.get('issue', '')}. Current text: {current}"
+
+                    task = {
+                        "check_name": check_name,
+                        "fix_instruction": fix_instruction,
+                    }
+
+                    if scene_num not in scene_tasks:
+                        scene_tasks[scene_num] = []
+                    scene_tasks[scene_num].append(task)
+                continue
+
+            # Old format fallback: passed/failing_scene_numbers/fix_per_scene
             if diag.get("passed", True):
                 continue
 
-            check_name = diag.get("check_name", "Unknown")
             failing_scenes = diag.get("failing_scene_numbers", [])
             fix_per_scene = diag.get("fix_per_scene", {})
 
             for scene_num in failing_scenes:
                 scene_num = int(scene_num)
                 fix_instruction = fix_per_scene.get(str(scene_num), "")
-
                 if not fix_instruction:
-                    # Try int key
                     fix_instruction = fix_per_scene.get(scene_num, "")
-
                 if not fix_instruction:
-                    # Use problem_details as fallback
                     fix_instruction = diag.get("problem_details", "Fix the identified issue.")
 
                 task = {

@@ -5,11 +5,13 @@ Assigns how each shot connects to the next using context rules.
 
 from src.shot_engine.models import (
     TransitionType, ContentTrigger, ShotList,
-    TRANSITION_RULES,
 )
 
 # Beats that end acts → fade to black after last shot
-ACT_ENDINGS = {"Debate", "Fun and Games", "Dark Night of the Soul", "Final Image"}
+ACT_ENDINGS = {"Break into Two", "Midpoint", "Break into Three", "Final Image"}
+
+# Time tokens that mean "same time as previous scene" — NOT a time change
+SAME_TIME_MARKERS = {"CONTINUOUS", "MOMENTS LATER", "CONTINUOUS ACTION", "SAME", "LATER"}
 
 
 class StepV5Transitions:
@@ -78,6 +80,9 @@ class StepV5Transitions:
         next_slug = next_scene.slugline.upper()
         current_time = self._extract_time(current_slug)
         next_time = self._extract_time(next_slug)
+        # CONTINUOUS / LATER / SAME etc. mean same time — not a change
+        if current_time in SAME_TIME_MARKERS or next_time in SAME_TIME_MARKERS:
+            return False
         return current_time != next_time and current_time and next_time
 
     def _is_dramatic_contrast(self, current_scene, next_scene) -> bool:

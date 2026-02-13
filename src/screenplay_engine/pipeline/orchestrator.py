@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 from src.screenplay_engine.models import (
     StoryFormat, SnyderGenre, Logline, GenreDefinition,
-    HeroProfile, AntagonistProfile, BStoryCharacter, SupportingCast,
+    HeroProfile, AntagonistProfile, BStoryCharacter,
     BeatSheet, TheBoard, Screenplay, MarketingValidation,
     LawResult, DiagnosticResult,
 )
@@ -33,20 +33,22 @@ class ScreenplayPipeline:
         1.  Logline Generation & Validation
         2.  Genre Classification
         3.  Hero Construction (hero, antagonist, B-story)
-        3b. Supporting Cast (all other named characters)
         4.  Beat Sheet (BS2)
         5.  The Board (40 scene cards)
         6.  Screenplay Writing (from Board)
         7.  Immutable Laws Validation (on finished screenplay)
         8.  Diagnostic Checks (on finished screenplay)
         9.  Marketing Validation
+
+    Note: Step 3b (Supporting Cast) was removed per user directive.
+    Characters emerge organically via Board (Step 5) and Screenplay (Step 6).
     """
 
     STEP_NAMES = {
         1: "Logline",
         2: "Genre Classification",
         3: "Hero Construction",
-        "3b": "Supporting Cast",
+        # "3b" removed — characters emerge organically via Board/Screenplay
         4: "Beat Sheet (BS2)",
         5: "The Board",
         6: "Screenplay Writing",
@@ -86,9 +88,7 @@ class ScreenplayPipeline:
             elif step_num == 3:
                 from src.screenplay_engine.pipeline.steps.step_3_hero import Step3Hero
                 self._steps[3] = Step3Hero(str(self.project_dir))
-            elif step_num == 31:
-                from src.screenplay_engine.pipeline.steps.step_3b_supporting_cast import Step3bSupportingCast
-                self._steps[31] = Step3bSupportingCast(str(self.project_dir))
+            # Step 3b (31) removed — characters emerge organically via Board/Screenplay
             elif step_num == 4:
                 from src.screenplay_engine.pipeline.steps.step_4_beat_sheet import Step4BeatSheet
                 self._steps[4] = Step4BeatSheet(str(self.project_dir))
@@ -235,11 +235,14 @@ class ScreenplayPipeline:
             passed = sum(1 for l in artifact.get("laws", []) if l.get("passed"))
             total = len(artifact.get("laws", []))
             logger.info("  laws=%d/%d all_passed=%s", passed, total, artifact.get("all_passed"))
-        # Diagnostics
-        if "diagnostics" in artifact and "checks_passed_count" in artifact:
-            logger.info("  diagnostics=%d/%d",
-                       artifact.get("checks_passed_count", 0),
-                       artifact.get("total_checks", 0))
+        # Diagnostics (observational — no pass/fail)
+        if "diagnostics" in artifact and "total_checks" in artifact:
+            total_rough = sum(
+                len(d.get("rough_spots", []))
+                for d in artifact.get("diagnostics", [])
+            )
+            logger.info("  diagnostics=%d checks, %d rough spots",
+                       artifact.get("total_checks", 0), total_rough)
         # Marketing
         if "logline_still_accurate" in artifact:
             logger.info("  logline_accurate=%s genre_clear=%s title_works=%s",
@@ -462,26 +465,8 @@ class ScreenplayPipeline:
         step = self._get_step(3)
         return self._run_step(3, "Hero Construction", lambda: step.execute(step_1_artifact, step_2_artifact, snowflake_artifacts, self.current_project_id))
 
-    def execute_step_3b(
-        self,
-        step_1_artifact: Dict[str, Any],
-        step_2_artifact: Dict[str, Any],
-        step_3_artifact: Dict[str, Any],
-        snowflake_artifacts: Dict[str, Any],
-    ) -> Tuple[bool, Dict[str, Any], str]:
-        """Step 3b: Build supporting cast profiles used by downstream steps."""
-        step = self._get_step(31)
-        return self._run_step(
-            "3b",
-            "Supporting Cast",
-            lambda: step.execute(
-                step_1_artifact,
-                step_2_artifact,
-                step_3_artifact,
-                snowflake_artifacts,
-                self.current_project_id,
-            ),
-        )
+    # execute_step_3b removed — Step 3b (Supporting Cast) removed per user directive.
+    # Characters emerge organically via Board (Step 5) and Screenplay (Step 6).
 
     def execute_step_4(self, step_1_artifact: Dict[str, Any], step_2_artifact: Dict[str, Any], step_3_artifact: Dict[str, Any], snowflake_artifacts: Dict[str, Any]) -> Tuple[bool, Dict[str, Any], str]:
         """Step 4: Generate 15-beat BS2."""
@@ -525,24 +510,68 @@ class ScreenplayPipeline:
         step = self._get_step(9)
         return self._run_step(9, "Marketing Validation", lambda: step.execute(screenplay_artifact, step_1_artifact, self.current_project_id))
 
-    def _merge_character_context(
+    def execute_shot_pipeline(
         self,
+        screenplay_artifact: Dict[str, Any],
         step_3_artifact: Dict[str, Any],
-        step_3b_artifact: Dict[str, Any],
-    ) -> Dict[str, Any]:
+    ) -> Tuple[bool, Dict[str, Any], str]:
         """
-        Merge Step 3 (hero/antagonist/B-story) and Step 3b (supporting cast)
-        into a single context object consumed by downstream prompts.
-        """
-        merged = dict(step_3_artifact or {})
-        supporting_chars = []
-        if isinstance(step_3b_artifact, dict):
-            supporting_chars = step_3b_artifact.get("characters", [])
+        Run deterministic shot generation from finished screenplay + hero context.
 
-        if isinstance(supporting_chars, list):
-            merged["supporting_characters"] = supporting_chars
-        merged["supporting_cast"] = step_3b_artifact or {}
-        return merged
+        This is non-fatal for screenplay completion: if shot generation fails,
+        screenplay artifacts remain valid and saved.
+        """
+        if not self.current_project_id:
+            return False, {}, "Missing project id for shot pipeline"
+
+        from src.shot_engine.pipeline.orchestrator import ShotPipeline
+        from src.shot_engine.models import StoryFormat as ShotStoryFormat
+
+        format_value = str(screenplay_artifact.get("format", "")).strip().lower()
+        format_map = {
+            "tiktok": ShotStoryFormat.TIKTOK,
+            "reel": ShotStoryFormat.REEL,
+            "youtube": ShotStoryFormat.YOUTUBE,
+            "short_film": ShotStoryFormat.SHORT_FILM,
+            "feature": ShotStoryFormat.FEATURE,
+            "series_ep": ShotStoryFormat.SERIES_EP,
+        }
+        shot_format = format_map.get(format_value, ShotStoryFormat.FEATURE)
+
+        pipeline = ShotPipeline(output_dir=str(self.project_dir))
+        success, shot_list, message = pipeline.run(
+            screenplay_artifact=screenplay_artifact,
+            hero_artifact=step_3_artifact,
+            story_format=shot_format,
+            project_id=self.current_project_id,
+        )
+
+        artifact = shot_list.model_dump() if success else {}
+        return success, artifact, message
+
+    def execute_visual_bible_pipeline(self) -> Tuple[bool, Dict[str, Any], str]:
+        """
+        Run Visual Bible generation from project artifacts.
+
+        Requires:
+          - sp_step_8_screenplay.json
+          - sp_step_3_hero.json
+          - shot_list.json
+        """
+        if not self.current_project_id:
+            return False, {}, "Missing project id for visual bible pipeline"
+
+        from src.visual_bible.pipeline.orchestrator import VisualBiblePipeline
+
+        artifact_dir = self.project_dir / self.current_project_id
+        pipeline = VisualBiblePipeline(artifact_dir=artifact_dir)
+        try:
+            result = pipeline.run_all()
+            return True, result, "Visual Bible pipeline completed successfully"
+        except Exception as exc:
+            return False, {}, f"Visual Bible pipeline failed: {exc}"
+
+    # _merge_character_context removed — Step 3b (Supporting Cast) removed per user directive.
 
     # ── Full Pipeline ──────────────────────────────────────────────────
 
@@ -562,15 +591,12 @@ class ScreenplayPipeline:
         """
         artifacts: Dict[Any, Dict[str, Any]] = {}
 
-        # Steps 1-3: Generation + diagnostic checkpoint
-        pre_cast_steps = [
+        # Steps 1-6: Generation + diagnostic checkpoint after each
+        # (Step 3b removed — characters emerge organically via Board/Screenplay)
+        generation_steps = [
             (1, lambda: self.execute_step_1(snowflake_artifacts)),
             (2, lambda: self.execute_step_2(artifacts[1], snowflake_artifacts)),
             (3, lambda: self.execute_step_3(artifacts[1], artifacts[2], snowflake_artifacts)),
-        ]
-
-        # Steps 4-6: use merged Step 3 + Step 3b character context
-        post_cast_steps = [
             (4, lambda: self.execute_step_4(artifacts[1], artifacts[2], artifacts[3], snowflake_artifacts)),
             (5, lambda: self.execute_step_5(artifacts[4], artifacts[3], artifacts[1], artifacts[2])),
             # Step 6: Write screenplay FIRST (book order: write, then diagnose)
@@ -598,43 +624,8 @@ class ScreenplayPipeline:
                     self.current_project_id)
         logger.info("=" * 60)
 
-        # Run checkpointed pre-cast steps (1-3)
-        for step_num, executor in pre_cast_steps:
-            success, artifact, message = executor()
-            if not success:
-                elapsed = time.time() - pipeline_t0
-                logger.error(
-                    "PIPELINE FAILED at Step %s after %.1fs: %s",
-                    step_num,
-                    elapsed,
-                    self._safe_log_text(message),
-                )
-                return False, artifacts, f"Pipeline failed at Step {step_num} ({self.STEP_NAMES[step_num]}): {message}"
-
-            # Run diagnostic checkpoint and possibly revise
-            artifact = self._run_checkpoint_and_revise(
-                step_num, artifact, artifacts, snowflake_artifacts,
-            )
-            artifacts[step_num] = artifact
-
-        # Run Step 3b (supporting cast) without checkpoint.
-        success, step_3b_artifact, message = self.execute_step_3b(
-            artifacts[1], artifacts[2], artifacts[3], snowflake_artifacts,
-        )
-        if not success:
-            elapsed = time.time() - pipeline_t0
-            logger.error(
-                "PIPELINE FAILED at Step 3b after %.1fs: %s",
-                elapsed,
-                self._safe_log_text(message),
-            )
-            return False, artifacts, f"Pipeline failed at Step 3b ({self.STEP_NAMES['3b']}): {message}"
-
-        artifacts["3b"] = step_3b_artifact
-        artifacts[3] = self._merge_character_context(artifacts[3], step_3b_artifact)
-
-        # Run checkpointed post-cast steps (4-6)
-        for step_num, executor in post_cast_steps:
+        # Run checkpointed generation steps (1-6)
+        for step_num, executor in generation_steps:
             success, artifact, message = executor()
             if not success:
                 elapsed = time.time() - pipeline_t0
@@ -665,10 +656,13 @@ class ScreenplayPipeline:
                 return False, artifacts, f"Pipeline failed at Step {step_num} ({self.STEP_NAMES[step_num]}): {message}"
             artifacts[step_num] = artifact
 
-        # Step 8b: Targeted Grok rewrite (only if diagnostics found failures)
-        diag_passed = artifacts.get(8, {}).get("checks_passed_count", 9)
-        if diag_passed < 9:
-            logger.info("Step 8 found %d/9 failures — running Step 8b targeted rewrite", 9 - diag_passed)
+        # Step 8b: Targeted Grok rewrite (only if diagnostics found rough spots)
+        diag_rough_spots = sum(
+            len(d.get("rough_spots", []))
+            for d in artifacts.get(8, {}).get("diagnostics", [])
+        )
+        if diag_rough_spots > 0:
+            logger.info("Step 8 found %d rough spots — running Step 8b targeted rewrite", diag_rough_spots)
             step_num_8b, executor_8b = step_8b
             success, artifact, message = executor_8b()
             if success:
@@ -682,7 +676,7 @@ class ScreenplayPipeline:
                     self._safe_log_text(message),
                 )
         else:
-            logger.info("All 9 diagnostics passed — skipping Step 8b")
+            logger.info("No rough spots in diagnostics — skipping Step 8b")
 
         # Step 9: Marketing validation (uses potentially rewritten screenplay)
         step_num_9, executor_9 = step_9
@@ -696,6 +690,32 @@ class ScreenplayPipeline:
             )
             return False, artifacts, f"Pipeline failed at Step 9 (Marketing Validation): {message}"
         artifacts[9] = artifact
+
+        # Shot generation from final screenplay (non-fatal if it fails)
+        shot_success, shot_artifact, shot_message = self.execute_shot_pipeline(
+            artifacts[6], artifacts[3],
+        )
+        if shot_success:
+            artifacts["shot_list"] = shot_artifact
+            logger.info("SHOT PIPELINE COMPLETE: %s", self._safe_log_text(shot_message))
+
+            vb_success, vb_artifact, vb_message = self.execute_visual_bible_pipeline()
+            if vb_success:
+                artifacts["visual_bible"] = vb_artifact
+                logger.info(
+                    "VISUAL BIBLE PIPELINE COMPLETE: %s",
+                    self._safe_log_text(vb_message),
+                )
+            else:
+                logger.warning(
+                    "VISUAL BIBLE PIPELINE FAILED (non-fatal): %s",
+                    self._safe_log_text(vb_message),
+                )
+        else:
+            logger.warning(
+                "SHOT PIPELINE FAILED (non-fatal): %s",
+                self._safe_log_text(shot_message),
+            )
 
         elapsed = time.time() - pipeline_t0
         logger.info("=" * 60)
@@ -746,8 +766,7 @@ class ScreenplayPipeline:
             1: "sp_step_1_logline.json",
             2: "sp_step_2_genre.json",
             3: "sp_step_3_hero.json",
-            31: "sp_step_3b_supporting_cast.json",
-
+            # 31 (step 3b) removed — characters emerge organically via Board/Screenplay
             4: "sp_step_4_beat_sheet.json",
             5: "sp_step_5_board.json",
             6: "sp_step_6_immutable_laws.json",
@@ -775,8 +794,7 @@ class ScreenplayPipeline:
             1: "sp_step_1_logline.json",
             2: "sp_step_2_genre.json",
             3: "sp_step_3_hero.json",
-            31: "sp_step_3b_supporting_cast.json",
-
+            # 31 (step 3b) removed — characters emerge organically via Board/Screenplay
             4: "sp_step_4_beat_sheet.json",
             5: "sp_step_5_board.json",
             6: "sp_step_6_immutable_laws.json",

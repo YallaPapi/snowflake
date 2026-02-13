@@ -2,8 +2,8 @@
 Test Suite for Screenplay Engine Step 3: Hero Construction (Save the Cat Ch.3)
 Tests validator, prompt generation, and step execution.
 
-VERSION 3.0.0 — Adds B-story arc fields (opening_state/final_state) for
-Covenant of the Arc, updates version checks to 3.0.0 for validator and prompt.
+VERSION 4.0.0 — Adds signature_identifier (Limp and Eye Patch — Ch.7) for all three
+characters. Updates version checks to 6.0.0 for validator and prompt.
 """
 
 import unittest
@@ -92,6 +92,9 @@ def _valid_artifact():
                 "Kai embodies the question: Is it braver to protect yourself or to risk "
                 "everything for people who might betray you?"
             ),
+            "signature_identifier": (
+                "Rubs his thumb across the scar on his left palm like a worry stone"
+            ),
         },
         "antagonist": {
             "character_biography": (
@@ -117,6 +120,9 @@ def _valid_artifact():
                 "his copilot, Elara lost her funding. Both chose isolation as armor. They are "
                 "two halves of the same wound — but Kai heals by opening up while Elara "
                 "doubles down on control."
+            ),
+            "signature_identifier": (
+                "Never sits in a chair without first adjusting it to be higher than everyone else's"
             ),
         },
         "b_story_character": {
@@ -147,6 +153,9 @@ def _valid_artifact():
             "final_state": (
                 "A fierce advocate who risks her career to testify against the corporation, "
                 "choosing loyalty to the crew over self-preservation"
+            ),
+            "signature_identifier": (
+                "Taps her pen against her thigh in a precise rhythm when thinking"
             ),
         },
     }
@@ -642,6 +651,77 @@ class TestStep3Validator(unittest.TestCase):
         self.assertFalse(is_valid)
         self.assertTrue(any("MISSING_THEME_CARRIER" in e for e in errors))
 
+    # -- 10b. Signature identifier (Limp and Eye Patch — Ch.7) --
+
+    def test_valid_signature_identifier_passes(self):
+        """Artifact with substantive signature_identifier passes validation."""
+        artifact = _valid_artifact()
+        is_valid, errors = self.validator.validate(artifact)
+        self.assertTrue(is_valid, f"Expected valid but got errors: {errors}")
+        self.assertFalse(any("WEAK_SIGNATURE_IDENTIFIER" in e for e in errors))
+
+    def test_short_signature_identifier_fails(self):
+        """A vague/short signature_identifier (< 10 chars) triggers WEAK_SIGNATURE_IDENTIFIER."""
+        artifact = _valid_artifact()
+        artifact["hero"]["signature_identifier"] = "limp"
+        is_valid, errors = self.validator.validate(artifact)
+        self.assertFalse(is_valid)
+        self.assertTrue(any("WEAK_SIGNATURE_IDENTIFIER" in e for e in errors))
+        self.assertTrue(any("hero" in e for e in errors if "WEAK_SIGNATURE_IDENTIFIER" in e))
+
+    def test_short_antagonist_signature_identifier_fails(self):
+        """Antagonist with short signature_identifier triggers error."""
+        artifact = _valid_artifact()
+        artifact["antagonist"]["signature_identifier"] = "scar"
+        is_valid, errors = self.validator.validate(artifact)
+        self.assertFalse(is_valid)
+        self.assertTrue(any(
+            "WEAK_SIGNATURE_IDENTIFIER" in e and "antagonist" in e
+            for e in errors
+        ))
+
+    def test_short_b_story_signature_identifier_fails(self):
+        """B-story character with short signature_identifier triggers error."""
+        artifact = _valid_artifact()
+        artifact["b_story_character"]["signature_identifier"] = "pen tap"
+        is_valid, errors = self.validator.validate(artifact)
+        self.assertFalse(is_valid)
+        self.assertTrue(any(
+            "WEAK_SIGNATURE_IDENTIFIER" in e and "b_story_character" in e
+            for e in errors
+        ))
+
+    def test_missing_signature_identifier_still_passes(self):
+        """Artifact WITHOUT signature_identifier still passes (backward compatibility)."""
+        artifact = _valid_artifact()
+        del artifact["hero"]["signature_identifier"]
+        del artifact["antagonist"]["signature_identifier"]
+        del artifact["b_story_character"]["signature_identifier"]
+        is_valid, errors = self.validator.validate(artifact)
+        self.assertTrue(is_valid, f"Expected valid but got errors: {errors}")
+        self.assertFalse(any("WEAK_SIGNATURE_IDENTIFIER" in e for e in errors))
+
+    def test_empty_signature_identifier_still_passes(self):
+        """Artifact with empty string signature_identifier still passes."""
+        artifact = _valid_artifact()
+        artifact["hero"]["signature_identifier"] = ""
+        artifact["antagonist"]["signature_identifier"] = ""
+        artifact["b_story_character"]["signature_identifier"] = ""
+        is_valid, errors = self.validator.validate(artifact)
+        self.assertTrue(is_valid, f"Expected valid but got errors: {errors}")
+        self.assertFalse(any("WEAK_SIGNATURE_IDENTIFIER" in e for e in errors))
+
+    def test_exactly_10_char_signature_identifier_passes(self):
+        """Signature identifier with exactly 10 characters passes."""
+        artifact = _valid_artifact()
+        artifact["hero"]["signature_identifier"] = "red gloves"  # exactly 10 chars
+        self.assertEqual(len("red gloves"), 10)
+        is_valid, errors = self.validator.validate(artifact)
+        self.assertFalse(any(
+            "WEAK_SIGNATURE_IDENTIFIER" in e and "hero" in e
+            for e in errors
+        ))
+
     # -- 11. Demographic appeal justification substance --
 
     def test_substantive_demographic_appeal_passes(self):
@@ -730,6 +810,7 @@ class TestStep3Validator(unittest.TestCase):
             "MISSING_B_STORY_FINAL_STATE: x",
             "VAGUE_B_STORY_FINAL_STATE: x",
             "IDENTICAL_B_STORY_ARC: x",
+            "WEAK_SIGNATURE_IDENTIFIER: x",
         ]
         suggestions = self.validator.fix_suggestions(error_types)
         self.assertEqual(len(suggestions), len(error_types))
@@ -980,6 +1061,28 @@ class TestStep3Prompt(unittest.TestCase):
         self.assertIn("Opening State:", user)
         self.assertIn("Final State:", user)
 
+    def test_user_prompt_includes_signature_identifier_section(self):
+        prompt_data = self.prompt_gen.generate_prompt(
+            _step_1_artifact(), _step_2_artifact(), _snowflake_artifacts()
+        )
+        user = prompt_data["user"]
+        self.assertIn("SIGNATURE IDENTIFIER", user)
+        self.assertIn("Limp and Eye Patch", user)
+        self.assertIn('"signature_identifier"', user)
+
+    def test_revision_prompt_includes_signature_identifier(self):
+        current = _valid_artifact()
+        prompt_data = self.prompt_gen.generate_revision_prompt(
+            current,
+            ["test error"],
+            _step_1_artifact(),
+            _step_2_artifact(),
+            _snowflake_artifacts(),
+        )
+        user = prompt_data["user"]
+        self.assertIn("Signature Identifier:", user)
+        self.assertIn('"signature_identifier"', user)
+
     def test_output_format_has_b_story_arc_fields(self):
         prompt_data = self.prompt_gen.generate_prompt(
             _step_1_artifact(), _step_2_artifact(), _snowflake_artifacts()
@@ -1155,10 +1258,10 @@ class TestStep3Execution(unittest.TestCase):
         self.assertEqual(Step3Hero.VERSION, "2.0.0")
 
     def test_validator_version_is_set(self):
-        self.assertEqual(Step3Validator.VERSION, "4.0.0")
+        self.assertEqual(Step3Validator.VERSION, "6.0.0")
 
     def test_prompt_version_is_set(self):
-        self.assertEqual(Step3Prompt.VERSION, "4.0.0")
+        self.assertEqual(Step3Prompt.VERSION, "6.0.0")
 
 
 if __name__ == "__main__":

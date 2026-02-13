@@ -33,6 +33,14 @@ class StateChangeType(Enum):
     PROP = "prop"
 
 
+class SettingStateChangeType(Enum):
+    DAMAGE = "damage"              # explosions, fire, collapse, bullet holes
+    WEATHER = "weather"            # rain, snow, fog rolling in (non-cumulative)
+    LIGHTING_CHANGE = "lighting_change"  # power outage, lights off (non-cumulative)
+    CLUTTER = "clutter"            # overturned furniture, debris, scattered papers
+    MODIFICATION = "modification"  # barricaded doors, boarded windows, fortified
+
+
 class CameraAngle(Enum):
     WIDE = "wide"
     MEDIUM = "medium"
@@ -69,6 +77,16 @@ class StateChange:
 
 
 @dataclass
+class SettingStateChange:
+    """A change in a setting's visual state at a specific scene."""
+    location_key: str        # e.g. "INT._RAE'S SKIP ROOM"
+    scene_number: int
+    change_type: SettingStateChangeType
+    description: str         # what changed: "windows shattered, debris everywhere"
+    cumulative: bool = True  # WEATHER and LIGHTING_CHANGE are False
+
+
+@dataclass
 class CharacterState:
     """Complete visual state of a character at a given scene."""
     character_name: str
@@ -79,17 +97,44 @@ class CharacterState:
 
     def __post_init__(self):
         if not self.state_id:
+            base = self.character_name.lower().replace(' ', '_')
             if self.active_changes:
                 suffix = "_".join(c.change_type.value for c in self.active_changes)
-                self.state_id = f"{self.character_name.lower().replace(' ', '_')}_{suffix}"
+                self.state_id = f"{base}_{suffix}_sc{self.scene_number}"
             else:
-                self.state_id = f"{self.character_name.lower().replace(' ', '_')}_clean"
+                self.state_id = f"{base}_clean"
 
     def to_prompt_description(self) -> str:
         """Build a visual description including all active state changes."""
         parts = [self.base_appearance.base_description]
         if self.base_appearance.default_wardrobe:
             parts.append(self.base_appearance.default_wardrobe)
+        for change in self.active_changes:
+            parts.append(change.description)
+        return ", ".join(parts)
+
+
+@dataclass
+class SettingState:
+    """Complete visual state of a setting at a given scene."""
+    location_key: str
+    scene_number: int
+    base_description: str
+    active_changes: list[SettingStateChange] = field(default_factory=list)
+    state_id: str = ""
+
+    def __post_init__(self):
+        if not self.state_id:
+            base = self.location_key.lower().replace(" ", "_").replace("/", "_").replace("'", "").replace(".", "")
+            if self.active_changes:
+                suffix = "_".join(c.change_type.value for c in self.active_changes)
+                self.state_id = f"{base}_{suffix}_sc{self.scene_number}"
+            else:
+                self.state_id = f"{base}_clean"
+
+    def to_prompt_description(self) -> str:
+        """Build a visual description including all active state changes."""
+        parts = [self.base_description]
         for change in self.active_changes:
             parts.append(change.description)
         return ", ".join(parts)
@@ -122,6 +167,7 @@ class SettingBase:
     angles_needed: list[CameraAngle] = field(default_factory=list)
     scene_numbers: list[int] = field(default_factory=list)
     mood_keywords: list[str] = field(default_factory=list)
+    states: list[SettingState] = field(default_factory=list)
 
     @property
     def setting_id(self) -> str:
@@ -129,7 +175,9 @@ class SettingBase:
 
     @property
     def total_images_needed(self) -> int:
-        return len(self.time_variants) * max(len(self.angles_needed), 1)
+        base_count = len(self.time_variants) * max(len(self.angles_needed), 1)
+        state_count = sum(1 for s in self.states if s.active_changes)
+        return base_count + state_count
 
 
 @dataclass
@@ -143,7 +191,10 @@ class ShotInitFrame:
     setting_id: str  # references a SettingBase.setting_id
     time_of_day: TimeOfDay
     camera_angle: CameraAngle
-    visual_prompt: str  # from shot engine V6
+    setting_prompt: str  # T2I: setting with cinematography
+    setting_state_id: str = ""  # references a SettingState.state_id
+    scene_prompt: str = ""  # I2I: character placement into setting
+    video_prompt: str = ""  # I2V: motion from composed frame
     is_first_frame: bool = True
     is_last_frame: bool = False
     duration_seconds: float = 8.0
@@ -183,6 +234,7 @@ class VisualManifest:
     characters: list[CharacterSheet] = field(default_factory=list)
     settings: list[SettingBase] = field(default_factory=list)
     state_changes: list[StateChange] = field(default_factory=list)
+    setting_state_changes: list[SettingStateChange] = field(default_factory=list)
     init_frames: list[ShotInitFrame] = field(default_factory=list)
     veo_clips: list[VeoClip] = field(default_factory=list)
 
@@ -211,6 +263,8 @@ class VisualManifest:
             "unique_character_states": sum(len(c.states) for c in self.characters),
             "settings": len(self.settings),
             "state_changes": len(self.state_changes),
+            "setting_state_changes": len(self.setting_state_changes),
+            "unique_setting_states": sum(len(s.states) for s in self.settings),
             "init_frames": self.total_init_frames,
             "veo_clips": len(self.veo_clips),
             "total_character_images": self.total_character_images,

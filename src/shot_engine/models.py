@@ -17,7 +17,7 @@ class ShotType(str, Enum):
     MEDIUM = "medium"
     MEDIUM_CLOSE = "medium_close"
     CLOSE_UP = "close_up"
-    EXTREME_CLOSE_UP = "extreme_close"
+    EXTREME_CLOSE_UP = "extreme_close_up"
     OVER_SHOULDER = "over_shoulder"
     POV = "pov"
     INSERT = "insert"
@@ -164,16 +164,6 @@ PACE_MULTIPLIER = {
     "decelerating": 1.3,
 }
 
-# Transition rules
-TRANSITION_RULES = {
-    "within_scene": TransitionType.CUT,
-    "between_scenes_same_time": TransitionType.CUT,
-    "time_passage": TransitionType.DISSOLVE,
-    "sequence_end": TransitionType.FADE_TO_BLACK,
-    "dramatic_contrast": TransitionType.SMASH_CUT,
-    "dialogue_bridge": TransitionType.J_CUT,
-}
-
 
 # ── Data Models ────────────────────────────────────────────────────────────
 
@@ -187,6 +177,25 @@ class ShotSegment(BaseModel):
     characters_in_frame: List[str] = Field(default_factory=list)
     emotional_intensity: float = Field(default=0.5, ge=0.0, le=1.0)
     is_disaster_moment: bool = Field(default=False)
+
+
+class SceneVisualIntent(BaseModel):
+    """STC-derived scene intent passed from screenplay to shot generation."""
+    emotional_start: str = Field(default="", description="Scene start polarity '+' or '-'")
+    emotional_end: str = Field(default="", description="Scene end polarity '+' or '-'")
+    conflict_axis: str = Field(
+        default="",
+        description="Single dominant scene conflict: who wants what from whom; who wins",
+    )
+    sequence_mode: str = Field(
+        default="single_scene",
+        description="single_scene or sequence",
+    )
+    continuity_anchors: List[str] = Field(
+        default_factory=list,
+        description="Stable location/time/character anchors for cross-shot continuity",
+    )
+    board_card_number: int = Field(default=0, description="Original STC board card number")
 
 
 class Shot(BaseModel):
@@ -212,6 +221,12 @@ class Shot(BaseModel):
     # From V3: Camera
     camera_movement: CameraMovement = CameraMovement.STATIC
     camera_rationale: str = ""
+    lens_mm: int = 35
+    camera_height: str = "eye_level"
+    distance_band: str = "medium"
+    lighting_intent: str = ""
+    blocking_intent: str = ""
+    generation_profile: str = "production_quality"
 
     # From V4: Pacing
     duration_seconds: float = 3.0
@@ -221,8 +236,10 @@ class Shot(BaseModel):
     transition_to_next: TransitionType = TransitionType.CUT
     crossfade_duration: float = 0.0
 
-    # From V6: Prompt
-    visual_prompt: str = ""
+    # From V6: Prompts (T2I setting → I2I composition → I2V motion)
+    setting_prompt: str = ""      # T2I: setting image with cinematography baked in
+    scene_prompt: str = ""        # I2I edit: character placement/blocking in the setting
+    video_prompt: str = ""        # I2V: motion from the composed frame
     negative_prompt: str = ""
     character_prompt_prefix: str = ""
     init_image_source: str = "reference"  # "reference" | "previous_frame" | "generated"
@@ -231,6 +248,12 @@ class Shot(BaseModel):
     # Context
     beat: str = ""
     emotional_polarity: str = ""
+    emotional_start: str = ""
+    emotional_end: str = ""
+    conflict_axis: str = ""
+    sequence_mode: str = "single_scene"
+    continuity_anchors: List[str] = Field(default_factory=list)
+    board_card_number: int = 0
     slugline: str = ""
     aspect_ratio: str = "16:9"
 
@@ -241,6 +264,7 @@ class SceneShots(BaseModel):
     slugline: str
     beat: str
     emotional_polarity: str
+    visual_intent: SceneVisualIntent = Field(default_factory=SceneVisualIntent)
     target_duration_seconds: float = 0.0
     shots: List[Shot] = Field(default_factory=list)
 

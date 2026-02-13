@@ -65,9 +65,9 @@ SNOWFLAKE_PROJECT = "jsontest_20260207_085604"
 ARTIFACTS_DIR = os.path.join(os.path.dirname(__file__), "..", "artifacts")
 
 
-def load_snowflake_artifacts():
+def load_snowflake_artifacts(seed_project=None):
     """Load all available Snowflake step artifacts."""
-    project_dir = os.path.join(ARTIFACTS_DIR, SNOWFLAKE_PROJECT)
+    project_dir = os.path.join(ARTIFACTS_DIR, seed_project or SNOWFLAKE_PROJECT)
     artifacts = {}
     for fname in os.listdir(project_dir):
         if fname.startswith("step_") and fname.endswith(".json"):
@@ -150,6 +150,8 @@ def main():
     resume_project = sys.argv[2] if len(sys.argv) > 2 else None
     # Screenplay generation mode: monolithic | scene_by_scene | act_by_act
     screenplay_mode = sys.argv[3] if len(sys.argv) > 3 else "act_by_act"
+    # Snowflake seed project (e.g., "seed_buddy_love")
+    seed_project = sys.argv[4] if len(sys.argv) > 4 else None
 
     # Initialize logging FIRST
     log_file = setup_logging()
@@ -161,7 +163,7 @@ def main():
         start_idx = 0
 
     print("Loading Snowflake artifacts...")
-    snowflake = load_snowflake_artifacts()
+    snowflake = load_snowflake_artifacts(seed_project=seed_project)
     print(f"  Loaded Snowflake steps: {sorted(snowflake.keys())}")
     print(f"  Provider: OpenAI (gpt-5.2)" if os.getenv("OPENAI_API_KEY") else "  Provider: Anthropic")
     print(f"  Screenplay mode: {screenplay_mode}")
@@ -176,7 +178,8 @@ def main():
         project_id = resume_project
         print(f"  Resumed screenplay project: {project_id}")
     else:
-        project_id = pipeline.create_project("rae_blackout", StoryFormat.FEATURE)
+        project_name = seed_project.replace("seed_", "") if seed_project else "rae_blackout"
+        project_id = pipeline.create_project(project_name, StoryFormat.FEATURE)
         print(f"  Created screenplay project: {project_id}")
 
     sp = {}  # screenplay artifacts keyed by step number (int or "3b")
@@ -258,9 +261,10 @@ def main():
         _ensure_loaded(sp, pipeline, 3, 4, 5, 6)
         start = run_step(7, "Immutable Laws Validation")
         success, artifact, msg = pipeline.execute_step_7(sp[6], sp[5], sp[4], sp[3])
-        if not report(success, artifact, msg, start):
-            return
-        sp[7] = artifact
+        report(success, artifact, msg, start)
+        # Continue even if Laws fail — they're informational, don't block diagnostics
+        if artifact:
+            sp[7] = artifact
 
     # ── Step 8: Diagnostic Checks (on finished screenplay) ───────────
     if start_idx <= STEP_ORDER.index("8"):

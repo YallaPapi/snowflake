@@ -24,8 +24,8 @@ class CheckpointPrompt:
     VERSION = "1.0.0"
 
     SYSTEM_PROMPT = (
-        "You are a Save the Cat! script doctor running incremental diagnostics. "
-        "Evaluate the provided artifact(s) against the specified subset of Blake Snyder "
+        "You are a Save the Cat! script analyst running incremental diagnostics. "
+        "Examine the provided artifact(s) against the specified subset of Blake Snyder "
         "Chapter 7 diagnostic checks. Evaluate ONLY what the artifact can reasonably "
         "demonstrate at this stage — read the EVALUATION SCOPE instructions carefully "
         "for each check.\n\n"
@@ -109,18 +109,17 @@ DIAGNOSTIC CHECKS TO RUN ({len(applicable_checks)} checks):
 
 INSTRUCTIONS:
 - Evaluate ONLY the {len(applicable_checks)} checks listed above.
-- For each check, determine PASS or FAIL based on what the artifact(s) can demonstrate AT THIS STAGE.
-- Read the EVALUATION SCOPE for each check — only fail a check for issues the artifact CAN address.
-- If a check FAILS, describe the specific problem and provide a concrete fix.
+- For each check, provide observations and identify any rough spots based on what the artifact(s) can demonstrate AT THIS STAGE.
+- Read the EVALUATION SCOPE for each check — only identify rough spots for issues the artifact CAN address.
+- If you find rough spots, describe them with specific scene references and rewrite suggestions.
 
 OUTPUT FORMAT (JSON):
 {output_format}
 
 RULES:
 - You MUST run ALL {len(applicable_checks)} checks listed above — do not skip any.
-- For PASSED checks, problem_details and fix_suggestion may be empty strings.
-- For FAILED checks, problem_details and fix_suggestion MUST be non-empty with specific, actionable content.
-- checks_passed_count MUST equal the number of diagnostics where passed is true.
+- For clean checks: observations non-empty, rough_spots empty list, rewrite_suggestions empty dict.
+- For checks with rough spots: observations non-empty, rough_spots non-empty with scene/issue details, rewrite_suggestions non-empty.
 - total_checks MUST be {len(applicable_checks)}.
 - Use the EXACT check_name values shown in the output format."""
 
@@ -151,14 +150,22 @@ RULES:
         # Limit to top N failures to keep revision prompt focused
         top_failures = failures[:max_failures]
 
-        lines = [f"DIAGNOSTIC CHECKPOINT: {len(failures)} check(s) failed. Focus on fixing these {len(top_failures)}:"]
+        lines = [f"DIAGNOSTIC CHECKPOINT: {len(failures)} check(s) have rough spots. Focus on fixing these {len(top_failures)}:"]
         for f in top_failures:
             check_name = f.get("check_name", "Unknown")
-            fix = f.get("fix_suggestion", "No suggestion")
+            # Support both old and new format
+            fix = f.get("fix_suggestion") or ""
+            if not fix:
+                # New format: extract from rewrite_suggestions
+                rewrites = f.get("rewrite_suggestions", {})
+                if rewrites:
+                    fix = next(iter(rewrites.values()), "No suggestion")
+                else:
+                    fix = f.get("observations", "No suggestion")
             # Truncate fix to 300 chars to keep it concise
             if len(fix) > 300:
                 fix = fix[:297] + "..."
-            lines.append(f"\n[FAIL] {check_name}")
+            lines.append(f"\n[ROUGH SPOT] {check_name}")
             lines.append(f"  Fix: {fix}")
         return "\n".join(lines)
 
@@ -182,8 +189,8 @@ RULES:
             elif sub:
                 block += f"\n   Sub-checks:\n   {sub}"
 
-            block += f"\n   - FAIL criteria: {fail}"
-            block += f"\n   - FIX: {fix}"
+            block += f"\n   - Look for: {fail}"
+            block += f"\n   - If rough spots exist: {fix}"
             blocks.append(block)
 
         return "\n\n".join(blocks)
@@ -216,14 +223,22 @@ RULES:
         examples = []
         for i, check_num in enumerate(applicable_checks):
             name = get_check_name(check_num)
-            passed = "true" if i % 2 == 0 else "false"
-            problem = "" if i % 2 == 0 else "<specific problem found>"
-            fix = "" if i % 2 == 0 else "<specific fix>"
-            examples.append(
-                f'        {{"check_number": {check_num}, "check_name": "{name}", '
-                f'"passed": {passed}, "problem_details": "{problem}", '
-                f'"fix_suggestion": "{fix}"}}'
-            )
+            if i % 2 == 0:
+                # Clean check example
+                examples.append(
+                    f'        {{"check_number": {check_num}, "check_name": "{name}", '
+                    f'"observations": "<factual analysis>", '
+                    f'"rough_spots": [], '
+                    f'"rewrite_suggestions": {{}}}}'
+                )
+            else:
+                # Check with rough spots example
+                examples.append(
+                    f'        {{"check_number": {check_num}, "check_name": "{name}", '
+                    f'"observations": "<factual analysis with rough spots>", '
+                    f'"rough_spots": [{{"scene": 1, "issue": "<description>", "current_text": "<quoted>"}}], '
+                    f'"rewrite_suggestions": {{"1": "CURRENT: ... REPLACE WITH: ... FIXES: ..."}}}}'
+                )
 
         checks_json = ",\n".join(examples)
         return (
@@ -231,7 +246,6 @@ RULES:
             '    "diagnostics": [\n'
             f"{checks_json}\n"
             "    ],\n"
-            f'    "checks_passed_count": <count of passed>,\n'
             f'    "total_checks": {len(applicable_checks)}\n'
             "}"
         )

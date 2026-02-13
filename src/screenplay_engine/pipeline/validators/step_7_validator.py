@@ -1,21 +1,20 @@
 """
 Step 7 Validator: Diagnostic Checks (Save the Cat Ch.7)
 
-v3.0.0 -- Validates that all 9 diagnostic checks were executed and structured correctly.
+v4.0.0 -- Observational diagnostics. No pass/fail. Validates that all 9
+diagnostic checks were executed with correct structure.
 Checks performed:
   1. Artifact has "diagnostics" list with exactly 9 entries
-  2. Each diagnostic has check_number (1-9), check_name, passed (bool)
-  3. Each failed diagnostic has non-empty problem_details with quoted scene text
-  4. Each failed diagnostic has non-empty failing_scene_numbers (list of ints)
-  5. Each failed diagnostic has non-empty fix_per_scene (dict with concrete rewrites)
-  6. Semantic keyword check: failed diagnostics' problem_details must reference
-     the check's core concept (catches AI misapplications)
-  7. checks_passed_count field exists and matches actual count
+  2. Each diagnostic has check_number (1-9), check_name, observations (non-empty string)
+  3. Semantic keyword check: observations must reference the check's core concept
+  4. rough_spots is a list (can be empty). If non-empty, each entry has scene (int) and issue (non-empty str)
+  5. rewrite_suggestions is a dict (can be empty). If rough_spots is non-empty, rewrite_suggestions
+     should have entries for each rough_spot scene
+  6. Check 5 (Emotional Color Wheel) must have emotion_map (dict of emotion_name -> list of scene ints)
+  7. All 9 canonical check names are present
   8. total_checks field exists and equals 9
-  9. All 9 canonical check names are present
 
-Step 7 validation succeeds as long as all 9 checks were RUN (not necessarily
-all passed). The diagnostic results inform the user what to fix.
+Step 7 validation succeeds as long as all 9 checks were RUN with proper structure.
 """
 
 from typing import Tuple, List, Dict, Any
@@ -36,9 +35,8 @@ REQUIRED_CHECK_NAMES = [
     "Is It Primal",
 ]
 
-# Semantic keywords per check — when a check FAILS, problem_details must
-# reference at least one keyword from the corresponding set. Catches AI
-# misapplications (e.g., claiming "The Hero Leads" fails for dialogue reasons).
+# Semantic keywords per check — observations must reference at least one keyword
+# from the corresponding set. Catches AI misapplications.
 CHECK_SEMANTIC_KEYWORDS = {
     "The Hero Leads": [
         "proactiv", "hero", "passive", "reactive", "goal", "lead", "drag",
@@ -82,7 +80,7 @@ CHECK_SEMANTIC_KEYWORDS = {
 class Step7Validator:
     """Validator for Screenplay Engine Step 7: 9 Diagnostic Checks (Save the Cat Ch.7)"""
 
-    VERSION = "3.0.0"
+    VERSION = "4.0.0"
 
     def validate(self, artifact: Dict[str, Any]) -> Tuple[bool, List[str]]:
         """
@@ -90,16 +88,13 @@ class Step7Validator:
 
         Checks:
             1. Artifact has "diagnostics" list with exactly 9 entries
-            2. Each diagnostic has check_number (1-9), check_name, passed (bool)
-            3. Each failed diagnostic has non-empty problem_details
-            4. Each failed diagnostic has failing_scene_numbers (list of ints)
-            5. Each failed diagnostic has fix_per_scene (dict with rewrites)
-            6. checks_passed_count field exists and matches actual count
-            7. All 9 check names are present
-
-        Step 7 validation succeeds as long as all 9 checks were RUN
-        (not necessarily all passed). The diagnostic results inform the
-        user what to fix.
+            2. Each diagnostic has check_number (1-9), check_name, observations (non-empty)
+            3. Semantic keyword check on observations
+            4. rough_spots is a list; if non-empty, entries have scene (int) and issue (str)
+            5. rewrite_suggestions is a dict; if rough_spots non-empty, must have entries
+            6. Check 5 must have emotion_map
+            7. All 9 check names present
+            8. total_checks field equals 9
 
         Returns:
             Tuple of (is_valid, list_of_errors)
@@ -128,10 +123,9 @@ class Step7Validator:
                 f"found {len(diagnostics)}. All 9 checks must be run."
             )
 
-        # -- 2. Each diagnostic has check_number (1-9), check_name, passed --
+        # -- 2. Each diagnostic has check_number, check_name, observations --
         seen_numbers: set = set()
         seen_names: set = set()
-        actual_passed_count = 0
 
         for i, diag in enumerate(diagnostics):
             prefix = f"DIAGNOSTIC_{i + 1}"
@@ -172,107 +166,113 @@ class Step7Validator:
             else:
                 seen_names.add(check_name)
 
-            # passed (bool)
-            passed = diag.get("passed")
-            if passed is None:
+            # -- 3. observations (non-empty string) -------------------------
+            observations = (diag.get("observations") or "").strip()
+            if not observations:
                 errors.append(
-                    f"{prefix}_MISSING_PASSED: 'passed' field is required and must be a boolean."
+                    f"{prefix}_MISSING_OBSERVATIONS: 'observations' field is required "
+                    f"and must be a non-empty string describing what the screenplay does "
+                    f"for check '{check_name or check_number}'."
                 )
-            elif not isinstance(passed, bool):
+
+            # -- 4. Semantic keyword check on observations ------------------
+            if observations and check_name and check_name in CHECK_SEMANTIC_KEYWORDS:
+                obs_lower = observations.lower()
+                keywords = CHECK_SEMANTIC_KEYWORDS[check_name]
+                if not any(kw in obs_lower for kw in keywords):
+                    errors.append(
+                        f"{prefix}_WEAK_OBSERVATIONS: Check '{check_name}' "
+                        f"(#{check_number}) observations does not appear to "
+                        f"address the check's core concept."
+                    )
+
+            # -- 5. rough_spots is a list -----------------------------------
+            rough_spots = diag.get("rough_spots")
+            if rough_spots is None:
                 errors.append(
-                    f"{prefix}_INVALID_PASSED: 'passed' must be a boolean, "
-                    f"got {type(passed).__name__}."
+                    f"{prefix}_MISSING_ROUGH_SPOTS: 'rough_spots' field is required "
+                    f"(can be empty list [] for clean checks)."
+                )
+            elif not isinstance(rough_spots, list):
+                errors.append(
+                    f"{prefix}_INVALID_ROUGH_SPOTS: 'rough_spots' must be a list, "
+                    f"got {type(rough_spots).__name__}."
                 )
             else:
-                if passed:
-                    actual_passed_count += 1
-
-                # -- 3. Failed checks need problem_details with quoted text
-                if not passed:
-                    problem_details = (diag.get("problem_details") or "").strip()
-                    if not problem_details:
+                # Validate each rough spot entry
+                for j, spot in enumerate(rough_spots):
+                    spot_prefix = f"{prefix}_ROUGH_SPOT_{j + 1}"
+                    if not isinstance(spot, dict):
                         errors.append(
-                            f"{prefix}_MISSING_PROBLEM_DETAILS: Failed diagnostic "
-                            f"(check_number={check_number}) must have non-empty "
-                            f"'problem_details' describing the specific issue with "
-                            f"quoted dialogue/action from the screenplay."
+                            f"{spot_prefix}_INVALID_TYPE: Each rough_spot must be a dict."
+                        )
+                        continue
+                    scene = spot.get("scene")
+                    if scene is None or not isinstance(scene, int):
+                        errors.append(
+                            f"{spot_prefix}_MISSING_SCENE: Each rough_spot must have "
+                            f"a 'scene' field (integer)."
+                        )
+                    issue = (spot.get("issue") or "").strip()
+                    if not issue:
+                        errors.append(
+                            f"{spot_prefix}_MISSING_ISSUE: Each rough_spot must have "
+                            f"a non-empty 'issue' field."
                         )
 
-                    # -- 4. Semantic keyword check for failed diagnostics
-                    if problem_details and check_name and check_name in CHECK_SEMANTIC_KEYWORDS:
-                        details_lower = problem_details.lower()
-                        keywords = CHECK_SEMANTIC_KEYWORDS[check_name]
-                        if not any(kw in details_lower for kw in keywords):
-                            errors.append(
-                                f"{prefix}_WEAK_PROBLEM_DETAILS: Check '{check_name}' "
-                                f"(#{check_number}) problem_details does not appear to "
-                                f"address the check's core concept."
-                            )
+            # -- 6. rewrite_suggestions is a dict ---------------------------
+            rewrite_suggestions = diag.get("rewrite_suggestions")
+            if rewrite_suggestions is None:
+                errors.append(
+                    f"{prefix}_MISSING_REWRITE_SUGGESTIONS: 'rewrite_suggestions' field "
+                    f"is required (can be empty dict {{}} for clean checks)."
+                )
+            elif not isinstance(rewrite_suggestions, dict):
+                errors.append(
+                    f"{prefix}_INVALID_REWRITE_SUGGESTIONS: 'rewrite_suggestions' must "
+                    f"be a dict, got {type(rewrite_suggestions).__name__}."
+                )
+            elif isinstance(rough_spots, list) and len(rough_spots) > 0:
+                # If there are rough spots, rewrite_suggestions should cover them
+                if len(rewrite_suggestions) == 0:
+                    errors.append(
+                        f"{prefix}_EMPTY_REWRITE_SUGGESTIONS: Check has {len(rough_spots)} "
+                        f"rough spot(s) but rewrite_suggestions is empty. Provide a "
+                        f"rewrite suggestion for each rough spot scene."
+                    )
+                else:
+                    # Check that rough_spot scenes have corresponding rewrite entries
+                    rewrite_keys = set(str(k) for k in rewrite_suggestions.keys())
+                    spot_scenes = set()
+                    if isinstance(rough_spots, list):
+                        for spot in rough_spots:
+                            if isinstance(spot, dict) and isinstance(spot.get("scene"), int):
+                                spot_scenes.add(str(spot["scene"]))
+                    missing = spot_scenes - rewrite_keys
+                    if missing:
+                        errors.append(
+                            f"{prefix}_INCOMPLETE_REWRITE_SUGGESTIONS: "
+                            f"'rewrite_suggestions' is missing entries for scene(s): "
+                            f"{', '.join(sorted(missing))}. Every rough_spot scene "
+                            f"should have a rewrite suggestion."
+                        )
 
-                    # -- 5. Failed checks need failing_scene_numbers (list of ints)
-                    failing_scenes = diag.get("failing_scene_numbers")
-                    if failing_scenes is None or (isinstance(failing_scenes, list) and len(failing_scenes) == 0):
-                        errors.append(
-                            f"{prefix}_MISSING_FAILING_SCENES: Failed diagnostic "
-                            f"(check_number={check_number}) must have non-empty "
-                            f"'failing_scene_numbers' listing which scenes have the problem."
-                        )
-                    elif not isinstance(failing_scenes, list):
-                        errors.append(
-                            f"{prefix}_INVALID_FAILING_SCENES: 'failing_scene_numbers' must "
-                            f"be a list of integers, got {type(failing_scenes).__name__}."
-                        )
-                    elif not all(isinstance(s, int) for s in failing_scenes):
-                        errors.append(
-                            f"{prefix}_INVALID_FAILING_SCENE_TYPE: All entries in "
-                            f"'failing_scene_numbers' must be integers."
-                        )
+            # -- 7. Check 5 must have emotion_map ---------------------------
+            if check_number == 5:
+                emotion_map = diag.get("emotion_map")
+                if emotion_map is None:
+                    errors.append(
+                        f"{prefix}_MISSING_EMOTION_MAP: Check 5 (Emotional Color Wheel) "
+                        f"MUST include an 'emotion_map' dict mapping emotion names to "
+                        f"lists of scene numbers."
+                    )
+                elif not isinstance(emotion_map, dict):
+                    errors.append(
+                        f"{prefix}_INVALID_EMOTION_MAP: 'emotion_map' must be a dict, "
+                        f"got {type(emotion_map).__name__}."
+                    )
 
-                    # -- 6. Failed checks need fix_per_scene (dict with concrete rewrites)
-                    fix_per_scene = diag.get("fix_per_scene")
-                    if fix_per_scene is None or (isinstance(fix_per_scene, dict) and len(fix_per_scene) == 0):
-                        errors.append(
-                            f"{prefix}_MISSING_FIX_PER_SCENE: Failed diagnostic "
-                            f"(check_number={check_number}) must have non-empty "
-                            f"'fix_per_scene' dict with concrete rewrite instructions "
-                            f"for each failing scene."
-                        )
-                    elif not isinstance(fix_per_scene, dict):
-                        errors.append(
-                            f"{prefix}_INVALID_FIX_PER_SCENE: 'fix_per_scene' must "
-                            f"be a dict mapping scene numbers to fix instructions, "
-                            f"got {type(fix_per_scene).__name__}."
-                        )
-                    elif isinstance(failing_scenes, list) and len(failing_scenes) > 0:
-                        # Verify keys match failing_scene_numbers
-                        fix_keys = set(str(k) for k in fix_per_scene.keys())
-                        scene_keys = set(str(s) for s in failing_scenes)
-                        missing = scene_keys - fix_keys
-                        if missing:
-                            errors.append(
-                                f"{prefix}_INCOMPLETE_FIX_PER_SCENE: 'fix_per_scene' "
-                                f"is missing entries for scene(s): {', '.join(sorted(missing))}. "
-                                f"Every scene in failing_scene_numbers must have a fix."
-                            )
-
-        # -- 6. checks_passed_count exists and matches actual count ---------
-        checks_passed_count = artifact.get("checks_passed_count")
-        if checks_passed_count is None:
-            errors.append(
-                "MISSING_CHECKS_PASSED_COUNT: 'checks_passed_count' field is required."
-            )
-        elif not isinstance(checks_passed_count, int):
-            errors.append(
-                f"INVALID_CHECKS_PASSED_COUNT: 'checks_passed_count' must be an integer, "
-                f"got {type(checks_passed_count).__name__}."
-            )
-        elif checks_passed_count != actual_passed_count:
-            errors.append(
-                f"MISMATCHED_CHECKS_PASSED_COUNT: 'checks_passed_count' is "
-                f"{checks_passed_count} but actual passed count is {actual_passed_count}."
-            )
-
-        # -- 7. total_checks field exists and equals 9 ---------------------
+        # -- 8. total_checks field exists and equals 9 ---------------------
         total_checks = artifact.get("total_checks")
         if total_checks is None:
             errors.append(
@@ -283,7 +283,7 @@ class Step7Validator:
                 f"WRONG_TOTAL_CHECKS: 'total_checks' must be 9, got {total_checks}."
             )
 
-        # -- 8. All 9 check names are present ------------------------------
+        # -- 9. All 9 check names are present ------------------------------
         missing_names = []
         for required_name in REQUIRED_CHECK_NAMES:
             if required_name not in seen_names:
@@ -329,7 +329,7 @@ class Step7Validator:
             elif "INVALID_TYPE" in error:
                 suggestions.append(
                     "Each diagnostic entry must be a JSON object with keys: "
-                    "check_number, check_name, passed, problem_details, fix_suggestion."
+                    "check_number, check_name, observations, rough_spots, rewrite_suggestions."
                 )
             elif "MISSING_CHECK_NUMBER" in error:
                 suggestions.append(
@@ -348,67 +348,63 @@ class Step7Validator:
                 suggestions.append(
                     "Add a 'check_name' string field matching one of the 9 canonical names."
                 )
-            elif "MISSING_PASSED" in error:
+            elif "MISSING_OBSERVATIONS" in error:
                 suggestions.append(
-                    "Add a 'passed' boolean field (true or false) to the diagnostic entry."
+                    "Add a non-empty 'observations' string describing what the screenplay "
+                    "does for this check. Observations are required for every check."
                 )
-            elif "INVALID_PASSED" in error:
+            elif "WEAK_OBSERVATIONS" in error:
                 suggestions.append(
-                    "Set 'passed' to a boolean value (true or false), not a string."
+                    "The observations for this check does not seem to address the check's "
+                    "core concept. Rewrite observations to specifically describe how "
+                    "the screenplay relates to this diagnostic lens."
                 )
-            elif "MISSING_PROBLEM_DETAILS" in error:
+            elif "MISSING_ROUGH_SPOTS" in error:
                 suggestions.append(
-                    "Failed diagnostics (passed=false) must include 'problem_details' "
-                    "with quoted dialogue/action from specific scenes."
+                    "Add a 'rough_spots' field — a list of objects with scene (int), "
+                    "issue (str), and current_text (str). Use empty list [] for clean checks."
                 )
-            elif "MISSING_FAILING_SCENES" in error:
+            elif "INVALID_ROUGH_SPOTS" in error:
                 suggestions.append(
-                    "Failed diagnostics must include 'failing_scene_numbers' — a list of "
-                    "integers identifying which scenes have the problem."
+                    "Set 'rough_spots' to a JSON array (list), not a string or object."
                 )
-            elif "INVALID_FAILING_SCENES" in error:
+            elif "MISSING_SCENE" in error:
                 suggestions.append(
-                    "Set 'failing_scene_numbers' to a JSON array of integers, e.g. [7, 20, 30]."
+                    "Each rough_spot must have a 'scene' field with an integer scene number."
                 )
-            elif "INVALID_FAILING_SCENE_TYPE" in error:
+            elif "MISSING_ISSUE" in error:
                 suggestions.append(
-                    "All entries in 'failing_scene_numbers' must be integers, not strings."
+                    "Each rough_spot must have a non-empty 'issue' field describing the problem."
                 )
-            elif "MISSING_FIX_PER_SCENE" in error:
+            elif "MISSING_REWRITE_SUGGESTIONS" in error:
                 suggestions.append(
-                    "Failed diagnostics must include 'fix_per_scene' — a dict where each key "
-                    "is a scene number (as string) and each value is a concrete rewrite "
-                    "instruction following: 'CURRENT: [quote]. REPLACE WITH: [new text]. "
+                    "Add a 'rewrite_suggestions' field — a dict mapping scene numbers (as strings) "
+                    "to concrete rewrite instructions. Use empty dict {} for clean checks."
+                )
+            elif "INVALID_REWRITE_SUGGESTIONS" in error:
+                suggestions.append(
+                    "Set 'rewrite_suggestions' to a JSON object (dict), not a list or string."
+                )
+            elif "EMPTY_REWRITE_SUGGESTIONS" in error:
+                suggestions.append(
+                    "When rough_spots are present, provide rewrite_suggestions for each "
+                    "rough spot scene. Format: 'CURRENT: [quote]. REPLACE WITH: [new text]. "
                     "FIXES: [what this changes].'."
                 )
-            elif "INVALID_FIX_PER_SCENE" in error:
+            elif "INCOMPLETE_REWRITE_SUGGESTIONS" in error:
                 suggestions.append(
-                    "Set 'fix_per_scene' to a JSON object (dict), not a list or string."
+                    "Every scene in rough_spots must have a corresponding entry in "
+                    "rewrite_suggestions with concrete rewrite instructions."
                 )
-            elif "INCOMPLETE_FIX_PER_SCENE" in error:
+            elif "MISSING_EMOTION_MAP" in error:
                 suggestions.append(
-                    "Every scene number in 'failing_scene_numbers' must have a corresponding "
-                    "entry in 'fix_per_scene' with concrete rewrite instructions."
+                    "Check 5 (Emotional Color Wheel) must include an 'emotion_map' dict "
+                    "mapping each emotion name to a list of scene numbers where it appears."
                 )
-            elif "MISSING_CHECKS_PASSED_COUNT" in error:
+            elif "INVALID_EMOTION_MAP" in error:
                 suggestions.append(
-                    "Add a 'checks_passed_count' integer field at the top level "
-                    "equal to the number of diagnostics where passed is true."
-                )
-            elif "INVALID_CHECKS_PASSED_COUNT" in error:
-                suggestions.append(
-                    "Set 'checks_passed_count' to an integer, not a string or other type."
-                )
-            elif "MISMATCHED_CHECKS_PASSED_COUNT" in error:
-                suggestions.append(
-                    "Update 'checks_passed_count' to match the actual number of "
-                    "diagnostics where passed is true."
-                )
-            elif "WEAK_PROBLEM_DETAILS" in error:
-                suggestions.append(
-                    "The problem_details for this check does not seem to address the check's "
-                    "core concept. Rewrite problem_details to specifically explain how "
-                    "the screenplay fails this particular diagnostic."
+                    "Set 'emotion_map' to a JSON object (dict) mapping emotion names to "
+                    "lists of integers."
                 )
             elif "MISSING_TOTAL_CHECKS" in error:
                 suggestions.append(

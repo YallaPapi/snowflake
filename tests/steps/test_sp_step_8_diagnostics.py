@@ -1,6 +1,7 @@
 """
-Tests for Screenplay Engine Step 8: Diagnostic Checks (Save the Cat Ch.7)
-v2.0.0 -- 9 diagnostic checks, semantic keyword validation, Snyder quotes.
+Tests for Screenplay Engine Step 7: Diagnostic Checks (Save the Cat Ch.7)
+v3.0.0 -- Observational diagnostics with rough_spots/rewrite_suggestions.
+No pass/fail grading. 9 diagnostic checks, semantic keyword validation, Snyder quotes.
 """
 
 import json
@@ -19,51 +20,78 @@ from src.screenplay_engine.pipeline.steps.step_7_diagnostics import Step7Diagnos
 from src.screenplay_engine.models import DiagnosticResult
 
 
-# ── Fixtures ──────────────────────────────────────────────────────────────
+# -- Fixtures ----------------------------------------------------------------
 
 def _valid_artifact():
-    """All 9 checks passing."""
+    """All 9 checks clean (no rough spots)."""
     return {
         "diagnostics": [
-            {"check_number": 1, "check_name": "The Hero Leads", "passed": True, "problem_details": "", "failing_scene_numbers": [], "fix_per_scene": {}},
-            {"check_number": 2, "check_name": "Talking the Plot", "passed": True, "problem_details": "", "failing_scene_numbers": [], "fix_per_scene": {}},
-            {"check_number": 3, "check_name": "Make the Bad Guy Badder", "passed": True, "problem_details": "", "failing_scene_numbers": [], "fix_per_scene": {}},
-            {"check_number": 4, "check_name": "Turn Turn Turn", "passed": True, "problem_details": "", "failing_scene_numbers": [], "fix_per_scene": {}},
-            {"check_number": 5, "check_name": "Emotional Color Wheel", "passed": True, "problem_details": "", "failing_scene_numbers": [], "fix_per_scene": {}},
-            {"check_number": 6, "check_name": "Hi How Are You I'm Fine", "passed": True, "problem_details": "", "failing_scene_numbers": [], "fix_per_scene": {}},
-            {"check_number": 7, "check_name": "Take a Step Back", "passed": True, "problem_details": "", "failing_scene_numbers": [], "fix_per_scene": {}},
-            {"check_number": 8, "check_name": "Limp and Eye Patch", "passed": True, "problem_details": "", "failing_scene_numbers": [], "fix_per_scene": {}},
-            {"check_number": 9, "check_name": "Is It Primal", "passed": True, "problem_details": "", "failing_scene_numbers": [], "fix_per_scene": {}},
+            {"check_number": 1, "check_name": "The Hero Leads", "observations": "The hero is proactive and leads the story with a clear goal.", "rough_spots": [], "rewrite_suggestions": {}},
+            {"check_number": 2, "check_name": "Talking the Plot", "observations": "Dialogue shows character through action, no exposition dumps.", "rough_spots": [], "rewrite_suggestions": {}},
+            {"check_number": 3, "check_name": "Make the Bad Guy Badder", "observations": "The antagonist is a strong mirror of the hero with superior power.", "rough_spots": [], "rewrite_suggestions": {}},
+            {"check_number": 4, "check_name": "Turn Turn Turn", "observations": "Pacing escalates steadily with new reveals at each turning point.", "rough_spots": [], "rewrite_suggestions": {}},
+            {"check_number": 5, "check_name": "Emotional Color Wheel", "observations": "The emotional palette is rich with a wide range of tones.", "rough_spots": [], "rewrite_suggestions": {}, "emotion_map": {"lust": [], "fear": [1, 5], "joy": [40], "hope": [30], "despair": [29], "anger": [10], "tenderness": [36], "surprise": [12], "longing": [9], "regret": [29], "frustration": [11], "near-miss anxiety": [17], "triumph": [39], "human foible": [11]}},
+            {"check_number": 6, "check_name": "Hi How Are You I'm Fine", "observations": "Each character has a distinct voice and dialogue style.", "rough_spots": [], "rewrite_suggestions": {}},
+            {"check_number": 7, "check_name": "Take a Step Back", "observations": "The hero's arc starts far back with room for maximum growth.", "rough_spots": [], "rewrite_suggestions": {}},
+            {"check_number": 8, "check_name": "Limp and Eye Patch", "observations": "Every character has a distinctive visual or behavioral trait.", "rough_spots": [], "rewrite_suggestions": {}},
+            {"check_number": 9, "check_name": "Is It Primal", "observations": "The hero's drive is primal — rooted in survival and fear of death.", "rough_spots": [], "rewrite_suggestions": {}},
         ],
-        "checks_passed_count": 9,
         "total_checks": 9,
     }
 
 
-def _failed_artifact():
-    """Some checks failing with semantically correct problem_details and scene-level fixes."""
+def _artifact_with_rough_spots():
+    """Some checks have rough spots with rewrite suggestions."""
     return {
         "diagnostics": [
-            {"check_number": 1, "check_name": "The Hero Leads", "passed": False,
-             "problem_details": "The hero is passive and reactive — dragged through the story without a clear goal.",
-             "failing_scene_numbers": [1, 5],
-             "fix_per_scene": {"1": "CURRENT: Hero asks questions. REPLACE WITH: Hero demands action. FIXES: Makes hero proactive.", "5": "CURRENT: Hero waits. REPLACE WITH: Hero drives. FIXES: Active goal pursuit."}},
-            {"check_number": 2, "check_name": "Talking the Plot", "passed": True, "problem_details": "", "failing_scene_numbers": [], "fix_per_scene": {}},
-            {"check_number": 3, "check_name": "Make the Bad Guy Badder", "passed": False,
-             "problem_details": "The antagonist is weaker than the hero and not a mirror — no real threat.",
-             "failing_scene_numbers": [10],
-             "fix_per_scene": {"10": "CURRENT: Villain retreats. REPLACE WITH: Villain escalates. FIXES: Raises threat."}},
-            {"check_number": 4, "check_name": "Turn Turn Turn", "passed": True, "problem_details": "", "failing_scene_numbers": [], "fix_per_scene": {}},
-            {"check_number": 5, "check_name": "Emotional Color Wheel", "passed": True, "problem_details": "", "failing_scene_numbers": [], "fix_per_scene": {}},
-            {"check_number": 6, "check_name": "Hi How Are You I'm Fine", "passed": True, "problem_details": "", "failing_scene_numbers": [], "fix_per_scene": {}},
-            {"check_number": 7, "check_name": "Take a Step Back", "passed": True, "problem_details": "", "failing_scene_numbers": [], "fix_per_scene": {}},
-            {"check_number": 8, "check_name": "Limp and Eye Patch", "passed": True, "problem_details": "", "failing_scene_numbers": [], "fix_per_scene": {}},
-            {"check_number": 9, "check_name": "Is It Primal", "passed": False,
-             "problem_details": "The hero's motivation is intellectual — no primal survival drive.",
-             "failing_scene_numbers": [1, 20],
-             "fix_per_scene": {"1": "CURRENT: Hero debates philosophy. REPLACE WITH: Hero fights for survival. FIXES: Primal drive.", "20": "CURRENT: Abstract goal. REPLACE WITH: Life-or-death stakes. FIXES: Caveman resonance."}},
+            {"check_number": 1, "check_name": "The Hero Leads",
+             "observations": "The hero is mostly passive and reactive — dragged through the story without a clear goal.",
+             "rough_spots": [
+                 {"scene": 1, "issue": "Hero asks too many questions", "current_text": "RAE: 'What should I do?'"},
+                 {"scene": 5, "issue": "Hero waits passively for information", "current_text": "RAE sits and waits."},
+             ],
+             "rewrite_suggestions": {
+                 "1": "CURRENT: RAE: 'What should I do?' REPLACE WITH: RAE: 'Here's the plan.' FIXES: Makes hero proactive.",
+                 "5": "CURRENT: RAE sits and waits. REPLACE WITH: RAE breaks down the door. FIXES: Active goal pursuit.",
+             }},
+            {"check_number": 2, "check_name": "Talking the Plot",
+             "observations": "Dialogue is mostly show-not-tell with minor exposition in Scene 7.",
+             "rough_spots": [], "rewrite_suggestions": {}},
+            {"check_number": 3, "check_name": "Make the Bad Guy Badder",
+             "observations": "The antagonist is weaker than the hero and not a mirror — no real threat.",
+             "rough_spots": [
+                 {"scene": 10, "issue": "Villain retreats without consequence", "current_text": "VICTOR backs away slowly."},
+             ],
+             "rewrite_suggestions": {
+                 "10": "CURRENT: VICTOR backs away slowly. REPLACE WITH: VICTOR escalates the threat. FIXES: Raises tension.",
+             }},
+            {"check_number": 4, "check_name": "Turn Turn Turn",
+             "observations": "Pacing escalates well with good reveals throughout.",
+             "rough_spots": [], "rewrite_suggestions": {}},
+            {"check_number": 5, "check_name": "Emotional Color Wheel",
+             "observations": "The emotional palette is rich and varied.",
+             "rough_spots": [], "rewrite_suggestions": {},
+             "emotion_map": {"lust": [], "fear": [1, 5], "joy": [40], "hope": [30], "despair": [29], "anger": [10], "tenderness": [36], "surprise": [12], "longing": [9], "regret": [29], "frustration": [11], "near-miss anxiety": [17], "triumph": [39], "human foible": [11]}},
+            {"check_number": 6, "check_name": "Hi How Are You I'm Fine",
+             "observations": "Characters have distinct dialogue styles.",
+             "rough_spots": [], "rewrite_suggestions": {}},
+            {"check_number": 7, "check_name": "Take a Step Back",
+             "observations": "The hero starts with plenty of room for growth and arc.",
+             "rough_spots": [], "rewrite_suggestions": {}},
+            {"check_number": 8, "check_name": "Limp and Eye Patch",
+             "observations": "Most characters have distinctive traits.",
+             "rough_spots": [], "rewrite_suggestions": {}},
+            {"check_number": 9, "check_name": "Is It Primal",
+             "observations": "The hero's motivation is intellectual — no primal survival drive.",
+             "rough_spots": [
+                 {"scene": 1, "issue": "Hero debates philosophy instead of fighting for survival", "current_text": "RAE: 'What is the meaning of this?'"},
+                 {"scene": 20, "issue": "Abstract goal with no life-or-death stakes", "current_text": "RAE ponders the implications."},
+             ],
+             "rewrite_suggestions": {
+                 "1": "CURRENT: RAE: 'What is the meaning?' REPLACE WITH: RAE fights for survival. FIXES: Primal drive.",
+                 "20": "CURRENT: RAE ponders. REPLACE WITH: Life-or-death stakes. FIXES: Caveman resonance.",
+             }},
         ],
-        "checks_passed_count": 6,
         "total_checks": 9,
     }
 
@@ -156,16 +184,16 @@ def _step_5_artifact():
     }
 
 
-# ── Test Classes ──────────────────────────────────────────────────────────
+# -- Test Classes ------------------------------------------------------------
 
 class TestStep8Versions(unittest.TestCase):
     """Version constants and structural checks."""
 
     def test_validator_version(self):
-        self.assertEqual(Step7Validator.VERSION, "3.0.0")
+        self.assertEqual(Step7Validator.VERSION, "4.0.0")
 
     def test_prompt_version(self):
-        self.assertEqual(Step7Prompt.VERSION, "2.0.0")
+        self.assertEqual(Step7Prompt.VERSION, "3.0.0")
 
     def test_step_version(self):
         self.assertEqual(Step7Diagnostics.VERSION, "2.0.0")
@@ -200,9 +228,9 @@ class TestStep8ValidatorHappyPath(unittest.TestCase):
         self.assertTrue(is_valid, f"Errors: {errors}")
         self.assertEqual(len(errors), 0)
 
-    def test_failed_artifact_with_proper_details_passes_validation(self):
-        """Step 7 passes as long as all 9 checks RAN — individual failures are OK."""
-        is_valid, errors = self.validator.validate(_failed_artifact())
+    def test_artifact_with_rough_spots_passes_validation(self):
+        """Step 7 passes as long as all 9 checks RAN — rough spots are OK."""
+        is_valid, errors = self.validator.validate(_artifact_with_rough_spots())
         self.assertTrue(is_valid, f"Errors: {errors}")
 
 
@@ -211,12 +239,12 @@ class TestStep8ValidatorDiagnosticsStructure(unittest.TestCase):
         self.validator = Step7Validator()
 
     def test_missing_diagnostics_key_fails(self):
-        is_valid, errors = self.validator.validate({"checks_passed_count": 0, "total_checks": 9})
+        is_valid, errors = self.validator.validate({"total_checks": 9})
         self.assertFalse(is_valid)
         self.assertTrue(any("MISSING_DIAGNOSTICS" in e for e in errors))
 
     def test_diagnostics_not_list_fails(self):
-        artifact = {"diagnostics": "not a list", "checks_passed_count": 0, "total_checks": 9}
+        artifact = {"diagnostics": "not a list", "total_checks": 9}
         is_valid, errors = self.validator.validate(artifact)
         self.assertFalse(is_valid)
         self.assertTrue(any("INVALID_DIAGNOSTICS_TYPE" in e for e in errors))
@@ -224,7 +252,6 @@ class TestStep8ValidatorDiagnosticsStructure(unittest.TestCase):
     def test_wrong_count_too_few(self):
         artifact = _valid_artifact()
         artifact["diagnostics"] = artifact["diagnostics"][:5]
-        artifact["checks_passed_count"] = 5
         is_valid, errors = self.validator.validate(artifact)
         self.assertFalse(is_valid)
         self.assertTrue(any("WRONG_DIAGNOSTIC_COUNT" in e for e in errors))
@@ -232,7 +259,7 @@ class TestStep8ValidatorDiagnosticsStructure(unittest.TestCase):
     def test_wrong_count_too_many(self):
         artifact = _valid_artifact()
         artifact["diagnostics"].append(
-            {"check_number": 10, "check_name": "Extra", "passed": True, "problem_details": "", "failing_scene_numbers": [], "fix_per_scene": {}}
+            {"check_number": 10, "check_name": "Extra", "observations": "Extra check", "rough_spots": [], "rewrite_suggestions": {}}
         )
         is_valid, errors = self.validator.validate(artifact)
         self.assertFalse(is_valid)
@@ -302,226 +329,225 @@ class TestStep8ValidatorCheckName(unittest.TestCase):
         self.assertTrue(any("MISSING_CHECK_NAMES" in e for e in errors))
 
 
-class TestStep8ValidatorPassedField(unittest.TestCase):
+class TestStep8ValidatorObservations(unittest.TestCase):
     def setUp(self):
         self.validator = Step7Validator()
 
-    def test_missing_passed_fails(self):
+    def test_missing_observations_fails(self):
         artifact = _valid_artifact()
-        del artifact["diagnostics"][0]["passed"]
+        artifact["diagnostics"][0]["observations"] = ""
         is_valid, errors = self.validator.validate(artifact)
         self.assertFalse(is_valid)
-        self.assertTrue(any("MISSING_PASSED" in e for e in errors))
+        self.assertTrue(any("MISSING_OBSERVATIONS" in e for e in errors))
 
-    def test_passed_as_string_fails(self):
+    def test_whitespace_observations_fails(self):
         artifact = _valid_artifact()
-        artifact["diagnostics"][0]["passed"] = "true"
+        artifact["diagnostics"][0]["observations"] = "   "
         is_valid, errors = self.validator.validate(artifact)
         self.assertFalse(is_valid)
-        self.assertTrue(any("INVALID_PASSED" in e for e in errors))
+        self.assertTrue(any("MISSING_OBSERVATIONS" in e for e in errors))
+
+    def test_none_observations_fails(self):
+        artifact = _valid_artifact()
+        artifact["diagnostics"][0]["observations"] = None
+        is_valid, errors = self.validator.validate(artifact)
+        self.assertFalse(is_valid)
+        self.assertTrue(any("MISSING_OBSERVATIONS" in e for e in errors))
 
 
-class TestStep8ValidatorProblemDetails(unittest.TestCase):
+class TestStep8ValidatorRoughSpots(unittest.TestCase):
+    """Validation of rough_spots and rewrite_suggestions."""
     def setUp(self):
         self.validator = Step7Validator()
 
-    def test_failed_check_empty_problem_details(self):
+    def test_missing_rough_spots_fails(self):
         artifact = _valid_artifact()
-        artifact["diagnostics"][0]["passed"] = False
-        artifact["diagnostics"][0]["problem_details"] = ""
-        artifact["diagnostics"][0]["failing_scene_numbers"] = [1]
-        artifact["diagnostics"][0]["fix_per_scene"] = {"1": "CURRENT: x. REPLACE WITH: y. FIXES: z."}
-        artifact["checks_passed_count"] = 8
+        del artifact["diagnostics"][0]["rough_spots"]
         is_valid, errors = self.validator.validate(artifact)
         self.assertFalse(is_valid)
-        self.assertTrue(any("MISSING_PROBLEM_DETAILS" in e for e in errors))
+        self.assertTrue(any("MISSING_ROUGH_SPOTS" in e for e in errors))
 
-    def test_failed_check_whitespace_problem_details(self):
+    def test_rough_spots_not_list_fails(self):
         artifact = _valid_artifact()
-        artifact["diagnostics"][0]["passed"] = False
-        artifact["diagnostics"][0]["problem_details"] = "   "
-        artifact["diagnostics"][0]["failing_scene_numbers"] = [1]
-        artifact["diagnostics"][0]["fix_per_scene"] = {"1": "CURRENT: x. REPLACE WITH: y. FIXES: z."}
-        artifact["checks_passed_count"] = 8
+        artifact["diagnostics"][0]["rough_spots"] = "not a list"
         is_valid, errors = self.validator.validate(artifact)
         self.assertFalse(is_valid)
-        self.assertTrue(any("MISSING_PROBLEM_DETAILS" in e for e in errors))
+        self.assertTrue(any("INVALID_ROUGH_SPOTS" in e for e in errors))
 
-
-class TestStep8ValidatorFailingScenes(unittest.TestCase):
-    """Validation of failing_scene_numbers and fix_per_scene for failed checks."""
-    def setUp(self):
-        self.validator = Step7Validator()
-
-    def test_failed_check_missing_failing_scenes(self):
+    def test_rough_spot_missing_scene_fails(self):
         artifact = _valid_artifact()
-        artifact["diagnostics"][0]["passed"] = False
-        artifact["diagnostics"][0]["problem_details"] = "The hero is passive and reactive."
-        # No failing_scene_numbers at all
-        artifact["checks_passed_count"] = 8
+        artifact["diagnostics"][0]["rough_spots"] = [{"issue": "problem"}]
+        artifact["diagnostics"][0]["rewrite_suggestions"] = {}
         is_valid, errors = self.validator.validate(artifact)
         self.assertFalse(is_valid)
-        self.assertTrue(any("MISSING_FAILING_SCENES" in e for e in errors))
+        self.assertTrue(any("MISSING_SCENE" in e for e in errors))
 
-    def test_failed_check_empty_failing_scenes(self):
+    def test_rough_spot_missing_issue_fails(self):
         artifact = _valid_artifact()
-        artifact["diagnostics"][0]["passed"] = False
-        artifact["diagnostics"][0]["problem_details"] = "The hero is passive and reactive."
-        artifact["diagnostics"][0]["failing_scene_numbers"] = []
-        artifact["diagnostics"][0]["fix_per_scene"] = {}
-        artifact["checks_passed_count"] = 8
+        artifact["diagnostics"][0]["rough_spots"] = [{"scene": 1, "issue": ""}]
+        artifact["diagnostics"][0]["rewrite_suggestions"] = {"1": "fix"}
         is_valid, errors = self.validator.validate(artifact)
         self.assertFalse(is_valid)
-        self.assertTrue(any("MISSING_FAILING_SCENES" in e for e in errors))
+        self.assertTrue(any("MISSING_ISSUE" in e for e in errors))
 
-    def test_failed_check_invalid_failing_scenes_type(self):
+    def test_rough_spot_not_dict_fails(self):
         artifact = _valid_artifact()
-        artifact["diagnostics"][0]["passed"] = False
-        artifact["diagnostics"][0]["problem_details"] = "The hero is passive and reactive."
-        artifact["diagnostics"][0]["failing_scene_numbers"] = "1, 5"
-        artifact["diagnostics"][0]["fix_per_scene"] = {"1": "fix", "5": "fix"}
-        artifact["checks_passed_count"] = 8
+        artifact["diagnostics"][0]["rough_spots"] = ["not a dict"]
         is_valid, errors = self.validator.validate(artifact)
         self.assertFalse(is_valid)
-        self.assertTrue(any("INVALID_FAILING_SCENES" in e for e in errors))
+        self.assertTrue(any("INVALID_TYPE" in e for e in errors))
 
-    def test_failed_check_missing_fix_per_scene(self):
+    def test_missing_rewrite_suggestions_fails(self):
         artifact = _valid_artifact()
-        artifact["diagnostics"][0]["passed"] = False
-        artifact["diagnostics"][0]["problem_details"] = "The hero is passive and reactive."
-        artifact["diagnostics"][0]["failing_scene_numbers"] = [1, 5]
-        # No fix_per_scene
-        artifact["checks_passed_count"] = 8
+        del artifact["diagnostics"][0]["rewrite_suggestions"]
         is_valid, errors = self.validator.validate(artifact)
         self.assertFalse(is_valid)
-        self.assertTrue(any("MISSING_FIX_PER_SCENE" in e for e in errors))
+        self.assertTrue(any("MISSING_REWRITE_SUGGESTIONS" in e for e in errors))
 
-    def test_failed_check_incomplete_fix_per_scene(self):
+    def test_rewrite_suggestions_not_dict_fails(self):
         artifact = _valid_artifact()
-        artifact["diagnostics"][0]["passed"] = False
-        artifact["diagnostics"][0]["problem_details"] = "The hero is passive and reactive."
-        artifact["diagnostics"][0]["failing_scene_numbers"] = [1, 5]
-        artifact["diagnostics"][0]["fix_per_scene"] = {"1": "CURRENT: x. REPLACE WITH: y. FIXES: z."}
+        artifact["diagnostics"][0]["rewrite_suggestions"] = "not a dict"
+        is_valid, errors = self.validator.validate(artifact)
+        self.assertFalse(is_valid)
+        self.assertTrue(any("INVALID_REWRITE_SUGGESTIONS" in e for e in errors))
+
+    def test_empty_rewrite_with_rough_spots_fails(self):
+        artifact = _valid_artifact()
+        artifact["diagnostics"][0]["rough_spots"] = [{"scene": 1, "issue": "problem", "current_text": "text"}]
+        artifact["diagnostics"][0]["rewrite_suggestions"] = {}
+        is_valid, errors = self.validator.validate(artifact)
+        self.assertFalse(is_valid)
+        self.assertTrue(any("EMPTY_REWRITE_SUGGESTIONS" in e for e in errors))
+
+    def test_incomplete_rewrite_suggestions_fails(self):
+        artifact = _valid_artifact()
+        artifact["diagnostics"][0]["rough_spots"] = [
+            {"scene": 1, "issue": "problem 1", "current_text": "text"},
+            {"scene": 5, "issue": "problem 2", "current_text": "text"},
+        ]
+        artifact["diagnostics"][0]["rewrite_suggestions"] = {"1": "CURRENT: x. REPLACE WITH: y. FIXES: z."}
         # Missing scene 5
-        artifact["checks_passed_count"] = 8
         is_valid, errors = self.validator.validate(artifact)
         self.assertFalse(is_valid)
-        self.assertTrue(any("INCOMPLETE_FIX_PER_SCENE" in e for e in errors))
+        self.assertTrue(any("INCOMPLETE_REWRITE_SUGGESTIONS" in e for e in errors))
 
-    def test_failed_check_valid_fix_per_scene(self):
+    def test_valid_rough_spots_with_rewrites_passes(self):
         artifact = _valid_artifact()
-        artifact["diagnostics"][0]["passed"] = False
-        artifact["diagnostics"][0]["problem_details"] = "The hero is passive and reactive."
-        artifact["diagnostics"][0]["failing_scene_numbers"] = [1, 5]
-        artifact["diagnostics"][0]["fix_per_scene"] = {
-            "1": "CURRENT: Hero asks. REPLACE WITH: Hero demands. FIXES: Proactive.",
-            "5": "CURRENT: Hero waits. REPLACE WITH: Hero acts. FIXES: Active.",
+        artifact["diagnostics"][0]["rough_spots"] = [
+            {"scene": 1, "issue": "Hero is passive", "current_text": "RAE waits."},
+            {"scene": 5, "issue": "Hero asks questions", "current_text": "RAE: 'What now?'"},
+        ]
+        artifact["diagnostics"][0]["rewrite_suggestions"] = {
+            "1": "CURRENT: RAE waits. REPLACE WITH: RAE acts. FIXES: Proactive.",
+            "5": "CURRENT: RAE asks. REPLACE WITH: RAE demands. FIXES: Active.",
         }
-        artifact["checks_passed_count"] = 8
         is_valid, errors = self.validator.validate(artifact)
-        # May still fail for other reasons (semantic) but not for fix_per_scene
-        fix_errors = [e for e in errors if "FIX_PER_SCENE" in e]
-        self.assertEqual(len(fix_errors), 0)
+        rewrite_errors = [e for e in errors if "REWRITE_SUGGESTIONS" in e]
+        self.assertEqual(len(rewrite_errors), 0)
+
+
+class TestStep8ValidatorEmotionMap(unittest.TestCase):
+    """Emotion map validation for check 5."""
+    def setUp(self):
+        self.validator = Step7Validator()
+
+    def test_missing_emotion_map_on_check_5_fails(self):
+        artifact = _valid_artifact()
+        del artifact["diagnostics"][4]["emotion_map"]  # check 5
+        is_valid, errors = self.validator.validate(artifact)
+        self.assertFalse(is_valid)
+        self.assertTrue(any("MISSING_EMOTION_MAP" in e for e in errors))
+
+    def test_emotion_map_not_dict_fails(self):
+        artifact = _valid_artifact()
+        artifact["diagnostics"][4]["emotion_map"] = "not a dict"
+        is_valid, errors = self.validator.validate(artifact)
+        self.assertFalse(is_valid)
+        self.assertTrue(any("INVALID_EMOTION_MAP" in e for e in errors))
+
+    def test_valid_emotion_map_passes(self):
+        artifact = _valid_artifact()
+        # Already has emotion_map in fixture
+        is_valid, errors = self.validator.validate(artifact)
+        self.assertTrue(is_valid, f"Errors: {errors}")
+
+    def test_emotion_map_not_required_for_other_checks(self):
+        """Non-check-5 diagnostics should not need emotion_map."""
+        artifact = _valid_artifact()
+        # Check 1 should not need emotion_map
+        self.assertNotIn("emotion_map", artifact["diagnostics"][0])
+        is_valid, errors = self.validator.validate(artifact)
+        self.assertTrue(is_valid, f"Errors: {errors}")
 
 
 class TestStep8ValidatorSemanticKeywords(unittest.TestCase):
-    """Semantic keyword validation for failed checks."""
+    """Semantic keyword validation for observations."""
 
     def setUp(self):
         self.validator = Step7Validator()
 
-    def _make_failed_check(self, check_number, check_name, problem_details):
+    def _make_check_with_observations(self, check_number, check_name, observations):
         artifact = _valid_artifact()
-        artifact["diagnostics"][check_number - 1]["passed"] = False
-        artifact["diagnostics"][check_number - 1]["problem_details"] = problem_details
-        artifact["diagnostics"][check_number - 1]["failing_scene_numbers"] = [1]
-        artifact["diagnostics"][check_number - 1]["fix_per_scene"] = {"1": "CURRENT: x. REPLACE WITH: y. FIXES: z."}
-        artifact["checks_passed_count"] = 8
+        artifact["diagnostics"][check_number - 1]["observations"] = observations
         return artifact
 
     def test_hero_leads_relevant_passes(self):
-        artifact = self._make_failed_check(1, "The Hero Leads", "The hero is passive and has no clear goal.")
+        artifact = self._make_check_with_observations(1, "The Hero Leads", "The hero is passive and has no clear goal.")
         is_valid, errors = self.validator.validate(artifact)
         self.assertTrue(is_valid, f"Errors: {errors}")
 
     def test_hero_leads_irrelevant_fails(self):
-        artifact = self._make_failed_check(1, "The Hero Leads", "The color palette is too warm for this scene.")
+        artifact = self._make_check_with_observations(1, "The Hero Leads", "The color palette is too warm for this scene.")
         is_valid, errors = self.validator.validate(artifact)
         self.assertFalse(is_valid)
-        self.assertTrue(any("WEAK_PROBLEM_DETAILS" in e for e in errors))
+        self.assertTrue(any("WEAK_OBSERVATIONS" in e for e in errors))
 
     def test_talking_plot_relevant_passes(self):
-        artifact = self._make_failed_check(2, "Talking the Plot", "Characters are telling backstory through exposition dialogue.")
+        artifact = self._make_check_with_observations(2, "Talking the Plot", "Characters are telling backstory through exposition dialogue.")
         is_valid, errors = self.validator.validate(artifact)
         self.assertTrue(is_valid, f"Errors: {errors}")
 
     def test_bad_guy_relevant_passes(self):
-        artifact = self._make_failed_check(3, "Make the Bad Guy Badder", "The antagonist is weaker than the hero.")
+        artifact = self._make_check_with_observations(3, "Make the Bad Guy Badder", "The antagonist is weaker than the hero.")
         is_valid, errors = self.validator.validate(artifact)
         self.assertTrue(is_valid, f"Errors: {errors}")
 
     def test_turn_relevant_passes(self):
-        artifact = self._make_failed_check(4, "Turn Turn Turn", "Pacing is flat after the midpoint with no escalation.")
+        artifact = self._make_check_with_observations(4, "Turn Turn Turn", "Pacing is flat after the midpoint with no escalation.")
         is_valid, errors = self.validator.validate(artifact)
         self.assertTrue(is_valid, f"Errors: {errors}")
 
     def test_emotion_relevant_passes(self):
-        artifact = self._make_failed_check(5, "Emotional Color Wheel", "The story is emotionally monotone — all fear, no joy.")
+        artifact = self._make_check_with_observations(5, "Emotional Color Wheel", "The story is emotionally monotone — all fear, no joy.")
         is_valid, errors = self.validator.validate(artifact)
         self.assertTrue(is_valid, f"Errors: {errors}")
 
     def test_dialogue_relevant_passes(self):
-        artifact = self._make_failed_check(6, "Hi How Are You I'm Fine", "All characters speak with the same voice and dialogue style.")
+        artifact = self._make_check_with_observations(6, "Hi How Are You I'm Fine", "All characters speak with the same voice and dialogue style.")
         is_valid, errors = self.validator.validate(artifact)
         self.assertTrue(is_valid, f"Errors: {errors}")
 
     def test_step_back_relevant_passes(self):
-        artifact = self._make_failed_check(7, "Take a Step Back", "The hero's arc starts too far along — no room for growth.")
+        artifact = self._make_check_with_observations(7, "Take a Step Back", "The hero's arc starts too far along — no room for growth.")
         is_valid, errors = self.validator.validate(artifact)
         self.assertTrue(is_valid, f"Errors: {errors}")
 
     def test_limp_relevant_passes(self):
-        artifact = self._make_failed_check(8, "Limp and Eye Patch", "Supporting characters lack distinctive traits and are forgettable.")
+        artifact = self._make_check_with_observations(8, "Limp and Eye Patch", "Supporting characters lack distinctive traits and are forgettable.")
         is_valid, errors = self.validator.validate(artifact)
         self.assertTrue(is_valid, f"Errors: {errors}")
 
     def test_primal_relevant_passes(self):
-        artifact = self._make_failed_check(9, "Is It Primal", "The hero's drive is not primal — it's abstract intellectual pursuit.")
+        artifact = self._make_check_with_observations(9, "Is It Primal", "The hero's drive is not primal — it's abstract intellectual pursuit.")
         is_valid, errors = self.validator.validate(artifact)
         self.assertTrue(is_valid, f"Errors: {errors}")
 
-    def test_semantic_only_runs_on_failed_checks(self):
-        """Passing checks should never trigger semantic validation."""
+    def test_semantic_check_runs_on_all_checks(self):
+        """Semantic validation runs on all checks (not just checks with rough spots)."""
         artifact = _valid_artifact()
         is_valid, errors = self.validator.validate(artifact)
         self.assertTrue(is_valid)
-        self.assertFalse(any("WEAK_PROBLEM_DETAILS" in e for e in errors))
-
-
-class TestStep8ValidatorChecksPassedCount(unittest.TestCase):
-    def setUp(self):
-        self.validator = Step7Validator()
-
-    def test_missing_checks_passed_count(self):
-        artifact = _valid_artifact()
-        del artifact["checks_passed_count"]
-        is_valid, errors = self.validator.validate(artifact)
-        self.assertFalse(is_valid)
-        self.assertTrue(any("MISSING_CHECKS_PASSED_COUNT" in e for e in errors))
-
-    def test_wrong_checks_passed_count(self):
-        artifact = _valid_artifact()
-        artifact["checks_passed_count"] = 5
-        is_valid, errors = self.validator.validate(artifact)
-        self.assertFalse(is_valid)
-        self.assertTrue(any("MISMATCHED_CHECKS_PASSED_COUNT" in e for e in errors))
-
-    def test_checks_passed_count_not_int(self):
-        artifact = _valid_artifact()
-        artifact["checks_passed_count"] = "9"
-        is_valid, errors = self.validator.validate(artifact)
-        self.assertFalse(is_valid)
-        self.assertTrue(any("INVALID_CHECKS_PASSED_COUNT" in e for e in errors))
+        self.assertFalse(any("WEAK_OBSERVATIONS" in e for e in errors))
 
 
 class TestStep8ValidatorTotalChecks(unittest.TestCase):
@@ -559,12 +585,13 @@ class TestStep8ValidatorFixSuggestions(unittest.TestCase):
         error_types = [
             "MISSING_DIAGNOSTICS", "INVALID_DIAGNOSTICS_TYPE", "WRONG_DIAGNOSTIC_COUNT",
             "INVALID_TYPE", "MISSING_CHECK_NUMBER", "INVALID_CHECK_NUMBER",
-            "DUPLICATE_CHECK_NUMBER", "MISSING_CHECK_NAME", "MISSING_PASSED",
-            "INVALID_PASSED", "MISSING_PROBLEM_DETAILS",
-            "MISSING_FAILING_SCENES", "INVALID_FAILING_SCENES", "INVALID_FAILING_SCENE_TYPE",
-            "MISSING_FIX_PER_SCENE", "INVALID_FIX_PER_SCENE", "INCOMPLETE_FIX_PER_SCENE",
-            "MISSING_CHECKS_PASSED_COUNT", "INVALID_CHECKS_PASSED_COUNT",
-            "MISMATCHED_CHECKS_PASSED_COUNT", "WEAK_PROBLEM_DETAILS",
+            "DUPLICATE_CHECK_NUMBER", "MISSING_CHECK_NAME",
+            "MISSING_OBSERVATIONS", "WEAK_OBSERVATIONS",
+            "MISSING_ROUGH_SPOTS", "INVALID_ROUGH_SPOTS",
+            "MISSING_SCENE", "MISSING_ISSUE",
+            "MISSING_REWRITE_SUGGESTIONS", "INVALID_REWRITE_SUGGESTIONS",
+            "EMPTY_REWRITE_SUGGESTIONS", "INCOMPLETE_REWRITE_SUGGESTIONS",
+            "MISSING_EMOTION_MAP", "INVALID_EMOTION_MAP",
             "MISSING_TOTAL_CHECKS", "WRONG_TOTAL_CHECKS", "MISSING_CHECK_NAMES",
         ]
         for error_type in error_types:
@@ -628,7 +655,7 @@ class TestStep8PromptContent(unittest.TestCase):
     def test_prompt_includes_screenplay_action(self):
         self.assertIn("wary eyes", self.user)
 
-    def test_prompt_says_evaluate_actual_scenes(self):
+    def test_prompt_says_examine_actual_scenes(self):
         self.assertIn("ACTUAL scenes, dialogue, and action", self.user)
 
     def test_hero_name_in_prompt(self):
@@ -671,6 +698,19 @@ class TestStep8PromptContent(unittest.TestCase):
             "reveal" in section.lower() or "flaw" in section.lower(),
             "Turn Turn Turn should mention revealing character facets"
         )
+
+    def test_no_pass_fail_language_in_prompt(self):
+        """The prompt should not contain PASS or FAIL grading language."""
+        self.assertNotIn("PASSES or FAILS", self.user)
+        self.assertNotIn("FAIL criteria:", self.user)
+        self.assertNotIn('"passed"', self.user)
+        self.assertNotIn("checks_passed_count", self.user)
+
+    def test_observational_language_in_prompt(self):
+        """The prompt should use observational framing."""
+        self.assertIn("OBSERVE", self.user)
+        self.assertIn("rough spots", self.user.lower())
+        self.assertIn("observations", self.user.lower())
 
 
 class TestStep8PromptRevision(unittest.TestCase):
@@ -725,16 +765,17 @@ class TestStep8Execution(unittest.TestCase):
         self.assertTrue(os.path.exists(os.path.join(proj_dir, "sp_step_7_diagnostics.json")))
         self.assertTrue(os.path.exists(os.path.join(proj_dir, "sp_step_7_diagnostics.txt")))
 
-    def test_readable_output_contains_checks(self):
-        artifact = _failed_artifact()
+    def test_readable_output_contains_observations(self):
+        artifact = _artifact_with_rough_spots()
         artifact["metadata"] = {"version": "2.0.0", "created_at": "2026-01-01"}
         self.step.save_artifact(artifact, "test-proj")
         txt_path = os.path.join(self.tmp_dir, "test-proj", "sp_step_7_diagnostics.txt")
         with open(txt_path, 'r', encoding='utf-8') as f:
             content = f.read()
-        self.assertIn("PASS", content)
-        self.assertIn("FAIL", content)
-        self.assertIn("6/9", content)
+        self.assertIn("Observations:", content)
+        self.assertIn("Rough spot:", content)
+        self.assertIn("no rough spots", content)
+        self.assertIn("9 checks analyzed", content)
 
     def test_load_nonexistent_returns_none(self):
         self.assertIsNone(self.step.load_artifact("nonexistent"))
@@ -750,11 +791,11 @@ class TestStep8Execution(unittest.TestCase):
 
     def test_utf8_roundtrip(self):
         artifact = _valid_artifact()
-        artifact["diagnostics"][0]["problem_details"] = "Caf\u00e9 sc\u00e8ne avec \u00e9motion"
+        artifact["diagnostics"][0]["observations"] = "Caf\u00e9 sc\u00e8ne avec \u00e9motion and hero leads"
         artifact["metadata"] = {"version": "2.0.0", "created_at": "2026-01-01"}
         self.step.save_artifact(artifact, "utf8-test")
         loaded = self.step.load_artifact("utf8-test")
-        self.assertIn("Caf\u00e9", loaded["diagnostics"][0]["problem_details"])
+        self.assertIn("Caf\u00e9", loaded["diagnostics"][0]["observations"])
 
 
 class TestStep8Metadata(unittest.TestCase):
@@ -780,29 +821,58 @@ class TestStep8Metadata(unittest.TestCase):
 
 
 class TestDiagnosticResultModel(unittest.TestCase):
-    def test_valid_result(self):
-        r = DiagnosticResult(check_number=1, check_name="The Hero Leads", passed=True)
+    def test_valid_result_with_observations(self):
+        r = DiagnosticResult(
+            check_number=1, check_name="The Hero Leads",
+            observations="Hero is proactive.",
+        )
         self.assertEqual(r.check_number, 1)
+        self.assertEqual(r.observations, "Hero is proactive.")
+        self.assertEqual(r.rough_spots, [])
+        self.assertEqual(r.rewrite_suggestions, {})
 
     def test_check_number_9_valid(self):
-        r = DiagnosticResult(check_number=9, check_name="Is It Primal", passed=True)
+        r = DiagnosticResult(
+            check_number=9, check_name="Is It Primal",
+            observations="Primal drive is clear.",
+        )
         self.assertEqual(r.check_number, 9)
 
     def test_check_number_0_rejected(self):
         with self.assertRaises(Exception):
-            DiagnosticResult(check_number=0, check_name="Invalid", passed=True)
+            DiagnosticResult(check_number=0, check_name="Invalid", observations="test")
 
     def test_check_number_10_rejected(self):
         with self.assertRaises(Exception):
-            DiagnosticResult(check_number=10, check_name="Invalid", passed=True)
+            DiagnosticResult(check_number=10, check_name="Invalid", observations="test")
 
-    def test_failed_result_with_details(self):
+    def test_result_with_rough_spots(self):
+        from src.screenplay_engine.models import RoughSpot
         r = DiagnosticResult(
             check_number=3, check_name="Make the Bad Guy Badder",
-            passed=False, problem_details="Weak villain", fix_suggestion="Make stronger"
+            observations="Antagonist is weak.",
+            rough_spots=[RoughSpot(scene=5, issue="Villain retreats", current_text="VICTOR backs away.")],
+            rewrite_suggestions={"5": "CURRENT: VICTOR backs away. REPLACE WITH: VICTOR attacks. FIXES: Raises stakes."},
         )
-        self.assertFalse(r.passed)
-        self.assertEqual(r.problem_details, "Weak villain")
+        self.assertEqual(len(r.rough_spots), 1)
+        self.assertEqual(r.rough_spots[0].scene, 5)
+        self.assertEqual(r.rewrite_suggestions["5"], "CURRENT: VICTOR backs away. REPLACE WITH: VICTOR attacks. FIXES: Raises stakes.")
+
+    def test_emotion_map_on_check_5(self):
+        r = DiagnosticResult(
+            check_number=5, check_name="Emotional Color Wheel",
+            observations="Emotion palette is varied.",
+            emotion_map={"fear": [1, 5, 10], "joy": [40]},
+        )
+        self.assertIsNotNone(r.emotion_map)
+        self.assertEqual(r.emotion_map["fear"], [1, 5, 10])
+
+    def test_emotion_map_defaults_none(self):
+        r = DiagnosticResult(
+            check_number=1, check_name="The Hero Leads",
+            observations="Hero leads well.",
+        )
+        self.assertIsNone(r.emotion_map)
 
 
 class TestStep8EdgeCases(unittest.TestCase):
@@ -810,7 +880,7 @@ class TestStep8EdgeCases(unittest.TestCase):
         self.validator = Step7Validator()
 
     def test_empty_diagnostics_list_fails(self):
-        artifact = {"diagnostics": [], "checks_passed_count": 0, "total_checks": 9}
+        artifact = {"diagnostics": [], "total_checks": 9}
         is_valid, errors = self.validator.validate(artifact)
         self.assertFalse(is_valid)
 
@@ -821,15 +891,15 @@ class TestStep8EdgeCases(unittest.TestCase):
         self.assertTrue(is_valid, f"Errors: {errors}")
 
     def test_multiple_errors_accumulated(self):
-        artifact = {"diagnostics": "bad", "checks_passed_count": "bad"}
+        artifact = {"diagnostics": "bad"}
         is_valid, errors = self.validator.validate(artifact)
         self.assertFalse(is_valid)
         self.assertGreater(len(errors), 0)
 
-    def test_passed_true_with_problem_details_still_passes(self):
-        """A passing check with extra details shouldn't fail validation."""
+    def test_clean_check_with_extra_observations_still_passes(self):
+        """A clean check with detailed observations shouldn't fail validation."""
         artifact = _valid_artifact()
-        artifact["diagnostics"][0]["problem_details"] = "Minor note"
+        artifact["diagnostics"][0]["observations"] = "Very detailed hero analysis with proactive behavior."
         is_valid, errors = self.validator.validate(artifact)
         self.assertTrue(is_valid, f"Errors: {errors}")
 

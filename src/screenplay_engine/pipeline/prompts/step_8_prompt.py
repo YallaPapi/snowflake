@@ -1,6 +1,18 @@
 """
 Step 8 Prompt Template: Screenplay Writing (Save the Cat end of Ch.5)
 
+v10.0.0 -- Diagnostic Rules enrichment for 5 persistent Ch.7 failures:
+  - Added "DIAGNOSTIC RULES — AVOID THESE 5 PERSISTENT FAILURES" section to all
+    three generation templates (monolithic, per-scene, act-by-act)
+  - Hero Leads: BAD/GOOD examples with question-mark counting rule
+  - Talking the Plot: 7 BAD→GOOD conversion examples (visual storytelling patterns)
+  - Emotional Color Wheel: per-act emotional requirements + recoloring technique
+  - Hi How Are You: 5 verbal fingerprint types + BAD/GOOD dialogue comparison
+  - Limp and Eye Patch: identifier rules (first action line, emblematic, consistent)
+  - Added 2 complete scene examples (dialogue-heavy + action-heavy) demonstrating
+    all 5 rules working together, in both monolithic and act-by-act templates
+  - Condensed version of diagnostic rules added to per-scene template
+
 v8.0.0 -- Major character arc overhaul:
   - Rule 15 (Covenant of the Arc) expanded from ~30 to ~150 lines with 3 positive examples
   - Full screenplay text of previous acts fed to GPT (generation, revision) and Grok (diagnostic)
@@ -26,7 +38,7 @@ from typing import Dict, Any, List
 class Step8Prompt:
     """Prompt generator for Screenplay Engine Step 8: Screenplay Writing"""
 
-    VERSION = "9.0.0"
+    VERSION = "10.0.0"
 
     # ── Genre-specific scene writing guidance for all 10 Snyder genres ────
     GENRE_SCENE_TEMPLATES = {
@@ -393,13 +405,16 @@ from - to +."
    Use the Character Voice Guide above — it tells you HOW each character talks. Follow it.
 
 7. CHARACTER IDENTIFIERS (Limp and Eye Patch) — Snyder (Ch.7): "Make sure every character
-   has 'A Limp and an Eyepatch' — something memorable." EVERY recurring character must display
-   their distinctive visual/behavioral identifier THE FIRST TIME they appear in a scene:
+   has 'A Limp and an Eyepatch' — something memorable." Each character's signature_identifier
+   from their Step 3 profile MUST appear in their FIRST action line when introduced, and be
+   referenced or echoed at least 2 more times across the screenplay. This is Snyder's "Limp
+   and Eye Patch" — the visual/behavioral hook that makes the character jump off the page.
+   The Character Voice Guide above lists each character's SIGNATURE IDENTIFIER. USE IT in
+   every scene that character appears in. Additional identifiers for supporting characters:
    - A prop they always carry or touch
    - A physical habit or gesture
    - A piece of clothing or accessory
    - A sound they make (clearing throat, cracking knuckles)
-   The Character Voice Guide above lists each character's identifier. USE IT.
 
 8. DIALOGUE must be SPOKEN, SUSTAINED, and CHARACTER-SPECIFIC.
    Each dialogue scene needs MULTIPLE exchanges (3-6 back-and-forth minimum).
@@ -666,6 +681,328 @@ from - to +."
     - Characters solve a live physical problem under pressure while info lands
       in short conflict beats.
     - Villain exposition is minimal and tactical; no long monologues.
+
+══════════════════════════════════════════════════════════════════════════
+DIAGNOSTIC RULES — AVOID THESE 5 PERSISTENT FAILURES
+══════════════════════════════════════════════════════════════════════════
+
+These 5 failures are the most common reasons screenplays fail Blake Snyder's
+Chapter 7 diagnostic checks. Read every rule. Internalize the BAD/GOOD examples.
+Do NOT write any scene that violates these rules.
+
+─── HERO LEADS (Snyder Ch.7: "A hero never asks questions!") ───
+
+The hero MUST be proactive. Count the hero's question marks — more than 2 per
+scene is a failure. Replace questions with COMMANDS and DECLARATIONS.
+
+Snyder: "The hero knows and others around him look to him for answers, not the
+other way around. If you see a lot of question marks in your hero's dialogue
+there's a problem."
+
+The hero NEVER waits for others to tell them what to do. The hero NEVER stands
+still while someone explains the situation. The hero ACTS and others follow.
+
+BAD (passive — hero asks, others explain):
+  RAE
+        What should we do?
+  JUNO
+        We need to go to the warehouse.
+  RAE
+        How do we get in?
+  JUNO
+        There's a side entrance. I'll show you.
+
+GOOD (proactive — hero commands, others follow):
+  RAE
+        We're going to the warehouse. Now.
+  Rae grabs her jacket and heads for the door. Juno hesitates.
+  JUNO
+        The side entrance is —
+  RAE
+        I know where it is. Keep up.
+
+BAD (passive — hero receives information):
+  RAE
+        What happened to the power grid?
+  TECH
+        Someone uploaded a kill command at 2:14 AM.
+  RAE
+        Who had access?
+  TECH
+        Only three people.
+
+GOOD (proactive — hero discovers information):
+  Rae pulls up the grid logs on her tablet. Scrolls. Stops.
+  RAE
+        Kill command uploaded at 2:14 AM. Only three people had access.
+  She circles three names on the whiteboard. Underlines one twice.
+  RAE
+        Start with him.
+
+─── TALKING THE PLOT (Snyder Ch.7: "Movies are stories told in pictures") ───
+
+NEVER have characters explain backstory, plot mechanics, or emotional states
+through dialogue. Snyder: "Character is revealed by action taken not by words
+spoken." Snyder: "You can say more about a relationship in trouble by seeing a
+husband eye a pretty young thing than by three pages of dialogue about marriage
+counseling."
+
+If characters need to know something, SHOW IT in the environment — photos on
+walls, scars on bodies, objects in rooms, documents on screens, physical evidence
+that tells the story without anyone opening their mouth.
+
+BAD → GOOD CONVERSION EXAMPLES (memorize these patterns):
+
+BAD: "Remember when MORO first went rogue and killed those people at the plant?"
+GOOD: Juno stares at a faded newspaper clipping taped to the wall:
+      "POWER PLANT MASSACRE — 47 DEAD." Her finger traces the date.
+
+BAD: "He planned this for months."
+GOOD: He opens a drawer. Surveillance photos spill across the desk. Dates circled
+      in red. A map with routes drawn in marker. Months of preparation, visible.
+
+BAD: "She felt nausea rising."
+GOOD: She grabs the table edge. Her knuckles whiten. She swallows hard.
+
+BAD: "They used to be friends."
+GOOD: A cracked photo on the mantel — two figures, arms around each other,
+      faces scratched out with a key.
+
+BAD: "The city is dangerous now."
+GOOD: A body bag on the sidewalk. Pedestrians step around it without looking.
+
+BAD: "He's secretly working for MORO."
+GOOD: His phone buzzes. He checks it under the table — a single word: PROCEED.
+      He deletes it. Pockets the phone. Smiles at the group.
+
+BAD: "I've been tracking this target for six months and she's getting closer."
+GOOD: She peels a surveillance photo off the wall. Behind it, another. Behind
+      that, another — six months of photos layered on top of each other, each
+      one taken from a closer distance.
+
+─── EMOTIONAL COLOR WHEEL (Snyder Ch.7: "Like a roller coaster ride") ───
+
+Snyder: "you've laughed, you've cried, you've gotten horny, you've been scared,
+you've felt regret, anger, frustration, near-miss anxiety and, ultimately,
+breathtaking triumph."
+
+EVERY ACT must contain at least 3 DIFFERENT emotions from this palette:
+  lust, fear, joy, hope, despair, anger, tenderness, surprise, longing,
+  regret, frustration, near-miss anxiety, triumph, human foible
+
+If your screenplay is all fear/tension/dread, RECOLOR scenes: take a tense scene
+and play it for tenderness or dark humor instead. Same conflict, same outcome,
+different emotional color.
+
+PER-ACT EMOTIONAL REQUIREMENTS:
+  Act 1 MUST include: a moment of warmth/tenderness + a moment of humor or
+    lightness + the inciting fear. The audience needs to CARE about the hero's
+    normal world before it gets destroyed.
+  Act 2A MUST include: hope/excitement (Fun and Games should be FUN) + lust or
+    longing + escalating fear. This is the "promise of the premise" — make it
+    emotionally rich, not just plot-driven.
+  Act 2B MUST include: despair + anger + a moment of unexpected tenderness.
+    Even in the darkest stretch, a human moment between characters.
+  Act 3 MUST include: triumph + sacrifice + cathartic release. The audience needs
+    to FEEL the hero's victory, not just understand it intellectually.
+
+Snyder's FIX technique: "Actually choose a color of each of the missing emotions
+and go back and tag certain scenes to change the emotional tone from one type to
+another. Take those scenes and use the same action, the same +/-, the same
+conflict and result, but play it for lust instead of laughs, jealousy instead of
+flat out, stare-down dramatic conflict."
+
+─── HI HOW ARE YOU (Snyder Ch.7: "I was stunned. I couldn't tell one of my
+    characters from the others, and all the characters had MY voice!!") ───
+
+The Bad Dialogue Test: cover the character names. Can you tell who is speaking?
+If not, rewrite.
+
+Give EVERY character a verbal fingerprint. These are not optional — they are
+MANDATORY for every character who speaks more than one line:
+
+  - One character uses TECHNICAL JARGON (medical terms, engineering speak,
+    military shorthand — specific to their expertise)
+  - One character speaks in SENTENCE FRAGMENTS (never completes a thought, trails
+    off, leaves ideas hanging — "The thing is... never mind. Forget it.")
+  - One character uses OLD-FASHIONED EXPRESSIONS (formal speech, "I beg your
+    pardon," "That's simply not done," avoids slang entirely)
+  - One character DEFLECTS WITH DARK HUMOR (cracks jokes in serious moments,
+    uses sarcasm as armor — "Great, we're all gonna die. At least it's a Tuesday.")
+  - One character is PAINFULLY DIRECT (short sentences, no filler, no softening —
+    "No." "Move." "That's a lie." "You have ten seconds.")
+
+NEVER let two characters speak the same way. If you notice two characters using
+similar sentence lengths, vocabulary, and rhythm — STOP and rewrite one of them.
+
+BAD (all characters sound the same):
+  JUNO
+        We should check the east corridor.
+  MARCUS
+        I think the east corridor is risky.
+  CAMI
+        The east corridor could be a trap.
+
+GOOD (each character sounds unique):
+  JUNO
+        East corridor. Fastest route. (she's already moving)
+  MARCUS
+        Fastest route to getting our heads blown off, sure.
+        Lovely plan. Very inspiring.
+  CAMI
+        I do not believe that is wise. The structural integrity
+        of the east wing has been compromised since the initial—
+  JUNO
+        Cami. Yes or no.
+  CAMI
+        ...No.
+
+─── LIMP AND EYE PATCH (Snyder Ch.7: "Make sure every character has 'A Limp and
+    an Eyepatch' — something memorable.") ───
+
+EVERY supporting character needs ONE memorable visual identifier mentioned EVERY
+TIME they appear on screen.
+
+Blake Snyder's example: a lead boy character was vital to the plot but "somehow
+unmemorable on the page." Manager Andy Cohen kept getting stuck on him draft after
+draft. They tried changing dialogue, making him funnier, smarter — same note.
+Finally they gave him "a black t-shirt and sporting a wispy soul-patch on his
+chin." Suddenly he "popped off the page." They had done very little overall — just
+gave him a Limp and an Eyepatch.
+
+Examples of good identifiers:
+  - Always wears one red glove (the other hand is bare)
+  - Has a distinctive limp (drags the left foot)
+  - Constantly adjusts broken glasses (held together with tape)
+  - Chews a toothpick (rolls it from one side of his mouth to the other)
+  - Has a neck tattoo of a bird (visible above the collar)
+  - Wears an oversized watch that slides up and down her wrist
+  - Taps a silver lighter on surfaces when thinking (never lights it)
+  - Has a scar that bisects one eyebrow
+
+RULES:
+  1. Reference the identifier in the FIRST action line of every scene the
+     character appears in. Not the second line. The FIRST.
+  2. The identifier should be EMBLEMATIC — it reveals something about the
+     character's inner world. The wedding ring = family man. The broken glasses =
+     someone holding things together. The never-lit lighter = someone who quit
+     something.
+  3. The Character Voice Guide above lists each character's identifier. USE IT
+     in every scene that character appears in.
+  4. If a character doesn't have an identifier in the Voice Guide, ASSIGN ONE
+     when they first appear and use it consistently.
+
+══════════════════════════════════════════════════════════════════════════
+COMPLETE SCENE EXAMPLES (study these — they demonstrate all 5 rules working)
+══════════════════════════════════════════════════════════════════════════
+
+EXAMPLE SCENE 1 — DIALOGUE-HEAVY (demonstrates: hero leads, distinct voices,
+show-don't-tell, emotional change from + to -, character identifiers)
+
+{{"scene_number": 99, "slugline": "INT. SAFE HOUSE KITCHEN - NIGHT",
+  "int_ext": "INT.", "location": "SAFE HOUSE KITCHEN", "time_of_day": "NIGHT",
+  "elements": [
+    {{"element_type": "slugline", "content": "INT. SAFE HOUSE KITCHEN - NIGHT"}},
+    {{"element_type": "action", "content": "VERA (40s, scarred hands, always rolling a coin across her knuckles) stands at the counter dismantling a radio. Parts spread in neat rows. DALE (50s, ex-military, collar always buttoned to the top) sits across from her, polishing the same boot he's been polishing for twenty minutes."}},
+    {{"element_type": "character", "content": "VERA"}},
+    {{"element_type": "dialogue", "content": "Frequency's been dead for six hours. I'm switching to the backup band."}},
+    {{"element_type": "action", "content": "She pulls a capacitor free with needle-nose pliers. Holds it up to the light."}},
+    {{"element_type": "character", "content": "DALE"}},
+    {{"element_type": "dialogue", "content": "Backup band's compromised. Has been since Thursday."}},
+    {{"element_type": "action", "content": "Vera sets down the pliers. The coin stops moving across her knuckles."}},
+    {{"element_type": "character", "content": "VERA"}},
+    {{"element_type": "dialogue", "content": "Thursday. And you're telling me now."}},
+    {{"element_type": "character", "content": "DALE"}},
+    {{"element_type": "parenthetical", "content": "doesn't look up from the boot"}},
+    {{"element_type": "dialogue", "content": "Telling you now because now is when it matters."}},
+    {{"element_type": "character", "content": "VERA"}},
+    {{"element_type": "dialogue", "content": "Get up."}},
+    {{"element_type": "action", "content": "Dale doesn't move. Vera crosses the room in three steps. Pulls the boot out of his hands. Drops it on the floor."}},
+    {{"element_type": "character", "content": "VERA"}},
+    {{"element_type": "dialogue", "content": "We're relocating. Pack the radios. Leave the rest."}},
+    {{"element_type": "character", "content": "DALE"}},
+    {{"element_type": "parenthetical", "content": "standing slowly"}},
+    {{"element_type": "dialogue", "content": "You're making a tactical error."}},
+    {{"element_type": "character", "content": "VERA"}},
+    {{"element_type": "dialogue", "content": "Then it's my error. Move."}},
+    {{"element_type": "action", "content": "Dale buttons his collar. Picks up the radio parts. Vera pockets the coin and heads for the door. She pauses — notices a photograph pinned to the corkboard. Two smiling faces. She unpins it. Folds it once. Puts it in her jacket. The lightness from a moment ago is gone."}}
+  ],
+  "estimated_duration_seconds": 150, "beat": "Bad Guys Close In",
+  "emotional_start": "+", "emotional_end": "-",
+  "conflict": "Vera wants to relocate; Dale wants to hold position; Vera wins",
+  "characters_present": ["Vera", "Dale"], "board_card_number": 99
+}}
+
+WHY THIS SCENE WORKS:
+  - HERO LEADS: Vera gives commands ("Get up." "Pack the radios." "Move.").
+    Zero questions. She physically takes the boot away.
+  - DISTINCT VOICES: Vera speaks in clipped imperatives. Dale speaks in formal,
+    measured sentences ("Telling you now because now is when it matters"). Cover
+    the names — you can tell them apart.
+  - SHOW DON'T TELL: We learn the backup band is compromised through conflict
+    dialogue, not exposition. The photograph tells us about Vera's personal
+    stakes without anyone explaining it.
+  - EMOTIONAL CHANGE: + to -. Starts with focused competence (positive, in
+    control), ends with the photograph — a silent reminder of what she's lost.
+  - IDENTIFIERS: Vera's coin (first line, stops when she's alarmed). Dale's
+    buttoned collar (first line, referenced again when he stands).
+
+EXAMPLE SCENE 2 — ACTION-HEAVY (demonstrates: visual storytelling, emotional
+color variety, supporting character with identifier, no internal monologue,
+show-don't-tell)
+
+{{"scene_number": 100, "slugline": "EXT. FLOODED UNDERPASS - DAWN",
+  "int_ext": "EXT.", "location": "FLOODED UNDERPASS", "time_of_day": "DAWN",
+  "elements": [
+    {{"element_type": "slugline", "content": "EXT. FLOODED UNDERPASS - DAWN"}},
+    {{"element_type": "action", "content": "Knee-deep water. Shopping carts half-submerged. NORA (30s, lean, a faded red bandana always tied around her left wrist) wades through the underpass carrying a sealed plastic bin above her head. Behind her, KITE (20s, nervous energy, taps everything twice before touching it) splashes through the water, flinching at every echo."}},
+    {{"element_type": "action", "content": "Nora stops. Listens. A low hum — mechanical, rhythmic — from somewhere above. She raises a fist. Kite freezes. The hum grows louder. A searchlight sweeps across the overpass above them. It passes. The hum fades."}},
+    {{"element_type": "action", "content": "Nora lowers her fist. Points forward. They move."}},
+    {{"element_type": "action", "content": "Kite's foot catches a submerged cable. He stumbles. The plastic bin nearly tips. Nora catches it one-handed. Steadies Kite with the other hand. Holds him there for a second — just a second — then lets go."}},
+    {{"element_type": "action", "content": "Something floats past them. A child's shoe. Pink, waterlogged. Nora's eyes track it. Her hand goes to the red bandana on her wrist. She adjusts it. Keeps moving."}},
+    {{"element_type": "action", "content": "They reach the end of the underpass. Daylight. An old woman sits on an overturned bucket at the mouth of the tunnel — BETTIE (70s, wrapped in a quilt stitched from hospital gowns, one lens of her glasses blacked out with tape). She holds a fishing rod. The line disappears into the floodwater."}},
+    {{"element_type": "character", "content": "BETTIE"}},
+    {{"element_type": "parenthetical", "content": "not looking up"}},
+    {{"element_type": "dialogue", "content": "Two of you today. Usually just the one."}},
+    {{"element_type": "action", "content": "Nora sets the sealed bin down next to Bettie. Opens it. Inside: insulin vials packed in ice. Bettie glances at the bin. Her rod hand trembles."}},
+    {{"element_type": "character", "content": "BETTIE"}},
+    {{"element_type": "dialogue", "content": "Lord. You actually found some."}},
+    {{"element_type": "action", "content": "Bettie sets down the rod. Reaches into her quilt. Pulls out a folded map — hand-drawn, smudged with charcoal. She holds it out to Nora."}},
+    {{"element_type": "character", "content": "BETTIE"}},
+    {{"element_type": "dialogue", "content": "Grid's been rerouted. South corridor's live again. Marked it for you."}},
+    {{"element_type": "action", "content": "Nora takes the map. Studies it. Kite taps the corner of the map twice before pointing to a section."}},
+    {{"element_type": "action", "content": "Nora nods. Folds the map. Tucks it into her jacket. She looks at Bettie — really looks. The old woman's hands are shaking, and not just from the cold."}},
+    {{"element_type": "action", "content": "Nora pulls one insulin vial from the bin. Sets it in Bettie's lap. Bettie stares at it. Her lip quivers. She picks up the fishing rod again. The tremble is gone."}},
+    {{"element_type": "action", "content": "Nora turns and walks into the daylight. Kite follows. Behind them, Bettie reels in the line. Empty hook. She casts again."}}
+  ],
+  "estimated_duration_seconds": 180, "beat": "Fun and Games",
+  "emotional_start": "-", "emotional_end": "+",
+  "conflict": "Nora needs the map; Bettie guards information; exchange resolves it",
+  "characters_present": ["Nora", "Kite", "Bettie"], "board_card_number": 100
+}}
+
+WHY THIS SCENE WORKS:
+  - VISUAL STORYTELLING: No dialogue for the first half. The searchlight, the
+    child's shoe, the flooded underpass — all visual. The audience understands
+    the world through what they SEE.
+  - EMOTIONAL COLOR: Starts with fear/tension (searchlight), moves through
+    tenderness (Nora steadying Kite), longing (the child's shoe, the bandana),
+    and ends on hope (insulin delivered, Bettie's trembling stops). Four emotions
+    in one scene.
+  - IDENTIFIERS: Nora's red bandana (first line, touched when she sees the shoe).
+    Kite's double-tap habit (first line, used again on the map). Bettie's hospital-
+    gown quilt and taped glasses (first line of her introduction).
+  - NO INTERNAL MONOLOGUE: We never hear what Nora thinks about the child's shoe.
+    We SEE her hand go to the bandana. The audience draws their own conclusion.
+  - SHOW DON'T TELL: The world's danger is shown (searchlight, floodwater, body
+    bag shoe), not explained. Bettie's need is shown (trembling hands), not
+    spoken. The exchange (insulin for map) happens through action, not negotiation
+    dialogue.
+  - CHARACTER ARC (Bettie): Enters guarded (doesn't look up, tests them). Exits
+    changed — after Nora gives her the extra vial, the trembling stops. She casts
+    again with steady hands. Fear → fragile hope.
+
+══════════════════════════════════════════════════════════════════════════
 
 PER-SCENE REQUIRED FIELDS:
 1. scene_number (int): Sequential starting from 1
@@ -996,13 +1333,16 @@ through ACTION, not narration.
    Use the Character Voice Guide above — it tells you HOW each character talks. Follow it.
 
 6. CHARACTER IDENTIFIERS (Limp and Eye Patch) — Snyder (Ch.7): "Make sure every character
-   has 'A Limp and an Eyepatch' — something memorable." EVERY recurring character must display
-   their distinctive visual/behavioral identifier THE FIRST TIME they appear in this scene:
+   has 'A Limp and an Eyepatch' — something memorable." Each character's signature_identifier
+   from their Step 3 profile MUST appear in their FIRST action line when introduced, and be
+   referenced or echoed at least 2 more times across the screenplay. This is Snyder's "Limp
+   and Eye Patch" — the visual/behavioral hook that makes the character jump off the page.
+   The Character Voice Guide above lists each character's SIGNATURE IDENTIFIER. USE IT in
+   every scene that character appears in. Additional identifiers for supporting characters:
    - A prop they always carry or touch
    - A physical habit or gesture
    - A piece of clothing or accessory
    - A sound they make (clearing throat, cracking knuckles)
-   The Character Voice Guide above lists each character's identifier. USE IT.
 
 7. DIALOGUE must be SPOKEN, SUSTAINED, and CHARACTER-SPECIFIC.
    Each dialogue exchange needs MULTIPLE back-and-forth (3-6 minimum).
@@ -1074,6 +1414,46 @@ through ACTION, not narration.
       GAS CLERK: Pump three. (slides receipt across) You should know — two guys in a black
       truck have been parked across the street for an hour. (beat) I didn't see you.
       Gas Clerk deliberately turns away and wipes the counter.
+
+══════════════════════════════════════════════════════════════════════════
+DIAGNOSTIC RULES — AVOID THESE 5 PERSISTENT FAILURES
+══════════════════════════════════════════════════════════════════════════
+
+─── HERO LEADS ───
+The hero MUST be proactive. Max 2 question marks per scene. Replace questions
+with COMMANDS and DECLARATIONS. The hero ACTS and others follow.
+BAD: RAE: "What should we do?" / JUNO: "We need to go to the warehouse."
+GOOD: RAE: "We're going to the warehouse. Now." / Rae grabs her jacket.
+
+─── TALKING THE PLOT ───
+NEVER have characters explain backstory in dialogue. SHOW IT visually.
+BAD: "He planned this for months." → GOOD: He opens a drawer. Surveillance
+photos spill across the desk. Dates circled in red.
+BAD: "They used to be friends." → GOOD: A cracked photo on the mantel — two
+figures, arms around each other, faces scratched out with a key.
+BAD: "He's secretly working for MORO." → GOOD: His phone buzzes. He checks it
+under the table — a single word: PROCEED. He deletes it.
+
+─── EMOTIONAL COLOR WHEEL ───
+This scene must hit a SPECIFIC emotion from: lust, fear, joy, hope, despair,
+anger, tenderness, surprise, longing, regret, frustration, near-miss anxiety,
+triumph, human foible. If previous scenes are all fear/tension, this scene MUST
+hit something different — tenderness, dark humor, hope, regret.
+
+─── HI HOW ARE YOU ───
+Cover the character names. Can you tell who is speaking? If not, rewrite.
+Give EVERY character a distinct verbal fingerprint: one uses jargon, one uses
+fragments, one deflects with dark humor, one is painfully direct.
+BAD (same voice): "We should check the corridor." / "The corridor is risky."
+GOOD (distinct): "East corridor. Fastest route." / "Fastest route to getting
+our heads blown off, sure. Lovely plan."
+
+─── LIMP AND EYE PATCH ───
+EVERY supporting character needs ONE visual identifier mentioned in the FIRST
+action line when they appear: a prop, a physical habit, clothing, a sound.
+The identifier should be EMBLEMATIC — it reveals inner character.
+
+══════════════════════════════════════════════════════════════════════════
 
 OUTPUT FORMAT (single scene, valid JSON):
 {{
@@ -1587,13 +1967,16 @@ from - to +."
    Use the Character Voice Guide above — it tells you HOW each character talks. Follow it.
 
 7. CHARACTER IDENTIFIERS (Limp and Eye Patch) — Snyder (Ch.7): "Make sure every character
-   has 'A Limp and an Eyepatch' — something memorable." EVERY recurring character must display
-   their distinctive visual/behavioral identifier THE FIRST TIME they appear in a scene:
+   has 'A Limp and an Eyepatch' — something memorable." Each character's signature_identifier
+   from their Step 3 profile MUST appear in their FIRST action line when introduced, and be
+   referenced or echoed at least 2 more times across the screenplay. This is Snyder's "Limp
+   and Eye Patch" — the visual/behavioral hook that makes the character jump off the page.
+   The Character Voice Guide above lists each character's SIGNATURE IDENTIFIER. USE IT in
+   every scene that character appears in. Additional identifiers for supporting characters:
    - A prop they always carry or touch
    - A physical habit or gesture
    - A piece of clothing or accessory
    - A sound they make (clearing throat, cracking knuckles)
-   The Character Voice Guide above lists each character's identifier. USE IT.
 
 8. DIALOGUE must be SPOKEN, SUSTAINED, and CHARACTER-SPECIFIC.
    Each dialogue scene needs MULTIPLE exchanges (3-6 back-and-forth minimum).
@@ -1881,6 +2264,302 @@ from - to +."
     - Characters solve a live physical problem under pressure while info lands
       in short conflict beats.
     - Villain exposition is minimal and tactical; no long monologues.
+
+══════════════════════════════════════════════════════════════════════════
+DIAGNOSTIC RULES — AVOID THESE 5 PERSISTENT FAILURES
+══════════════════════════════════════════════════════════════════════════
+
+These 5 failures are the most common reasons screenplays fail Blake Snyder's
+Chapter 7 diagnostic checks. Read every rule. Internalize the BAD/GOOD examples.
+Do NOT write any scene that violates these rules.
+
+─── HERO LEADS (Snyder Ch.7: "A hero never asks questions!") ───
+
+The hero MUST be proactive. Count the hero's question marks — more than 2 per
+scene is a failure. Replace questions with COMMANDS and DECLARATIONS.
+
+Snyder: "The hero knows and others around him look to him for answers, not the
+other way around. If you see a lot of question marks in your hero's dialogue
+there's a problem."
+
+The hero NEVER waits for others to tell them what to do. The hero NEVER stands
+still while someone explains the situation. The hero ACTS and others follow.
+
+BAD (passive — hero asks, others explain):
+  RAE
+        What should we do?
+  JUNO
+        We need to go to the warehouse.
+  RAE
+        How do we get in?
+  JUNO
+        There's a side entrance. I'll show you.
+
+GOOD (proactive — hero commands, others follow):
+  RAE
+        We're going to the warehouse. Now.
+  Rae grabs her jacket and heads for the door. Juno hesitates.
+  JUNO
+        The side entrance is —
+  RAE
+        I know where it is. Keep up.
+
+BAD (passive — hero receives information):
+  RAE
+        What happened to the power grid?
+  TECH
+        Someone uploaded a kill command at 2:14 AM.
+  RAE
+        Who had access?
+  TECH
+        Only three people.
+
+GOOD (proactive — hero discovers information):
+  Rae pulls up the grid logs on her tablet. Scrolls. Stops.
+  RAE
+        Kill command uploaded at 2:14 AM. Only three people had access.
+  She circles three names on the whiteboard. Underlines one twice.
+  RAE
+        Start with him.
+
+─── TALKING THE PLOT (Snyder Ch.7: "Movies are stories told in pictures") ───
+
+NEVER have characters explain backstory, plot mechanics, or emotional states
+through dialogue. Snyder: "Character is revealed by action taken not by words
+spoken." Snyder: "You can say more about a relationship in trouble by seeing a
+husband eye a pretty young thing than by three pages of dialogue about marriage
+counseling."
+
+If characters need to know something, SHOW IT in the environment — photos on
+walls, scars on bodies, objects in rooms, documents on screens, physical evidence
+that tells the story without anyone opening their mouth.
+
+BAD → GOOD CONVERSION EXAMPLES (memorize these patterns):
+
+BAD: "Remember when MORO first went rogue and killed those people at the plant?"
+GOOD: Juno stares at a faded newspaper clipping taped to the wall:
+      "POWER PLANT MASSACRE — 47 DEAD." Her finger traces the date.
+
+BAD: "He planned this for months."
+GOOD: He opens a drawer. Surveillance photos spill across the desk. Dates circled
+      in red. A map with routes drawn in marker. Months of preparation, visible.
+
+BAD: "She felt nausea rising."
+GOOD: She grabs the table edge. Her knuckles whiten. She swallows hard.
+
+BAD: "They used to be friends."
+GOOD: A cracked photo on the mantel — two figures, arms around each other,
+      faces scratched out with a key.
+
+BAD: "The city is dangerous now."
+GOOD: A body bag on the sidewalk. Pedestrians step around it without looking.
+
+BAD: "He's secretly working for MORO."
+GOOD: His phone buzzes. He checks it under the table — a single word: PROCEED.
+      He deletes it. Pockets the phone. Smiles at the group.
+
+BAD: "I've been tracking this target for six months and she's getting closer."
+GOOD: She peels a surveillance photo off the wall. Behind it, another. Behind
+      that, another — six months of photos layered on top of each other, each
+      one taken from a closer distance.
+
+─── EMOTIONAL COLOR WHEEL (Snyder Ch.7: "Like a roller coaster ride") ───
+
+Snyder: "you've laughed, you've cried, you've gotten horny, you've been scared,
+you've felt regret, anger, frustration, near-miss anxiety and, ultimately,
+breathtaking triumph."
+
+EVERY ACT must contain at least 3 DIFFERENT emotions from this palette:
+  lust, fear, joy, hope, despair, anger, tenderness, surprise, longing,
+  regret, frustration, near-miss anxiety, triumph, human foible
+
+If your screenplay is all fear/tension/dread, RECOLOR scenes: take a tense scene
+and play it for tenderness or dark humor instead. Same conflict, same outcome,
+different emotional color.
+
+PER-ACT EMOTIONAL REQUIREMENTS:
+  Act 1 MUST include: a moment of warmth/tenderness + a moment of humor or
+    lightness + the inciting fear.
+  Act 2A MUST include: hope/excitement (Fun and Games should be FUN) + lust or
+    longing + escalating fear.
+  Act 2B MUST include: despair + anger + a moment of unexpected tenderness.
+  Act 3 MUST include: triumph + sacrifice + cathartic release.
+
+─── HI HOW ARE YOU (Snyder Ch.7: "I was stunned. I couldn't tell one of my
+    characters from the others, and all the characters had MY voice!!") ───
+
+The Bad Dialogue Test: cover the character names. Can you tell who is speaking?
+If not, rewrite.
+
+Give EVERY character a verbal fingerprint:
+  - One character uses TECHNICAL JARGON
+  - One character speaks in SENTENCE FRAGMENTS
+  - One character uses OLD-FASHIONED EXPRESSIONS
+  - One character DEFLECTS WITH DARK HUMOR
+  - One character is PAINFULLY DIRECT (short sentences, no filler)
+
+NEVER let two characters speak the same way.
+
+BAD (all characters sound the same):
+  JUNO
+        We should check the east corridor.
+  MARCUS
+        I think the east corridor is risky.
+  CAMI
+        The east corridor could be a trap.
+
+GOOD (each character sounds unique):
+  JUNO
+        East corridor. Fastest route. (she's already moving)
+  MARCUS
+        Fastest route to getting our heads blown off, sure.
+        Lovely plan. Very inspiring.
+  CAMI
+        I do not believe that is wise. The structural integrity
+        of the east wing has been compromised since the initial—
+  JUNO
+        Cami. Yes or no.
+  CAMI
+        ...No.
+
+─── LIMP AND EYE PATCH (Snyder Ch.7: "Make sure every character has 'A Limp and
+    an Eyepatch' — something memorable.") ───
+
+EVERY supporting character needs ONE memorable visual identifier mentioned EVERY
+TIME they appear on screen.
+
+Blake Snyder's example: a lead boy was "somehow unmemorable on the page" until
+they gave him "a black t-shirt and wispy soul-patch" — suddenly he "popped off
+the page."
+
+RULES:
+  1. Reference the identifier in the FIRST action line of every scene the
+     character appears in.
+  2. The identifier should be EMBLEMATIC — it reveals something about the
+     character's inner world.
+  3. The Character Voice Guide above lists each character's identifier. USE IT.
+  4. If a character doesn't have an identifier, ASSIGN ONE when they first appear.
+
+Examples: always wears one red glove, has a distinctive limp, constantly adjusts
+broken glasses, chews a toothpick, has a neck tattoo of a bird, taps a silver
+lighter on surfaces when thinking (never lights it), wears an oversized watch
+that slides up and down her wrist.
+
+══════════════════════════════════════════════════════════════════════════
+COMPLETE SCENE EXAMPLES (study these — they demonstrate all 5 rules working)
+══════════════════════════════════════════════════════════════════════════
+
+EXAMPLE SCENE 1 — DIALOGUE-HEAVY (hero leads, distinct voices, show-don't-tell,
+emotional change + to -, identifiers):
+
+  INT. SAFE HOUSE KITCHEN - NIGHT
+
+  VERA (40s, scarred hands, always rolling a coin across her knuckles) stands
+  at the counter dismantling a radio. Parts in neat rows. DALE (50s, ex-military,
+  collar always buttoned to the top) sits across, polishing the same boot for
+  twenty minutes.
+
+                      VERA
+            Frequency's been dead for six hours. I'm switching
+            to the backup band.
+
+  She pulls a capacitor free with needle-nose pliers.
+
+                      DALE
+            Backup band's compromised. Has been since Thursday.
+
+  Vera sets down the pliers. The coin stops.
+
+                      VERA
+            Thursday. And you're telling me now.
+
+                      DALE
+            (doesn't look up from the boot)
+            Telling you now because now is when it matters.
+
+                      VERA
+            Get up.
+
+  Dale doesn't move. Vera crosses in three steps. Pulls the boot out of his
+  hands. Drops it on the floor.
+
+                      VERA
+            We're relocating. Pack the radios. Leave the rest.
+
+                      DALE
+            (standing slowly)
+            You're making a tactical error.
+
+                      VERA
+            Then it's my error. Move.
+
+  Dale buttons his collar. Picks up the radio parts. Vera pockets the coin and
+  heads for the door. Pauses at a photograph pinned to the corkboard. Two
+  smiling faces. She unpins it. Folds it once. Puts it in her jacket. The
+  lightness from a moment ago is gone.
+
+  WHY IT WORKS: Vera gives commands, never asks questions. Dale's formal speech
+  vs. Vera's clipped imperatives = distinct voices. Vera's coin, Dale's collar =
+  identifiers. The photograph = show-don't-tell (personal stakes, no exposition).
+
+EXAMPLE SCENE 2 — ACTION-HEAVY (visual storytelling, emotional color, identifier,
+no internal monologue, show-don't-tell):
+
+  EXT. FLOODED UNDERPASS - DAWN
+
+  Knee-deep water. Shopping carts half-submerged. NORA (30s, lean, faded red
+  bandana always tied around her left wrist) wades carrying a sealed plastic
+  bin above her head. Behind her, KITE (20s, taps everything twice before
+  touching it) splashes through, flinching at every echo.
+
+  Nora stops. Listens. A low hum from above. She raises a fist. Kite freezes.
+  A searchlight sweeps the overpass. It passes. The hum fades.
+
+  Nora lowers her fist. Points forward. They move.
+
+  Kite's foot catches a submerged cable. Stumbles. The bin nearly tips. Nora
+  catches it one-handed. Steadies Kite with the other. Holds him there for a
+  second. Lets go.
+
+  Something floats past. A child's shoe. Pink, waterlogged. Nora's eyes track
+  it. Her hand goes to the red bandana. She adjusts it. Keeps moving.
+
+  They reach the end. Daylight. BETTIE (70s, wrapped in a quilt stitched from
+  hospital gowns, one lens blacked out with tape) sits on an overturned bucket
+  with a fishing rod. The line disappears into floodwater.
+
+                      BETTIE
+            (not looking up)
+            Two of you today. Usually just the one.
+
+  Nora sets the bin down. Opens it: insulin vials packed in ice. Bettie glances.
+  Her rod hand trembles.
+
+                      BETTIE
+            Lord. You actually found some.
+
+  Bettie sets down the rod. Pulls a folded hand-drawn map from inside her quilt.
+
+                      BETTIE
+            Grid's been rerouted. South corridor's live again.
+            Marked it for you.
+
+  Nora takes the map. Kite taps the corner twice before pointing to a section.
+  Nora nods. Folds it. Tucks it in her jacket.
+
+  Nora pulls one insulin vial from the bin. Sets it in Bettie's lap. Bettie
+  stares at it. Her lip quivers. She picks up the rod. The tremble is gone.
+
+  Nora turns into the daylight. Kite follows. Behind them, Bettie casts again.
+
+  WHY IT WORKS: No dialogue for the first half — pure visual storytelling. Four
+  emotions in one scene: fear (searchlight), tenderness (steadying Kite), longing
+  (child's shoe), hope (insulin delivery). Identifiers: Nora's bandana, Kite's
+  double-tap, Bettie's quilt/taped glasses. No internal monologue — we see Nora
+  touch the bandana but never hear what she's thinking. Bettie arcs: guarded →
+  grateful (trembling stops after receiving insulin).
+
+══════════════════════════════════════════════════════════════════════════
 
 PER-SCENE REQUIRED FIELDS:
 1. scene_number (int): Sequential starting from {start_scene_number}
@@ -2782,11 +3461,14 @@ character cues) to fix the problems. Full scenes, not outlines."""
         # Hero
         hero_bio = (hero.get("character_biography") or "").strip()
         hero_archetype = hero.get("archetype", "")
+        hero_sig = (hero.get("signature_identifier") or "").strip()
+        hero_sig_line = f"\nSIGNATURE IDENTIFIER: {hero_sig}" if hero_sig else ""
         if hero_bio:
             sections.append(
                 f"=== {hero_name} (HERO — {hero_archetype}) ===\n"
                 f"{hero_bio}\n"
                 f"Arc: {hero.get('opening_state', '?')} → {hero.get('final_state', '?')}"
+                f"{hero_sig_line}"
             )
         else:
             sections.append(
@@ -2794,6 +3476,7 @@ character cues) to fix the problems. Full scenes, not outlines."""
                 f"Goal: {hero.get('stated_goal', '?')}\n"
                 f"Need: {hero.get('actual_need', '?')}\n"
                 f"Arc: {hero.get('opening_state', '?')} → {hero.get('final_state', '?')}"
+                f"{hero_sig_line}"
             )
 
         # Antagonist
@@ -2802,11 +3485,14 @@ character cues) to fix the problems. Full scenes, not outlines."""
             antag_name = antagonist["name"]
             antag_bio = (antagonist.get("character_biography") or "").strip()
             antag_adj = antagonist.get("adjective_descriptor", "")
+            antag_sig = (antagonist.get("signature_identifier") or "").strip()
+            antag_sig_line = f"\nSIGNATURE IDENTIFIER: {antag_sig}" if antag_sig else ""
             if antag_bio:
                 sections.append(
                     f"=== {antag_name} (ANTAGONIST — {antag_adj}) ===\n"
                     f"{antag_bio}\n"
                     f"Does NOT arc. Refuses to change — that's why they lose."
+                    f"{antag_sig_line}"
                 )
             else:
                 sections.append(
@@ -2814,6 +3500,7 @@ character cues) to fix the problems. Full scenes, not outlines."""
                     f"Mirror: {antagonist.get('mirror_principle', '?')}\n"
                     f"Moral line: {antagonist.get('moral_difference', '?')}\n"
                     f"Does NOT arc. Refuses to change."
+                    f"{antag_sig_line}"
                 )
 
         # B-story
@@ -2822,17 +3509,21 @@ character cues) to fix the problems. Full scenes, not outlines."""
             b_name = b_story["name"]
             b_bio = (b_story.get("character_biography") or "").strip()
             b_rel = b_story.get("relationship_to_hero", "")
+            b_sig = (b_story.get("signature_identifier") or "").strip()
+            b_sig_line = f"\nSIGNATURE IDENTIFIER: {b_sig}" if b_sig else ""
             if b_bio:
                 sections.append(
                     f"=== {b_name} (B-STORY — {b_rel}) ===\n"
                     f"{b_bio}\n"
                     f"Arc: {b_story.get('opening_state', '?')} → {b_story.get('final_state', '?')}"
+                    f"{b_sig_line}"
                 )
             else:
                 sections.append(
                     f"=== {b_name} (B-STORY — {b_rel}) ===\n"
                     f"Theme wisdom: {b_story.get('theme_wisdom', '?')}\n"
                     f"Arc: {b_story.get('opening_state', '?')} → {b_story.get('final_state', '?')}"
+                    f"{b_sig_line}"
                 )
 
         # Supporting cast (Step 3b, merged by orchestrator into step_3_artifact)

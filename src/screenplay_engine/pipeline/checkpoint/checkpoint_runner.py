@@ -116,12 +116,27 @@ class CheckpointRunner:
         # Validate structure
         artifact = self._validate_and_fix_structure(artifact, applicable_checks)
 
-        # Extract results
+        # Extract results — support both old format (passed) and new format (rough_spots)
         diagnostics = artifact.get("diagnostics", [])
-        checks_passed = sum(1 for d in diagnostics if d.get("passed", False))
         checks_run = len(diagnostics)
-        failures = [d for d in diagnostics if not d.get("passed", True)]
-        all_passed = checks_passed == checks_run and checks_run > 0
+
+        if any("rough_spots" in d for d in diagnostics):
+            # New observational format
+            checks_with_issues = sum(
+                1 for d in diagnostics if len(d.get("rough_spots", [])) > 0
+            )
+            checks_clean = checks_run - checks_with_issues
+            failures = [
+                d for d in diagnostics if len(d.get("rough_spots", [])) > 0
+            ]
+        else:
+            # Old pass/fail format (backward compatibility)
+            checks_clean = sum(1 for d in diagnostics if d.get("passed", False))
+            checks_with_issues = checks_run - checks_clean
+            failures = [d for d in diagnostics if not d.get("passed", True)]
+
+        checks_passed = checks_clean
+        all_passed = checks_with_issues == 0 and checks_run > 0
 
         result = CheckpointResult(
             passed=all_passed,
@@ -139,10 +154,12 @@ class CheckpointRunner:
             step_number, status, checks_passed, checks_run,
         )
         for f in failures:
+            # Support both old (problem_details) and new (observations) format
+            detail = f.get("problem_details") or f.get("observations") or ""
             logger.info(
-                "  [FAIL] %s: %s",
+                "  [ISSUE] %s: %s",
                 f.get("check_name", "?"),
-                f.get("problem_details", "")[:200],
+                detail[:200],
             )
 
         # Save to disk
@@ -183,7 +200,7 @@ class CheckpointRunner:
             pass
 
         # Return empty structure
-        return {"diagnostics": [], "checks_passed_count": 0, "total_checks": 0}
+        return {"diagnostics": [], "total_checks": 0}
 
     def _validate_and_fix_structure(
         self,
@@ -222,11 +239,20 @@ class CheckpointRunner:
                 )
 
         # Recalculate counts based on checks actually evaluated
-        checks_passed = sum(1 for d in fixed_diagnostics if d.get("passed", False))
+        # Support both old (passed) and new (rough_spots) format
+        if any("rough_spots" in d for d in fixed_diagnostics):
+            checks_clean = sum(
+                1 for d in fixed_diagnostics
+                if len(d.get("rough_spots", [])) == 0
+            )
+        else:
+            checks_clean = sum(
+                1 for d in fixed_diagnostics if d.get("passed", False)
+            )
 
         return {
             "diagnostics": fixed_diagnostics,
-            "checks_passed_count": checks_passed,
+            "checks_passed_count": checks_clean,
             "total_checks": len(fixed_diagnostics),
         }
 

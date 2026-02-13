@@ -228,40 +228,31 @@ class TestCallStepRevise:
         assert result is None
 
 
-class TestSupportingCastIntegration:
-    """Tests for Step 3b wiring and merged character context."""
+class TestStep3bRemoved:
+    """Verify Step 3b (Supporting Cast) is no longer part of the pipeline.
 
-    def test_merge_character_context_adds_supporting_cast(self, tmp_path):
+    Step 3b was removed per user directive: characters emerge organically
+    via Board (Step 5) and Screenplay (Step 6), not pre-defined as a bulk cast.
+    """
+
+    def test_pipeline_has_no_execute_step_3b(self, tmp_path):
+        """execute_step_3b should no longer exist on ScreenplayPipeline."""
         pipeline = ScreenplayPipeline(str(tmp_path))
-        step_3 = {"hero": {"name": "Alex"}}
-        step_3b = {
-            "characters": [
-                {"name": "Rory", "role": "ally"},
-                {"name": "Judge Talbot", "role": "authority"},
-            ],
-            "total_speaking_roles": 2,
-            "total_non_speaking": 0,
-        }
+        assert not hasattr(pipeline, "execute_step_3b")
 
-        merged = pipeline._merge_character_context(step_3, step_3b)
-        assert "supporting_cast" in merged
-        assert "supporting_characters" in merged
-        assert len(merged["supporting_characters"]) == 2
-        assert merged["supporting_characters"][0]["name"] == "Rory"
+    def test_pipeline_has_no_merge_character_context(self, tmp_path):
+        """_merge_character_context should no longer exist on ScreenplayPipeline."""
+        pipeline = ScreenplayPipeline(str(tmp_path))
+        assert not hasattr(pipeline, "_merge_character_context")
 
-    def test_run_full_pipeline_executes_step_3b(self, tmp_path):
+    def test_run_full_pipeline_skips_step_3b(self, tmp_path):
+        """Full pipeline should go 1 -> 2 -> 3 -> 4 (no 3b in between)."""
         pipeline = ScreenplayPipeline(str(tmp_path))
         pipeline.current_project_id = "test"
 
-        # Stub all step methods; run_full_pipeline should still perform orchestration.
         pipeline.execute_step_1 = MagicMock(return_value=(True, {"title": "T", "logline": "L"}, "ok"))
         pipeline.execute_step_2 = MagicMock(return_value=(True, {"genre": "dude_with_a_problem"}, "ok"))
         pipeline.execute_step_3 = MagicMock(return_value=(True, {"hero": {"name": "Alex"}}, "ok"))
-        pipeline.execute_step_3b = MagicMock(return_value=(
-            True,
-            {"characters": [{"name": "Rory", "role": "ally"}], "total_speaking_roles": 1, "total_non_speaking": 0},
-            "ok",
-        ))
         pipeline.execute_step_4 = MagicMock(return_value=(True, {"beats": []}, "ok"))
         pipeline.execute_step_5 = MagicMock(return_value=(True, {"row_1_act_one": []}, "ok"))
         pipeline.execute_step_6 = MagicMock(return_value=(True, {"scenes": [], "total_pages": 1}, "ok"))
@@ -274,7 +265,7 @@ class TestSupportingCastIntegration:
 
         success, artifacts, _ = pipeline.run_full_pipeline({"step_0": {}})
         assert success is True
-        pipeline.execute_step_3b.assert_called_once()
-        assert "3b" in artifacts
-        assert "supporting_characters" in artifacts[3]
-        assert artifacts[3]["supporting_characters"][0]["name"] == "Rory"
+        # Step 3b should NOT be in artifacts
+        assert "3b" not in artifacts
+        # Step 3 artifact should NOT have supporting_characters injected
+        assert "supporting_characters" not in artifacts[3]

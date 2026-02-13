@@ -13,6 +13,7 @@ from .models import (
     CharacterSheet,
     CharacterState,
     SettingBase,
+    SettingState,
     ShotInitFrame,
     StyleBible,
     TimeOfDay,
@@ -69,6 +70,7 @@ class PromptBatch:
     character_prompts: list[ImagePrompt] = field(default_factory=list)
     setting_prompts: list[ImagePrompt] = field(default_factory=list)
     state_variant_prompts: list[ImagePrompt] = field(default_factory=list)
+    setting_state_variant_prompts: list[ImagePrompt] = field(default_factory=list)
     init_frame_prompts: list[ImagePrompt] = field(default_factory=list)
 
     @property
@@ -77,6 +79,7 @@ class PromptBatch:
             len(self.character_prompts)
             + len(self.setting_prompts)
             + len(self.state_variant_prompts)
+            + len(self.setting_state_variant_prompts)
             + len(self.init_frame_prompts)
         )
 
@@ -86,6 +89,7 @@ class PromptBatch:
             "character_prompts": len(self.character_prompts),
             "setting_prompts": len(self.setting_prompts),
             "state_variant_prompts": len(self.state_variant_prompts),
+            "setting_state_variant_prompts": len(self.setting_state_variant_prompts),
             "init_frame_prompts": len(self.init_frame_prompts),
             "total": self.total_prompts,
         }
@@ -138,6 +142,7 @@ class PromptBuilder:
         batch.character_prompts = self._build_character_prompts()
         batch.setting_prompts = self._build_setting_prompts()
         batch.state_variant_prompts = self._build_state_variant_prompts()
+        batch.setting_state_variant_prompts = self._build_setting_state_variant_prompts()
         batch.init_frame_prompts = self._build_init_frame_prompts()
         return batch
 
@@ -248,6 +253,45 @@ class PromptBuilder:
         return prompts
 
     # ------------------------------------------------------------------
+    # Setting state variant images (I2I edit of base setting)
+    # ------------------------------------------------------------------
+
+    def _build_setting_state_variant_prompts(self) -> list[ImagePrompt]:
+        """Generate I2I edit prompts for each setting state variant."""
+        prompts = []
+        for setting in self.manifest.settings:
+            for state in setting.states:
+                if not state.active_changes:
+                    continue  # skip clean state, covered by base setting ref
+                prompt_id = f"setstate_{state.state_id}"
+                desc = state.to_prompt_description()
+                # Pick the first time variant for the base reference
+                base_time = (setting.time_variants[0] if setting.time_variants
+                             else TimeOfDay.DAY)
+                base_angle = (setting.angles_needed[0] if setting.angles_needed
+                              else CameraAngle.WIDE)
+                base_ref = f"set_{setting.setting_id}_{base_time.value}_{base_angle.value}"
+                prompt_text = (
+                    f"{desc}, "
+                    f"no characters, empty scene, "
+                    f"consistent with base setting, {self.style_suffix}"
+                )
+                prompts.append(ImagePrompt(
+                    prompt_id=prompt_id,
+                    category="setting_state_variant",
+                    prompt=prompt_text,
+                    negative_prompt=DEFAULT_NEGATIVE + ", people, characters, figures",
+                    reference_ids=[base_ref],
+                    metadata={
+                        "location": setting.location_name,
+                        "state_id": state.state_id,
+                        "scene_number": state.scene_number,
+                        "changes": [c.change_type.value for c in state.active_changes],
+                    },
+                ))
+        return prompts
+
+    # ------------------------------------------------------------------
     # Init frame prompts
     # ------------------------------------------------------------------
 
@@ -258,15 +302,18 @@ class PromptBuilder:
             if not frame.is_first_frame:
                 continue  # only generate for first frames of clips
 
-            # Build reference chain — character state + setting
+            # Build reference chain — character state + setting (or setting state)
             refs = []
             if frame.character_state_id:
                 refs.append(f"state_{frame.character_state_id}")
-            if frame.setting_id:
+            if frame.setting_state_id:
+                # Use the setting state variant image instead of base
+                refs.append(f"setstate_{frame.setting_state_id}")
+            elif frame.setting_id:
                 time = frame.time_of_day.value
                 refs.append(f"set_{frame.setting_id}_{time}_{frame.camera_angle.value}")
 
-            prompt_text = frame.visual_prompt
+            prompt_text = frame.setting_prompt
             if not prompt_text.rstrip().endswith(self.style_suffix):
                 prompt_text = f"{prompt_text}, {self.style_suffix}"
 
@@ -282,6 +329,7 @@ class PromptBuilder:
                     "global_order": frame.global_order,
                     "character_state": frame.character_state_id,
                     "setting": frame.setting_id,
+                    "setting_state": frame.setting_state_id,
                     "veo_block": frame.veo_block_index,
                 },
             ))

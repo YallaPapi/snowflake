@@ -106,6 +106,24 @@ class GenreDefinition(BaseModel):
     conventions: List[str] = Field(default_factory=list, description="Audience expectations for this genre")
 
 
+# ── Step 3: Physical Appearance (structured for T2I) ─────────────────────
+
+class PhysicalAppearance(BaseModel):
+    """Structured physical description fields for T2I image generation.
+
+    Every field describes only visible, physical characteristics.
+    No personality traits, no internal states — only what the camera sees.
+    """
+    age_range: str = Field(default="", description="Approximate visible age e.g. '30s', 'early 20s'")
+    gender: str = Field(default="", description="Visible gender presentation")
+    height: str = Field(default="", description="Relative height e.g. 'tall', 'average', 'short'")
+    build: str = Field(default="", description="Body type e.g. 'lean, wiry-strong', 'stocky', 'athletic'")
+    hair: str = Field(default="", description="Hair color, length, style e.g. 'dark, pinned tight'")
+    skin_tone: str = Field(default="", description="Skin tone e.g. 'olive', 'dark brown', 'pale freckled'")
+    default_wardrobe: str = Field(default="", description="Typical clothing e.g. 'dark jacket with hidden pockets, scuffed boots'")
+    distinguishing_marks: str = Field(default="", description="Scars, tattoos, birthmarks e.g. 'thin scar at collarbone'")
+
+
 # ── Step 3: Hero ──────────────────────────────────────────────────────────
 
 class HeroProfile(BaseModel):
@@ -118,6 +136,10 @@ class HeroProfile(BaseModel):
     )
     age_range: str = Field(default="", description="Character's approximate age range e.g. 'late 20s'")
     gender: str = Field(default="", description="Character's gender")
+    physical_appearance: Optional[PhysicalAppearance] = Field(
+        default=None,
+        description="Structured physical description for T2I image generation",
+    )
     archetype: ActorArchetype
 
     # Motivation
@@ -138,6 +160,12 @@ class HeroProfile(BaseModel):
     final_state: str = Field(..., description="Who hero is at Final Image (must be opposite)")
     theme_carrier: str = Field(..., description="How protagonist embodies the central question")
 
+    # Limp and Eye Patch (Ch.7) — planned at character creation
+    signature_identifier: str = Field(
+        default="",
+        description="One memorable physical/behavioral/verbal trait that appears every time this character is on screen",
+    )
+
 
 class AntagonistProfile(BaseModel):
     """Antagonist constructed to mirror hero (Ch.3 + Ch.7)"""
@@ -147,9 +175,19 @@ class AntagonistProfile(BaseModel):
         default="",
         description="Full prose antagonist biography; antagonist remains static (no arc).",
     )
+    physical_appearance: Optional[PhysicalAppearance] = Field(
+        default=None,
+        description="Structured physical description for T2I image generation",
+    )
     power_level: str = Field(..., description="Equal or slightly superior to hero")
     moral_difference: str = Field(..., description="Willing to do things hero won't")
     mirror_principle: str = Field(..., description="How they are two halves of same person")
+
+    # Limp and Eye Patch (Ch.7) — planned at character creation
+    signature_identifier: str = Field(
+        default="",
+        description="One memorable physical/behavioral/verbal trait that appears every time this character is on screen",
+    )
 
 
 class BStoryCharacter(BaseModel):
@@ -158,6 +196,10 @@ class BStoryCharacter(BaseModel):
     character_biography: str = Field(
         default="",
         description="Full prose biography with voice and behavior traits",
+    )
+    physical_appearance: Optional[PhysicalAppearance] = Field(
+        default=None,
+        description="Structured physical description for T2I image generation",
     )
     relationship_to_hero: str
     theme_wisdom: str = Field(..., description="The lesson they teach that solves A-story")
@@ -170,8 +212,15 @@ class BStoryCharacter(BaseModel):
         description="Who this character becomes by the Final Image (must differ from opening_state)",
     )
 
+    # Limp and Eye Patch (Ch.7) — planned at character creation
+    signature_identifier: str = Field(
+        default="",
+        description="One memorable physical/behavioral/verbal trait that appears every time this character is on screen",
+    )
+
 
 # ── Step 3b: Supporting Cast ──────────────────────────────────────────────
+# DEPRECATED: Step 3b removed per user directive. Characters emerge organically via Board/Screenplay.
 
 class SupportingCharacter(BaseModel):
     """One supporting character defined before screenplay writing"""
@@ -185,7 +234,8 @@ class SupportingCharacter(BaseModel):
 
 
 class SupportingCast(BaseModel):
-    """Complete supporting cast defined between Hero (Step 3) and Beat Sheet (Step 4)"""
+    """Complete supporting cast defined between Hero (Step 3) and Beat Sheet (Step 4)
+    DEPRECATED: Step 3b removed per user directive. Characters emerge organically via Board/Screenplay."""
     characters: List[SupportingCharacter] = Field(..., min_length=4, max_length=20)
     total_speaking_roles: int = Field(default=0, description="Total characters with dialogue")
     total_non_speaking: int = Field(default=0, description="Named but silent characters")
@@ -258,13 +308,21 @@ class LawResult(BaseModel):
 
 # ── Step 7: Diagnostics ───────────────────────────────────────────────────
 
+class RoughSpot(BaseModel):
+    """One specific rough spot identified in a diagnostic check."""
+    scene: int = Field(..., description="Scene number where the rough spot occurs")
+    issue: str = Field(..., description="What the rough spot is — specific and quotable")
+    current_text: str = Field(default="", description="Quoted text from the screenplay")
+
+
 class DiagnosticResult(BaseModel):
-    """Result of one diagnostic check"""
+    """Result of one diagnostic check — observational, no pass/fail."""
     check_number: int = Field(..., ge=1, le=9)
     check_name: str
-    passed: bool
-    problem_details: str = Field(default="")
-    fix_suggestion: str = Field(default="")
+    observations: str = Field(default="", description="Factual analysis of what the screenplay does for this check")
+    rough_spots: List[RoughSpot] = Field(default_factory=list, description="Specific scenes that could be improved")
+    rewrite_suggestions: Dict[str, str] = Field(default_factory=dict, description="Scene number -> concrete rewrite instruction")
+    emotion_map: Optional[Dict[str, List[int]]] = Field(default=None, description="Only for Emotional Color Wheel: emotion -> scene numbers")
 
 
 # ── Step 8: Screenplay ────────────────────────────────────────────────────

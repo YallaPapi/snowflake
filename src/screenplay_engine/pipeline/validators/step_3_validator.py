@@ -29,7 +29,7 @@ VALID_POWER_KEYWORDS = {
 class Step3Validator:
     """Validator for Screenplay Engine Step 3: Hero Construction (Save the Cat)"""
 
-    VERSION = "4.0.0"
+    VERSION = "6.0.0"
 
     def validate(self, artifact: Dict[str, Any]) -> Tuple[bool, List[str]]:
         """
@@ -327,7 +327,68 @@ class Step3Validator:
                 f"Snyder: 'it better damn well be related to...'"
             )
 
+        # ── 15. Physical appearance warnings (non-blocking) ──────────
+        # These are warnings only — they do NOT cause validation failure.
+        # Store them on the instance for callers that want to surface them.
+        self._warnings: List[str] = []
+        self._validate_physical_appearance(hero, "hero")
+        self._validate_physical_appearance(antagonist, "antagonist")
+        self._validate_physical_appearance(b_story, "b_story_character")
+
+        # ── 16. Signature identifier (Limp and Eye Patch — Ch.7) ──────
+        # Soft validation: if present and non-empty, must be >= 10 chars.
+        # Missing/empty is allowed for backward compatibility.
+        for char_key in ["hero", "antagonist", "b_story_character"]:
+            char_data = artifact.get(char_key, {})
+            if not isinstance(char_data, dict):
+                continue
+            sig_id = char_data.get("signature_identifier", "")
+            if sig_id and len(sig_id.strip()) < 10:
+                errors.append(
+                    f"WEAK_SIGNATURE_IDENTIFIER: {char_key}'s signature_identifier "
+                    f"is too vague ('{sig_id}'). Must be at least 10 characters with "
+                    f"a specific physical, behavioral, or verbal trait."
+                )
+
         return len(errors) == 0, errors
+
+    @property
+    def warnings(self) -> List[str]:
+        """Return warnings from the last validate() call.
+
+        Warnings are non-blocking issues (e.g., missing physical_appearance
+        fields) that should be surfaced to callers but do not fail validation.
+        """
+        return getattr(self, "_warnings", [])
+
+    def _validate_physical_appearance(
+        self, character: Dict[str, Any], character_label: str
+    ) -> None:
+        """Check physical_appearance fields and emit warnings if missing/empty.
+
+        These are warnings only — they never block validation.
+        """
+        if not character:
+            return
+
+        pa = character.get("physical_appearance")
+        if pa is None or not isinstance(pa, dict):
+            self._warnings.append(
+                f"MISSING_PHYSICAL_APPEARANCE_{character_label.upper()}: "
+                f"{character_label} is missing the physical_appearance object. "
+                f"T2I image generation will not have structured physical data."
+            )
+            return
+
+        required_pa_fields = ["build", "hair", "default_wardrobe"]
+        for field in required_pa_fields:
+            value = (pa.get(field) or "").strip()
+            if not value:
+                self._warnings.append(
+                    f"EMPTY_PHYSICAL_FIELD_{character_label.upper()}: "
+                    f"{character_label}.physical_appearance.{field} is empty. "
+                    f"T2I generation needs this for accurate character visuals."
+                )
 
     def fix_suggestions(self, errors: List[str]) -> List[str]:
         """
@@ -523,6 +584,28 @@ class Step3Validator:
             elif "THIN_B_STORY_BIOGRAPHY" in error:
                 suggestions.append(
                     "Expand B-story character_biography to at least 75 words."
+                )
+            elif "MISSING_PHYSICAL_APPEARANCE" in error:
+                suggestions.append(
+                    "Add a physical_appearance object with at least build, hair, "
+                    "and default_wardrobe. These are used for T2I image generation. "
+                    "Use only visual/physical descriptions, not personality traits."
+                )
+            elif "EMPTY_PHYSICAL_FIELD" in error:
+                suggestions.append(
+                    "Fill in the empty physical_appearance field with a specific, "
+                    "visual description. E.g., build: 'lean, wiry-strong', "
+                    "hair: 'dark, pinned tight', default_wardrobe: 'dark jacket "
+                    "with hidden pockets, scuffed boots'."
+                )
+            elif "WEAK_SIGNATURE_IDENTIFIER" in error:
+                suggestions.append(
+                    "Expand the signature_identifier to at least 10 characters. "
+                    "Snyder Ch.7: 'Make sure every character has A Limp and an "
+                    "Eyepatch.' Give a specific physical trait, prop, behavioral "
+                    "habit, or verbal tic — e.g., 'always flips a coin across "
+                    "his knuckles' or 'taps her ring finger where a wedding band "
+                    "used to be.'"
                 )
             else:
                 suggestions.append("Review and fix the indicated issue.")
