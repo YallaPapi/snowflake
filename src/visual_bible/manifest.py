@@ -435,7 +435,7 @@ def _split_sentences(text: str) -> list[str]:
     protected = _ABBREVIATIONS.sub(
         lambda m: m.group(0).replace(".", "\x00"), text
     )
-    protected = re.sub(r"(\d)\.(\d)", r"\1\x00\2", protected)
+    protected = re.sub(r"(\d)\.(\d)", lambda m: m.group(1) + "\x00" + m.group(2), protected)
     raw_sentences = _SENTENCE_END.split(protected)
     return [s.replace("\x00", ".").strip() for s in raw_sentences if s.strip()]
 
