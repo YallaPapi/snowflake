@@ -296,25 +296,42 @@ class PromptBuilder:
     # ------------------------------------------------------------------
 
     def _build_init_frame_prompts(self) -> list[ImagePrompt]:
-        """Generate first-frame images for Veo clips."""
+        """Generate first-frame images for Veo clips.
+
+        Uses scene_prompt (character blocking from shot engine) as the primary
+        I2I generation instruction.  Setting and character base images are
+        provided via reference_ids for IP-adapter consistency.
+        """
         prompts = []
         for frame in self.manifest.init_frames:
             if not frame.is_first_frame:
                 continue  # only generate for first frames of clips
 
-            # Build reference chain — character state + setting (or setting state)
+            # Build reference chain — all character states + setting
             refs = []
-            if frame.character_state_id:
+
+            # All character state refs for IP-adapter consistency
+            if frame.character_state_ids:
+                for cstate_id in frame.character_state_ids:
+                    if "_clean" in cstate_id:
+                        char_base = cstate_id.replace("_clean", "")
+                        refs.append(f"char_{char_base}_medium")
+                    else:
+                        refs.append(f"state_{cstate_id}")
+            elif frame.character_state_id:
                 refs.append(f"state_{frame.character_state_id}")
+
+            # Setting ref (state variant or base)
             if frame.setting_state_id:
-                # Use the setting state variant image instead of base
                 refs.append(f"setstate_{frame.setting_state_id}")
             elif frame.setting_id:
                 time = frame.time_of_day.value
                 refs.append(f"set_{frame.setting_id}_{time}_{frame.camera_angle.value}")
 
-            prompt_text = frame.setting_prompt
-            if not prompt_text.rstrip().endswith(self.style_suffix):
+            # Use scene_prompt (character blocking/framing) as primary
+            # generation instruction; setting + character images are references
+            prompt_text = frame.scene_prompt if frame.scene_prompt else frame.setting_prompt
+            if prompt_text and not prompt_text.rstrip().endswith(self.style_suffix):
                 prompt_text = f"{prompt_text}, {self.style_suffix}"
 
             prompts.append(ImagePrompt(
@@ -327,7 +344,7 @@ class PromptBuilder:
                     "shot_id": frame.shot_id,
                     "scene_number": frame.scene_number,
                     "global_order": frame.global_order,
-                    "character_state": frame.character_state_id,
+                    "character_states": frame.character_state_ids or [frame.character_state_id],
                     "setting": frame.setting_id,
                     "setting_state": frame.setting_state_id,
                     "veo_block": frame.veo_block_index,

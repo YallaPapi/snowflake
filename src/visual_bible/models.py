@@ -192,6 +192,7 @@ class ShotInitFrame:
     time_of_day: TimeOfDay
     camera_angle: CameraAngle
     setting_prompt: str  # T2I: setting with cinematography
+    character_state_ids: list[str] = field(default_factory=list)  # all char states for IP-adapter
     setting_state_id: str = ""  # references a SettingState.state_id
     scene_prompt: str = ""  # I2I: character placement into setting
     video_prompt: str = ""  # I2V: motion from composed frame

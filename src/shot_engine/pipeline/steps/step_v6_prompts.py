@@ -1,10 +1,11 @@
 """
 V6: Prompt Generation
 
-Produces three prompts per shot for the three-step generation pipeline:
-  1. setting_prompt  (T2I) — background plate with wide/establishing framing
-  2. scene_prompt    (I2I) — edit instruction to place named characters into the setting
-  3. video_prompt    (I2V) — physical motion verbs only (no narrative prose)
+Produces per-shot data for the visual bible pipeline:
+  1. setting_ref_id  — normalized key referencing a Visual Bible setting asset
+  2. character_ref_ids — normalized character keys for state lookup
+  3. scene_prompt    (I2I) — edit instruction to place named characters into the setting
+  4. video_prompt    (I2V) — physical motion verbs only (no narrative prose)
 """
 
 import re
@@ -324,32 +325,25 @@ class StepV6Prompts:
             int_ext = _extract_int_ext(slugline)
             time_of_day = _extract_time_of_day(slugline)
 
+            # Normalize location to match visual bible's _normalize_location_key
+            setting_ref = re.sub(r"[^a-z0-9\s]", "", location_desc)
+            setting_ref = re.sub(r"\s+", "_", setting_ref.strip())
+
             for shot in scene.shots:
-                # ── SETTING PROMPT (T2I) ─────────────────────────────
-                # Background plate generation. ALWAYS wide/establishing
-                # framing regardless of per-shot type (no close-ups for
-                # background plates). No per-shot lens or angle specs.
-                setting_parts: List[str] = []
+                # ── SETTING REF ID (replaces per-shot setting_prompt) ──
+                # Points to a Visual Bible setting asset; the visual bible
+                # generates base T2I images per unique location, and I2I
+                # angle/time variants from that base.
+                shot.setting_ref_id = setting_ref
+                shot.setting_prompt = ""  # deprecated
 
-                # Location
-                if location_desc:
-                    setting_parts.append(location_desc)
-                if int_ext:
-                    setting_parts.append(int_ext)
-
-                # Always wide/establishing framing for background plates
-                setting_parts.append("wide shot, full environment visible")
-
-                # Time of day and lighting (scene-level, not per-shot)
-                if time_of_day:
-                    setting_parts.append(time_of_day)
-                if shot.lighting_intent:
-                    setting_parts.append(shot.lighting_intent)
-
-                # Quality
-                setting_parts.append("cinematic, film grain, 4K, no people, empty scene")
-
-                shot.setting_prompt = ", ".join(setting_parts)
+                # ── CHARACTER REF IDS ──────────────────────────────
+                # Normalized character keys for visual bible state lookup.
+                shot.character_ref_ids = [
+                    re.sub(r"\s+", "_", re.sub(r"[^a-z0-9\s]", "", c.lower()).strip())
+                    for c in shot.characters_in_frame
+                    if c.strip()
+                ]
 
                 # ── SCENE PROMPT (I2I edit) ──────────────────────────
                 # Places named characters into the setting image.

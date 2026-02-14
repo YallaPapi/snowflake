@@ -57,12 +57,12 @@ class ShotListValidator:
         if zero_dur > 0:
             errors.append(f"{zero_dur} shots have zero or negative duration")
 
-        # 4. Every shot has all three prompts
-        no_setting = sum(1 for s in all_shots if not s.setting_prompt)
+        # 4. Every shot has setting ref or prompt, plus scene and video prompts
+        no_setting = sum(1 for s in all_shots if not s.setting_prompt and not s.setting_ref_id)
         no_scene = sum(1 for s in all_shots if not s.scene_prompt)
         no_video = sum(1 for s in all_shots if not s.video_prompt)
         if no_setting > 0:
-            errors.append(f"{no_setting} shots missing setting prompt")
+            errors.append(f"{no_setting} shots missing both setting_prompt and setting_ref_id")
         if no_scene > 0:
             errors.append(f"{no_scene} shots missing scene prompt")
         if no_video > 0:

@@ -237,13 +237,17 @@ class Shot(BaseModel):
     crossfade_duration: float = 0.0
 
     # From V6: Prompts (T2I setting → I2I composition → I2V motion)
-    setting_prompt: str = ""      # T2I: setting image with cinematography baked in
+    setting_prompt: str = ""      # Deprecated: visual bible handles setting images
     scene_prompt: str = ""        # I2I edit: character placement/blocking in the setting
     video_prompt: str = ""        # I2V: motion from the composed frame
     negative_prompt: str = ""
     character_prompt_prefix: str = ""
     init_image_source: str = "reference"  # "reference" | "previous_frame" | "generated"
     ambient_description: str = ""
+
+    # V6 references to Visual Bible assets
+    setting_ref_id: str = ""  # visual bible setting key, e.g. "riverside_night_market"
+    character_ref_ids: List[str] = Field(default_factory=list)  # character keys for state lookup
 
     # Context
     beat: str = ""

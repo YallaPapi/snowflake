@@ -1216,34 +1216,56 @@ class ManifestParser:
                 scene_num = shot.get("scene_number", 0)
                 chars_in_frame = shot.get("characters_in_frame", [])
 
-                # Determine character state for this shot
+                # ── Resolve character states ──────────────────────
+                # New path: use character_ref_ids from shot engine
+                char_ref_ids = shot.get("character_ref_ids", [])
+                resolved_state_ids: list[str] = []
+                if char_ref_ids:
+                    for char_key in char_ref_ids:
+                        for cname, sheet in self._characters.items():
+                            norm_name = _normalize_location_key(cname)
+                            if norm_name == char_key and sheet.states:
+                                best = sheet.states[0]
+                                for state in sheet.states:
+                                    if state.scene_number <= scene_num:
+                                        best = state
+                                resolved_state_ids.append(best.state_id)
+                                break
+
+                # Backward compat: fall back to single primary character
                 char_state_id = ""
-                if chars_in_frame:
+                if resolved_state_ids:
+                    char_state_id = resolved_state_ids[0]
+                elif chars_in_frame:
                     primary_char = chars_in_frame[0]
                     sheet = self._characters.get(primary_char)
                     if sheet and sheet.states:
-                        # Find the latest state at or before this scene
                         best = sheet.states[0]
                         for state in sheet.states:
                             if state.scene_number <= scene_num:
                                 best = state
                         char_state_id = best.state_id
 
-                # Parse setting id from slugline
-                slugline = shot.get("slugline", "")
-                location = slugline
-                for prefix in ["INT.", "EXT.", "INT/EXT."]:
-                    if slugline.upper().startswith(prefix):
-                        location = slugline[len(prefix):].strip()
-                        if " - " in location:
-                            location = location.rsplit(" - ", 1)[0].strip()
-                        break
-                setting_id = location.lower().replace(" ", "_").replace("/", "_").replace("'", "")
+                # ── Resolve setting ID ────────────────────────────
+                # New path: use setting_ref_id from shot engine
+                setting_id = shot.get("setting_ref_id", "")
+                # Backward compat: parse from slugline if empty
+                if not setting_id:
+                    slugline = shot.get("slugline", "")
+                    location = slugline
+                    for prefix in ["INT.", "EXT.", "INT/EXT."]:
+                        if slugline.upper().startswith(prefix):
+                            location = slugline[len(prefix):].strip()
+                            if " - " in location:
+                                location = location.rsplit(" - ", 1)[0].strip()
+                            break
+                    setting_id = location.lower().replace(" ", "_").replace("/", "_").replace("'", "")
 
                 # Determine setting state for this shot
                 setting_state_id = ""
                 for skey, sval in self._settings.items():
-                    if sval.setting_id == setting_id:
+                    sid = _normalize_location_key(sval.location_name)
+                    if sid == setting_id or sval.setting_id == setting_id:
                         if sval.states:
                             best = sval.states[0]
                             for state in sval.states:
@@ -1253,6 +1275,7 @@ class ManifestParser:
                         break
 
                 # Parse time
+                slugline = shot.get("slugline", "")
                 time_raw = "DAY"
                 if " - " in slugline:
                     time_raw = slugline.rsplit(" - ", 1)[1].strip()
@@ -1260,10 +1283,21 @@ class ManifestParser:
 
                 camera_angle = _parse_camera_angle(shot.get("shot_type", "medium"))
 
-                # Backward compat: old artifacts only have monolithic
-                # "visual_prompt" — fall back to it when three-prompt
-                # fields are empty.
-                raw_setting = shot.get("setting_prompt", "") or shot.get("visual_prompt", "")
+                # ── Build setting prompt from visual bible data ───
+                # New path: derive from our own setting data (not shot engine)
+                raw_setting = ""
+                for skey, sval in self._settings.items():
+                    sid = _normalize_location_key(sval.location_name)
+                    if sid == setting_id or sval.setting_id == setting_id:
+                        raw_setting = (
+                            f"{sval.int_ext.value} {sval.location_name}, "
+                            f"{sval.base_description}"
+                        )
+                        break
+                # Backward compat fallback
+                if not raw_setting:
+                    raw_setting = shot.get("setting_prompt", "") or shot.get("visual_prompt", "")
+
                 raw_scene = shot.get("scene_prompt", "") or shot.get("visual_prompt", "")
                 raw_video = shot.get("video_prompt", "") or shot.get("visual_prompt", "")
 
@@ -1273,6 +1307,7 @@ class ManifestParser:
                     shot_number=shot.get("shot_number", 0),
                     global_order=shot.get("global_order", 0),
                     character_state_id=char_state_id,
+                    character_state_ids=resolved_state_ids,
                     setting_id=setting_id,
                     setting_state_id=setting_state_id,
                     time_of_day=time_of_day,
