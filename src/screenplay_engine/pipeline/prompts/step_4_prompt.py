@@ -485,6 +485,8 @@ How each beat manifests in this genre:
         step_2_artifact: Dict[str, Any],
         step_3_artifact: Dict[str, Any],
         snowflake_artifacts: Dict[str, Any],
+        step_3b_artifact: Dict[str, Any] = None,
+        step_3c_artifact: Dict[str, Any] = None,
     ) -> Dict[str, str]:
         """Generate the full prompt for Step 4 from previous step artifacts.
 
@@ -616,6 +618,27 @@ How each beat manifests in this genre:
             genre_beat_template=genre_beat_template,
         )
 
+        # Inject world and cast context if available
+        world_context = self._build_world_context(step_3b_artifact)
+        cast_context = self._build_cast_context(step_3c_artifact)
+
+        extra_context = ""
+        if world_context:
+            extra_context += f"\nWORLD CONTEXT (Step 3b — World Bible):\n{world_context}\n"
+        if cast_context:
+            extra_context += f"\nSUPPORTING CAST (Step 3c — Full Cast):\n{cast_context}\n"
+
+        if extra_context:
+            # Insert before "BEAT SHEET REQUIREMENTS" section
+            marker = "BEAT SHEET REQUIREMENTS (follow EXACTLY):"
+            if marker in user_prompt:
+                user_prompt = user_prompt.replace(
+                    marker,
+                    extra_context + "\n" + marker,
+                )
+            else:
+                user_prompt += extra_context
+
         prompt_content = f"{self.SYSTEM_PROMPT}{user_prompt}{self.VERSION}"
         prompt_hash = hashlib.sha256(prompt_content.encode()).hexdigest()
 
@@ -640,6 +663,119 @@ How each beat manifests in this genre:
             f"\n=== GENRE NOTE: '{genre}' does not have a genre-specific beat template. ===\n"
             f"Follow the generic 15-beat structure above faithfully.\n"
         )
+
+    def _build_world_context(self, step_3b_artifact: Dict[str, Any]) -> str:
+        """Build world bible context string for beat sheet prompt."""
+        if not step_3b_artifact:
+            return ""
+
+        lines = []
+
+        # Arena
+        arena = step_3b_artifact.get("arena", {})
+        if isinstance(arena, dict):
+            desc = arena.get("description", "")
+            if desc:
+                lines.append(f"Arena: {desc}")
+            rules = arena.get("rules", [])
+            if isinstance(rules, list) and rules:
+                lines.append("World Rules: " + "; ".join(str(r) for r in rules[:5]))
+
+        # Key locations
+        geography = step_3b_artifact.get("geography", {})
+        if isinstance(geography, dict):
+            locations = geography.get("key_locations", [])
+            if isinstance(locations, list) and locations:
+                loc_names = []
+                for loc in locations:
+                    if isinstance(loc, dict):
+                        name = loc.get("name", "")
+                        significance = loc.get("significance", "")
+                        if name:
+                            loc_names.append(f"{name} ({significance})" if significance else name)
+                if loc_names:
+                    lines.append("Key Locations: " + ", ".join(loc_names))
+
+        # Culture
+        culture = step_3b_artifact.get("culture", {})
+        if isinstance(culture, dict):
+            values = culture.get("values", "")
+            if values:
+                lines.append(f"Cultural Values: {values}")
+            taboos = culture.get("taboos", "")
+            if taboos:
+                lines.append(f"Taboos: {taboos}")
+
+        # Rules of conflict
+        conflict = step_3b_artifact.get("rules_of_conflict", {})
+        if isinstance(conflict, dict):
+            engine = conflict.get("story_engine", "")
+            if engine:
+                lines.append(f"Story Engine: {engine}")
+            pressure = conflict.get("systemic_pressure", "")
+            if pressure:
+                lines.append(f"Systemic Pressure: {pressure}")
+
+        if not lines:
+            return ""
+        return "\n".join(lines)
+
+    def _build_cast_context(self, step_3c_artifact: Dict[str, Any]) -> str:
+        """Build supporting cast context string for beat sheet prompt."""
+        if not step_3c_artifact:
+            return ""
+
+        lines = []
+
+        # Tier 1 -- Major Supporting
+        tier1 = step_3c_artifact.get("tier_1_major_supporting", [])
+        if isinstance(tier1, list) and tier1:
+            lines.append("MAJOR SUPPORTING CHARACTERS:")
+            for char in tier1:
+                if not isinstance(char, dict):
+                    continue
+                name = char.get("name", "")
+                role = char.get("role", "")
+                rel = char.get("relationship_to_hero", "")
+                arc = char.get("arc_summary", "")
+                if name:
+                    entry = f"  - {name}"
+                    if role:
+                        entry += f" ({role})"
+                    if rel:
+                        entry += f" — {rel}"
+                    lines.append(entry)
+                    if arc:
+                        lines.append(f"    Arc: {arc}")
+
+        # Tier 2 -- Minor Supporting (just names/roles for beat sheet)
+        tier2 = step_3c_artifact.get("tier_2_minor_supporting", [])
+        if isinstance(tier2, list) and tier2:
+            minor_names = []
+            for char in tier2:
+                if isinstance(char, dict):
+                    name = char.get("name", "")
+                    role = char.get("role", "")
+                    if name:
+                        minor_names.append(f"{name} ({role})" if role else name)
+            if minor_names:
+                lines.append("MINOR SUPPORTING: " + ", ".join(minor_names))
+
+        # Tier 3 -- Background Types (just type names for beat sheet)
+        tier3 = step_3c_artifact.get("tier_3_background_types", [])
+        if isinstance(tier3, list) and tier3:
+            type_names = []
+            for t in tier3:
+                if isinstance(t, dict):
+                    tn = t.get("type_name", "")
+                    if tn:
+                        type_names.append(tn)
+            if type_names:
+                lines.append("BACKGROUND TYPES: " + ", ".join(type_names))
+
+        if not lines:
+            return ""
+        return "\n".join(lines)
 
     def generate_revision_prompt(
         self,

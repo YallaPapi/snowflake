@@ -13,6 +13,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from src.shot_engine.pipeline.orchestrator import ShotPipeline
+from src.shot_engine.pipeline.steps.step_v6_prompts import DEFAULT_NEGATIVE
 from src.shot_engine.models import StoryFormat
 
 
@@ -61,6 +62,22 @@ def main():
     print(f"  Scenes: {len(screenplay.get('scenes', []))}")
     print(f"  Hero: {hero.get('hero', {}).get('name', '?')}")
     print(f"  Villain: {hero.get('antagonist', {}).get('name', '?')}")
+
+    # Load optional enrichment artifacts (3b, 3c, 5b)
+    context = {}
+    for artifact_key, filename, label in [
+        ("world_bible", "sp_step_3b_world_bible.json", "World Bible (3b)"),
+        ("full_cast", "sp_step_3c_full_cast.json", "Full Cast (3c)"),
+        ("visual_bible", "sp_step_5b_visual_bible.json", "Visual Bible (5b)"),
+    ]:
+        path = artifact_dir / filename
+        if path.exists():
+            with open(path, "r", encoding="utf-8") as f:
+                context[artifact_key] = json.load(f)
+            print(f"  {label}: loaded")
+        else:
+            print(f"  {label}: not found (skipping)")
+
     print()
 
     # Run shot engine
@@ -73,6 +90,7 @@ def main():
         hero_artifact=hero,
         story_format=StoryFormat.FEATURE,
         project_id=project_id,
+        context=context if context else None,
     )
 
     elapsed = time.time() - start
@@ -143,6 +161,22 @@ def main():
     dialogue_shots = [s for s in all_shots if s.dialogue_text]
     print(f"Dialogue Shots: {len(dialogue_shots)}")
     print()
+
+    # Enrichment stats (context wiring)
+    if context:
+        char_shots = [s for s in all_shots if s.characters_in_frame]
+        with_prefix = sum(1 for s in char_shots if s.character_prompt_prefix.strip())
+        print(f"Enrichment Stats (context wiring):")
+        print(f"  Character shots: {len(char_shots)}")
+        print(f"  With portrait prompt: {with_prefix}/{len(char_shots)}")
+        unique_refs = set()
+        for s in all_shots:
+            if s.setting_ref_id:
+                unique_refs.add(s.setting_ref_id)
+        print(f"  Unique locations: {len(unique_refs)}")
+        neg_enriched = "style_bible extras" if ", " in all_shots[0].negative_prompt.replace(DEFAULT_NEGATIVE, "") else "default only"
+        print(f"  Negative prompt: {neg_enriched}")
+        print()
 
     # Sample shots (first scene)
     if shot_list.scenes:

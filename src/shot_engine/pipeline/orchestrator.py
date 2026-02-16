@@ -59,6 +59,7 @@ class ShotPipeline:
         hero_artifact: Dict[str, Any],
         story_format: StoryFormat = StoryFormat.FEATURE,
         project_id: str = "",
+        context: Optional[Dict[str, Any]] = None,
     ) -> Tuple[bool, ShotList, str]:
         """
         Run the full 6-step shot pipeline.
@@ -68,10 +69,13 @@ class ShotPipeline:
             hero_artifact: Step 3 hero JSON
             story_format: Target format (affects pacing)
             project_id: Project ID for file naming
+            context: Optional dict with keys "world_bible", "full_cast",
+                     "visual_bible" for enriched prompt generation.
 
         Returns:
             (success, shot_list, message)
         """
+        ctx = context or {}
         try:
             # V1: Decompose scenes into shots
             shot_list = self.v1.process(screenplay_artifact, story_format)
@@ -80,8 +84,9 @@ class ShotPipeline:
             # V2: Assign shot types
             shot_list = self.v2.process(shot_list)
 
-            # V3: Assign camera movement
-            shot_list = self.v3.process(shot_list)
+            # V3: Assign camera movement (+ cinematography from visual bible)
+            cinematography = (ctx.get("visual_bible") or {}).get("cinematography_approach")
+            shot_list = self.v3.process(shot_list, cinematography=cinematography)
 
             # V4: Calculate pacing
             shot_list = self.v4.process(shot_list)
@@ -89,8 +94,8 @@ class ShotPipeline:
             # V5: Plan transitions
             shot_list = self.v5.process(shot_list)
 
-            # V6: Generate prompts
-            shot_list = self.v6.process(shot_list, hero_artifact)
+            # V6: Generate prompts (+ full cast, visual bible, world bible)
+            shot_list = self.v6.process(shot_list, hero_artifact, context=ctx)
 
             # Validate
             is_valid, errors = self.validator.validate(
@@ -127,14 +132,17 @@ class ShotPipeline:
         step_num: int,
         shot_list: ShotList,
         hero_artifact: Optional[Dict[str, Any]] = None,
+        context: Optional[Dict[str, Any]] = None,
     ) -> ShotList:
         """Run a single step (for debugging/testing)."""
+        ctx = context or {}
         if step_num == 1:
             raise ValueError("V1 requires screenplay_artifact, use run() instead")
         elif step_num == 2:
             return self.v2.process(shot_list)
         elif step_num == 3:
-            return self.v3.process(shot_list)
+            cinematography = (ctx.get("visual_bible") or {}).get("cinematography_approach")
+            return self.v3.process(shot_list, cinematography=cinematography)
         elif step_num == 4:
             return self.v4.process(shot_list)
         elif step_num == 5:
@@ -142,6 +150,6 @@ class ShotPipeline:
         elif step_num == 6:
             if hero_artifact is None:
                 raise ValueError("V6 requires hero_artifact")
-            return self.v6.process(shot_list, hero_artifact)
+            return self.v6.process(shot_list, hero_artifact, context=ctx)
         else:
             raise ValueError(f"Unknown step: {step_num}")

@@ -116,7 +116,10 @@ def report(success, artifact, message, start):
 
 
 def _load_sp_artifact(pipeline, step_num):
-    """Load saved screenplay artifact from disk."""
+    """Load saved screenplay artifact from disk.
+
+    step_num: int for standard steps, or int code for new steps (31=3b, 32=3c, 51=5b).
+    """
     # Step 6 (Screenplay) is saved by Step8Screenplay as sp_step_8_screenplay.json,
     # but sp_step_6_immutable_laws.json also exists from the Laws step.
     # Prioritize the screenplay file (step 8) when loading step 6.
@@ -140,7 +143,7 @@ def _ensure_loaded(sp_artifacts, pipeline, *step_nums):
 
 
 # Map step labels to numeric ordering for the --from argument
-STEP_ORDER = ["1", "2", "3", "4", "5", "6", "7", "8", "9"]
+STEP_ORDER = ["1", "2", "3", "3b", "3c", "4", "5", "5b", "6", "7", "8", "9"]
 
 
 def main():
@@ -219,11 +222,39 @@ def main():
             print("  ERROR: No hero artifact returned, cannot continue")
             return
 
+    # ── Step 3b: World Bible ─────────────────────────────────────────
+    if start_idx <= STEP_ORDER.index("3b"):
+        _ensure_loaded(sp, pipeline, 1, 2, 3)
+        start = run_step("3b", "World Bible")
+        success, artifact, msg = pipeline.execute_step_3b(sp[1], sp[2], sp[3])
+        report(success, artifact, msg, start)
+        if artifact and artifact.get("arena"):
+            sp["3b"] = artifact
+        else:
+            print("  ERROR: No world bible artifact returned, cannot continue")
+            return
+
+    # ── Step 3c: Full Cast (layered, 3 API calls) ─────────────────────
+    if start_idx <= STEP_ORDER.index("3c"):
+        _ensure_loaded(sp, pipeline, 1, 2, 3)
+        if "3b" not in sp:
+            sp["3b"] = _load_sp_artifact(pipeline, 31)
+        start = run_step("3c", "Full Cast (3-tier layered)")
+        success, artifact, msg = pipeline.execute_step_3c(sp[1], sp[2], sp[3], sp["3b"])
+        report(success, artifact, msg, start)
+        if artifact and artifact.get("tier_1_major_supporting"):
+            sp["3c"] = artifact
+        else:
+            print("  ERROR: No full cast artifact returned, cannot continue")
+            return
+
     # ── Step 4: Beat Sheet (BS2) ─────────────────────────────────────
     if start_idx <= STEP_ORDER.index("4"):
         _ensure_loaded(sp, pipeline, 1, 2, 3)
         start = run_step(4, "Beat Sheet (BS2)")
-        success, artifact, msg = pipeline.execute_step_4(sp[1], sp[2], sp[3], snowflake)
+        success, artifact, msg = pipeline.execute_step_4(
+            sp[1], sp[2], sp[3], snowflake,
+            step_3b_artifact=sp.get("3b"), step_3c_artifact=sp.get("3c"))
         report(success, artifact, msg, start)
         if artifact and artifact.get("beats"):
             sp[4] = artifact
@@ -235,7 +266,9 @@ def main():
     if start_idx <= STEP_ORDER.index("5"):
         _ensure_loaded(sp, pipeline, 1, 2, 3, 4)
         start = run_step(5, "The Board (40 Scene Cards)")
-        success, artifact, msg = pipeline.execute_step_5(sp[4], sp[3], sp[1], sp[2])
+        success, artifact, msg = pipeline.execute_step_5(
+            sp[4], sp[3], sp[1], sp[2],
+            step_3b_artifact=sp.get("3b"), step_3c_artifact=sp.get("3c"))
         report(success, artifact, msg, start)
         if artifact and artifact.get("row_1_act_one"):
             sp[5] = artifact
@@ -243,11 +276,31 @@ def main():
             print("  ERROR: No board artifact returned, cannot continue")
             return
 
+    # ── Step 5b: Visual Bible ─────────────────────────────────────────
+    if start_idx <= STEP_ORDER.index("5b"):
+        _ensure_loaded(sp, pipeline, 1, 2, 3, 5)
+        if "3b" not in sp:
+            sp["3b"] = _load_sp_artifact(pipeline, 31)
+        if "3c" not in sp:
+            sp["3c"] = _load_sp_artifact(pipeline, 32)
+        start = run_step("5b", "Visual Bible")
+        success, artifact, msg = pipeline.execute_step_5b(
+            sp[1], sp[2], sp[3], sp["3b"], sp["3c"], sp[5])
+        report(success, artifact, msg, start)
+        if artifact and artifact.get("style_bible"):
+            sp["5b"] = artifact
+        else:
+            print("  ERROR: No visual bible artifact returned, cannot continue")
+            return
+
     # ── Step 6: Screenplay Writing (WRITE FIRST, then diagnose) ──────
     if start_idx <= STEP_ORDER.index("6"):
         _ensure_loaded(sp, pipeline, 1, 2, 3, 5)
         start = run_step(6, "Screenplay Writing")
-        success, artifact, msg = pipeline.execute_step_6(sp[5], sp[3], sp[2], sp[1])
+        success, artifact, msg = pipeline.execute_step_6(
+            sp[5], sp[3], sp[2], sp[1],
+            step_3b_artifact=sp.get("3b"), step_3c_artifact=sp.get("3c"),
+            step_5b_artifact=sp.get("5b"))
         report(success, artifact, msg, start)
         # Continue even if validation fails — the screenplay is saved and can still be diagnosed
         if artifact and artifact.get("scenes"):

@@ -186,13 +186,16 @@ class TestCallStepRevise:
         mock_step.revise.return_value = (True, {"revised": True}, "OK")
         pipeline._steps = {5: mock_step}
 
-        all_artifacts = {1: {"logline": "x"}, 2: {"genre": "y"}, 3: {"hero": {}}, 4: {"beats": []}}
+        all_artifacts = {1: {"logline": "x"}, 2: {"genre": "y"}, 3: {"hero": {}}, 4: {"beats": []},
+                         "3b": {"arena": {}}, "3c": {"tier_1": []}}
         result = pipeline._call_step_revise(5, "reason", all_artifacts, {})
 
         assert result == {"revised": True}
         mock_step.revise.assert_called_once_with(
             "test", "reason", all_artifacts[4], all_artifacts[3],
             all_artifacts[1], all_artifacts[2],
+            step_3b_artifact=all_artifacts.get("3b"),
+            step_3c_artifact=all_artifacts.get("3c"),
         )
 
     def test_step_6_uses_step_8_executor(self, tmp_path):
@@ -204,11 +207,18 @@ class TestCallStepRevise:
         mock_step.revise.return_value = (True, {"revised": True}, "OK")
         pipeline._steps = {8: mock_step}
 
-        all_artifacts = {1: {}, 2: {}, 3: {}, 5: {}}
+        all_artifacts = {1: {}, 2: {}, 3: {}, 5: {},
+                         "3b": {"arena": {}}, "3c": {"tier_1": []}, "5b": {"style_bible": {}}}
         result = pipeline._call_step_revise(6, "reason", all_artifacts, {})
 
         assert result == {"revised": True}
-        mock_step.revise.assert_called_once()
+        mock_step.revise.assert_called_once_with(
+            "test", "reason", all_artifacts.get(5, {}), all_artifacts.get(3, {}),
+            all_artifacts.get(2, {}), all_artifacts.get(1, {}),
+            step_3b_artifact=all_artifacts.get("3b"),
+            step_3c_artifact=all_artifacts.get("3c"),
+            step_5b_artifact=all_artifacts.get("5b"),
+        )
 
     def test_unknown_step_returns_none(self, tmp_path):
         pipeline = ScreenplayPipeline(str(tmp_path))
@@ -228,33 +238,48 @@ class TestCallStepRevise:
         assert result is None
 
 
-class TestStep3bRemoved:
-    """Verify Step 3b (Supporting Cast) is no longer part of the pipeline.
+class TestNewPipelineSteps:
+    """Verify new World Bible (3b), Full Cast (3c), and Visual Bible (5b) steps
+    are wired into the pipeline correctly."""
 
-    Step 3b was removed per user directive: characters emerge organically
-    via Board (Step 5) and Screenplay (Step 6), not pre-defined as a bulk cast.
-    """
-
-    def test_pipeline_has_no_execute_step_3b(self, tmp_path):
-        """execute_step_3b should no longer exist on ScreenplayPipeline."""
+    def test_pipeline_has_execute_step_3b(self, tmp_path):
+        """execute_step_3b (World Bible) should exist on ScreenplayPipeline."""
         pipeline = ScreenplayPipeline(str(tmp_path))
-        assert not hasattr(pipeline, "execute_step_3b")
+        assert hasattr(pipeline, "execute_step_3b")
 
-    def test_pipeline_has_no_merge_character_context(self, tmp_path):
-        """_merge_character_context should no longer exist on ScreenplayPipeline."""
+    def test_pipeline_has_execute_step_3c(self, tmp_path):
+        """execute_step_3c (Full Cast) should exist on ScreenplayPipeline."""
         pipeline = ScreenplayPipeline(str(tmp_path))
-        assert not hasattr(pipeline, "_merge_character_context")
+        assert hasattr(pipeline, "execute_step_3c")
 
-    def test_run_full_pipeline_skips_step_3b(self, tmp_path):
-        """Full pipeline should go 1 -> 2 -> 3 -> 4 (no 3b in between)."""
+    def test_pipeline_has_execute_step_5b(self, tmp_path):
+        """execute_step_5b (Visual Bible) should exist on ScreenplayPipeline."""
+        pipeline = ScreenplayPipeline(str(tmp_path))
+        assert hasattr(pipeline, "execute_step_5b")
+
+    def test_step_names_include_new_steps(self, tmp_path):
+        """STEP_NAMES should include 3b, 3c, and 5b."""
+        pipeline = ScreenplayPipeline(str(tmp_path))
+        assert "3b" in pipeline.STEP_NAMES
+        assert "3c" in pipeline.STEP_NAMES
+        assert "5b" in pipeline.STEP_NAMES
+        assert pipeline.STEP_NAMES["3b"] == "World Bible"
+        assert pipeline.STEP_NAMES["3c"] == "Full Cast"
+        assert pipeline.STEP_NAMES["5b"] == "Visual Bible"
+
+    def test_run_full_pipeline_includes_3b_3c_5b(self, tmp_path):
+        """Full pipeline should include 3b, 3c, 5b in artifacts."""
         pipeline = ScreenplayPipeline(str(tmp_path))
         pipeline.current_project_id = "test"
 
         pipeline.execute_step_1 = MagicMock(return_value=(True, {"title": "T", "logline": "L"}, "ok"))
         pipeline.execute_step_2 = MagicMock(return_value=(True, {"genre": "dude_with_a_problem"}, "ok"))
         pipeline.execute_step_3 = MagicMock(return_value=(True, {"hero": {"name": "Alex"}}, "ok"))
+        pipeline.execute_step_3b = MagicMock(return_value=(True, {"arena": {}, "geography": {}}, "ok"))
+        pipeline.execute_step_3c = MagicMock(return_value=(True, {"tier_1_major_supporting": [], "cast_summary": {}}, "ok"))
         pipeline.execute_step_4 = MagicMock(return_value=(True, {"beats": []}, "ok"))
         pipeline.execute_step_5 = MagicMock(return_value=(True, {"row_1_act_one": []}, "ok"))
+        pipeline.execute_step_5b = MagicMock(return_value=(True, {"style_bible": {}, "location_designs": []}, "ok"))
         pipeline.execute_step_6 = MagicMock(return_value=(True, {"scenes": [], "total_pages": 1}, "ok"))
         pipeline.execute_step_7 = MagicMock(return_value=(True, {"laws": [], "all_passed": True}, "ok"))
         pipeline.execute_step_8 = MagicMock(return_value=(True, {"diagnostics": [], "checks_passed_count": 9}, "ok"))
@@ -265,7 +290,7 @@ class TestStep3bRemoved:
 
         success, artifacts, _ = pipeline.run_full_pipeline({"step_0": {}})
         assert success is True
-        # Step 3b should NOT be in artifacts
-        assert "3b" not in artifacts
-        # Step 3 artifact should NOT have supporting_characters injected
-        assert "supporting_characters" not in artifacts[3]
+        # New steps should be in artifacts
+        assert "3b" in artifacts
+        assert "3c" in artifacts
+        assert "5b" in artifacts

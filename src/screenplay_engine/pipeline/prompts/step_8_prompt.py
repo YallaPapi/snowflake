@@ -1082,6 +1082,9 @@ Generate ALL scenes now. Write FULL scenes, not outlines."""
         step_3_artifact: Dict[str, Any],
         step_2_artifact: Dict[str, Any],
         step_1_artifact: Dict[str, Any],
+        world_context: str = "",
+        cast_context: str = "",
+        visual_context: str = "",
     ) -> Dict[str, str]:
         """
         Generate the full prompt for Screenplay Step 8.
@@ -1154,6 +1157,24 @@ Generate ALL scenes now. Write FULL scenes, not outlines."""
             board_cards_json=board_cards_json,
             format_value=format_value,
         )
+
+        # Inject world, cast, and visual context if available
+        extra_context = ""
+        if world_context:
+            extra_context += f"\nWORLD CONTEXT (from World Bible — use for setting descriptions in action lines):\n{world_context}\n"
+        if cast_context:
+            extra_context += f"\nFULL CAST (from Full Cast Bible — characters with voice profiles and physical descriptions):\n{cast_context}\n"
+        if visual_context:
+            extra_context += f"\nVISUAL STYLE (from Visual Bible — apply to action line descriptions):\n{visual_context}\n"
+
+        if extra_context:
+            # Insert before "SCENE WRITING RULES" section
+            marker = "SCENE WRITING RULES"
+            if marker in user_prompt:
+                idx = user_prompt.index(marker)
+                user_prompt = user_prompt[:idx] + extra_context + "\n" + user_prompt[idx:]
+            else:
+                user_prompt += extra_context
 
         # Calculate prompt hash for tracking
         prompt_content = f"{self.SYSTEM_PROMPT}{user_prompt}{self.VERSION}"
@@ -2912,6 +2933,9 @@ character cues) to fix the problems. Full scenes, not outlines."""
         character_identifiers: str,
         act_label: str,
         start_scene_number: int,
+        world_context: str = "",
+        cast_context: str = "",
+        visual_context: str = "",
     ) -> Dict[str, str]:
         """Generate prompt to write all scenes for one act."""
         act_cards_json = json.dumps(act_cards, indent=2, ensure_ascii=False)
@@ -2945,6 +2969,23 @@ character cues) to fix the problems. Full scenes, not outlines."""
             start_scene_number=start_scene_number,
             num_cards=len(act_cards),
         )
+
+        # Inject world, cast, and visual context if available
+        extra_context = ""
+        if world_context:
+            extra_context += f"\nWORLD CONTEXT (from World Bible — use for setting descriptions in action lines):\n{world_context}\n"
+        if cast_context:
+            extra_context += f"\nFULL CAST (from Full Cast Bible — characters with voice profiles and physical descriptions):\n{cast_context}\n"
+        if visual_context:
+            extra_context += f"\nVISUAL STYLE (from Visual Bible — apply to action line descriptions):\n{visual_context}\n"
+
+        if extra_context:
+            marker = "SCENE WRITING RULES"
+            if marker in user_prompt:
+                idx = user_prompt.index(marker)
+                user_prompt = user_prompt[:idx] + extra_context + "\n" + user_prompt[idx:]
+            else:
+                user_prompt += extra_context
 
         prompt_content = f"{self.ACT_GENERATION_SYSTEM}{user_prompt}{self.VERSION}"
         prompt_hash = hashlib.sha256(prompt_content.encode()).hexdigest()

@@ -148,7 +148,20 @@ class ShotListValidator:
         if missing_profile > 0:
             errors.append(f"{missing_profile} shots missing generation_profile metadata")
 
-        # 11. Shots-per-scene ratio check (warning, not error)
+        # 11. Character prompt prefix coverage (warning when context was provided)
+        char_shots = [s for s in all_shots if s.characters_in_frame]
+        if char_shots:
+            no_prefix = sum(1 for s in char_shots if not s.character_prompt_prefix.strip())
+            if no_prefix > 0:
+                pct = no_prefix / len(char_shots) * 100
+                msg = (
+                    f"{no_prefix}/{len(char_shots)} character shots ({pct:.0f}%) "
+                    f"missing character_prompt_prefix"
+                )
+                warnings.append(msg)
+                logger.warning(msg)
+
+        # 12. Shots-per-scene ratio check (warning, not error)
         if shot_list.scenes:
             scene_shot_counts = [len(scene.shots) for scene in shot_list.scenes]
             avg_shots = sum(scene_shot_counts) / len(scene_shot_counts) if scene_shot_counts else 0

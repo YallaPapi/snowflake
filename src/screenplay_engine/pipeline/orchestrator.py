@@ -23,34 +23,36 @@ from src.screenplay_engine.models import (
 
 class ScreenplayPipeline:
     """
-    Orchestrates the 9-step Save the Cat screenplay pipeline.
+    Orchestrates the 12-step Save the Cat screenplay pipeline.
 
     Pipeline order follows the book: Write FIRST, then Diagnose.
     Snyder Ch.7 opens with "You've made it! You've finally written THE END."
     — diagnostics and laws run on a finished screenplay, not pre-writing artifacts.
 
     Steps:
-        1.  Logline Generation & Validation
-        2.  Genre Classification
-        3.  Hero Construction (hero, antagonist, B-story)
-        4.  Beat Sheet (BS2)
-        5.  The Board (40 scene cards)
-        6.  Screenplay Writing (from Board)
-        7.  Immutable Laws Validation (on finished screenplay)
-        8.  Diagnostic Checks (on finished screenplay)
-        9.  Marketing Validation
-
-    Note: Step 3b (Supporting Cast) was removed per user directive.
-    Characters emerge organically via Board (Step 5) and Screenplay (Step 6).
+        1.   Logline Generation & Validation
+        2.   Genre Classification
+        3.   Hero Construction (hero, antagonist, B-story)
+        3b.  World Bible (geography, culture, economy, history)
+        3c.  Full Cast (3 tiers: major supporting, minor, background types)
+        4.   Beat Sheet (BS2)
+        5.   The Board (40 scene cards)
+        5b.  Visual Bible (style bible, color script, location designs, char notes)
+        6.   Screenplay Writing (from Board)
+        7.   Immutable Laws Validation (on finished screenplay)
+        8.   Diagnostic Checks (on finished screenplay)
+        9.   Marketing Validation
     """
 
     STEP_NAMES = {
         1: "Logline",
         2: "Genre Classification",
         3: "Hero Construction",
-        # "3b" removed — characters emerge organically via Board/Screenplay
+        "3b": "World Bible",
+        "3c": "Full Cast",
         4: "Beat Sheet (BS2)",
         5: "The Board",
+        "5b": "Visual Bible",
         6: "Screenplay Writing",
         7: "Immutable Laws",
         8: "Diagnostics",
@@ -88,7 +90,12 @@ class ScreenplayPipeline:
             elif step_num == 3:
                 from src.screenplay_engine.pipeline.steps.step_3_hero import Step3Hero
                 self._steps[3] = Step3Hero(str(self.project_dir))
-            # Step 3b (31) removed — characters emerge organically via Board/Screenplay
+            elif step_num == 31:  # 3b — World Bible
+                from src.screenplay_engine.pipeline.steps.step_3b_world_bible import Step3bWorldBible
+                self._steps[31] = Step3bWorldBible(str(self.project_dir))
+            elif step_num == 32:  # 3c — Full Cast
+                from src.screenplay_engine.pipeline.steps.step_3c_full_cast import Step3cFullCast
+                self._steps[32] = Step3cFullCast(str(self.project_dir))
             elif step_num == 4:
                 from src.screenplay_engine.pipeline.steps.step_4_beat_sheet import Step4BeatSheet
                 self._steps[4] = Step4BeatSheet(str(self.project_dir))
@@ -107,6 +114,9 @@ class ScreenplayPipeline:
             elif step_num == 9:
                 from src.screenplay_engine.pipeline.steps.step_9_marketing import Step9Marketing
                 self._steps[9] = Step9Marketing(str(self.project_dir))
+            elif step_num == 51:  # 5b — Visual Bible
+                from src.screenplay_engine.pipeline.steps.step_5b_visual_bible import Step5bVisualBible
+                self._steps[51] = Step5bVisualBible(str(self.project_dir))
             elif step_num == 85:  # 8b — targeted Grok rewrite
                 from src.screenplay_engine.pipeline.steps.step_8b_targeted_rewrite import Step8bTargetedRewrite
                 self._steps[85] = Step8bTargetedRewrite(str(self.project_dir))
@@ -208,7 +218,23 @@ class ScreenplayPipeline:
             logger.info("  hero=%s antagonist=%s b_story=%s",
                        hero.get("name", "?"), antag.get("name", "?"),
                        artifact.get("b_story_character", {}).get("name", "?"))
-        # Cast
+        # World Bible
+        if "arena" in artifact and "geography" in artifact:
+            locations = len(artifact.get("geography", {}).get("key_locations", []))
+            word_count = len(json.dumps(artifact, ensure_ascii=False).split())
+            logger.info("  world_bible: %d locations, ~%d words", locations, word_count)
+        # Full Cast (tiered)
+        if "tier_1_major_supporting" in artifact and "cast_summary" in artifact:
+            summary = artifact.get("cast_summary", {})
+            logger.info("  cast: tier1=%d tier2=%d tier3=%d total_named=%d",
+                       summary.get("tier_1_count", 0), summary.get("tier_2_count", 0),
+                       summary.get("tier_3_count", 0), summary.get("total_named", 0))
+        # Visual Bible
+        if "style_bible" in artifact and "location_designs" in artifact:
+            logger.info("  visual_bible: %d locations, %d char_notes",
+                       len(artifact.get("location_designs", [])),
+                       len(artifact.get("character_visual_notes", [])))
+        # Old Cast (legacy)
         if "characters" in artifact and "total_speaking_roles" in artifact:
             logger.info("  cast=%d speaking=%d",
                        len(artifact.get("characters", [])),
@@ -428,6 +454,8 @@ class ScreenplayPipeline:
                     project_id, revision_reason,
                     all_artifacts.get(4, {}), all_artifacts.get(3, {}),
                     all_artifacts.get(1, {}), all_artifacts.get(2, {}),
+                    step_3b_artifact=all_artifacts.get("3b"),
+                    step_3c_artifact=all_artifacts.get("3c"),
                 )
             elif step_num == 6:
                 step = self._get_step(8)  # Step 6 uses Step8Screenplay executor
@@ -435,6 +463,9 @@ class ScreenplayPipeline:
                     project_id, revision_reason,
                     all_artifacts.get(5, {}), all_artifacts.get(3, {}),
                     all_artifacts.get(2, {}), all_artifacts.get(1, {}),
+                    step_3b_artifact=all_artifacts.get("3b"),
+                    step_3c_artifact=all_artifacts.get("3c"),
+                    step_5b_artifact=all_artifacts.get("5b"),
                 )
             else:
                 return None
@@ -465,26 +496,47 @@ class ScreenplayPipeline:
         step = self._get_step(3)
         return self._run_step(3, "Hero Construction", lambda: step.execute(step_1_artifact, step_2_artifact, snowflake_artifacts, self.current_project_id))
 
-    # execute_step_3b removed — Step 3b (Supporting Cast) removed per user directive.
-    # Characters emerge organically via Board (Step 5) and Screenplay (Step 6).
+    def execute_step_3b(self, step_1_artifact: Dict[str, Any], step_2_artifact: Dict[str, Any], step_3_artifact: Dict[str, Any]) -> Tuple[bool, Dict[str, Any], str]:
+        """Step 3b: Build World Bible — geography, culture, economy, history."""
+        step = self._get_step(31)
+        return self._run_step("3b", "World Bible", lambda: step.execute(
+            step_1_artifact, step_2_artifact, step_3_artifact, self.current_project_id))
 
-    def execute_step_4(self, step_1_artifact: Dict[str, Any], step_2_artifact: Dict[str, Any], step_3_artifact: Dict[str, Any], snowflake_artifacts: Dict[str, Any]) -> Tuple[bool, Dict[str, Any], str]:
+    def execute_step_3c(self, step_1_artifact: Dict[str, Any], step_2_artifact: Dict[str, Any], step_3_artifact: Dict[str, Any], step_3b_artifact: Dict[str, Any]) -> Tuple[bool, Dict[str, Any], str]:
+        """Step 3c: Build Full Cast — 3 tiers of characters via layered API calls."""
+        step = self._get_step(32)
+        return self._run_step("3c", "Full Cast", lambda: step.execute(
+            step_1_artifact, step_2_artifact, step_3_artifact, step_3b_artifact, self.current_project_id))
+
+    def execute_step_4(self, step_1_artifact: Dict[str, Any], step_2_artifact: Dict[str, Any], step_3_artifact: Dict[str, Any], snowflake_artifacts: Dict[str, Any], step_3b_artifact: Dict[str, Any] = None, step_3c_artifact: Dict[str, Any] = None) -> Tuple[bool, Dict[str, Any], str]:
         """Step 4: Generate 15-beat BS2."""
         step = self._get_step(4)
-        return self._run_step(4, "Beat Sheet (BS2)", lambda: step.execute(step_1_artifact, step_2_artifact, step_3_artifact, snowflake_artifacts, self.current_project_id))
+        return self._run_step(4, "Beat Sheet (BS2)", lambda: step.execute(step_1_artifact, step_2_artifact, step_3_artifact, snowflake_artifacts, self.current_project_id, step_3b_artifact=step_3b_artifact, step_3c_artifact=step_3c_artifact))
 
-    def execute_step_5(self, step_4_artifact: Dict[str, Any], step_3_artifact: Dict[str, Any], step_1_artifact: Dict[str, Any], step_2_artifact: Dict[str, Any]) -> Tuple[bool, Dict[str, Any], str]:
+    def execute_step_5(self, step_4_artifact: Dict[str, Any], step_3_artifact: Dict[str, Any], step_1_artifact: Dict[str, Any], step_2_artifact: Dict[str, Any], step_3b_artifact: Dict[str, Any] = None, step_3c_artifact: Dict[str, Any] = None) -> Tuple[bool, Dict[str, Any], str]:
         """Step 5: Build The Board — 40 scene cards."""
         step = self._get_step(5)
-        return self._run_step(5, "The Board", lambda: step.execute(step_4_artifact, step_3_artifact, step_1_artifact, step_2_artifact, self.current_project_id))
+        return self._run_step(5, "The Board", lambda: step.execute(
+            step_4_artifact, step_3_artifact, step_1_artifact, step_2_artifact,
+            step_3b_artifact=step_3b_artifact, step_3c_artifact=step_3c_artifact,
+            project_id=self.current_project_id))
 
-    def execute_step_6(self, step_5_artifact: Dict[str, Any], step_3_artifact: Dict[str, Any], step_2_artifact: Dict[str, Any], step_1_artifact: Dict[str, Any]) -> Tuple[bool, Dict[str, Any], str]:
+    def execute_step_5b(self, step_1_artifact: Dict[str, Any], step_2_artifact: Dict[str, Any], step_3_artifact: Dict[str, Any], step_3b_artifact: Dict[str, Any], step_3c_artifact: Dict[str, Any], step_5_artifact: Dict[str, Any]) -> Tuple[bool, Dict[str, Any], str]:
+        """Step 5b: Build Visual Bible — style bible, color script, location designs, character visual notes."""
+        step = self._get_step(51)
+        return self._run_step("5b", "Visual Bible", lambda: step.execute(
+            step_1_artifact, step_2_artifact, step_3_artifact, step_3b_artifact,
+            step_3c_artifact, step_5_artifact, self.current_project_id))
+
+    def execute_step_6(self, step_5_artifact: Dict[str, Any], step_3_artifact: Dict[str, Any], step_2_artifact: Dict[str, Any], step_1_artifact: Dict[str, Any], step_3b_artifact: Dict[str, Any] = None, step_3c_artifact: Dict[str, Any] = None, step_5b_artifact: Dict[str, Any] = None) -> Tuple[bool, Dict[str, Any], str]:
         """Step 6: Write the screenplay from validated Board (was old Step 8)."""
         step = self._get_step(8)  # Still uses Step8Screenplay executor internally
         mode = self.screenplay_mode
         return self._run_step(6, f"Screenplay Writing ({mode})", lambda: step.execute(
             step_5_artifact, step_3_artifact, step_2_artifact, step_1_artifact,
             self.current_project_id, generation_mode=mode,
+            step_3b_artifact=step_3b_artifact, step_3c_artifact=step_3c_artifact,
+            step_5b_artifact=step_5b_artifact,
         ))
 
     def execute_step_7(self, screenplay_artifact: Dict[str, Any], step_5_artifact: Dict[str, Any], step_4_artifact: Dict[str, Any], step_3_artifact: Dict[str, Any]) -> Tuple[bool, Dict[str, Any], str]:
@@ -571,7 +623,7 @@ class ScreenplayPipeline:
         except Exception as exc:
             return False, {}, f"Visual Bible pipeline failed: {exc}"
 
-    # _merge_character_context removed — Step 3b (Supporting Cast) removed per user directive.
+    # Character context is now provided by Step 3c (Full Cast) and Step 3b (World Bible).
 
     # ── Full Pipeline ──────────────────────────────────────────────────
 
@@ -591,16 +643,23 @@ class ScreenplayPipeline:
         """
         artifacts: Dict[Any, Dict[str, Any]] = {}
 
-        # Steps 1-6: Generation + diagnostic checkpoint after each
-        # (Step 3b removed — characters emerge organically via Board/Screenplay)
+        # Steps 1-6 with new World Bible (3b), Full Cast (3c), Visual Bible (5b).
+        # Tuple: (step_key, executor, run_diagnostic_checkpoint)
+        # Diagnostic checkpoints only apply to core STC steps (1-6), not world/cast/visual steps.
         generation_steps = [
-            (1, lambda: self.execute_step_1(snowflake_artifacts)),
-            (2, lambda: self.execute_step_2(artifacts[1], snowflake_artifacts)),
-            (3, lambda: self.execute_step_3(artifacts[1], artifacts[2], snowflake_artifacts)),
-            (4, lambda: self.execute_step_4(artifacts[1], artifacts[2], artifacts[3], snowflake_artifacts)),
-            (5, lambda: self.execute_step_5(artifacts[4], artifacts[3], artifacts[1], artifacts[2])),
+            (1, lambda: self.execute_step_1(snowflake_artifacts), True),
+            (2, lambda: self.execute_step_2(artifacts[1], snowflake_artifacts), True),
+            (3, lambda: self.execute_step_3(artifacts[1], artifacts[2], snowflake_artifacts), True),
+            # 3b: World Bible (no diagnostic checkpoint — not a STC structure step)
+            ("3b", lambda: self.execute_step_3b(artifacts[1], artifacts[2], artifacts[3]), False),
+            # 3c: Full Cast via 3 layered API calls (no checkpoint)
+            ("3c", lambda: self.execute_step_3c(artifacts[1], artifacts[2], artifacts[3], artifacts["3b"]), False),
+            (4, lambda: self.execute_step_4(artifacts[1], artifacts[2], artifacts[3], snowflake_artifacts, step_3b_artifact=artifacts.get("3b"), step_3c_artifact=artifacts.get("3c")), True),
+            (5, lambda: self.execute_step_5(artifacts[4], artifacts[3], artifacts[1], artifacts[2], step_3b_artifact=artifacts.get("3b"), step_3c_artifact=artifacts.get("3c")), True),
+            # 5b: Visual Bible (no checkpoint)
+            ("5b", lambda: self.execute_step_5b(artifacts[1], artifacts[2], artifacts[3], artifacts["3b"], artifacts["3c"], artifacts[5]), False),
             # Step 6: Write screenplay FIRST (book order: write, then diagnose)
-            (6, lambda: self.execute_step_6(artifacts[5], artifacts[3], artifacts[2], artifacts[1])),
+            (6, lambda: self.execute_step_6(artifacts[5], artifacts[3], artifacts[2], artifacts[1], step_3b_artifact=artifacts.get("3b"), step_3c_artifact=artifacts.get("3c"), step_5b_artifact=artifacts.get("5b")), True),
         ]
 
         # Steps 7-9: Post-screenplay validation (no checkpoints — they ARE the checks)
@@ -624,23 +683,25 @@ class ScreenplayPipeline:
                     self.current_project_id)
         logger.info("=" * 60)
 
-        # Run checkpointed generation steps (1-6)
-        for step_num, executor in generation_steps:
+        # Run generation steps (1 → 3b → 3c → 4 → 5 → 5b → 6)
+        for step_key, executor, run_ckpt in generation_steps:
             success, artifact, message = executor()
             if not success:
                 elapsed = time.time() - pipeline_t0
                 logger.error(
                     "PIPELINE FAILED at Step %s after %.1fs: %s",
-                    step_num,
+                    step_key,
                     elapsed,
                     self._safe_log_text(message),
                 )
-                return False, artifacts, f"Pipeline failed at Step {step_num} ({self.STEP_NAMES[step_num]}): {message}"
+                return False, artifacts, f"Pipeline failed at Step {step_key} ({self.STEP_NAMES[step_key]}): {message}"
 
-            artifact = self._run_checkpoint_and_revise(
-                step_num, artifact, artifacts, snowflake_artifacts,
-            )
-            artifacts[step_num] = artifact
+            # Only run diagnostic checkpoints on core STC structure steps (integer keys 1-6)
+            if run_ckpt and isinstance(step_key, int):
+                artifact = self._run_checkpoint_and_revise(
+                    step_key, artifact, artifacts, snowflake_artifacts,
+                )
+            artifacts[step_key] = artifact
 
         # Run post-screenplay steps (7-8) — no checkpoints
         for step_num, executor in post_steps:
@@ -766,9 +827,11 @@ class ScreenplayPipeline:
             1: "sp_step_1_logline.json",
             2: "sp_step_2_genre.json",
             3: "sp_step_3_hero.json",
-            # 31 (step 3b) removed — characters emerge organically via Board/Screenplay
+            31: "sp_step_3b_world_bible.json",
+            32: "sp_step_3c_full_cast.json",
             4: "sp_step_4_beat_sheet.json",
             5: "sp_step_5_board.json",
+            51: "sp_step_5b_visual_bible.json",
             6: "sp_step_6_immutable_laws.json",
             7: "sp_step_7_diagnostics.json",
             8: "sp_step_8_screenplay.json",
@@ -794,9 +857,11 @@ class ScreenplayPipeline:
             1: "sp_step_1_logline.json",
             2: "sp_step_2_genre.json",
             3: "sp_step_3_hero.json",
-            # 31 (step 3b) removed — characters emerge organically via Board/Screenplay
+            31: "sp_step_3b_world_bible.json",
+            32: "sp_step_3c_full_cast.json",
             4: "sp_step_4_beat_sheet.json",
             5: "sp_step_5_board.json",
+            51: "sp_step_5b_visual_bible.json",
             6: "sp_step_6_immutable_laws.json",
             7: "sp_step_7_diagnostics.json",
             8: "sp_step_8_screenplay.json",

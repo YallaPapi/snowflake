@@ -38,6 +38,8 @@ class Step4BeatSheet:
         step_3_artifact: Dict[str, Any],
         snowflake_artifacts: Dict[str, Any],
         project_id: str,
+        step_3b_artifact: Optional[Dict[str, Any]] = None,
+        step_3c_artifact: Optional[Dict[str, Any]] = None,
         model_config: Optional[Dict[str, Any]] = None,
     ) -> Tuple[bool, Dict[str, Any], str]:
         """
@@ -49,6 +51,8 @@ class Step4BeatSheet:
             step_3_artifact: Output from Step 3 (hero construction).
             snowflake_artifacts: Snowflake pipeline artifacts dict.
             project_id: Current project identifier.
+            step_3b_artifact: Optional output from Step 3b (world bible).
+            step_3c_artifact: Optional output from Step 3c (full cast).
             model_config: Optional model configuration overrides.
 
         Returns:
@@ -74,6 +78,7 @@ class Step4BeatSheet:
         # Generate prompt
         prompt_data = self.prompt_generator.generate_prompt(
             step_1_artifact, step_2_artifact, step_3_artifact, snowflake_artifacts,
+            step_3b_artifact, step_3c_artifact,
         )
 
         # Generate with retry loop

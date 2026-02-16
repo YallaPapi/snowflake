@@ -3,6 +3,9 @@ V3: Camera Behavior
 Assigns camera movement plus cinematography metadata using deterministic rules.
 """
 
+import re
+from typing import Dict, Any, Optional
+
 from src.shot_engine.models import (
     CameraMovement,
     ContentTrigger,
@@ -59,7 +62,15 @@ TRIGGER_BLOCKING_MAP = {
 class StepV3Camera:
     """Assign camera movement plus lens/height/distance/lighting/blocking metadata."""
 
-    def process(self, shot_list: ShotList) -> ShotList:
+    def process(
+        self,
+        shot_list: ShotList,
+        cinematography: Optional[Dict[str, Any]] = None,
+    ) -> ShotList:
+        # Parse cinematography defaults from visual bible (if provided)
+        default_lens = self._parse_lens(cinematography) if cinematography else None
+        lighting_style = (cinematography or {}).get("lighting_style", "")
+
         for scene in shot_list.scenes:
             for i, shot in enumerate(scene.shots):
                 # Rule 1: Establishing shot uses a location survey pan.
@@ -102,16 +113,26 @@ class StepV3Camera:
                     )
                     shot.camera_rationale = f"Default for trigger {shot.trigger.value}"
 
-                shot.lens_mm = SHOT_LENS_MAP.get(shot.shot_type, 50)
+                fallback_lens = default_lens if default_lens else 50
+                shot.lens_mm = SHOT_LENS_MAP.get(shot.shot_type, fallback_lens)
                 shot.distance_band = SHOT_DISTANCE_MAP.get(shot.shot_type, "medium")
                 shot.camera_height = self._camera_height_for(shot)
-                shot.lighting_intent = self._lighting_for(shot)
+                shot.lighting_intent = self._lighting_for(shot, lighting_style)
                 shot.blocking_intent = TRIGGER_BLOCKING_MAP.get(
                     shot.trigger, "neutral blocking",
                 )
                 shot.generation_profile = self._profile_for_format(shot_list.format)
 
         return shot_list
+
+    @staticmethod
+    def _parse_lens(cinematography: Dict[str, Any]) -> Optional[int]:
+        """Extract integer mm from a lens string like '35mm'."""
+        raw = cinematography.get("default_lens", "")
+        if not raw:
+            return None
+        m = re.search(r"(\d+)\s*mm", str(raw), re.IGNORECASE)
+        return int(m.group(1)) if m else None
 
     def _camera_height_for(self, shot) -> str:
         if shot.shot_type in {ShotType.EXTREME_WIDE, ShotType.WIDE, ShotType.GROUP}:
@@ -122,20 +143,29 @@ class StepV3Camera:
             return "object_level"
         return "eye_level"
 
-    def _lighting_for(self, shot) -> str:
+    def _lighting_for(self, shot, lighting_style: str = "") -> str:
         if shot.trigger == ContentTrigger.CLIMAX_MOMENT:
-            return "high contrast, dynamic practical spill"
-        if shot.trigger == ContentTrigger.REVELATION:
-            return "subject-isolated accent light"
-        if shot.emotional_end == "-":
-            return "low-key, edge contrast, restrained fill"
-        if shot.emotional_end == "+":
-            return "soft motivated key, gentle fill"
-        if shot.emotional_polarity == "-":
-            return "moody contrast with negative fill"
-        if shot.emotional_polarity == "+":
-            return "balanced key/fill, warmer mids"
-        return "neutral cinematic key/fill"
+            base = "high contrast, dynamic practical spill"
+        elif shot.trigger == ContentTrigger.REVELATION:
+            base = "subject-isolated accent light"
+        elif shot.emotional_end == "-":
+            base = "low-key, edge contrast, restrained fill"
+        elif shot.emotional_end == "+":
+            base = "soft motivated key, gentle fill"
+        elif shot.emotional_polarity == "-":
+            base = "moody contrast with negative fill"
+        elif shot.emotional_polarity == "+":
+            base = "balanced key/fill, warmer mids"
+        else:
+            base = "neutral cinematic key/fill"
+
+        # Append visual bible lighting style if available
+        if lighting_style:
+            # Truncate to a brief hint (first clause)
+            hint = lighting_style.split(".")[0].split(";")[0].strip()
+            if hint and len(hint) < 120:
+                base = f"{base}, {hint}"
+        return base
 
     def _profile_for_format(self, fmt: StoryFormat) -> str:
         if fmt in {StoryFormat.TIKTOK, StoryFormat.REEL}:

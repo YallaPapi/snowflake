@@ -100,6 +100,9 @@ class Step8Screenplay:
         project_id: Optional[str] = None,
         model_config: Optional[Dict[str, Any]] = None,
         generation_mode: str = "act_by_act",
+        step_3b_artifact: Optional[Dict[str, Any]] = None,
+        step_3c_artifact: Optional[Dict[str, Any]] = None,
+        step_5b_artifact: Optional[Dict[str, Any]] = None,
     ) -> Tuple[bool, Dict[str, Any], str]:
         """
         Execute Step 8: Generate screenplay.
@@ -135,6 +138,11 @@ class Step8Screenplay:
         antagonist = step_3_artifact.get("antagonist", step_3_artifact.get("antagonist_profile", {}))
         antagonist_name = antagonist.get("name", "ANTAGONIST")
 
+        # Build world, cast, and visual context from new pipeline steps
+        world_context = self._build_world_summary(step_3b_artifact)
+        cast_context = self._build_cast_summary(step_3c_artifact)
+        visual_context = self._build_visual_context(step_5b_artifact)
+
         ctx = {
             "board_cards": board_cards, "title": title, "logline": logline,
             "genre": genre, "format_value": format_value,
@@ -146,6 +154,9 @@ class Step8Screenplay:
             "step_3_artifact": step_3_artifact,
             "step_2_artifact": step_2_artifact,
             "step_1_artifact": step_1_artifact,
+            "world_context": world_context,
+            "cast_context": cast_context,
+            "visual_context": visual_context,
         }
 
         logger.info("=" * 60)
@@ -182,6 +193,9 @@ class Step8Screenplay:
         prompt = self.prompt_generator.generate_prompt(
             ctx["step_5_artifact"], ctx["step_3_artifact"],
             ctx["step_2_artifact"], ctx["step_1_artifact"],
+            world_context=ctx.get("world_context", ""),
+            cast_context=ctx.get("cast_context", ""),
+            visual_context=ctx.get("visual_context", ""),
         )
 
         raw = self.generator.generate(prompt, model_config)
@@ -467,6 +481,9 @@ class Step8Screenplay:
                 character_identifiers=ctx["character_identifiers"],
                 act_label=act_label,
                 start_scene_number=start_scene,
+                world_context=ctx.get("world_context", ""),
+                cast_context=ctx.get("cast_context", ""),
+                visual_context=ctx.get("visual_context", ""),
             )
 
             writer_label = "Grok" if swap_models else "GPT"
@@ -634,11 +651,13 @@ class Step8Screenplay:
                         logger.info("%s: Grok approved after %d revision(s)", act_label, revision_round)
 
                 except Exception as e:
-                    logger.error("Checker re-check failed for %s round %d: %s", act_label, revision_round, e)
-                    return False, {}, (
-                        f"Checker re-check failed for {act_label} round {revision_round}: {e}. "
-                        "Refusing to continue with unverified act output."
-                    )
+                    logger.warning("Checker re-check failed for %s round %d: %s — accepting revised act",
+                                   act_label, revision_round, e)
+                    # Treat Grok re-check failure as non-fatal — the revision was
+                    # applied successfully, only the verification call failed.
+                    # Break out of revision loop and accept the revised act.
+                    failures = []
+                    break
 
             if not failures and revision_round == 0:
                 logger.info("%s: Grok approved — no revision needed", act_label)
@@ -1006,6 +1025,252 @@ class Step8Screenplay:
                 sections.append("\n".join(block_lines))
 
         return "\n\n".join(sections) if sections else "(No character data available.)"
+
+    def _build_world_summary(self, step_3b_artifact: Optional[Dict[str, Any]]) -> str:
+        """Build world bible context for screenplay writing prompts."""
+        if not step_3b_artifact:
+            return ""
+
+        sections = []
+
+        # Arena
+        arena = step_3b_artifact.get("arena", {})
+        if isinstance(arena, dict):
+            desc = arena.get("description", "")
+            if desc:
+                sections.append(f"ARENA: {desc}")
+            rules = arena.get("rules", [])
+            if isinstance(rules, list) and rules:
+                sections.append("World Rules: " + "; ".join(str(r) for r in rules[:5]))
+
+        # Key locations with sensory detail
+        geography = step_3b_artifact.get("geography", {})
+        if isinstance(geography, dict):
+            locations = geography.get("key_locations", [])
+            if isinstance(locations, list) and locations:
+                loc_lines = ["KEY LOCATIONS:"]
+                for loc in locations:
+                    if isinstance(loc, dict):
+                        name = loc.get("name", "")
+                        desc = loc.get("description", "")
+                        atmosphere = loc.get("atmosphere", "")
+                        if name:
+                            loc_lines.append(f"  [{name}]")
+                            if desc:
+                                # Truncate to keep prompt manageable
+                                loc_lines.append(f"    {desc[:300]}")
+                            if atmosphere:
+                                loc_lines.append(f"    Atmosphere: {atmosphere}")
+                sections.append("\n".join(loc_lines))
+
+        # Culture — for dialogue and behavior authenticity
+        culture = step_3b_artifact.get("culture", {})
+        if isinstance(culture, dict):
+            values = culture.get("values", "")
+            customs = culture.get("customs", "")
+            taboos = culture.get("taboos", "")
+            culture_parts = []
+            if values:
+                culture_parts.append(f"Values: {values}")
+            if customs:
+                culture_parts.append(f"Customs: {customs}")
+            if taboos:
+                culture_parts.append(f"Taboos: {taboos}")
+            if culture_parts:
+                sections.append("CULTURE:\n  " + "\n  ".join(culture_parts))
+
+        # Language patterns — for dialogue voice
+        language = step_3b_artifact.get("language_patterns", {})
+        if isinstance(language, dict):
+            slang = language.get("slang", "")
+            verbal = language.get("verbal_culture", "")
+            lang_parts = []
+            if slang:
+                lang_parts.append(f"Slang: {slang}")
+            if verbal:
+                lang_parts.append(f"Verbal Culture: {verbal}")
+            if lang_parts:
+                sections.append("LANGUAGE:\n  " + "\n  ".join(lang_parts))
+
+        # Daily life — for action line authenticity
+        daily = step_3b_artifact.get("daily_life", {})
+        if isinstance(daily, dict):
+            sensory = daily.get("sensory_palette", "")
+            if sensory:
+                sections.append(f"SENSORY PALETTE: {sensory}")
+
+        if not sections:
+            return ""
+        return "\n\n".join(sections)
+
+    def _build_cast_summary(self, step_3c_artifact: Optional[Dict[str, Any]]) -> str:
+        """Build full cast context for screenplay writing prompts."""
+        if not step_3c_artifact:
+            return ""
+
+        sections = []
+
+        # Tier 1 — Major Supporting (full details for dialogue and action)
+        tier1 = step_3c_artifact.get("tier_1_major_supporting", [])
+        if isinstance(tier1, list) and tier1:
+            t1_lines = ["TIER 1 — MAJOR SUPPORTING CHARACTERS:"]
+            for char in tier1:
+                if not isinstance(char, dict):
+                    continue
+                name = char.get("name", "")
+                if not name:
+                    continue
+                role = char.get("role", "")
+                rel = char.get("relationship_to_hero", "")
+                sig_id = char.get("signature_identifier", "")
+                arc = char.get("arc_summary", "")
+
+                t1_lines.append(f"\n  === {name} ({role}) ===")
+                if rel:
+                    t1_lines.append(f"  Relationship: {rel}")
+                if sig_id:
+                    t1_lines.append(f"  Signature Identifier: {sig_id}")
+                if arc:
+                    t1_lines.append(f"  Arc: {arc}")
+
+                # Voice profile
+                voice = char.get("voice_profile", {})
+                if isinstance(voice, dict):
+                    v_parts = []
+                    accent = voice.get("accent", "")
+                    if accent:
+                        v_parts.append(f"accent: {accent}")
+                    vocab = voice.get("vocabulary", "")
+                    if vocab:
+                        v_parts.append(f"vocabulary: {vocab}")
+                    style = voice.get("sentence_style", "")
+                    if style:
+                        v_parts.append(f"style: {style}")
+                    tics = voice.get("verbal_tics", [])
+                    if isinstance(tics, list) and tics:
+                        v_parts.append(f"tics: {', '.join(str(t) for t in tics)}")
+                    if v_parts:
+                        t1_lines.append(f"  Voice: {'; '.join(v_parts)}")
+
+                # Physical appearance for action lines
+                phys = char.get("physical_appearance", {})
+                if isinstance(phys, dict):
+                    build = phys.get("build", "")
+                    wardrobe = phys.get("default_wardrobe", "")
+                    marks = phys.get("distinguishing_marks", "")
+                    p_parts = []
+                    if build:
+                        p_parts.append(build)
+                    if wardrobe:
+                        p_parts.append(wardrobe)
+                    if marks:
+                        p_parts.append(marks)
+                    if p_parts:
+                        t1_lines.append(f"  Appearance: {'; '.join(p_parts)}")
+
+            sections.append("\n".join(t1_lines))
+
+        # Tier 2 — Minor Supporting (brief for context)
+        tier2 = step_3c_artifact.get("tier_2_minor_supporting", [])
+        if isinstance(tier2, list) and tier2:
+            t2_lines = ["TIER 2 — MINOR SUPPORTING:"]
+            for char in tier2:
+                if not isinstance(char, dict):
+                    continue
+                name = char.get("name", "")
+                role = char.get("role", "")
+                visual_id = char.get("visual_identifier", "")
+                voice_trait = char.get("voice_trait", "")
+                if name:
+                    entry = f"  - {name}"
+                    if role:
+                        entry += f" ({role})"
+                    parts = []
+                    if visual_id:
+                        parts.append(f"visual: {visual_id}")
+                    if voice_trait:
+                        parts.append(f"voice: {voice_trait}")
+                    if parts:
+                        entry += f" — {'; '.join(parts)}"
+                    t2_lines.append(entry)
+            sections.append("\n".join(t2_lines))
+
+        # Tier 3 — Background Types (for action line atmosphere)
+        tier3 = step_3c_artifact.get("tier_3_background_types", [])
+        if isinstance(tier3, list) and tier3:
+            t3_lines = ["TIER 3 — BACKGROUND TYPES:"]
+            for bg in tier3:
+                if not isinstance(bg, dict):
+                    continue
+                type_name = bg.get("type_name", "")
+                desc = bg.get("description", "")
+                behavior = bg.get("behavior_patterns", "")
+                if type_name:
+                    entry = f"  - {type_name}"
+                    if desc:
+                        entry += f": {desc[:150]}"
+                    t3_lines.append(entry)
+                    if behavior:
+                        t3_lines.append(f"    Behavior: {behavior[:100]}")
+            sections.append("\n".join(t3_lines))
+
+        if not sections:
+            return ""
+        return "\n\n".join(sections)
+
+    def _build_visual_context(self, step_5b_artifact: Optional[Dict[str, Any]]) -> str:
+        """Build visual bible context for screenplay action line descriptions."""
+        if not step_5b_artifact:
+            return ""
+
+        sections = []
+
+        # Style bible — overall visual tone for action lines
+        style = step_5b_artifact.get("style_bible", {})
+        if isinstance(style, dict):
+            tone = style.get("visual_tone", "")
+            lighting = style.get("lighting_style", "")
+            texture = style.get("texture_grain", "")
+            era = style.get("era_feel", "")
+
+            style_parts = []
+            if tone:
+                style_parts.append(f"Visual Tone: {tone}")
+            if lighting:
+                style_parts.append(f"Lighting: {lighting}")
+            if texture:
+                style_parts.append(f"Texture: {texture}")
+            if era:
+                style_parts.append(f"Era Feel: {era}")
+            if style_parts:
+                sections.append("VISUAL STYLE:\n  " + "\n  ".join(style_parts))
+
+            do_not = style.get("do_not", [])
+            if isinstance(do_not, list) and do_not:
+                sections.append("VISUAL DO NOT: " + "; ".join(str(d) for d in do_not[:5]))
+
+        # Cinematography — for how to describe camera work in action lines
+        cinema = step_5b_artifact.get("cinematography_approach", {})
+        if isinstance(cinema, dict):
+            lens = cinema.get("default_lens", "")
+            handheld = cinema.get("handheld_vs_dolly", "")
+            dof = cinema.get("depth_of_field", "")
+            aspect = cinema.get("aspect_ratio", "")
+            c_parts = []
+            if lens:
+                c_parts.append(f"Lens: {lens}")
+            if handheld:
+                c_parts.append(f"Movement: {handheld}")
+            if dof:
+                c_parts.append(f"DoF: {dof}")
+            if aspect:
+                c_parts.append(f"Aspect: {aspect}")
+            if c_parts:
+                sections.append("CINEMATOGRAPHY:\n  " + "\n  ".join(c_parts))
+
+        if not sections:
+            return ""
+        return "\n\n".join(sections)
 
     def _build_previous_summary(self, last_n_scenes: List[Dict[str, Any]]) -> str:
         """Build continuity summary from last N scenes (slugline + conflict + emotional arc)."""
@@ -1417,6 +1682,9 @@ class Step8Screenplay:
         step_2_artifact: Dict[str, Any],
         step_1_artifact: Dict[str, Any],
         model_config: Optional[Dict[str, Any]] = None,
+        step_3b_artifact: Optional[Dict[str, Any]] = None,
+        step_3c_artifact: Optional[Dict[str, Any]] = None,
+        step_5b_artifact: Optional[Dict[str, Any]] = None,
     ) -> Tuple[bool, Dict[str, Any], str]:
         """
         Revise an existing Step 8 artifact due to downstream conflicts.

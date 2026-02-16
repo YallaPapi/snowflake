@@ -55,6 +55,8 @@ class Step5Board:
         step_3_artifact: Dict[str, Any],
         step_1_artifact: Dict[str, Any],
         step_2_artifact: Dict[str, Any],
+        step_3b_artifact: Optional[Dict[str, Any]] = None,
+        step_3c_artifact: Optional[Dict[str, Any]] = None,
         project_id: Optional[str] = None,
         model_config: Optional[Dict[str, Any]] = None,
     ) -> Tuple[bool, Dict[str, Any], str]:
@@ -66,6 +68,8 @@ class Step5Board:
             step_3_artifact: Validated Step 3 hero/character artifact.
             step_1_artifact: Validated Step 1 logline artifact.
             step_2_artifact: Validated Step 2 genre artifact.
+            step_3b_artifact: Optional Step 3b world bible artifact.
+            step_3c_artifact: Optional Step 3c full cast artifact.
             project_id: Project UUID (auto-generated if not provided).
             model_config: AI model configuration overrides.
 
@@ -96,6 +100,7 @@ class Step5Board:
         # Generate prompt
         prompt_data = self.prompt_generator.generate_prompt(
             step_4_artifact, step_3_artifact, step_1_artifact, step_2_artifact,
+            step_3b_artifact, step_3c_artifact,
         )
 
         # Generate with retry loop
@@ -121,6 +126,7 @@ class Step5Board:
                     artifact, errors, fixes,
                     step_4_artifact, step_3_artifact,
                     step_1_artifact, step_2_artifact,
+                    step_3b_artifact, step_3c_artifact,
                 )
 
         # Add metadata
@@ -467,6 +473,8 @@ class Step5Board:
         step_3_artifact: Dict[str, Any],
         step_1_artifact: Dict[str, Any],
         step_2_artifact: Dict[str, Any],
+        step_3b_artifact: Optional[Dict[str, Any]] = None,
+        step_3c_artifact: Optional[Dict[str, Any]] = None,
         model_config: Optional[Dict[str, Any]] = None,
     ) -> Tuple[bool, Dict[str, Any], str]:
         """
@@ -479,6 +487,8 @@ class Step5Board:
             step_3_artifact: Step 3 hero/character artifact for context
             step_1_artifact: Step 1 logline artifact for context
             step_2_artifact: Step 2 genre artifact for context
+            step_3b_artifact: Optional Step 3b world bible artifact
+            step_3c_artifact: Optional Step 3c full cast artifact
             model_config: AI model configuration
 
         Returns:
@@ -498,6 +508,7 @@ class Step5Board:
             current_artifact, all_errors, fix_suggestions,
             step_4_artifact, step_3_artifact,
             step_1_artifact, step_2_artifact,
+            step_3b_artifact, step_3c_artifact,
         )
 
         if not model_config:
@@ -515,6 +526,7 @@ class Step5Board:
                 artifact, errors, fixes2,
                 step_4_artifact, step_3_artifact,
                 step_1_artifact, step_2_artifact,
+                step_3b_artifact, step_3c_artifact,
             )
             raw_content2 = self.generator.generate(prompt_data2, model_config)
             artifact = self._parse_board(raw_content2)

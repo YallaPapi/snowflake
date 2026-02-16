@@ -212,6 +212,15 @@ class AIGenerator:
             # Generate content
             logger.debug("Validation attempt %d/%d", attempt + 1, max_attempts)
             raw_output = self.generate(prompt_data, model_config)
+
+            # GPT 5.2 sometimes returns empty strings — retry immediately
+            if not raw_output or not raw_output.strip():
+                logger.warning("Empty response on attempt %d/%d — retrying",
+                               attempt + 1, max_attempts)
+                raw_output = self.generate(prompt_data, model_config)
+                if not raw_output or not raw_output.strip():
+                    logger.warning("Empty response on retry — skipping to next attempt")
+                    continue
             
             # Parse response (assuming JSON or structured format)
             try:

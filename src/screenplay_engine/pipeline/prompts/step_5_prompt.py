@@ -847,6 +847,150 @@ ROW 4 (Act Three) -- THE CURSE BECOMES THE GIFT:
 
         return "\n".join(lines) if lines else "No genre rules available"
 
+    # ── World & Cast Context Builders ──────────────────────────────────────
+
+    def _build_world_context(self, step_3b_artifact):
+        """Build world bible context for board construction prompt."""
+        if not step_3b_artifact:
+            return ""
+
+        lines = []
+
+        # Arena
+        arena = step_3b_artifact.get("arena", {})
+        if isinstance(arena, dict):
+            desc = arena.get("description", "")
+            if desc:
+                lines.append(f"Arena: {desc}")
+            scope = arena.get("scope", "")
+            if scope:
+                lines.append(f"Scope: {scope}")
+            time_period = arena.get("time_period", "")
+            if time_period:
+                lines.append(f"Time Period: {time_period}")
+
+        # Key locations — these are the places scenes should take place in
+        geography = step_3b_artifact.get("geography", {})
+        if isinstance(geography, dict):
+            landscape = geography.get("landscape", "")
+            if landscape:
+                lines.append(f"Landscape: {landscape}")
+            climate = geography.get("climate", "")
+            if climate:
+                lines.append(f"Climate: {climate}")
+            locations = geography.get("key_locations", [])
+            if isinstance(locations, list) and locations:
+                lines.append("Key Locations (use these for scene headings):")
+                for loc in locations:
+                    if isinstance(loc, dict):
+                        name = loc.get("name", "")
+                        loc_type = loc.get("type", "")
+                        atmosphere = loc.get("atmosphere", "")
+                        significance = loc.get("significance", "")
+                        if name:
+                            entry = f"  - {name}"
+                            if loc_type:
+                                entry += f" [{loc_type}]"
+                            if atmosphere:
+                                entry += f" — {atmosphere}"
+                            lines.append(entry)
+                            if significance:
+                                lines.append(f"    Significance: {significance}")
+
+        # Culture and daily life for atmosphere
+        culture = step_3b_artifact.get("culture", {})
+        if isinstance(culture, dict):
+            values = culture.get("values", "")
+            if values:
+                lines.append(f"Cultural Values: {values}")
+
+        daily_life = step_3b_artifact.get("daily_life", {})
+        if isinstance(daily_life, dict):
+            sensory = daily_life.get("sensory_palette", "")
+            if sensory:
+                lines.append(f"Sensory Palette: {sensory}")
+
+        # Rules of conflict
+        conflict = step_3b_artifact.get("rules_of_conflict", {})
+        if isinstance(conflict, dict):
+            engine = conflict.get("story_engine", "")
+            if engine:
+                lines.append(f"Story Engine: {engine}")
+            stakes = conflict.get("stakes", "")
+            if stakes:
+                lines.append(f"Stakes: {stakes}")
+
+        if not lines:
+            return ""
+        return "\n".join(lines)
+
+    def _build_cast_context(self, step_3c_artifact):
+        """Build supporting cast context for board construction prompt."""
+        if not step_3c_artifact:
+            return ""
+
+        lines = []
+
+        # Tier 1 — Major Supporting (full details for board placement)
+        tier1 = step_3c_artifact.get("tier_1_major_supporting", [])
+        if isinstance(tier1, list) and tier1:
+            lines.append("MAJOR SUPPORTING CHARACTERS (use in board cards):")
+            for char in tier1:
+                if not isinstance(char, dict):
+                    continue
+                name = char.get("name", "")
+                role = char.get("role", "")
+                rel = char.get("relationship_to_hero", "")
+                arc = char.get("arc_summary", "")
+                scenes = char.get("scenes_likely", [])
+                if name:
+                    entry = f"  - {name}"
+                    if role:
+                        entry += f" ({role})"
+                    if rel:
+                        entry += f" — {rel}"
+                    lines.append(entry)
+                    if arc:
+                        lines.append(f"    Arc: {arc}")
+                    if scenes:
+                        lines.append(f"    Likely appears in cards: {scenes}")
+
+        # Tier 2 — Minor Supporting (with micro_arc for board arc tracking)
+        tier2 = step_3c_artifact.get("tier_2_minor_supporting", [])
+        if isinstance(tier2, list) and tier2:
+            lines.append("MINOR SUPPORTING CHARACTERS (include in board cards with arc tracking):")
+            for char in tier2:
+                if not isinstance(char, dict):
+                    continue
+                name = char.get("name", "")
+                role = char.get("role", "")
+                micro_arc = char.get("micro_arc", "")
+                if name:
+                    entry = f"  - {name}"
+                    if role:
+                        entry += f" ({role})"
+                    lines.append(entry)
+                    if micro_arc:
+                        lines.append(f"    Micro-arc: {micro_arc}")
+                    else:
+                        lines.append(f"    (No micro-arc defined — assign a within-scene arc)")
+
+        # Tier 3 — Background Types
+        tier3 = step_3c_artifact.get("tier_3_background_types", [])
+        if isinstance(tier3, list) and tier3:
+            type_names = []
+            for t in tier3:
+                if isinstance(t, dict):
+                    tn = t.get("type_name", "")
+                    if tn:
+                        type_names.append(tn)
+            if type_names:
+                lines.append("BACKGROUND TYPES: " + ", ".join(type_names))
+
+        if not lines:
+            return ""
+        return "\n".join(lines)
+
     # ── Prompt Generation ─────────────────────────────────────────────────
 
     def generate_prompt(
@@ -855,6 +999,8 @@ ROW 4 (Act Three) -- THE CURSE BECOMES THE GIFT:
         step_3_artifact: Dict[str, Any],
         step_1_artifact: Dict[str, Any],
         step_2_artifact: Dict[str, Any],
+        step_3b_artifact: Dict[str, Any] = None,
+        step_3c_artifact: Dict[str, Any] = None,
     ) -> Dict[str, str]:
         """
         Generate the full prompt for Step 5: The Board.
@@ -899,6 +1045,28 @@ ROW 4 (Act Three) -- THE CURSE BECOMES THE GIFT:
             genre_board_guidance=genre_board_guidance,
         )
 
+        # Inject world and cast context if available
+        world_context = self._build_world_context(step_3b_artifact)
+        cast_context = self._build_cast_context(step_3c_artifact)
+
+        extra_context = ""
+        if world_context:
+            extra_context += f"\nWORLD CONTEXT (Step 3b — World Bible — use these locations for scene headings):\n{world_context}\n"
+        if cast_context:
+            extra_context += f"\nSUPPORTING CAST (Step 3c — Full Cast — include in characters_present):\n{cast_context}\n"
+
+        if extra_context:
+            # Insert before "INSTRUCTIONS:" section
+            marker = "INSTRUCTIONS:"
+            if marker in user_prompt:
+                user_prompt = user_prompt.replace(
+                    marker,
+                    extra_context + "\n" + marker,
+                    1,  # Only replace first occurrence
+                )
+            else:
+                user_prompt += extra_context
+
         prompt_content = f"{self.SYSTEM_PROMPT}{user_prompt}{self.VERSION}"
         prompt_hash = hashlib.sha256(prompt_content.encode()).hexdigest()
 
@@ -918,6 +1086,8 @@ ROW 4 (Act Three) -- THE CURSE BECOMES THE GIFT:
         step_3_artifact: Dict[str, Any],
         step_1_artifact: Dict[str, Any],
         step_2_artifact: Dict[str, Any],
+        step_3b_artifact: Dict[str, Any] = None,
+        step_3c_artifact: Dict[str, Any] = None,
     ) -> Dict[str, str]:
         """
         Generate a revision prompt to fix validation errors.
