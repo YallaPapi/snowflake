@@ -1,272 +1,238 @@
-# Claude Code Configuration - SPARC Development Environment
-
-## 🚨 CRITICAL: CONCURRENT EXECUTION & FILE MANAGEMENT
-
-**ABSOLUTE RULES**:
-1. ALL operations MUST be concurrent/parallel in a single message
-2. **NEVER save working files, text/mds and tests to the root folder**
-3. ALWAYS organize files in appropriate subdirectories
-
-### ⚡ GOLDEN RULE: "1 MESSAGE = ALL RELATED OPERATIONS"
-
-**MANDATORY PATTERNS:**
-- **TodoWrite**: ALWAYS batch ALL todos in ONE call (5-10+ todos minimum)
-- **Task tool**: ALWAYS spawn ALL agents in ONE message with full instructions
-- **File operations**: ALWAYS batch ALL reads/writes/edits in ONE message
-- **Bash commands**: ALWAYS batch ALL terminal operations in ONE message
-- **Memory operations**: ALWAYS batch ALL memory store/retrieve in ONE message
-
-### 📁 File Organization Rules
-
-**NEVER save to root folder. Use these directories:**
-- `/src` - Source code files
-- `/tests` - Test files
-- `/docs` - Documentation and markdown files
-- `/config` - Configuration files
-- `/scripts` - Utility scripts
-- `/examples` - Example code
+# Snowflake Project - AI Screenplay & Video Generation System
 
 ## Project Overview
 
-This project uses SPARC (Specification, Pseudocode, Architecture, Refinement, Completion) methodology with Claude-Flow orchestration for systematic Test-Driven Development.
+**What:** AI-powered screenplay generation pipeline implementing Blake Snyder's "Save the Cat" method, with automated shot planning and visual bible generation for video production.
 
-## SPARC Commands
+**Where:** C:\Users\asus\Desktop\projects\snowflake
 
-### Core Commands
-- `npx claude-flow sparc modes` - List available modes
-- `npx claude-flow sparc run <mode> "<task>"` - Execute specific mode
-- `npx claude-flow sparc tdd "<feature>"` - Run complete TDD workflow
-- `npx claude-flow sparc info <mode>` - Get mode details
+**Related:** i2v video generation platform at C:\Users\asus\Desktop\projects\i2v
 
-### Batchtools Commands
-- `npx claude-flow sparc batch <modes> "<task>"` - Parallel execution
-- `npx claude-flow sparc pipeline "<task>"` - Full pipeline processing
-- `npx claude-flow sparc concurrent <mode> "<tasks-file>"` - Multi-task processing
+**Pipeline:** Story (Snowflake) → Screenplay (Save the Cat) → Shot Engine → Visual Bible → Video (i2v)
 
-### Build Commands
-- `npm run build` - Build project
-- `npm run test` - Run tests
-- `npm run lint` - Linting
-- `npm run typecheck` - Type checking
+## Architecture
 
-## SPARC Workflow Phases
+### Five Engines
 
-1. **Specification** - Requirements analysis (`sparc run spec-pseudocode`)
-2. **Pseudocode** - Algorithm design (`sparc run spec-pseudocode`)
-3. **Architecture** - System design (`sparc run architect`)
-4. **Refinement** - TDD implementation (`sparc tdd`)
-5. **Completion** - Integration (`sparc run integration`)
+1. **Snowflake Engine** (src/pipeline/) - Randy Ingermanson's 11-step novel generation method
+2. **Screenplay Engine** (src/screenplay_engine/) - Blake Snyder's 9-step Save the Cat method (970 tests)
+3. **Shot Engine** (src/shot_engine/) - 6-step deterministic shot planning (V1-V6)
+4. **Visual Bible Engine** (src/visual_bible/) - Image prompt generation and asset manifesting
+5. **AI Layer** (src/ai/) - Multi-provider LLM abstraction (OpenAI, Anthropic, xAI)
 
-## Code Style & Best Practices
+### Pipeline Order
 
-- **Modular Design**: Files under 500 lines
-- **Environment Safety**: Never hardcode secrets
-- **Test-First**: Write tests before implementation
-- **Clean Architecture**: Separate concerns
-- **Documentation**: Keep updated
+**Screenplay Steps:**
+1. Logline (Ch.1)
+2. Genre (Ch.2)
+3. Hero (Ch.3)
+4. Beat Sheet (Ch.4)
+5. Board (Ch.5)
+6. Screenplay (end Ch.5)
+7. Laws (Ch.6)
+8. Diagnostics (Ch.7)
+9. Marketing (Ch.8)
 
-## 🚀 Available Agents (54 Total)
+**Optional Steps:**
+- 3b: World Bible (geography, culture, economy, history)
+- 3c: Full Cast (3-tier supporting characters, layered generation)
+- 5b: Visual Bible (style bible, color script, location designs)
+- 8b: Targeted Rewrite (Grok-powered act-level revision)
 
-### Core Development
-`coder`, `reviewer`, `tester`, `planner`, `researcher`
+**Shot Engine Steps:**
+- V1: Scene Decomposition (parse screenplay into shot segments)
+- V2: Shot Type Assignment (wide, medium, close-up, etc.)
+- V3: Camera Behavior (movement, lens, height)
+- V4: Duration & Pacing (beat-aware timing)
+- V5: Transition Planning (cut, dissolve, fade)
+- V6: Prompt Generation (T2I, I2I, I2V prompts)
 
-### Swarm Coordination
-`hierarchical-coordinator`, `mesh-coordinator`, `adaptive-coordinator`, `collective-intelligence-coordinator`, `swarm-memory-manager`
+### Artifacts Directory
 
-### Consensus & Distributed
-`byzantine-coordinator`, `raft-manager`, `gossip-coordinator`, `consensus-builder`, `crdt-synchronizer`, `quorum-manager`, `security-manager`
+All generated content saved to: `artifacts/<project_id>/`
 
-### Performance & Optimization
-`perf-analyzer`, `performance-benchmarker`, `task-orchestrator`, `memory-coordinator`, `smart-agent`
+**Screenplay artifacts:**
+- sp_step_1_logline.json
+- sp_step_2_genre.json
+- sp_step_3_hero.json
+- sp_step_3b_world_bible.json
+- sp_step_3c_full_cast.json
+- sp_step_4_beat_sheet.json
+- sp_step_5_board.json
+- sp_step_5b_visual_bible.json
+- sp_step_6_laws.json
+- sp_step_7_diagnostics.json
+- sp_step_8_screenplay.json
+- sp_step_9_marketing.json
 
-### GitHub & Repository
-`github-modes`, `pr-manager`, `code-review-swarm`, `issue-tracker`, `release-manager`, `workflow-automation`, `project-board-sync`, `repo-architect`, `multi-repo-swarm`
+**Shot/Visual artifacts:**
+- shot_list.json (754 shots for 40-scene screenplay)
+- visual_manifest.json
+- prompt_batch.json
 
-### SPARC Methodology
-`sparc-coord`, `sparc-coder`, `specification`, `pseudocode`, `architecture`, `refinement`
+## Critical Technical Rules
 
-### Specialized Development
-`backend-dev`, `mobile-dev`, `ml-developer`, `cicd-engineer`, `api-docs`, `system-architect`, `code-analyzer`, `base-template-generator`
+### Save the Cat Method is THE Authority
 
-### Testing & Validation
-`tdd-london-swarm`, `production-validator`
+1. **No assumptions about how Save the Cat works** - If unsure, check the book text in temp_pages/stc_chapters/
+2. **Characters emerge organically** - NO bulk supporting cast generation. Characters develop through beats → board → screenplay (the "layers" approach user requested)
+3. **7 Immutable Laws, NOT 8** - "Laying Pipe" was fabricated and removed
+4. **9 Diagnostic Checks, NOT 8** - "Is It Primal?" was missing and added
+5. **Write FIRST, then diagnose** - Chapter 7 diagnostics run AFTER screenplay writing, not before
+6. **Emotional polarity is a before/after pair** - emotional_start and emotional_end (+/-), not a single direction
+7. **Structure naturally produces length** - DO NOT add meta-instructions like "this is a feature film, needs to be 90-110 pages"
 
-### Migration & Planning
-`migration-planner`, `swarm-init`
+### Shot Engine is Deterministic
 
-## 🎯 Claude Code vs MCP Tools
+- **NO LLM calls in V1-V6** - Shot engine uses rule-based shot selection only
+- Content trigger determines default shot type/camera/duration
+- Emotional intensity modulates shot choices
+- Format multipliers adjust pacing (TikTok 0.5x, Feature 1.2x)
+- Beat curve modulates pacing (Opening moderate, Midpoint rapid)
 
-### Claude Code Handles ALL:
-- File operations (Read, Write, Edit, MultiEdit, Glob, Grep)
-- Code generation and programming
-- Bash commands and system operations
-- Implementation work
-- Project navigation and analysis
-- TodoWrite and task management
-- Git operations
-- Package management
-- Testing and debugging
+### AI/LLM Rules
 
-### MCP Tools ONLY:
-- Coordination and planning
-- Memory management
-- Neural features
-- Performance tracking
-- Swarm orchestration
-- GitHub integration
+- **OpenAI GPT uses max_completion_tokens** (not max_tokens)
+- **Screenplay generation takes ~10-15 min** with GPT 5.2 (128K token call)
+- **Timeout settings:** OpenAI 1200s, Anthropic streaming, xAI 600s
+- **Bulletproof failover:** Claude Sonnet → Haiku → GPT-4 → GPT-3.5 → Emergency content
 
-**KEY**: MCP coordinates, Claude Code executes.
+## File Organization
 
-## 🚀 Quick Setup
+**NEVER save files to the root folder.**
 
+- **Source code:** src/
+- **Tests:** tests/
+- **Scripts:** scripts/
+- **Documentation:** docs/
+- **Generated artifacts:** artifacts/
+- **Book reference:** temp_pages/stc_chapters/*.txt
+
+## Testing
+
+**Run all tests:**
 ```bash
-# Add Claude Flow MCP server
-claude mcp add claude-flow npx claude-flow@alpha mcp start
+python -m pytest tests/ -v
 ```
 
-## MCP Tool Categories
-
-### Coordination
-`swarm_init`, `agent_spawn`, `task_orchestrate`
-
-### Monitoring
-`swarm_status`, `agent_list`, `agent_metrics`, `task_status`, `task_results`
-
-### Memory & Neural
-`memory_usage`, `neural_status`, `neural_train`, `neural_patterns`
-
-### GitHub Integration
-`github_swarm`, `repo_analyze`, `pr_enhance`, `issue_triage`, `code_review`
-
-### System
-`benchmark_run`, `features_detect`, `swarm_monitor`
-
-## 📋 Agent Coordination Protocol
-
-### Every Agent MUST:
-
-**1️⃣ BEFORE Work:**
+**Screenplay engine tests (970 tests):**
 ```bash
-npx claude-flow@alpha hooks pre-task --description "[task]"
-npx claude-flow@alpha hooks session-restore --session-id "swarm-[id]"
+python -m pytest tests/screenplay_engine/ -v
 ```
 
-**2️⃣ DURING Work:**
+**Always run tests before declaring something fixed.**
+
+## Common Commands
+
+**Full screenplay pipeline:**
 ```bash
-npx claude-flow@alpha hooks post-edit --file "[file]" --memory-key "swarm/[agent]/[step]"
-npx claude-flow@alpha hooks notify --message "[what was done]"
+python scripts/test_screenplay_live.py
 ```
 
-**3️⃣ AFTER Work:**
+**Shot engine:**
 ```bash
-npx claude-flow@alpha hooks post-task --task-id "[task]"
-npx claude-flow@alpha hooks session-end --export-metrics true
+python scripts/test_shot_engine.py
 ```
 
-## 🎯 Concurrent Execution Examples
-
-### ✅ CORRECT (Single Message):
-```javascript
-[BatchTool]:
-  // Initialize swarm
-  mcp__claude-flow__swarm_init { topology: "mesh", maxAgents: 6 }
-  mcp__claude-flow__agent_spawn { type: "researcher" }
-  mcp__claude-flow__agent_spawn { type: "coder" }
-  mcp__claude-flow__agent_spawn { type: "tester" }
-  
-  // Spawn agents with Task tool
-  Task("Research agent: Analyze requirements...")
-  Task("Coder agent: Implement features...")
-  Task("Tester agent: Create test suite...")
-  
-  // Batch todos
-  TodoWrite { todos: [
-    {id: "1", content: "Research", status: "in_progress", priority: "high"},
-    {id: "2", content: "Design", status: "pending", priority: "high"},
-    {id: "3", content: "Implement", status: "pending", priority: "high"},
-    {id: "4", content: "Test", status: "pending", priority: "medium"},
-    {id: "5", content: "Document", status: "pending", priority: "low"}
-  ]}
-  
-  // File operations
-  Bash "mkdir -p app/{src,tests,docs}"
-  Write "app/src/index.js"
-  Write "app/tests/index.test.js"
-  Write "app/docs/README.md"
+**Visual bible:**
+```bash
+python scripts/test_visual_bible.py
 ```
 
-### ❌ WRONG (Multiple Messages):
-```javascript
-Message 1: mcp__claude-flow__swarm_init
-Message 2: Task("agent 1")
-Message 3: TodoWrite { todos: [single todo] }
-Message 4: Write "file.js"
-// This breaks parallel coordination!
+**Specific step test:**
+```bash
+python scripts/test_step_X.py
 ```
 
-## Performance Benefits
+## Important Files
 
-- **84.8% SWE-Bench solve rate**
-- **32.3% token reduction**
-- **2.8-4.4x speed improvement**
-- **27+ neural models**
+**Orchestrators:**
+- src/screenplay_engine/pipeline/orchestrator.py (876 lines, main STC pipeline)
+- src/shot_engine/pipeline/orchestrator.py (155 lines, shot planning)
+- src/visual_bible/pipeline/orchestrator.py (474 lines, asset manifest)
 
-## Hooks Integration
+**AI Layer:**
+- src/ai/generator.py (549 lines, multi-provider with failover)
+- src/ai/bulletproof_generator.py (294 lines, 5-tier failover)
 
-### Pre-Operation
-- Auto-assign agents by file type
-- Validate commands for safety
-- Prepare resources automatically
-- Optimize topology by complexity
-- Cache searches
+**Models:**
+- src/screenplay_engine/models.py (Pydantic data models for all STC artifacts)
+- src/shot_engine/models.py (Shot, ShotSegment, ShotList, ContentTrigger enums)
+- src/visual_bible/models.py (VisualManifest, CharacterState, SettingState)
 
-### Post-Operation
-- Auto-format code
-- Train neural patterns
-- Update memory
-- Analyze performance
-- Track token usage
+**STC Book Text:**
+- temp_pages/stc_chapters/ch1.txt through ch8.txt
+- savethecat.docx (source document)
 
-### Session Management
-- Generate summaries
-- Persist state
-- Track metrics
-- Restore context
-- Export workflows
+## Known Issues & Context
 
-## Advanced Features (v2.0.0)
+### Persistent Diagnostic Failures (5/9)
 
-- 🚀 Automatic Topology Selection
-- ⚡ Parallel Execution (2.8-4.4x speed)
-- 🧠 Neural Training
-- 📊 Bottleneck Analysis
-- 🤖 Smart Auto-Spawning
-- 🛡️ Self-Healing Workflows
-- 💾 Cross-Session Memory
-- 🔗 GitHub Integration
+These are GPT writing tendencies, not structural problems:
+1. **Hero Leads** - AI evaluator too strict about hero proactivity
+2. **Talking the Plot** - Characters explain plot in dialogue (hard to fix without human rewrite)
+3. **Emotional Color Wheel** - Tech thrillers naturally lean fear/tension/dread
+4. **Hi How Are You** - Introductory dialogue feels generic
+5. **Limp and Eye Patch** - Supporting characters lack distinctive visual identifiers
 
-## Integration Tips
+**Attempted fixes:** Monolithic (v2), scene-by-scene (v3), act-by-act+Grok (v4) all produce same 4-5/9 pass rate.
 
-1. Start with basic swarm init
-2. Scale agents gradually
-3. Use memory for context
-4. Monitor progress regularly
-5. Train patterns from success
-6. Enable hooks automation
-7. Use GitHub tools first
+**Next steps:** Better prompts with concrete examples, or different writer model.
 
-## Support
+### Shot Engine V6 Bugs (Critical)
 
-- Documentation: https://github.com/ruvnet/claude-flow
-- Issues: https://github.com/ruvnet/claude-flow/issues
+1. **Garbage video_prompt** - Motion extraction fails on 2/754 shots (e.g., "figure skip turns, they slam into the")
+2. **Missing characters_in_frame** - 296/754 shots (39%) have empty character lists despite characters in content
+3. **Speaking duplication** - "speaking, speaking" in some dialogue prompts
+
+**Fix locations:** src/shot_engine/pipeline/steps/step_v6_prompts.py
+
+### Environment Notes
+
+- save the cat.pdf is scanned - use savethecat.docx instead
+- OpenAI GPT 5.2 uses max_completion_tokens (not max_tokens)
+- Screenplay generation takes ~10 min with GPT 5.2 (128K token call)
+
+## DO NOT
+
+1. **Do not create documentation files** unless explicitly asked
+2. **Do not save files to the root folder** - use appropriate subdirectories
+3. **Do not make assumptions about Save the Cat methodology** - check the book text
+4. **Do not add Step 3b "Supporting Cast"** to the main screenplay pipeline (user explicitly rejected this as non-STC)
+5. **Do not try to save tokens or reduce API calls** - Quality over cost (user directive: "I don't give a fuck about that right now")
+6. **Do not assume steps can be skipped** - Go step by step, put more effort into each step (user directive)
+
+## User Directives (MUST Follow)
+
+From prior sessions, the user has given these CRITICAL directives:
+
+1. "from here on out, no assumptions at all as far as how save the cat does things"
+2. "the Save the Cat method is what we want. Whatever order that goes in... that's exactly how we need to do it"
+3. "one api call for all the supporting cast seems like it won't do a good job. i feel like they should be added in layers"
+4. "regarding the api calls and trying to save money or save tokens, i don't give a fuck about that right now"
+5. "I want you to go step by step now, from now on. put more effort into each step"
+6. "it should not need to say 'this is a feature film, needs to be 90-110 pages'" - structure naturally produces length
+
+## Documentation References
+
+**For understanding the codebase:**
+- docs/SNOWFLAKE_CODEBASE_DIGEST.md (full architecture, 34,000+ LOC, 202 files)
+- docs/PIPELINE_ARCHITECTURE_DIAGRAM.md (visual pipeline flow, gap analysis)
+
+**For STC methodology:**
+- temp_pages/stc_chapters/*.txt (book text for all 8 chapters)
+- docs/stc_audit/*.txt (step-by-step audit reports)
+
+**For progress tracking:**
+- docs/stc_audit/PROGRESS_REPORT_20260208.txt (v2.0.0 completion status)
+- docs/stc_audit/MASTER_FIX_PLAN.txt (partially superseded)
+
+## Version History
+
+**Screenplay Engine:** v2.0.0 (all 9 steps + checkpoint system complete)
+**Shot Engine:** v12.0.0 (setting-per-location architecture)
+**Total Tests:** 970 passing (all steps validated)
 
 ---
 
-Remember: **Claude Flow coordinates, Claude Code creates!**
-
-# important-instruction-reminders
-Do what has been asked; nothing more, nothing less.
-NEVER create files unless they're absolutely necessary for achieving your goal.
-ALWAYS prefer editing an existing file to creating a new one.
-NEVER proactively create documentation files (*.md) or README files. Only create documentation files if explicitly requested by the User.
-Never save working files, text/mds and tests to the root folder.
+**Remember:** This is a Save the Cat screenplay engine first, shot planner second, video generator third. The methodology is sacred - no shortcuts, no assumptions.

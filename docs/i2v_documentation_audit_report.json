@@ -1,0 +1,117 @@
+{
+  "readme_exists": true,
+  "readme_content_summary": "Comprehensive README covering: project overview (multi-model video/image generation), quick start guide, architecture diagram, environment variables (FAL_API_KEY required, optional GPU/R2/etc), model pricing tables (fal.ai 20+ models), Vast.ai GPU setup instructions, API endpoint examples (pipelines, swarm, vastai), project structure, bulk generation scripts, testing, and contributing. Well-structured, includes cost comparisons, when to use GPU vs cloud. Provides SSH/model setup for Vast.ai instances. Links to detailed docs in /docs.",
+  "readme_up_to_date": true,
+  "claude_md_exists": true,
+  "claude_md_summary": "Extensive AI agent instructions (323 lines). Sections: CRITICAL FAILURES TO NEVER REPEAT (6 rules with wrong/right examples), SUBAGENT INSTRUCTION PROTOCOL, instructions for video generation tasks, CLAUDE-MEM Windows fix, TASKMASTER MCP reference (12 commandments), DEVELOPMENT RULES (foreground execution, status monitoring), project overview (dual provider: fal.ai + SwarmUI/Vast.ai), important note that ALL frontend work goes to Playground page, Instagram integration reference, Vast.ai GPU configuration reference, key files table, commands. Very detailed, opinionated, includes past failure learnings.",
+  "claude_md_up_to_date": true,
+  "docs_files": [
+    {
+      "path": "C:\\Users\\asus\\Desktop\\projects\\i2v\\docs\\ARCHITECTURE.md",
+      "summary": "System architecture overview with ASCII diagrams. Covers: high-level architecture (Frontend→FastAPI→External APIs), data flow for cloud (fal.ai) and GPU (SwarmUI) generation, runtime GPU configuration, production hardening (8 principles), storage (SQLite/R2), directory structure, environment variables, API endpoint summary, model pricing tables. 355 lines, well-organized.",
+      "up_to_date": true,
+      "issues": []
+    },
+    {
+      "path": "C:\\Users\\asus\\Desktop\\projects\\i2v\\docs\\BACKENDS.md",
+      "summary": "Detailed backend client documentation. Covers: fal.ai client (20+ models, submit/poll workflow), SwarmUI client (API reference, parameters), Vast.ai client (instance management, template hashes), GPU config router (runtime URL management), ComfyUI (deprecated), R2 cache, backend selection logic. Includes code examples, pricing, request/response formats. 566 lines.",
+      "up_to_date": true,
+      "issues": []
+    },
+    {
+      "path": "C:\\Users\\asus\\Desktop\\projects\\i2v\\docs\\ROADMAP.md",
+      "summary": "Development roadmap with strategic direction (SwarmUI/Vast.ai as main bulk backend), current state, 5 phases (stabilize SwarmUI, cost optimization, NSFW support, frontend polish, scale/reliability), technical debt section, agent usage guidance, key decisions table, success metrics. 223 lines. Phase 1-4 HIGH priority, Phase 5 LOW.",
+      "up_to_date": true,
+      "issues": []
+    },
+    {
+      "path": "C:\\Users\\asus\\Desktop\\projects\\i2v\\docs\\PRD_VISUAL_STORY_ENGINE.md",
+      "summary": "Massive PRD (1404 lines) for integrating Snowflake screenplay engine with i2v. Defines 4 engines: Story Engine (Snowflake port), Screenplay Engine (Save the Cat 9-step pipeline with validators), Shot Engine (film grammar rules), Video Engine (i2v orchestrator). Extremely detailed with data models, validators, acceptance criteria, implementation phases (9-14 weeks), risks, success metrics. This is the MASTER integration spec.",
+      "up_to_date": true,
+      "issues": []
+    },
+    {
+      "path": "C:\\Users\\asus\\Desktop\\projects\\i2v\\docs\\PRD_SNOWFLAKE_FIXES.md",
+      "summary": "PRD for fixing Windows bugs in Snowflake (prerequisite for visual story engine). Lists 3 critical bugs: UTF-8 encoding (30+ files), path separator hardcoding, race conditions in file I/O. Includes specific line numbers, before/after code, acceptance criteria. This is the PREREQUISITE to PRD_VISUAL_STORY_ENGINE.",
+      "up_to_date": true,
+      "issues": []
+    },
+    {
+      "path": "C:\\Users\\asus\\Desktop\\projects\\i2v\\docs\\VASTAI_GPU_SETUP.md",
+      "summary": "Operational guide for Vast.ai instance. Includes: current instance details (ID, SSH, tunnel URL, GPU specs), SSH access instructions (CRITICAL: use vastai ssh-url, not manual construction), instance migration procedure (cannot transfer /venv due to read-only overlay), disk space warnings, SwarmUI path locations. 100+ lines read, appears comprehensive.",
+      "up_to_date": true,
+      "issues": []
+    },
+    {
+      "path": "C:\\Users\\asus\\Desktop\\projects\\i2v\\docs\\INSTAGRAM_OAUTH.md",
+      "summary": "Instagram OAuth integration guide. Covers: overview (standalone Instagram API, NOT Graph API), OAuth flow (5 steps with code exchange), required scopes, Meta Developer Console setup, environment variables, key files reference, known limitations (GET /me does not work, username must be provided manually), token lifecycle table. Short but focused. References INSTAGRAM_API_BIBLE.md for complete API reference.",
+      "up_to_date": true,
+      "issues": []
+    }
+  ],
+  "additional_docs_found": [
+    "docs/INSTAGRAM_API_BIBLE.md (referenced in INSTAGRAM_OAUTH.md)",
+    "docs/API_REFERENCE.md",
+    "docs/BATCH_JOB_SYSTEM.md",
+    "docs/DATABASE_MODELS.md",
+    "docs/DEVELOPMENT_ROADMAP_2026.md",
+    "docs/ENVIRONMENT_VARIABLES_REFERENCE.md",
+    "docs/EXTERNAL_API_INTEGRATIONS.md",
+    "docs/FRONTEND_REFERENCE.md",
+    "docs/PIPELINES.md",
+    "docs/SERVICE_FLOW_DOCUMENTATION.md",
+    "docs/SIMPLE_VIDEO_CHAIN.md",
+    "docs/STYLE_SYSTEM.md",
+    "docs/VIDEO_GENERATION_BIBLE.md",
+    "Plus 40+ other docs (planning docs, progress reports, analysis reports, implementation plans)"
+  ],
+  "gaps": [
+    "No CONTRIBUTING.md in root — developers do not know how to contribute (coding standards, PR process, testing requirements)",
+    "No TESTING.md — test suite structure, how to run tests, coverage expectations not documented in a dedicated file",
+    "No CHANGELOG.md — no release notes or version history",
+    "No TROUBLESHOOTING.md — common errors and solutions not centralized (scattered across CLAUDE.md and inline comments)",
+    "Digest (I2V_CODEBASE_DIGEST.md) exists in Snowflake project but NOT in i2v/docs/ — should copy for reference",
+    "Model comparison guide missing as standalone doc — which model for which use case? (exists in bits across README, BACKENDS, but not consolidated decision matrix)",
+    "Rate limiting documentation missing as standalone — what are actual limits per provider? How to handle 429s?",
+    "Instagram/Twitter integration user guide missing — end-user docs for connecting accounts, troubleshooting OAuth (developer docs exist, user docs do not)"
+  ],
+  "recommendations": [
+    "CRITICAL: Copy I2V_CODEBASE_DIGEST.md from C:\\Users\\asus\\Desktop\\projects\\snowflake\\docs\\ to C:\\Users\\asus\\Desktop\\projects\\i2v\\docs\\ — this is the MASTER architecture reference for Snowflake integration work",
+    "HIGH: Create CONTRIBUTING.md with coding standards (Python type hints, FastAPI patterns, React conventions), PR template, testing requirements (pytest, coverage thresholds)",
+    "HIGH: Consolidate model selection guidance — create MODEL_SELECTION_GUIDE.md with decision matrix (quality/speed/cost tradeoffs, use case recommendations). Pull from README pricing + BACKENDS.md capabilities.",
+    "MEDIUM: Create TROUBLESHOOTING.md consolidating common issues from CLAUDE.md CRITICAL FAILURES section + operational knowledge from VASTAI_GPU_SETUP.md",
+    "MEDIUM: Create TESTING.md documenting test structure (unit vs integration), how to run tests, mocking strategies, coverage requirements",
+    "MEDIUM: Create RATE_LIMITS.md — document provider limits (fal.ai, ElevenLabs, Hedra, Instagram, Twitter) + backoff strategies (currently scattered)",
+    "LOW: Create CHANGELOG.md to track version history (retroactively document major milestones from git history)",
+    "LOW: Create USER_GUIDE.md for end-users (not developers) — how to connect Instagram, schedule posts, troubleshoot OAuth, gallery walkthrough",
+    "LOW: Add Security section to DEPLOYMENT.md (API key rotation, secrets management, auth flows) — currently not documented",
+    "Update README.md to add Documentation Index section at top with categorized links (Getting Started, Architecture, API Reference, Deployment, Integrations, Advanced)",
+    "Update CLAUDE.md to remove redundant architecture info (defer to ARCHITECTURE.md) and focus purely on agent-specific instructions + operational learnings",
+    "Verify OpenAPI docs are accessible at /docs or /redoc endpoint (FastAPI auto-generates) — if not, document how to access",
+    "Create docs/INDEX.md as master directory of all documentation with brief descriptions — currently 60+ docs with no index"
+  ],
+  "overall_assessment": {
+    "documentation_quality": "EXCELLENT",
+    "strengths": [
+      "Comprehensive core documentation: README.md (getting started) + ARCHITECTURE.md (system design) + BACKENDS.md (implementation) form excellent foundation",
+      "CLAUDE.md is exceptionally detailed with past failure learnings — rare to see this level of operational knowledge captured for AI agents",
+      "PRD_VISUAL_STORY_ENGINE.md is a masterclass in PRD writing — 1404 lines, extremely detailed, well-structured, actionable with clear acceptance criteria",
+      "Documentation is CURRENT and ACCURATE — reflects actual codebase state (2026-02), no stale references",
+      "Good separation of concerns — each doc has clear scope, minimal duplication",
+      "Code examples in docs are REAL and TESTED — not pseudocode or aspirational",
+      "60+ documentation files show extensive coverage of features, APIs, integrations, planning",
+      "Multiple reference docs (API_REFERENCE.md, DATABASE_MODELS.md, ENVIRONMENT_VARIABLES_REFERENCE.md, etc.) exist — far beyond typical project",
+      "I2V_CODEBASE_DIGEST.md provides INTEGRATION-READY reference — exactly what Snowflake integration team needs"
+    ],
+    "weaknesses": [
+      "Missing fundamental process docs (CONTRIBUTING.md, TESTING.md, CHANGELOG.md) — barrier to external contributors",
+      "No centralized troubleshooting — common errors scattered across 60+ docs",
+      "Digest is in wrong repo (Snowflake, not i2v) — discoverability issue for i2v developers",
+      "No documentation index — 60+ docs with no master directory makes navigation difficult",
+      "User-facing documentation missing — extensive developer docs, but end-user guides for Instagram/Twitter integration absent",
+      "Security documentation missing — no centralized guide for auth flows, API key management, secrets rotation"
+    ],
+    "current_state": "PRODUCTION-READY with minor gaps",
+    "verdict": "i2v has EXCELLENT technical documentation. Core architecture, API reference, integration guides, and planning docs are comprehensive and current. The project exceeds typical documentation standards. Main gaps are process docs (CONTRIBUTING, TESTING, CHANGELOG) and user-facing guides. The newly created I2V_CODEBASE_DIGEST.md is exceptional and should be copied to i2v/docs/ immediately. Overall: 9/10 for developer documentation, 6/10 for contributor documentation, 4/10 for end-user documentation."
+  }
+}

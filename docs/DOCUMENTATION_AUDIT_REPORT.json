@@ -1,0 +1,241 @@
+{
+  "audit_date": "2026-02-16",
+  "auditor": "Claude Code (Sonnet 4.5)",
+  "readme_exists": true,
+  "readme_content_summary": "README.md exists and is COMPLETELY INACCURATE. It describes a 'Snowflake Novel Generation Engine' with Randy Ingermanson's 11-step method, dual-mode (Agency Swarm + Linear Pipeline), Scene Engine (Steps 8-10), bulletproof reliability, and observability dashboard. However, based on MEMORY.md and actual project context, this project is ACTUALLY a 'Screenplay Engine' implementing Blake Snyder's Save the Cat method (9 steps) that feeds into a Shot Engine and Video Pipeline. The README describes a completely different system than what the codebase implements. This is legacy documentation from a prior iteration that was never updated.",
+  "readme_accuracy": "CRITICAL MISMATCH - Does not describe actual project",
+  "claude_md_relevant": false,
+  "claude_md_issues": [
+    "CLAUDE.md is 100% boilerplate about SPARC methodology and Claude-Flow MCP integration",
+    "Contains zero information about the actual Snowflake/Screenplay/Shot pipeline project",
+    "Describes npm commands, SPARC workflow phases, and 54 agents that are not used in this project",
+    "No mention of Save the Cat, screenplay generation, shot lists, or video pipeline",
+    "File organization rules conflict with actual project structure (project uses artifacts/, temp_pages/, pdf_pages/ which aren't mentioned)",
+    "Should be replaced with project-specific Claude Code configuration for screenplay/shot pipeline work"
+  ],
+  "docs_files": [
+    {
+      "path": "docs/SNOWFLAKE_CODEBASE_DIGEST.md",
+      "summary": "Comprehensive architectural digest (2026-02-16) showing the full pipeline: Snowflake Engine (11 steps) → Screenplay Engine (9 steps) → Shot Engine (6 steps) → Visual Bible. Well-structured, up-to-date, matches MEMORY.md context.",
+      "up_to_date": true,
+      "quality": "EXCELLENT",
+      "issues": []
+    },
+    {
+      "path": "docs/I2V_CODEBASE_DIGEST.md",
+      "summary": "Complete i2v architecture reference for integration with Snowflake screenplay engine. Documents FastAPI backend, external APIs (Fal.ai, Vast.ai, ElevenLabs, Hedra), and service map.",
+      "up_to_date": true,
+      "quality": "EXCELLENT",
+      "issues": []
+    },
+    {
+      "path": "docs/PIPELINE_ARCHITECTURE_DIAGRAM.md",
+      "summary": "Full pipeline architecture showing 4 phases: Screenplay Engine (v2.0.0 complete, 970 tests), Scene Engine, Shot Engine, Visual Bible. Notes shot list generation bugs and missing Video Engine.",
+      "up_to_date": true,
+      "quality": "EXCELLENT",
+      "issues": ["Notes critical bugs in shot list generation that may need updating as fixes are applied"]
+    },
+    {
+      "path": "docs/SCREENPLAY_ENGINE_ROLLING_PLAN.md",
+      "summary": "5-wave rollout plan for building testable STC-compliant screenplay pipeline with fake-LLM harnesses, planning depth, writer refactor, visual bible, and STC compliance.",
+      "up_to_date": false,
+      "quality": "OUTDATED",
+      "issues": [
+        "Plan references Step 3b which user explicitly rejected and should be removed",
+        "May be outdated since all 9 steps show as DONE in progress report",
+        "Needs update to reflect v2.0.0 completion status"
+      ]
+    },
+    {
+      "path": "docs/SHOT_ENGINE_BUILD_REPORT_20260212.md",
+      "summary": "Shot engine status report: 6-step deterministic pipeline exists and runs, but output scale too large (1,746 shots for 40 scenes). Notes it's useful prototype but not production-ready.",
+      "up_to_date": true,
+      "quality": "GOOD",
+      "issues": []
+    },
+    {
+      "path": "docs/SNOWFLAKE_ENGINE_REVIEW.md",
+      "summary": "Documents Snowflake Method's dual-track architecture (plot + character) with consistent 4-5x expansion per step. Provides architectural pattern for fixing screenplay engine.",
+      "up_to_date": true,
+      "quality": "EXCELLENT",
+      "issues": []
+    },
+    {
+      "path": "docs/ERROR_HANDLING_ANALYSIS.md",
+      "summary": "Error path analysis identifying 3 critical failure modes: best-effort artifacts discarded on validation failure, Step 5 signature mismatch causing crashes, test script hard-stops preventing recovery.",
+      "up_to_date": true,
+      "quality": "EXCELLENT",
+      "issues": []
+    },
+    {
+      "path": "docs/PROMPT_VAGUENESS_AUDIT.md",
+      "summary": "Detailed audit identifying where each STC prompt falls short of Blake Snyder's methodology. Documents missing elements like Jealousy Test mechanics, Stasis=Death opening, high concept definition.",
+      "up_to_date": true,
+      "quality": "EXCELLENT",
+      "issues": []
+    },
+    {
+      "path": "docs/STC_SHOT_LIST_ALIGNMENT_REPORT_20260212.md",
+      "summary": "Alignment analysis showing STC doesn't provide formal camera shot-list format but gives scene-structure constraints. Documents gaps in emotional transition and dominant conflict tracking.",
+      "up_to_date": true,
+      "quality": "GOOD",
+      "issues": []
+    },
+    {
+      "path": "docs/stc_audit/ch1-8_*.txt + MASTER_FIX_PLAN.txt + PROGRESS_REPORT_*.txt",
+      "summary": "8 chapter-by-chapter audit reports, MASTER_FIX_PLAN, PROGRESS_REPORT, STATE_REPORT, and STC book reference text. Comprehensive STC compliance documentation.",
+      "up_to_date": true,
+      "quality": "EXCELLENT",
+      "issues": ["MASTER_FIX_PLAN may be partially superseded per PROGRESS_REPORT note"]
+    },
+    {
+      "path": "docs/reports/00-19_*.md (20 files)",
+      "summary": "20 detailed analysis reports covering architecture, code quality, security, testing, performance, technical debt, pipeline steps, scene engine, API, prompts, data models, error handling, dependencies, project status, Windows compatibility, PRD alignment, Snowflake completeness, integration points, and STC gap analysis.",
+      "up_to_date": true,
+      "quality": "EXCELLENT",
+      "issues": ["Reports are from Feb 7, may not reflect latest changes from Feb 8-16 (checkpoint system, v2.0.0 completion)"]
+    }
+  ],
+  "scripts_documentation_quality": {
+    "total_scripts": 27,
+    "total_lines": 4749,
+    "scripts_with_docstrings": 27,
+    "docstring_accuracy": "EXCELLENT",
+    "notes": "All sampled scripts (12/27) have clear, accurate docstrings with usage examples. Remaining scripts likely follow same pattern based on consistent quality observed.",
+    "sample_scripts_reviewed": [
+      "test_screenplay_live.py - Excellent docstring with usage examples",
+      "test_shot_engine.py - Brief but accurate",
+      "launch_6_runs.py - Clear parallel run strategy description",
+      "export_manuscript.py - Clear DOCX/EPUB export description",
+      "run_consistency_test.py - Excellent with parameter descriptions",
+      "test_visual_bible.py - Clear Visual Bible validation description",
+      "test_step1_live.py - Good STC evaluation description",
+      "simple_epub_creator.py - Clear dependency-free EPUB creation",
+      "debug_screenplay_response.py - Clear single-line docstring",
+      "eval_step5.py - Brief LLM evaluation docstring",
+      "test_8b_rewrite.py - Clear with usage example",
+      "test_step3_live.py - Clear Step 3 testing description"
+    ]
+  },
+  "gaps": [
+    "README.md completely misrepresents the project - describes Snowflake Novel Engine but actual project is Save the Cat Screenplay Engine",
+    "CLAUDE.md is generic SPARC/Claude-Flow boilerplate with zero project-specific content",
+    "No quickstart guide for new developers - how to run a screenplay generation end-to-end",
+    "No consolidated API documentation file (though API may be documented in reports/09)",
+    "No architecture diagram in visual format (only text-based in markdown)",
+    "No explanation of the relationship between Snowflake Engine, Screenplay Engine, Shot Engine, and Visual Bible for newcomers",
+    "No troubleshooting guide despite extensive error handling documentation",
+    "No contribution guidelines (CONTRIBUTING.md missing)",
+    "Missing documentation on how to add new STC steps or modify prompts",
+    "No testing guide (how to run tests, interpret results, add new test cases)",
+    "SCREENPLAY_ENGINE_ROLLING_PLAN.md appears outdated (references removed Step 3b)",
+    "No migration guide from v1.0.0 to v2.0.0 despite major changes mentioned in memory",
+    "Missing explanation of checkpoint system (added in v2.0.0)",
+    "No documentation on model selection strategy (when to use GPT vs Grok vs Claude)",
+    "No cost estimation guide for running full pipeline",
+    "Missing glossary of STC terms for developers unfamiliar with Blake Snyder method",
+    "No index or table of contents for the 20 reports in docs/reports/",
+    "Multiple legacy .md files in root (AGENCY_SWARM_PRD.md, FINAL_STATUS.md, etc.) may confuse new developers"
+  ],
+  "recommendations": [
+    {
+      "priority": "CRITICAL",
+      "task": "Rewrite README.md",
+      "description": "Completely rewrite to accurately describe the Save the Cat Screenplay Engine pipeline (not Snowflake Novel Engine). Include: (1) actual 9-step STC pipeline, (2) integration with Shot Engine and Visual Bible, (3) v2.0.0 checkpoint system, (4) current status (970 tests passing), (5) quick start commands for screenplay generation, (6) relationship to Snowflake Engine (feeds into screenplay), (7) E2E pipeline flow to video generation."
+    },
+    {
+      "priority": "CRITICAL",
+      "task": "Replace CLAUDE.md",
+      "description": "Replace with project-specific configuration. Include: (1) screenplay pipeline architecture overview, (2) how to work with STC prompts and validators, (3) artifact directory structure (artifacts/, temp_pages/, docs/), (4) testing conventions, (5) model configuration (GPT/Grok/Claude usage patterns), (6) common tasks (run screenplay, debug diagnostics, export results, add new steps)."
+    },
+    {
+      "priority": "HIGH",
+      "task": "Create QUICKSTART.md",
+      "description": "Create in docs/ with: (1) prerequisites and environment setup (.env configuration with API keys), (2) running first screenplay generation (step-by-step), (3) understanding output artifacts in artifacts/ directory, (4) common troubleshooting, (5) links to detailed docs, (6) expected runtime and costs."
+    },
+    {
+      "priority": "HIGH",
+      "task": "Update SCREENPLAY_ENGINE_ROLLING_PLAN.md",
+      "description": "Either archive as historical or update to reflect v2.0.0 completed state. Remove references to Step 3b (user rejected). Document remaining work if any, or mark as COMPLETED with date."
+    },
+    {
+      "priority": "HIGH",
+      "task": "Create ARCHITECTURE.md",
+      "description": "Consolidate SNOWFLAKE_CODEBASE_DIGEST.md, PIPELINE_ARCHITECTURE_DIAGRAM.md, and I2V_CODEBASE_DIGEST.md into single comprehensive reference with clear diagrams showing: Snowflake (11 steps) → Screenplay (9 steps STC) → Shot (6 steps) → Visual Bible → Video flow."
+    },
+    {
+      "priority": "MEDIUM",
+      "task": "Create TESTING.md",
+      "description": "Document: (1) how to run full pytest suite, (2) how to run individual step tests (scripts/test_step*_live.py), (3) how to interpret test results and diagnostics, (4) fake-LLM vs live-LLM testing strategies, (5) adding new test cases, (6) checkpoint system testing."
+    },
+    {
+      "priority": "MEDIUM",
+      "task": "Create STC_GLOSSARY.md",
+      "description": "Define Blake Snyder Save the Cat terms for developers unfamiliar with the methodology: beat sheet, board, Save the Cat moment, Pope in Pool, Dark Night of Soul, Break into Two, All Is Lost, etc. Include chapter references."
+    },
+    {
+      "priority": "MEDIUM",
+      "task": "Create TROUBLESHOOTING.md",
+      "description": "Document common issues from ERROR_HANDLING_ANALYSIS.md and solutions: (1) validation failures and best-effort artifact handling, (2) checkpoint system recovery, (3) model timeout issues, (4) JSON parsing errors, (5) diagnostic failures and revision loops."
+    },
+    {
+      "priority": "MEDIUM",
+      "task": "Create CONTRIBUTING.md",
+      "description": "Include: (1) code style guidelines, (2) how to add new pipeline steps, (3) prompt engineering guidelines from PROMPT_VAGUENESS_AUDIT.md, (4) validator patterns and best practices, (5) testing requirements before PR, (6) STC compliance checks."
+    },
+    {
+      "priority": "MEDIUM",
+      "task": "Create docs/reports/INDEX.md",
+      "description": "Create index explaining what each of the 20 analysis reports covers, when to reference them, and how they relate to each other. Group by category (architecture, quality, STC compliance, etc.)."
+    },
+    {
+      "priority": "LOW",
+      "task": "Create CHANGELOG.md",
+      "description": "Document version history: v1.0.0 baseline, v2.0.0 changes (checkpoint system, Step 3b removal, 970 tests, all 9 steps complete), bug fixes, and diagnostic improvements."
+    },
+    {
+      "priority": "LOW",
+      "task": "Create API.md or consolidate API docs",
+      "description": "Consolidate API documentation from reports/09 into standalone file with: (1) endpoint descriptions, (2) request/response examples, (3) authentication, (4) rate limiting, (5) error codes."
+    },
+    {
+      "priority": "LOW",
+      "task": "Create MODELS.md",
+      "description": "Document model selection strategy: when to use GPT vs Grok vs Claude, cost implications, performance trade-offs, temperature settings, token limits, and current best practices from E2E runs."
+    },
+    {
+      "priority": "LOW",
+      "task": "Archive or mark legacy docs",
+      "description": "Archive or clearly mark outdated root-level .md files (AGENCY_SWARM_PRD.md, FINAL_STATUS.md, CODE_OF_DECEPTION_FINAL_REPORT.md, IMPLEMENTATION_STATUS.md, etc.) that may confuse new developers. Move to docs/legacy/ or add DEPRECATED prefix."
+    },
+    {
+      "priority": "LOW",
+      "task": "Add visual architecture diagrams",
+      "description": "Consider adding Mermaid.js diagrams or ASCII art to key documentation files (ARCHITECTURE.md, README.md) for better visual understanding of pipeline flow."
+    },
+    {
+      "priority": "OPTIONAL",
+      "task": "Create examples/ directory",
+      "description": "Add sample runs showing input seed → final screenplay for common STC genres (Buddy Love, Monster in the House, Golden Fleece, etc.) with artifacts and diagnostic results."
+    }
+  ],
+  "overall_assessment": {
+    "rating": "MIXED",
+    "strengths": [
+      "Excellent technical documentation in docs/ (digests, audits, reports)",
+      "Comprehensive STC compliance analysis and book references",
+      "All 27 scripts have clear, accurate docstrings",
+      "Strong architectural documentation (SNOWFLAKE_CODEBASE_DIGEST, I2V_CODEBASE_DIGEST)",
+      "Detailed error handling and prompt analysis",
+      "970 passing tests indicates good test coverage"
+    ],
+    "critical_weaknesses": [
+      "README.md describes completely wrong project (Novel Engine vs Screenplay Engine)",
+      "CLAUDE.md is generic boilerplate with zero project-specific content",
+      "No quickstart or getting-started guide for new developers",
+      "No testing guide despite extensive test suite",
+      "Some docs outdated (ROLLING_PLAN references removed Step 3b)"
+    ],
+    "next_steps": "Focus on CRITICAL priority items first: rewrite README.md and CLAUDE.md to accurately describe the actual project. Then add QUICKSTART.md for developer onboarding. Technical documentation is excellent but user-facing docs are severely lacking."
+  }
+}
